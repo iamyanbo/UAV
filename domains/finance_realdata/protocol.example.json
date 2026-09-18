@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "hypothesis": "Replace with an economically motivated mechanism, not a desired Sharpe increase.",
+  "falsifier": "Replace with the observation that would refute the mechanism.",
+  "selection_method": "Declare fixed-rule/no-fitting or exactly how earlier training periods select parameters; no later-period selection.",
+  "acceptance_criterion": "Declare paired return/risk/cost comparisons and failure conditions before inspecting results.",
+  "history_disclosure": "All currently inspected history is retrospective, not a fresh sealed holdout. Disclose earlier scratch searches.",
+  "baselines": [
+    "frozen_incumbent",
+    "simple_trend_cash",
+    "equal_weight"
+  ],
+  "attempted_variants": [
+    "frozen_incumbent",
+    "simple_trend_cash",
+    "one_predeclared_challenger"
+  ],
+  "embargo_days": 0,
+  "evaluation_periods": [
+    {
+      "train_end": "2019-12-31",
+      "test_start": "2020-01-02",
+      "test_end": "2020-12-31"
+    },
+    {
+      "train_end": "2020-12-31",
+      "test_start": "2021-01-04",
+      "test_end": "2021-12-31"
+    }
+  ],
+  "family_id": "Replace-with-a-new-study-family-identifier",
+  "history_complete": false,
+  "stage": "exploratory"
+}

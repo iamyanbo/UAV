@@ -1,0 +1,30 @@
+{
+  "_comment": "UAV navigation research domain. This is an evidence-first adaptive direction rather than a global score optimizer. Candidate experiments should define their own protected evaluator after the literature phase.",
+  "id": "uav-navigation-research",
+  "candidateFiles": [
+    "experiments/",
+    "research/"
+  ],
+  "protectedPaths": [
+    ".curi-protected/"
+  ],
+  "readOnlyPaths": [
+    ".research-sources/",
+    ".research-evidence/",
+    ".research-investigations/"
+  ],
+  "executorContract": {
+    "research purpose": "Find and test mechanism-level improvements for implementable UAV VLM/VLA navigation, with novelty judged against architecture-level prior art.",
+    "literature policy": "Use primary papers, supplements, official project pages, code, datasets, and citation chains. Record exact search boundaries and distinguish exact prior art, functional equivalents, component overlap, adjacent work, and apparently open mechanisms.",
+    "architecture policy": "For each paper record sensors, representation, model role, memory, planner/controller, action interface, training objective, simulator/real setting, latency, compute, and failure modes. VLM/VLA is not an architecture description by itself.",
+    "experiment policy": "Every idea needs motivation, nearest prior art, mechanism difference, implementation path, matched baselines, ablations, latency and action-age measurements, failure injections, sim-to-real assumptions, resource budget, and kill criteria.",
+    "compute policy": "Prefer small models, frozen backbones, parameter-efficient training, asynchronous scheduling, and short experiments that fit an RTX 3060 Ti. Report when a proposal requires larger hardware or unavailable data.",
+    "safety policy": "No autonomous physical flight. Start with offline replay, simulation, hardware-in-the-loop, or safe shadow control. Any real test requires a human approval gate and an abort path.",
+    "novelty policy": "Benchmark improvement, prompt change, new dataset, new simulator, backbone swap, or straightforward module composition is not sufficient. The novelty claim must identify a mechanism or interaction absent from the closest functional prior art and state the evidence boundary."
+  },
+  "researchPolicy": {
+    "version": 2
+  },
+  "agentSearch": true,
+  "_literatureAccess": "Benchmarks and preprints change quickly. Use the watcher for new leads, but verify important architecture and novelty claims against primary sources, supplements, code, and project pages before recording a synthesis."
+}

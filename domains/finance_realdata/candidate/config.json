@@ -1,0 +1,7 @@
+{
+  "feature_horizons": [20, 60, 120],
+  "selector": "equal_vote_baseline",
+  "abstention": 0.0,
+  "risk_scaling": "none",
+  "_status": "baseline_only_not_a_research_claim"
+}

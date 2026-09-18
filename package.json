@@ -1,0 +1,44 @@
+{
+  "name": "curi-uav",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.19"
+  },
+  "scripts": {
+    "test:py": "py -3.10 -m unittest discover -s test -p \"test_*.py\"",
+    "uav:init": "node --import tsx src/cli.ts research init --direction uav-navigation --title \"UAV navigation research\" --brief-file missions/uav-navigation.md --domain domains/uav-navigation.domain.json --engine adaptive-v2 --topic \"UAV VLM VLA navigation\" --topic \"aerial visual language navigation\" --topic \"UAV world model sim2real\" --topic \"UAV latency real-time planning\"",
+    "uav:turn": "node --import tsx src/cli.ts research turn --direction uav-navigation",
+    "uav:run": "node --import tsx src/cli.ts research run --direction uav-navigation",
+    "uav:status": "node --import tsx src/cli.ts research status --direction uav-navigation",
+    "uav:preflight": "node --import tsx src/cli.ts research preflight",
+    "build": "tsc -p tsconfig.build.json && node scripts/build-assets.mjs",
+    "test": "node --import tsx --test test/**/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "migrate:firestore": "node --import tsx src/cloud/migrate-state.ts"
+  },
+  "dependencies": {
+    "@earendil-works/pi-ai": "0.76.0",
+    "@earendil-works/pi-coding-agent": "0.76.0",
+    "@google-cloud/firestore": "^9.0.0",
+    "@google-cloud/run": "^4.0.0",
+    "@google-cloud/storage": "^8.0.1",
+    "better-sqlite3": "^11.10.0",
+    "fast-xml-parser": "^5.11.1",
+    "katex": "^0.18.4",
+    "linkedom": "^0.16.11",
+    "marked": "^18.0.11",
+    "pi-subagents": "0.25.0",
+    "pi-web-access": "0.10.7",
+    "robots-parser": "^3.0.1",
+    "undici": "^7.16.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.15.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.8.0"
+  }
+}

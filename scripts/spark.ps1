@@ -1,0 +1,252 @@
+<#
+.SYNOPSIS
+  Load / unload the DeepSeek model on the DGX Spark, from this PC.
+
+.DESCRIPTION
+  The Spark serves DeepSeek v4 Flash out of a 128 GB *unified* memory pool, of
+  which the model pins ~104 GiB (95.4 GiB weights + 8.7 GiB KV). There is no
+  partial release: vLLM reserves at launch and holds until the container stops,
+  and the /sleep endpoints are not exposed on this image (VLLM_SERVER_DEV_MODE
+  is off). "Unloading" therefore means stopping the container, which is the only
+  way to give the GB10 back to anything else.
+
+  Boot to healthy is ~3.5-5 min (measured 204-282 s), so treat up/down as a
+  coarse-grained lease, not something to toggle per request.
+
+.EXAMPLE
+  .\scripts\spark.ps1 status
+  .\scripts\spark.ps1 up
+  .\scripts\spark.ps1 bench
+  .\scripts\spark.ps1 down
+#>
+[CmdletBinding()]
+param(
+    [Parameter(Position = 0)]
+    [ValidateSet('up', 'down', 'status', 'wait', 'bench', 'env', 'logs')]
+    [string]$Command = 'status',
+
+    # Seconds to wait for /health before giving up.
+    [int]$TimeoutSeconds = 900,
+
+    # Optional address/name override. Set SPARK_HOST to persist this without
+    # editing the script (for example, the router reservation for enP7s7).
+    [string]$SparkHost = ''
+)
+
+$ErrorActionPreference = 'Stop'
+
+$SparkUser  = 'iamyanbo'
+$SparkHostname = ''
+$SparkKey   = Join-Path $env:USERPROFILE '.ssh\gx10_codex_ed25519'
+$RepoDir    = '~/DeepSeek-v4-Flash-One-DGX-Spark'
+$Port       = 8888
+$ModelName  = 'deepseek-v4-flash-0731'
+
+function Invoke-Spark {
+    param([Parameter(Mandatory)][string]$Script)
+    # BatchMode: never hang on a password prompt if the key stops working.
+    ssh -i $SparkKey -o IdentitiesOnly=yes -o BatchMode=yes -o ConnectTimeout=15 `
+        "$SparkUser@$SparkHostname" $Script 2>&1
+}
+
+function Resolve-SparkHost {
+    # Try the explicit override first, then the stable wired reservation
+    # documented in docs/spark-connectivity.md, the last known DHCP Wi-Fi
+    # address, and mDNS.
+    # Each candidate is validated by an actual key-only SSH command, so a stale
+    # address cannot make status/up operate on the wrong host.
+    $configured = if (-not [string]::IsNullOrWhiteSpace($SparkHost)) { $SparkHost } else { $env:SPARK_HOST }
+    $candidates = @(
+        $configured,
+        '10.13.2.8',       # recommended wired reservation
+        '10.31.12.8',      # current DHCP address (Wi-Fi)
+        'gx10-6ca9.local',
+        'gx10-6ca9'
+    ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
+
+    foreach ($candidate in $candidates) {
+        # Native ssh writes connection failures to stderr; with the script's
+        # strict error mode enabled, temporarily treat that expected probe
+        # failure as non-terminating and continue to the next candidate.
+        $oldErrorAction = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
+        $probe = & ssh -i $SparkKey -o IdentitiesOnly=yes -o BatchMode=yes -o ConnectTimeout=5 `
+            "$SparkUser@$candidate" 'printf SPARK_SSH_OK' 2>$null
+        $probeExit = $LASTEXITCODE
+        $ErrorActionPreference = $oldErrorAction
+        if ($probeExit -eq 0 -and (($probe -join '') -match 'SPARK_SSH_OK')) {
+            return $candidate
+        }
+    }
+    throw "Could not SSH to the DGX Spark. Tried: $($candidates -join ', '). Set SPARK_HOST to its wired DHCP reservation; see docs/spark-connectivity.md."
+}
+
+function Get-SparkAddress {
+    # Never substitute a Wi-Fi address returned by the Spark: SSH may be using
+    # Ethernet while the first global address is still Wi-Fi. The validated
+    # candidate is the address/name this PC can actually reach.
+    return $SparkHostname
+}
+
+$SparkHostname = Resolve-SparkHost
+
+function Get-SparkMemory {
+    <#
+      Returns @{ TotalGiB; UsedGiB; AvailGiB }.
+
+      Parsing happens here rather than in a remote awk script on purpose:
+      quoting an awk program through PowerShell -> ssh -> remote shell loses the
+      inner quotes and silently produces garbage output instead of an error.
+    #>
+    $line = ((Invoke-Spark 'free -m') -split "`n" | Where-Object { $_ -match '^Mem:' }) -join ' '
+    $f = ($line -split '\s+') | Where-Object { $_ -ne '' }
+    if ($f.Count -lt 7) { return $null }
+    return @{
+        TotalGiB = [math]::Round([double]$f[1] / 1024, 1)
+        UsedGiB  = [math]::Round([double]$f[2] / 1024, 1)
+        AvailGiB = [math]::Round([double]$f[6] / 1024, 1)
+    }
+}
+
+function Get-SparkAblationMode {
+    $name = 'deepseek-v4-flash-spark-deepseek-v4-flash-1'
+    $lines = Invoke-Spark "docker inspect $name --format '{{range .Config.Env}}{{println .}}{{end}}' 2>/dev/null || true"
+    if (($lines -join "`n") -match '(?m)^DSV4_ABLATE_FILE=/models/files/direction_r1\.pt$') { return 1 }
+    return 0
+}
+
+function Test-Health {
+    param([string]$Address)
+    try {
+        $r = Invoke-WebRequest -Uri "http://${Address}:$Port/health" -TimeoutSec 5 -UseBasicParsing
+        return $r.StatusCode -eq 200
+    } catch { return $false }
+}
+
+function Wait-Healthy {
+    param([string]$Address, [int]$Timeout)
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+    while ($sw.Elapsed.TotalSeconds -lt $Timeout) {
+        if (Test-Health -Address $Address) {
+            Write-Host ("  healthy after {0:N0}s" -f $sw.Elapsed.TotalSeconds) -ForegroundColor Green
+            return $true
+        }
+        Write-Host ("  waiting... {0:N0}s   " -f $sw.Elapsed.TotalSeconds) -NoNewline
+        Write-Host "`r" -NoNewline
+        Start-Sleep -Seconds 6
+    }
+    Write-Host ''
+    Write-Warning "not healthy after ${Timeout}s. Check: .\scripts\spark.ps1 logs"
+    return $false
+}
+
+$address = Get-SparkAddress
+$baseUrl = "http://${address}:$Port/v1"
+
+# This is the legacy DeepSeek lifecycle launcher. Never replace/stop a Qwen
+# deployment simply because it shares DeepSeek's historical served-model alias.
+if ($Command -in @('up', 'down')) {
+    $activeModels = $null
+    try { $activeModels = Invoke-RestMethod -Uri "$baseUrl/models" -TimeoutSec 5 } catch {}
+    if ($activeModels.data.root -match 'Qwen3.8') {
+        throw 'Qwen3.8 is serving on Spark. Manage it with Qwen3.8-Flash-Next-Single-DGX-Spark/start.sh or stop.sh; this launcher is DeepSeek-only.'
+    }
+}
+
+switch ($Command) {
+
+    'status' {
+        Write-Host "Spark $SparkUser@$SparkHostname ($address)" -ForegroundColor Cyan
+        $container = ((Invoke-Spark 'docker ps --format "{{.Status}}"') -join ' ').Trim()
+        if ([string]::IsNullOrWhiteSpace($container)) {
+            Write-Host '  model     : DOWN (no container)' -ForegroundColor Yellow
+        } else {
+            Write-Host "  model     : $container"
+        }
+        $healthy = if (Test-Health -Address $address) { 'OK' } else { 'unreachable' }
+        Write-Host "  /health   : $healthy"
+        Write-Host "  ABLATE    : $(Get-SparkAblationMode)"
+        $m = Get-SparkMemory
+        if ($m) {
+            Write-Host ("  memory    : {0} GiB used, {1} GiB available of {2} GiB" -f $m.UsedGiB, $m.AvailGiB, $m.TotalGiB)
+        }
+        $gpu = ((Invoke-Spark 'nvidia-smi --query-gpu=clocks.sm,power.draw,temperature.gpu,utilization.gpu --format=csv,noheader') -join '').Trim()
+        Write-Host "  gpu       : $gpu"
+        Write-Host "  base URL  : $baseUrl"
+    }
+
+    'up' {
+        $isHealthy = Test-Health -Address $address
+        $ablationMode = Get-SparkAblationMode
+        if ($isHealthy -and $ablationMode -eq 1) {
+            Write-Host 'ABLATE=1 model already loaded and healthy.' -ForegroundColor Green
+            break
+        }
+        if (-not $isHealthy) {
+            $m = Get-SparkMemory
+            $avail = if ($m) { $m.AvailGiB } else { 0 }
+            Write-Host "Free host RAM: $avail GiB (recipe needs >= 114.3)"
+            if ($avail -lt 114) {
+                # Booting under-provisioned is how this box got hard-reset before:
+                # the launcher OOM-loops and drags the host down with it.
+                Write-Warning 'Not enough free RAM to boot. Stop whatever is holding it first.'
+                break
+            }
+        } else {
+            Write-Host 'Healthy stock container found; switching it to ABLATE=1.' -ForegroundColor Cyan
+        }
+        Write-Host 'Loading model (expect 3.5-5 min)...' -ForegroundColor Cyan
+        # ABLATE=1 is pinned explicitly for this local branch. A bare ./start.sh inherits whatever the
+        # last run stamped, and a changed stamp silently recreates the container.
+        $launch = "cd $RepoDir && ABLATE=1 setsid nohup ./start.sh --no-wait > /tmp/spark-up.log 2>&1 < /dev/null & disown; echo launched"
+        Invoke-Spark $launch | Out-Null
+        [void](Wait-Healthy -Address $address -Timeout $TimeoutSeconds)
+    }
+
+    'down' {
+        Write-Host 'Unloading model (frees ~104 GiB and the GB10)...' -ForegroundColor Cyan
+        Invoke-Spark "cd $RepoDir && ./stop.sh" | Write-Host
+        Start-Sleep -Seconds 3
+        $m = Get-SparkMemory
+        if ($m) { Write-Host ("  {0} GiB now available" -f $m.AvailGiB) -ForegroundColor Green }
+    }
+
+    'wait' { [void](Wait-Healthy -Address $address -Timeout $TimeoutSeconds) }
+
+    'logs' { Invoke-Spark "cd $RepoDir && docker compose logs --tail=60" | Write-Host }
+
+    'bench' {
+        if (-not (Test-Health -Address $address)) { Write-Warning 'Model is not up.'; break }
+        Write-Host 'Measuring decode throughput (warm-up + 1 run)...' -ForegroundColor Cyan
+        $body = @{
+            model      = $ModelName
+            messages   = @(@{ role = 'user'; content = 'Explain how a GPU warp scheduler works.' })
+            max_tokens = 300
+            temperature = 0
+            stream     = $false
+            chat_template_kwargs = @{ thinking = $false }
+        } | ConvertTo-Json -Depth 6
+        # One discarded warm-up: Triton/CUTLASS kernels JIT-compile on first use
+        # after a boot, which otherwise reads as a false ~20% slowdown.
+        $null = Invoke-RestMethod -Uri "$baseUrl/chat/completions" -Method Post -Body $body -ContentType 'application/json' -TimeoutSec 600
+        $sw = [Diagnostics.Stopwatch]::StartNew()
+        $r = Invoke-RestMethod -Uri "$baseUrl/chat/completions" -Method Post -Body $body -ContentType 'application/json' -TimeoutSec 600
+        $sw.Stop()
+        $tok = $r.usage.completion_tokens
+        Write-Host ("  {0} tokens in {1:N1}s = {2:N1} tok/s (end-to-end)" -f $tok, $sw.Elapsed.TotalSeconds, ($tok / $sw.Elapsed.TotalSeconds))
+        Write-Host '  Measured baseline on this box: ~26-31 tok/s decode.'
+    }
+
+    'env' {
+        Write-Host 'Point CURI at the Spark by adding this to .env:' -ForegroundColor Cyan
+        Write-Host ''
+        Write-Host '  AR_LOCAL_ONLY=1'
+        Write-Host '  AR_PI_PROVIDER=dgx-spark'
+        Write-Host "  AR_MODEL_BASE_URL=$baseUrl"
+        Write-Host "  AR_MODEL=$ModelName"
+        Write-Host '  AR_MAX_COST_USD=0'
+        Write-Host ''
+        Write-Host 'Inference and state stay local. Public web/arXiv/GitHub retrieval remains enabled.'
+        Write-Host 'No OpenRouter, Gemini, Vertex, Firestore, or cloud mirror is used.'
+    }
+}

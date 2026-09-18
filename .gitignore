@@ -1,0 +1,38 @@
+node_modules/
+dist/
+infra/.terraform/
+infra/*.tfstate*
+infra/terraform.tfvars
+__pycache__/
+*.pyc
+.curi/
+.curi-storage/
+/.curi-quant/
+/.curi-gemini/
+.curi-legacy/
+.research-data/
+.research-evidence/
+.research-prior-evidence/
+.research-sources/
+.autoresearch/
+.autoresearch-legacy/
+domains/tinyml/candidate/out/
+domains/tinyml/data/*.bin
+
+# Local credentials only. Cloud deployments get configuration from the
+# service environment or Secret Manager, never from a file in the image.
+.env
+.env.*
+!.env.example
+!.env.alpaca.example
+
+# Scratch, build output and local tooling: never part of the project.
+tmp/
+/.pi/
+/.lead-scratch/
+/ev/
+pi-extension/
+domains/finance_realdata/local/
+.autoresearch-legacy-remnants-*/
+.quant-trials.sqlite*
+.quant-harness/

@@ -1,0 +1,8 @@
+# Local-only finance research dependencies. Resolve and lock exact transitive
+# versions in the environment; the acquisition manifest records these versions.
+duckdb>=1.4,<2
+exchange-calendars>=4.8,<5
+pandas>=2.3,<3
+pyarrow>=18,<20
+requests>=2.32,<3
+yfinance>=1.3,<2

@@ -1,0 +1,31 @@
+{
+  "id": "finance-realdata",
+  "data_root": "D:/CURI/data",
+  "start": "2005-01-01",
+  "max_request_bytes": 104857600,
+  "storage_warning_bytes": 32000000000,
+  "max_store_bytes": 40000000000,
+  "max_unpinned_cache_bytes": 4294967296,
+  "etfs": [
+    "SPY", "QQQ", "IWM", "EFA", "EEM", "TLT", "IEF", "HYG", "LQD",
+    "GLD", "DBC", "VNQ", "UUP", "XLE", "XLF", "XLK", "XLP", "XLU"
+  ],
+  "equities": ["AAPL", "MSFT", "NVDA", "AMZN", "META", "JPM", "XOM", "JNJ"],
+  "option_underlyings": ["SPY", "QQQ", "IWM", "AAPL", "MSFT", "NVDA", "AMZN", "META"],
+  "option_expiries_per_symbol": 4,
+  "alpaca": {
+    "feed": "sip",
+    "bars_start": "2016-01-01",
+    "options_feed": "indicative",
+    "option_bars_start": "2024-02-01",
+    "option_chain_baseline": true,
+    "expiry_window_days": 45
+  },
+  "retention": {
+    "keep_daily_days": 30,
+    "grace_hours": 48
+  },
+  "cboe_reference_urls": [
+    "https://www.cboe.com/us/options/market_statistics/historical_data/"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "id": "finance-realdata-local",
+  "metric": {
+    "name": "question-specific risk-adjusted evidence",
+    "direction": "no global optimization"
+  },
+  "determinism": "snapshot-pinned",
+  "replication": {
+    "kind": "rolling_temporal_window",
+    "attempts": 1,
+    "minAgreement": 1,
+    "variantKey": "evaluation_year",
+    "variantValues": ["runtime-generated from 5y train + 1y evaluation windows"],
+    "variantSensitiveMetric": true
+  },
+  "candidateFiles": ["model.py", "config.json"],
+  "configFile": "config.json",
+  "protectedPaths": [
+    ".autoresearch-protected",
+    "domains/finance_realdata/task_check.py"
+  ],
+  "seedFiles": [
+    {"from": "domains/finance_realdata/candidate/model.py", "to": "model.py"},
+    {"from": "domains/finance_realdata/candidate/config.json", "to": "config.json"}
+  ],
+  "developmentCommand": ["py", "-3.10", "domains/finance_realdata/task_check.py"],
+  "reservedConfigKeys": [
+    "snapshot_id", "train_start", "evaluation_start", "evaluation_end", "cost_bps", "universe"
+  ],
+  "architectureKeys": ["feature_horizons", "selector", "abstention", "risk_scaling"],
+  "dataPipeline": {
+    "id": "finance-realdata",
+    "manifest": "domains/finance_realdata/data_sources.json",
+    "script": "domains/finance_realdata/data_pipeline.py",
+    "workspacePath": ".research-data/finance-realdata",
+    "dataRoot": "D:/CURI/data",
+    "python": {"executable": "py", "args": ["-3.10"]}
+  },
+  "executorContract": {
+    "research purpose": "Discover and implement defensible finance mechanisms on point-in-time real data. This is research and prospective shadow observation, not investment advice or live trading.",
+    "data available": "A runtime-bound immutable Parquet/DuckDB snapshot whose manifest is the source of truth. The current free lane guarantees retrieved ETF/equity prices and may include prospective option-chain snapshots. FRED macro vintages and SEC filings/facts are available only when their providers are configured and the bound manifest records successful retrieval. Use only rows with available_at no later than the decision time.",
+    "data acquisition": "The executor cannot change its bound snapshot. The orchestrator requests concrete free public datasets for a later task; symbol count and download size do not require scientific approval. The acquisition runtime streams provider work and independently enforces the local 40 GiB storage cap.",
+    "evaluation policy": "Use five-year trailing training windows followed by one-year evaluations rolled annually, with an embargo at least as long as the maximum feature and holding horizon. Report every window and every attempted member of a hypothesis family.",
+    "confirmation policy": "A candidate family may use the latest completed period once as a sealed checkpoint, after which it becomes ordinary evidence. Prospective daily shadow observations are stronger evidence than historical performance known to the model.",
+    "cost policy": "Evaluate 2, 5, 10, and 20 basis points per unit turnover with 10 bps primary. Report turnover, drawdown, exposure, cost sensitivity and capacity proxies; do not optimize one Sharpe number.",
+    "equity limitation": "Free historical equity data is survivorship-biased until a delisted-security source is added. Equity results are mechanism-transfer exploration, not universe-level alpha evidence.",
+    "options limitation": "Detailed historical contract quotes are not available in the free-first lane. Historical options evidence is limited to public aggregates; contract-chain evidence begins prospectively from locally captured snapshots.",
+    "novelty policy": "Every proposed implementation names nearest prior art, its exact mechanism difference, competing explanation, falsifier, and predicted failure regimes. A signal aggregation or score improvement is not novelty.",
+    "model policy": "Ablation may reduce refusals but does not grant additional finance knowledge. Treat model assertions as hypotheses requiring code, provenance and independent checks."
+  },
+  "agentSearch": true
+}

@@ -1,0 +1,78 @@
+{
+  "id": "finance-quant-alpaca-paper",
+  "metric": {
+    "name": "durable after-cost risk-adjusted evidence",
+    "direction": "no global optimization"
+  },
+  "determinism": "snapshot-pinned",
+  "candidateFiles": [
+    "model.py",
+    "config.json"
+  ],
+  "configFile": "config.json",
+  "seedFiles": [
+    {
+      "from": "domains/finance_realdata/candidate/model.py",
+      "to": "model.py"
+    },
+    {
+      "from": "domains/finance_realdata/candidate/config.json",
+      "to": "config.json"
+    }
+  ],
+  "protectedPaths": [
+    ".autoresearch-protected",
+    ".env.alpaca",
+    "src/trading"
+  ],
+  "readOnlyPaths": [
+    ".quant-harness",
+    "domains/finance_realdata/quant-policy.json",
+    "domains/finance_realdata/quant_engine.py",
+    "domains/finance_realdata/quant_runner.py"
+  ],
+  "developmentCommand": [
+    "py",
+    "-3.10",
+    "domains/finance_realdata/quant_runner.py",
+    "evaluate",
+    "--candidate-root",
+    ".",
+    "--policy",
+    "domains/finance_realdata/quant-policy.json"
+  ],
+  "quantPolicy": "domains/finance_realdata/quant-policy.json",
+  "paperTrading": "alpaca",
+  "dataPipeline": {
+    "id": "finance-realdata",
+    "manifest": "domains/finance_realdata/data_sources.json",
+    "script": "domains/finance_realdata/data_pipeline.py",
+    "workspacePath": ".research-data/finance-realdata",
+    "dataRoot": "D:/CURI/data",
+    "python": {
+      "executable": "py",
+      "args": [
+        "-3.10"
+      ]
+    }
+  },
+  "executorContract": {
+    "research purpose": "Discover, implement and evaluate strategies that may produce durable after-cost, risk-adjusted returns. The configured lead directs research. Deterministic code executes approved checkpoints through Alpaca paper trading against live market data.",
+    "research to execution": "Use research to inform investment decisions and executable experiments. When a consequential question is testable with available inputs, use the same delegated task to investigate, build a candidate and evaluate it. Prior OUT or SYN approval is not required to write or test a prototype. Leave a candidate worth canonical evaluation as model.py and config.json at the task root, with its assumptions and attempted alternatives in ordinary files. Keep rejected experiments and useful no-trade findings. Missing information should identify the specific observation or capability blocking a test; the wider infobase need not be complete. Follow candidates worth paper observation through canonical diagnostics, independent synthesis review, declared monitoring and an explicit enrollment decision. These enrollment requirements do not govern exploratory implementation. Choose depth and methods freely, without strategy quotas, mandatory report fields or deadlines. Stock and options ideas can be researched and prototyped in ordinary files, but the current daily ETF evaluator and paper authorization cannot validate or execute those instruments; name the expression gap instead of silently substituting an ETF or treating the idea as refuted.",
+    "autonomous exploration": "The orchestrator owns questions, methods and research duration. Use one delegated agent at a time and interpret its handoff before the next delegation. The watcher supplies new evidence. Research notes are freeform; category counts, field completeness, fixed study deadlines and trial quotas never establish scientific sufficiency. Preserve uncertainty, alternative explanations and unresolved questions; closed markets do not block independent research.",
+    "acquisition policy": "Use request_data for immutable yfinance or Alpaca quantitative snapshots with explicit provider arguments and a freeform rationale. Use request_discovery for free public documents, feeds and APIs including SEC, official macro releases, public news, social discussion and research. The existing watcher preserves raw text, attribution, publication claims, collection time and revisions; honor terms, robots, rate limits and access controls. Free API keys are runtime-owned. Public discovery requires separate point-in-time validation before becoming a trading feature. Daily option bars contain OHLCV, not historical implied volatility or observed dealer inventories. Missing inputs and unavailable adapters are operational issues, never scientific refutations. Consult docs/free-discovery.md for access conditions and quant information gaps.",
+    "trading boundary": "Workers never call Alpaca or access credentials. The operator-started paper service owns orders, reconciliation and risk. activate_shadow selects the next independently verified checkpoint for paper observation, not real-money deployment. Entry points must be model.py and config.json in the checkpoint root.",
+    "decision interface": "signal(close, config) returns a finite [time, asset] target-weight matrix. config.universe gives column order. The daily-ny-0945-v2 contract fixes both historical and delayed paper information cutoffs to 09:45 America/New_York. Only earlier available completed daily bars are supplied. config.market_features has version daily-price-volume-v1, ordered symbols, price_times, decision_at and causal volume rows aligned with close. Opt into config.market_data.tables: news_events, option_chains, alpaca_bars_1d, alpaca_option_bars_1d, alpaca_option_chains or legacy fred_vintages to receive config.market_context tables. table_max_age_hours sets a positive per-table usable-record age; defaults to max_snapshot_age_hours or 96. Missing or stale required context blocks new intents in BOTH evaluation and paper; existing holdings remain marked. News and options cannot predate collection. Signal code must be deterministic, independent of wall clock/network, and use only supplied information. Only the final output row is used. The fixed long-only policy still caps exposures.",
+    "information discovery": "Explore management intent, earnings-call language, narratives, speculation, intuition and cross-domain connections as well as prices and established economics. Public source research and targeted exploratory data acquisition may precede a formulated trading hypothesis or available feature interface. Preserve material investigations with record_investigation: attribute observations, label interpretation and speculation, retain alternatives and contradictions, and identify useful follow-up evidence. The lead may inspect timestamped .research-investigations files. Predictive use subsequently requires causal availability and appropriate matched evaluation. Map the result to the actual daily execution horizon and supported instruments, or retain it as research with an explicit expression limitation.",
+    "interpretive research": "An earnings-call statement is a source claim; its accuracy, management intent, implications, and expected market response are separate uncertainties. Consider incentives, earlier statements, other companies, technical feasibility, supply chains, regulation, financing, social narratives and positioning. Narratives can change behavior even when their premise is false. Allow competing speculative paths without requiring canonical economic theory. Record prospective predictions with horizons and observable resolution when useful, revise beliefs against later observations, and preserve misses. Do not present subjective confidence as calibrated probability, qualitative coherence as causal identification, or INV investigations as verified OUT/SYN evidence. Scope inquiries to available public sources and existing acquisition constraints.",
+    "predictor universe": "market_data.price_symbols selects optional non-traded price predictors, e.g. HYG/LQD after confirming snapshot coverage. config.market_features.extra_prices[symbol] contains causal close/volume records, truncated to the history limit. The paper service requests these from its existing bar feed without expanding the fixed tradable universe. Every required predictor must be fresh within price_max_age_hours (default policy max_data_age_hours). Only daily/1d acquisition is supported; do not request mixed frequencies in the shared prices table.",
+    "evidence": "Choose the research method and write scientific reasoning freely, preserving mechanisms, contrary evidence, assumptions, attempted variants and prior history exposure where relevant. No JSON research report is required. Candidate evaluations through .quant-harness/quant_runner.py journal successes and failures; disclose scratch searches too. Optional numeric precommitments support a declared comparison but do not establish research completeness. Runtime independently evaluates the final root candidate, binds the result to the full workspace, and checkpoints it when it passes the retrospective screen. Reporting windows are not automatic train/select/test folds: use earlier-only fitting and independent paired checks when needed. Neither the screen nor a Sharpe increase proves durability; previously inspected history is retrospective.",
+    "execution": "Alpaca paper orders use live IEX quotes by default, whole-share day limits, daily rebalancing after 09:45 New York, a capital ceiling, fixed exposure/turnover limits, stale-data checks and sticky loss stops. Paper fill evidence does not include all real-market costs; report the separate assumed-cost deduction.",
+    "promotion": "Returned candidates passing canonical retrospective evaluation may be checkpointed. For this lifecycle-enabled paper direction, activate_shadow requires current canonical identity, benchmark and whole-share execution diagnostics, a frozen register_adaptation policy, and an independently accepted SYN citing an outcome for the checkpoint task. This enrolls a checkpoint for paper observation; it never proves edge. Preserve current deployment while investigating alternatives. Mature observation counts are diagnostics, not significance or a reason to suspend independent discovery.",
+    "data limitations": "Free historical equity data can have survivorship and revision bias. IEX is a single-venue feed. Historical model knowledge is not point-in-time evidence. Dividends and corporate actions require explicit treatment. Research data and Alpaca execution data are distinct feeds and their mismatch must be measured."
+  },
+  "agentSearch": true,
+  "researchPolicy": {
+    "version": 2
+  }
+}
