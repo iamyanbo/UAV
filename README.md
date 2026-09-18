@@ -18,6 +18,8 @@ npm run uav:status
 
 The first turn should orient the direction and create evidence-backed investigations. It should not immediately announce a novel method. Run additional turns only after inspecting the returned literature and task artifacts.
 
+Read [docs/uav-invention-mode.md](docs/uav-invention-mode.md) before starting a long run. The first phase is deliberately technology-first; it may conclude that a cross-domain method is useful only as an implementation ingredient.
+
 Useful direct commands:
 
 ```powershell
@@ -29,10 +31,11 @@ node --import tsx src/cli.ts research dashboard start --direction uav-navigation
 
 ## How the research loop works
 
-1. The lead builds a field map. It searches exact method names and aliases, then follows citations, official code, supplements, datasets, and nearby task formulations.
+0. The lead runs a technology-frontier presearch before narrowing to UAV terminology. It maps enabling mechanisms across JEPA/world models, fast confidence paths, memory, planning/control, environment construction, efficient training, and active perception. The seed and card template are in [presearch](presearch/README.md).
+1. The lead builds the UAV field map. It searches exact method names and aliases, then follows citations, official code, supplements, datasets, and nearby task formulations.
 2. The lead converts papers into architecture cards. Each card separates what the model actually does: perception, language grounding, memory, waypoint/action selection, world prediction, geometric planning, low-level control, or safety fallback.
 3. A failure analyst extracts limitations that are testable rather than vague: inference latency, stale actions, compute/memory, simulator dependence, missing dynamics, map assumptions, failure under occlusion, transfer gaps, and evaluation shortcuts.
-4. The lead proposes a small number of mechanism-level ideas. Each idea must state motivation, nearest prior art, what is different, implementation path, model and data budget, baselines, ablations, test environments, latency/compute budget, and kill criteria.
+4. The lead enters an invention pass: combine a documented UAV failure with a verified frontier mechanism, state the new interaction or adaptation, and predict what measurable failure mode should change. This is a hypothesis-generation stage, not a novelty claim.
 5. A prior-art adversary tries to collapse each idea into an existing paper, a known component, or an obvious composition. The candidate is downgraded when the difference is only a new dataset, prompt, backbone, benchmark, or wiring of known modules.
 6. Only surviving ideas become delegated implementation or reproduction tasks in isolated workspaces. Failed variants and negative evidence are preserved.
 7. An independent verifier reads sealed artifacts, sources, commands, and results. A synthesis is accepted only at the scope supported by that evidence. Real-flight validation is never automatic.

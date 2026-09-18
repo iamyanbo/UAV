@@ -14,13 +14,15 @@
     ".research-investigations/"
   ],
   "executorContract": {
-    "research purpose": "Find and test mechanism-level improvements for implementable UAV VLM/VLA navigation, with novelty judged against architecture-level prior art.",
+    "research purpose": "Run a technology-frontier presearch, then find and test mechanism-level improvements for implementable UAV VLM/VLA navigation, with novelty judged against architecture-level prior art.",
+    "presearch policy": "Start outside UAV terminology. Build technology cards for predictive representations/JEPA/world models, fast uncertainty and asynchronous paths, memory, planning/control, environment construction, efficient training, and active perception. Transfer is a hypothesis until checked against UAV equivalents.",
     "literature policy": "Use primary papers, supplements, official project pages, code, datasets, and citation chains. Record exact search boundaries and distinguish exact prior art, functional equivalents, component overlap, adjacent work, and apparently open mechanisms.",
     "architecture policy": "For each paper record sensors, representation, model role, memory, planner/controller, action interface, training objective, simulator/real setting, latency, compute, and failure modes. VLM/VLA is not an architecture description by itself.",
     "experiment policy": "Every idea needs motivation, nearest prior art, mechanism difference, implementation path, matched baselines, ablations, latency and action-age measurements, failure injections, sim-to-real assumptions, resource budget, and kill criteria.",
     "compute policy": "Prefer small models, frozen backbones, parameter-efficient training, asynchronous scheduling, and short experiments that fit an RTX 3060 Ti. Report when a proposal requires larger hardware or unavailable data.",
     "safety policy": "No autonomous physical flight. Start with offline replay, simulation, hardware-in-the-loop, or safe shadow control. Any real test requires a human approval gate and an abort path.",
-    "novelty policy": "Benchmark improvement, prompt change, new dataset, new simulator, backbone swap, or straightforward module composition is not sufficient. The novelty claim must identify a mechanism or interaction absent from the closest functional prior art and state the evidence boundary."
+    "novelty policy": "Benchmark improvement, prompt change, new dataset, new simulator, backbone swap, or straightforward module composition is not sufficient. The novelty claim must identify a mechanism or interaction absent from the closest functional prior art and state the evidence boundary.",
+    "invention policy": "After presearch and limitation mining, explicitly generate failure-to-mechanism hypotheses. An implementation ingredient is not a contribution unless the UAV adaptation changes information flow, training target, action interface, planner/controller coupling, safety behavior, or another falsifiable deployment mechanism."
   },
   "researchPolicy": {
     "version": 2

@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test:py": "py -3.10 -m unittest discover -s test -p \"test_*.py\"",
-    "uav:init": "node --import tsx src/cli.ts research init --direction uav-navigation --title \"UAV navigation research\" --brief-file missions/uav-navigation.md --domain domains/uav-navigation.domain.json --engine adaptive-v2 --topic \"UAV VLM VLA navigation\" --topic \"aerial visual language navigation\" --topic \"UAV world model sim2real\" --topic \"UAV latency real-time planning\"",
+    "uav:init": "node --import tsx src/cli.ts research init --direction uav-navigation --title \"UAV navigation research\" --brief-file missions/uav-navigation.md --domain domains/uav-navigation.domain.json --engine adaptive-v2 --topic \"JEPA action-conditioned latent world model\" --topic \"predictive representation world model planning\" --topic \"fast uncertainty confidence head asynchronous VLM\" --topic \"memory action chunking embodied navigation\" --topic \"MPC MPPI VLA safety shield\" --topic \"3DGS real-to-sim live environment\" --topic \"UAV VLM VLA navigation sim2real latency\"",
     "uav:turn": "node --import tsx src/cli.ts research turn --direction uav-navigation",
     "uav:run": "node --import tsx src/cli.ts research run --direction uav-navigation",
     "uav:status": "node --import tsx src/cli.ts research status --direction uav-navigation",

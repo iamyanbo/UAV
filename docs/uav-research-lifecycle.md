@@ -4,6 +4,10 @@ CURI-UAV uses a divergent-to-convergent loop. The lead may explore broadly, but 
 
 ## Stages
 
+### 0. Technology-frontier presearch
+
+Before the UAV map, inspect enabling mechanisms outside UAV vocabulary: predictive representations and JEPA/world models, fast confidence paths, memory, planning/control, environment construction, efficient training, and active perception. Record technology cards, implementation limits, functional equivalents, transfer hypotheses, and reasons not to transfer. The seeded JEPA-Anything card is an example of a cross-domain lead, not UAV evidence.
+
 ### 1. Field and architecture map
 
 The lead and workers locate the relevant papers and convert them into architecture cards. The map is organized by function rather than branding: perception, language grounding, memory, waypoint/action selection, world prediction, geometric planning, controller, safety fallback, and evaluation.
@@ -14,7 +18,7 @@ Each limitation must be tied to an observed result, missing ablation, implementa
 
 ### 3. Divergent idea generation
 
-Ideas are generated from documented limitations and current enabling technology. The lead records them as investigations before calling them contributions. An idea must predict which failure mode changes and why.
+Ideas are generated from documented limitations and verified frontier mechanisms. The invention pass is explicit: failure → enabling mechanism → UAV-specific interaction → falsifiable prediction → smallest experiment. The lead records ideas as investigations before calling them contributions. An idea must predict which failure mode changes and why.
 
 ### 4. Adversarial novelty review
 

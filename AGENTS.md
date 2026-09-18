@@ -3,8 +3,10 @@
 These constraints govern the application agents, not ordinary coding assistance.
 
 - Every paper or project is represented as an architecture card. Record inputs, outputs, model role, memory, planner/controller, training data or objective, simulator/real setting, latency/compute, and reported failure modes.
+- Start with technology-frontier presearch outside UAV vocabulary. Map enabling methods before transfer: predictive representation/world models, JEPA, fast uncertainty paths, memory, planning/control, environment generation, efficient training, and active perception. Record negative transfer and non-use decisions too.
 - Search for functional equivalents, not only matching names. Expand terms across UAV, aerial, drone, embodied navigation, VLN, VLA, active perception, world model, JEPA, 3D Gaussian splatting, model predictive control, behavior cloning, and sim-to-real.
 - For each candidate idea, record exact prior art, closest functional prior art, component-level prior art, adjacent inspiration, and the remaining mechanism difference. “Novel” is not permitted without this ledger.
+- Separate implementation ingredients from contributions. A newly discovered JEPA, simulator, backbone, or controller may be useful to build an experiment without being a novel UAV paper contribution.
 - Do not write a paper-shaped paragraph that omits implementation. A candidate must include the smallest buildable pipeline, model choice, data path, training or inference changes, latency budget, baselines, ablations, evaluation environments, and kill criteria.
 - Keep the discovery phase separate from the experiment phase. Literature can motivate an experiment; a benchmark improvement cannot retroactively establish novelty.
 - Preserve negative results, failed searches, rejected ideas, unavailable code, and contradictory evidence. They are part of the supervisor-facing research record.
@@ -16,5 +18,6 @@ These constraints govern the application agents, not ordinary coding assistance.
 - A successful command or plausible model explanation is not evidence. The verifier must inspect original artifacts, inputs, assumptions, comparisons, and contrary evidence.
 - Use isolated workspaces and preserve the exact experiment configuration. Do not tune on protected evaluation data, future observations, or unrecorded simulator seeds.
 - Agents may choose depth and method, but must not manufacture study quotas or claim that a fixed checklist proves the literature is complete. The checklist is a search protocol and audit trail, not a completeness certificate.
+- The lead must include an explicit invention pass after presearch: failure → enabling mechanism → proposed interaction → falsifiable prediction → smallest experiment. Replication is evidence gathering, not the final research objective.
 
-Read [docs/uav-research-lifecycle.md](docs/uav-research-lifecycle.md), [docs/uav-literature-protocol.md](docs/uav-literature-protocol.md), and [docs/uav-novelty-standard.md](docs/uav-novelty-standard.md) before changing the branch boundary.
+Read [docs/uav-research-lifecycle.md](docs/uav-research-lifecycle.md), [docs/uav-literature-protocol.md](docs/uav-literature-protocol.md), [docs/uav-novelty-standard.md](docs/uav-novelty-standard.md), and [docs/uav-invention-mode.md](docs/uav-invention-mode.md) before changing the branch boundary.
