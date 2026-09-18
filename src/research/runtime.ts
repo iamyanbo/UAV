@@ -113,7 +113,7 @@ export function researchAutostartStatus(directionId: string): { installed: boole
   if (process.platform !== "win32") return { installed: false, detail: "Windows Task Scheduler is unavailable" };
   try {
     const detail = execFileSync("schtasks.exe", ["/Query", "/TN", autostartTaskName(directionId), "/FO", "LIST"],
-      { encoding: "utf8", windowsHide: true });
+      { encoding: "utf8", windowsHide: true, stdio: ["ignore", "pipe", "ignore"] });
     return { installed: true, detail: detail.trim() };
   } catch { return { installed: false, detail: "not installed" }; }
 }
@@ -263,9 +263,9 @@ export function dispatchContinuousResearch(store: ResearchStore, projectRoot: st
       `## Operator constraints\n${direction.constraints_md || "None supplied."}`,
       `## Lead's current understanding (unverified)\n${direction.research_map_md || "No belief memo recorded."}`,
       investigationPlanContext(store, directionId, true),
-      "Choose a consequential unresolved question that can advance using available evidence, methods or permitted acquisition. Use the existing findings and artifacts to avoid repeating completed work. A waiting market session, release or paper sample blocks that case only; select work that can proceed independently of it. You may follow a useful company case or broader mechanism beyond the current trading universe.",
+      "Choose a consequential unresolved question that can advance using available evidence, methods or permitted acquisition. Use the existing findings and artifacts to avoid repeating completed work. A waiting source, dataset, evaluation run or hardware result blocks that case only; select work that can proceed independently of it. Follow the UAV mechanism and failure mode rather than producing a routine status memo.",
       "When the uncertainty is testable with existing data, implement and run an informative experiment and preserve its inputs, code, results and limitations. When it needs investigation first, follow the evidence. Choose the question, methods, depth and duration yourself. A negative result or reasoned no-trade conclusion can be useful; a routine status memo or an invented backtest is not a substitute for investigation. Return inspectable work for the lead to interpret before any further delegation.",
-      "Discovery sources remain hypothesis material until separately validated at the relevant decision time. Existing independent review, paper enrollment, spending, storage and cancellation controls still apply. This task does not authorize orders or relaxing portfolio risk limits.",
+      "Discovery sources remain leads until separately validated against the primary source. Existing independent review, spending, storage and cancellation controls still apply. This task does not authorize aircraft commands or unsafe physical tests.",
     ].join("\n\n") });
     store.appendEvent(directionId, taskId, "research.continued", "runtime", lead.run_id);
     return taskId;
@@ -660,6 +660,7 @@ export async function runResearchSupervisor(input: { projectRoot: string; direct
     // Poll maintenance and persisted evidence; the loop admits a model turn
     // only when its input changed or a queued investigation needs attention.
     let pauseWatermark: number | null = null;
+    let quietTurns = 0;
     while (!requestedStop(input.projectRoot)) {
       const circuit = readProviderCircuit(input.projectRoot, provider);
       if (circuit.state === "open") {
@@ -670,6 +671,7 @@ export async function runResearchSupervisor(input: { projectRoot: string; direct
       const result = await runResearchLoop({ ...input });
       const paused = result.stopped === "paused" || result.stopped === "orchestrator paused direction";
       const idle = result.stopped.startsWith("idle");
+      if (!idle) quietTurns = 0;
       const providerBlocked = result.stopped === "provider circuit open";
       if (providerBlocked) continue;
       if (!paused && !idle) break;
@@ -688,7 +690,7 @@ export async function runResearchSupervisor(input: { projectRoot: string; direct
         if (resumeReason) {
           store.db.prepare("UPDATE directions SET status='active',updated_at=? WHERE direction_id=?").run(researchNow(), input.directionId);
           store.appendEvent(input.directionId, null, "direction.resumed", "system",
-            `Continuous mode resumed: ${resumeReason}. The pause remains recorded. Waiting for more paper sessions does not block research. `
+            `Continuous mode resumed: ${resumeReason}. The pause remains recorded. Waiting for a particular evaluation or observation does not block independent research. `
             + "Read the new evidence, inspect unresolved questions and choose the next informative investigation.");
           pauseWatermark = null;
           resumed = true;
@@ -697,11 +699,13 @@ export async function runResearchSupervisor(input: { projectRoot: string; direct
 
       // Reconsideration has already waited for its timer. Start the resumed
       // work now instead of adding another (up to 30-minute) idle interval.
-      if (resumed) continue;
+      if (resumed) { quietTurns = 0; continue; }
       if (!paused) pauseWatermark = null;
       // Poll maintenance and due plans cheaply; runResearchLoop admits a model
-      // turn only on new input. A quiet night must not delay a fresh source.
-      if (!await cancellableDelay(input.projectRoot, 30_000)) break;
+      // turn only on new input. A quiet night backs off, while a new source or
+      // investigation can still be noticed at the next bounded wake.
+      if (!await cancellableDelay(input.projectRoot, idleBackoffMs(quietTurns))) break;
+      quietTurns++;
     }
   } finally {
     // One last publish, so the record the mirror serves is the state the run

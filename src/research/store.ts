@@ -51,6 +51,49 @@ CREATE TABLE discovery_requests (
   UNIQUE(direction_id,url)
 );
 `;
+
+/** V16 is also used by fixtures that start from a current database and remove
+ * only later tables to emulate an older schema. Keep the column additions
+ * idempotent so those databases can be migrated without a duplicate-column
+ * failure. */
+function applyV16Migration(db: Database.Database): void {
+  const columns = new Set((db.prepare("PRAGMA table_info(sources)").all() as Array<{ name: string }>).map((column) => column.name));
+  if (!columns.has("author")) db.exec("ALTER TABLE sources ADD COLUMN author TEXT;");
+  if (!columns.has("metadata_json")) db.exec("ALTER TABLE sources ADD COLUMN metadata_json TEXT NOT NULL DEFAULT '{}';");
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS source_versions (
+      version_id TEXT PRIMARY KEY,
+      source_id TEXT NOT NULL REFERENCES sources(source_id),
+      collected_at TEXT NOT NULL,
+      published_at TEXT,
+      author TEXT,
+      raw_path TEXT,
+      normalized_path TEXT,
+      raw_hash TEXT,
+      content_hash TEXT,
+      provenance_json TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS discovery_requests (
+      request_id TEXT PRIMARY KEY,
+      direction_id TEXT NOT NULL REFERENCES directions(direction_id),
+      url TEXT NOT NULL,
+      kind TEXT NOT NULL CHECK(kind IN ('document','feed','api')),
+      follow INTEGER NOT NULL DEFAULT 0,
+      reason_md TEXT NOT NULL,
+      state TEXT NOT NULL DEFAULT 'queued' CHECK(state IN ('queued','watching','completed','blocked')),
+      next_poll_at INTEGER NOT NULL DEFAULT 0,
+      last_checked_at TEXT,
+      last_error TEXT,
+      created_at TEXT NOT NULL,
+      UNIQUE(direction_id,url)
+    );
+  `);
+  db.exec(`
+    INSERT OR IGNORE INTO source_versions(version_id,source_id,collected_at,published_at,raw_path,normalized_path,content_hash,provenance_json)
+      SELECT source_id || '/legacy',source_id,COALESCE(retrieved_at,created_at),published_at,raw_path,normalized_path,content_hash,
+        '{"legacy":true,"raw_hash":"unknown","use":"discovery-only"}' FROM sources WHERE raw_path IS NOT NULL;
+  `);
+}
 const V14_MIGRATION = readFileSync(join(HERE, "lifecycle-schema.sql"), "utf8");
 const V15_MIGRATION = `
 ALTER TABLE data_requests ADD COLUMN parameters_json TEXT;
@@ -432,7 +475,7 @@ export class ResearchStore {
       db.exec(sql);
       db.exec(V14_MIGRATION);
       db.exec(V15_MIGRATION);
-      db.exec(V16_MIGRATION);
+      applyV16Migration(db);
       db.prepare("INSERT INTO research_schema_meta(version,applied_at,checksum) VALUES (?,?,?)")
         .run(RESEARCH_SCHEMA_VERSION, researchNow(), researchHash(sql));
     }
@@ -467,6 +510,7 @@ export class ResearchStore {
       db.transaction(() => {
         if (step.to === 12) applyV12Migration(db);
         else if (step.to === 13) applyV13Migration(db);
+        else if (step.to === 16) applyV16Migration(db);
         else db.exec(step.sql);
         db.prepare("INSERT INTO research_schema_meta(version,applied_at,checksum) VALUES (?,?,?)")
           .run(step.to, researchNow(), researchHash(step.sql));
