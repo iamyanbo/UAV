@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-09-24T13:14:52.080516+00:00",
+  "observed_utc": "2026-09-24T13:16:19.964173+00:00",
   "source_root": "/home/iamyanbo/uav-rgb-flight",
   "scope": "Execution receipts and derived summaries; active counters are snapshots; raw RGB and weights remain on Spark",
   "files": [
@@ -6999,6 +6999,21 @@
       "sha256": "6523be30212700c23ba62395e37dcf20da597847cd61a7e5ed2184e4107b4aa7"
     },
     {
+      "path": "rounds/navigation-repair-r73/driver.json",
+      "bytes": 370,
+      "sha256": "9132188afe3b5bd3d4117ebdf7a70462cb701221527402e7afb9e93a1a9e4885"
+    },
+    {
+      "path": "rounds/navigation-repair-r73/execution/state.json",
+      "bytes": 16948,
+      "sha256": "7c46a7966b67006ed05b8ae6d91afb0443315c42218edf8eb6df9d914bad49b3"
+    },
+    {
+      "path": "rounds/navigation-repair-r73/programme-spec.json",
+      "bytes": 8034,
+      "sha256": "2a837e29f21b2d277f40b98a472c25e038b3dfe2c4735c2f340043cb64e20169"
+    },
+    {
       "path": "runs/20260924T030919Z-exploration-pilot-aa761f/collection/flights.json",
       "bytes": 4325,
       "sha256": "b5234e9074b2a10fb1b42471bcb66fa65ceafdf84d4f7c17f58bd7dbf324f38f"
@@ -10222,6 +10237,21 @@
       "path": "runs/20260924T113245Z-next-training-collection-2a4f74/stdout.log",
       "bytes": 361,
       "sha256": "34aecba96382c305cd16f91269fe07a6da505a379c1379f2b207a9efe21e83c9"
+    },
+    {
+      "path": "runs/20260924T131547Z-source-reload-flight-458a2c/collection/flights.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "runs/20260924T131547Z-source-reload-flight-458a2c/source_hashes.json",
+      "bytes": 12570,
+      "sha256": "5a12a2cf0022ec559bed8c9e40ffab736a90689c75243ca7c8547252393cd618"
+    },
+    {
+      "path": "runs/20260924T131547Z-source-reload-flight-458a2c/stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "path": "train-00001-initial-rgb.png",

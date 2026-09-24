@@ -1,0 +1,8 @@
+{
+  "status": "running",
+  "pid": 2670169,
+  "started_utc": "2026-09-24T13:15:46Z",
+  "source": "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71",
+  "previous_window": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/cumulative-window",
+  "contract": "Resume the same objective and dataset; at most eight hours; retain checkpointed progress"
+}
