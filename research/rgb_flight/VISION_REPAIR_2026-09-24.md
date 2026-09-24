@@ -56,3 +56,6 @@ R83 was checkpointed before downstream training because local handover skipped t
 
 
 R85 continues the same v6 batch from five preserved r84 flights. The first resumed flight traveled 67.18 m (54.95 m displacement), ended in timeout and did not crash. An earlier r84 flight achieved 30 usable depth-scale fits but stalled during synchronous Gaussian/ray fusion and terminated after tracking recovery expired. R85 moves fusion and distance-field construction to one slow worker with actual-completion timestamps and obsolete-result rejection. Its connected cycle and existing eight-hour cumulative continuation are running; depth-aware learner verification remains pending.
+
+
+The completed r85 train-00006 flight (`launches/20260924T170706Z`) consumed all 35 submitted asynchronous geometry results, received 49 supported Gaussian publications (891,412 samples), and produced 51 mapped-state decisions plus 209 observed-target-motion decisions. Perception/belief p95 was 89 ms and maximum 429 ms; control/safety p95 was 124 ms with 1,001 missed 50 ms deadlines and 1,031 interventions. It traveled 22.06 m, displaced 9.75 m and timed out without success or controller error. This verifies exercised integration and a metric handover, not a matched claim that Gaussian geometry improves navigation.

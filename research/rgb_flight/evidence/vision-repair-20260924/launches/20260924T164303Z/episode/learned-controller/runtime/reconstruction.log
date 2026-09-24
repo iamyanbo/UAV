@@ -1,0 +1,43 @@
+/upstream/splat/thirdparty/glorie_slam/motion_filter.py:48: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/motion_filter.py:54: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/motion_filter.py:59: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:109: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:159: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:187: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:226: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:273: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=False)
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/usr/local/lib/python3.12/dist-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+xFormers not available
+xFormers not available
+xFormers not available
+xFormers not available
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:145: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:232: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:246: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+{"status": "mapping_snapshot_queued", "keyframe": 8, "latest_observation_ns": 1790268237204476928, "completed_memory_version": 0, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 9, "latest_observation_ns": 1790268248436716544, "completed_memory_version": 13, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 10, "latest_observation_ns": 1790268251604784128, "completed_memory_version": 16, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 14, "latest_observation_ns": 1790268254580847616, "completed_memory_version": 18, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 15, "latest_observation_ns": 1790268257712914432, "completed_memory_version": 21, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 16, "latest_observation_ns": 1790268261432993792, "completed_memory_version": 24, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 17, "latest_observation_ns": 1790268276430313728, "completed_memory_version": 31, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 18, "latest_observation_ns": 1790268287593551872, "completed_memory_version": 36, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 22, "latest_observation_ns": 1790268294631702016, "completed_memory_version": 39, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 29, "latest_observation_ns": 1790268318434209792, "completed_memory_version": 46, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 35, "latest_observation_ns": 1790268321344271872, "completed_memory_version": 48, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 58, "latest_observation_ns": 1790268392625792512, "completed_memory_version": 67, "superseded_requests": 0}
+{"status": "live_observed_stream_reconstructed", "frames": 157, "memory_versions": 73, "elapsed_wall_seconds": 181.54980158107355, "peak_allocated_bytes": 10295308800, "peak_reserved_bytes": 14979956736, "metric_scale_established": false, "metric_scale_usable_frames": 0, "metric_uncertainty_calibrated": false, "live_async_execution": true, "foundation_passed": false, "tracking_initialized_frames": 147, "sampling_skipped_frames": 0, "current_pose_method": "past_anchor_pose_only", "coordinate_gauge": "causal_common_camera_similarity; arbitrary_scale", "gauge_changes": 0, "tracking_optimizer": "DSPO", "gauge_rejected_frames": 0, "mapping_execution": "asynchronous_bounded_worker", "mapping_requests_superseded": 0}

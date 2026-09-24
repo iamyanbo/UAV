@@ -43,6 +43,15 @@ def main():
             # are entirely overwritten and must not trigger an online download.
             after=after.replace('True, # Set to true of you want to train from scratch, uses ImageNet weights',
                                 'False, # Full released Omnidata checkpoint is strictly loaded by caller')
+        if relative.as_posix() == 'thirdparty/glorie_slam/frontend.py':
+            old='        self.video.set_dirty(self.graph.ii.min(), self.t1)'
+            if after.count(old)!=1:
+                raise RuntimeError('Upstream frontend changed; inspect empty-graph handling')
+            # Removing the newest keyframe can remove the remaining factors.
+            # There is no optimized interval to mark dirty in that case. The
+            # runtime separately publishes explicit tracking loss until new
+            # observed correspondences restore an active graph.
+            after=after.replace(old,'        if self.graph.ii.numel():\n    '+old)
         if relative.as_posix() == 'src/mono_estimators.py':
             # The released Lightning checkpoint contains an unused callback
             # class as metadata. An inert stand-in allows weights-only loading

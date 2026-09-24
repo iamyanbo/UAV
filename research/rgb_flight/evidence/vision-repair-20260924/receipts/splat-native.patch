@@ -1,0 +1,652 @@
+--- upstream/setup.py
++++ port/setup.py
+@@ -32,13 +32,7 @@
+             extra_compile_args={
+                 'cxx': ['-O3'],
+                 'nvcc': ['-O3',
+-                    '-gencode=arch=compute_60,code=sm_60',
+-                    '-gencode=arch=compute_61,code=sm_61',
+-                    '-gencode=arch=compute_70,code=sm_70',
+-                    '-gencode=arch=compute_75,code=sm_75',
+-                    '-gencode=arch=compute_80,code=sm_80',
+-                    '-gencode=arch=compute_86,code=sm_86',
+-                ]
++]
+             }),
+     ],
+     cmdclass={ 'build_ext' : BuildExtension }
+--- upstream/src/mono_estimators.py
++++ port/src/mono_estimators.py
+@@ -32,7 +32,8 @@
+ def get_omnidata_model(pretrained_path, device, num_channels):
+     from thirdparty.mono_priors.omnidata.modules.midas.dpt_depth import DPTDepthModel
+     model = DPTDepthModel(backbone='vitb_rn50_384',num_channels=num_channels)
+-    checkpoint = torch.load(pretrained_path)
++    with torch.serialization.safe_globals([(type("LegacyModelCheckpoint", (), {}), "pytorch_lightning.callbacks.model_checkpoint.ModelCheckpoint")]):
++        checkpoint = torch.load(pretrained_path, map_location="cpu", weights_only=True)
+     
+     if 'state_dict' in checkpoint:
+         state_dict = {}
+@@ -57,11 +58,18 @@
+         # image_size = (s,s)
+         image_size = (512,512)
+         input_size = input.shape[-2:]
+-        trans_totensor = transforms.Compose([transforms.Resize(image_size),
+-                                            transforms.Normalize(mean=0.5, std=0.5)])
+-        img_tensor = trans_totensor(input).to(device)
++        # Preserve the calibrated field of view; remove padding before
++        # resizing predicted depth into the original camera coordinates.
++        scale = 512 / max(input_size)
++        resized = tuple(round(value * scale) for value in input_size)
++        top, left = (512-resized[0])//2, (512-resized[1])//2
++        img_tensor = F.interpolate(input.to(device), size=resized,
++                                   mode='bilinear', align_corners=False, antialias=True)
++        img_tensor = F.pad((img_tensor-.5)/.5,
++                           (left,512-resized[1]-left,top,512-resized[0]-top))
+         output = model(img_tensor).clamp(min=0, max=1)
+-        output = F.interpolate(output.unsqueeze(0), input_size, mode='bicubic').squeeze(0)
++        output = output[:,top:top+resized[0],left:left+resized[1]]
++        output = F.interpolate(output[:,None], input_size, mode='bicubic', align_corners=False)[:,0]
+         output = output.clamp(0,1).squeeze() #[H,W]
+     else:
+         # If use other mono depth estimator as prior, predict the mono depth here
+--- upstream/thirdparty/glorie_slam/frontend.py
++++ port/thirdparty/glorie_slam/frontend.py
+@@ -96,7 +96,8 @@
+         self.video.disps[self.t1] = self.video.disps[self.t1-1].mean()
+ 
+         # update visualization
+-        self.video.set_dirty(self.graph.ii.min(), self.t1)
++        if self.graph.ii.numel():
++            self.video.set_dirty(self.graph.ii.min(), self.t1)
+         torch.cuda.empty_cache()
+ 
+     def __initialize(self):
+--- upstream/thirdparty/simple-knn/spatial.cu
++++ port/thirdparty/simple-knn/spatial.cu
+@@ -20,7 +20,7 @@
+   auto float_opts = points.options().dtype(torch::kFloat32);
+   torch::Tensor means = torch::full({P}, 0.0, float_opts);
+   
+-  SimpleKNN::knn(P, (float3*)points.contiguous().data<float>(), means.contiguous().data<float>());
++  SimpleKNN::knn(P, (float3*)points.contiguous().data_ptr<float>(), means.contiguous().data_ptr<float>());
+ 
+   return means;
+ }--- upstream/thirdparty/diff-gaussian-rasterization-w-pose/rasterize_points.cu
++++ port/thirdparty/diff-gaussian-rasterization-w-pose/rasterize_points.cu
+@@ -95,27 +95,27 @@
+ 		binningFunc,
+ 		imgFunc,
+ 	    P, degree, M,
+-		background.contiguous().data<float>(),
++		background.contiguous().data_ptr<float>(),
+ 		W, H,
+-		means3D.contiguous().data<float>(),
++		means3D.contiguous().data_ptr<float>(),
+ 		sh.contiguous().data_ptr<float>(),
+-		colors.contiguous().data<float>(), 
+-		opacity.contiguous().data<float>(), 
++		colors.contiguous().data_ptr<float>(), 
++		opacity.contiguous().data_ptr<float>(), 
+ 		scales.contiguous().data_ptr<float>(),
+ 		scale_modifier,
+ 		rotations.contiguous().data_ptr<float>(),
+-		cov3D_precomp.contiguous().data<float>(), 
+-		viewmatrix.contiguous().data<float>(), 
+-		projmatrix.contiguous().data<float>(),
+-		campos.contiguous().data<float>(),
++		cov3D_precomp.contiguous().data_ptr<float>(), 
++		viewmatrix.contiguous().data_ptr<float>(), 
++		projmatrix.contiguous().data_ptr<float>(),
++		campos.contiguous().data_ptr<float>(),
+ 		tan_fovx,
+ 		tan_fovy,
+ 		prefiltered,
+-		out_color.contiguous().data<float>(),
+-		out_depth.contiguous().data<float>(),
+-		out_opaticy.contiguous().data<float>(),
+-		radii.contiguous().data<int>(),
+-		n_touched.contiguous().data<int>(),
++		out_color.contiguous().data_ptr<float>(),
++		out_depth.contiguous().data_ptr<float>(),
++		out_opaticy.contiguous().data_ptr<float>(),
++		radii.contiguous().data_ptr<int>(),
++		n_touched.contiguous().data_ptr<int>(),
+         debug);
+   }
+   return std::make_tuple(rendered, out_color, radii, geomBuffer, binningBuffer, imgBuffer, out_depth, out_opaticy, n_touched);
+@@ -172,38 +172,38 @@
+   if(P != 0)
+   {  
+ 	  CudaRasterizer::Rasterizer::backward(P, degree, M, R,
+-	  background.contiguous().data<float>(),
++	  background.contiguous().data_ptr<float>(),
+ 	  W, H, 
+-	  means3D.contiguous().data<float>(),
+-	  sh.contiguous().data<float>(),
+-	  colors.contiguous().data<float>(),
++	  means3D.contiguous().data_ptr<float>(),
++	  sh.contiguous().data_ptr<float>(),
++	  colors.contiguous().data_ptr<float>(),
+ 	  scales.data_ptr<float>(),
+ 	  scale_modifier,
+ 	  rotations.data_ptr<float>(),
+-	  cov3D_precomp.contiguous().data<float>(),
+-	  viewmatrix.contiguous().data<float>(),
+-	  projmatrix.contiguous().data<float>(),
+-      projmatrix_raw.contiguous().data<float>(),
+-	  campos.contiguous().data<float>(),
++	  cov3D_precomp.contiguous().data_ptr<float>(),
++	  viewmatrix.contiguous().data_ptr<float>(),
++	  projmatrix.contiguous().data_ptr<float>(),
++      projmatrix_raw.contiguous().data_ptr<float>(),
++	  campos.contiguous().data_ptr<float>(),
+ 	  tan_fovx,
+ 	  tan_fovy,
+-	  radii.contiguous().data<int>(),
++	  radii.contiguous().data_ptr<int>(),
+ 	  reinterpret_cast<char*>(geomBuffer.contiguous().data_ptr()),
+ 	  reinterpret_cast<char*>(binningBuffer.contiguous().data_ptr()),
+ 	  reinterpret_cast<char*>(imageBuffer.contiguous().data_ptr()),
+-	  dL_dout_color.contiguous().data<float>(),
+-	  dL_dout_depths.contiguous().data<float>(),
+-	  dL_dmeans2D.contiguous().data<float>(),
+-	  dL_dconic.contiguous().data<float>(),  
+-	  dL_dopacity.contiguous().data<float>(),
+-	  dL_dcolors.contiguous().data<float>(),
+-	  dL_ddepths.contiguous().data<float>(),
+-	  dL_dmeans3D.contiguous().data<float>(),
+-	  dL_dcov3D.contiguous().data<float>(),
+-	  dL_dsh.contiguous().data<float>(),
+-	  dL_dscales.contiguous().data<float>(),
+-	  dL_drotations.contiguous().data<float>(),
+-      dL_dtau.contiguous().data<float>(),
++	  dL_dout_color.contiguous().data_ptr<float>(),
++	  dL_dout_depths.contiguous().data_ptr<float>(),
++	  dL_dmeans2D.contiguous().data_ptr<float>(),
++	  dL_dconic.contiguous().data_ptr<float>(),  
++	  dL_dopacity.contiguous().data_ptr<float>(),
++	  dL_dcolors.contiguous().data_ptr<float>(),
++	  dL_ddepths.contiguous().data_ptr<float>(),
++	  dL_dmeans3D.contiguous().data_ptr<float>(),
++	  dL_dcov3D.contiguous().data_ptr<float>(),
++	  dL_dsh.contiguous().data_ptr<float>(),
++	  dL_dscales.contiguous().data_ptr<float>(),
++	  dL_drotations.contiguous().data_ptr<float>(),
++      dL_dtau.contiguous().data_ptr<float>(),
+ 	  debug);
+   }
+ 
+@@ -222,10 +222,10 @@
+   if(P != 0)
+   {
+ 	CudaRasterizer::Rasterizer::markVisible(P,
+-		means3D.contiguous().data<float>(),
+-		viewmatrix.contiguous().data<float>(),
+-		projmatrix.contiguous().data<float>(),
+-		present.contiguous().data<bool>());
++		means3D.contiguous().data_ptr<float>(),
++		viewmatrix.contiguous().data_ptr<float>(),
++		projmatrix.contiguous().data_ptr<float>(),
++		present.contiguous().data_ptr<bool>());
+   }
+   
+   return present;
+--- upstream/thirdparty/lietorch/setup.py
++++ port/thirdparty/lietorch/setup.py
+@@ -24,13 +24,7 @@
+             extra_compile_args={
+                 'cxx': ['-O2'], 
+                 'nvcc': ['-O2',
+-                    '-gencode=arch=compute_60,code=sm_60', 
+-                    '-gencode=arch=compute_61,code=sm_61', 
+-                    '-gencode=arch=compute_70,code=sm_70', 
+-                    '-gencode=arch=compute_75,code=sm_75',
+-                    '-gencode=arch=compute_75,code=compute_75',
+-                    
+-                ]
++]
+             }),
+ 
+         CUDAExtension('lietorch_extras', 
+@@ -45,13 +39,7 @@
+             extra_compile_args={
+                 'cxx': ['-O2'], 
+                 'nvcc': ['-O2',
+-                    '-gencode=arch=compute_60,code=sm_60', 
+-                    '-gencode=arch=compute_61,code=sm_61', 
+-                    '-gencode=arch=compute_70,code=sm_70', 
+-                    '-gencode=arch=compute_75,code=sm_75',
+-                    '-gencode=arch=compute_75,code=compute_75',
+-                    
+-                ]
++]
+             }),
+     ],
+     cmdclass={ 'build_ext': BuildExtension }
+--- upstream/thirdparty/mono_priors/omnidata/modules/midas/dpt_depth.py
++++ port/thirdparty/mono_priors/omnidata/modules/midas/dpt_depth.py
+@@ -53,7 +53,7 @@
+         self.pretrained, self.scratch = _make_encoder(
+             backbone,
+             features,
+-            True, # Set to true of you want to train from scratch, uses ImageNet weights
++            False, # Full released Omnidata checkpoint is strictly loaded by caller
+             groups=1,
+             expand=False,
+             exportable=False,
+--- upstream/thirdparty/glorie_slam/lib/correlation_kernels.cu
++++ port/thirdparty/glorie_slam/lib/correlation_kernels.cu
+@@ -142,7 +142,7 @@
+   torch::Tensor corr = torch::zeros(
+     {batch_size, 2*radius+1, 2*radius+1, ht, wd}, opts);
+ 
+-  AT_DISPATCH_FLOATING_TYPES_AND_HALF(volume.type(), "sampler_forward_kernel", ([&] {
++  AT_DISPATCH_FLOATING_TYPES_AND_HALF(volume.scalar_type(), "sampler_forward_kernel", ([&] {
+     corr_index_forward_kernel<scalar_t><<<blocks, threads>>>(
+       volume.packed_accessor32<scalar_t,5,torch::RestrictPtrTraits>(),
+       coords.packed_accessor32<float,4,torch::RestrictPtrTraits>(),
+@@ -173,7 +173,7 @@
+   const dim3 threads(BLOCK, BLOCK);
+ 
+ 
+-  AT_DISPATCH_FLOATING_TYPES_AND_HALF(volume.type(), "sampler_backward_kernel", ([&] {
++  AT_DISPATCH_FLOATING_TYPES_AND_HALF(volume.scalar_type(), "sampler_backward_kernel", ([&] {
+     corr_index_backward_kernel<scalar_t><<<blocks, threads>>>(
+       coords.packed_accessor32<float,4,torch::RestrictPtrTraits>(),
+       corr_grad.packed_accessor32<scalar_t,5,torch::RestrictPtrTraits>(),
+--- upstream/thirdparty/glorie_slam/lib/altcorr_kernel.cu
++++ port/thirdparty/glorie_slam/lib/altcorr_kernel.cu
+@@ -306,7 +306,7 @@
+   const dim3 threads(BLOCK_H, BLOCK_W);
+ 
+ 
+-  AT_DISPATCH_FLOATING_TYPES_AND_HALF(fmap1.type(), "altcorr_forward_kernel", ([&] {
++  AT_DISPATCH_FLOATING_TYPES_AND_HALF(fmap1.scalar_type(), "altcorr_forward_kernel", ([&] {
+     altcorr_forward_kernel<scalar_t><<<blocks, threads>>>(
+         fmap1.packed_accessor32<scalar_t,4,torch::RestrictPtrTraits>(),
+         fmap2.packed_accessor32<scalar_t,4,torch::RestrictPtrTraits>(),
+--- upstream/thirdparty/diff-gaussian-rasterization-w-pose/cuda_rasterizer/rasterizer_impl.h
++++ port/thirdparty/diff-gaussian-rasterization-w-pose/cuda_rasterizer/rasterizer_impl.h
+@@ -1,3 +1,4 @@
++#include <cstdint>
+ /*
+  * Copyright (C) 2023, Inria
+  * GRAPHDECO research group, https://team.inria.fr/graphdeco
+--- upstream/thirdparty/diff-gaussian-rasterization-w-pose/cuda_rasterizer/auxiliary.h
++++ port/thirdparty/diff-gaussian-rasterization-w-pose/cuda_rasterizer/auxiliary.h
+@@ -151,7 +151,7 @@
+ 	float3 p_proj = { p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w };
+ 	p_view = transformPoint4x3(p_orig, viewmatrix);
+ 
+-	if (p_view.z <= 0.2f)// || ((p_proj.x < -1.3 || p_proj.x > 1.3 || p_proj.y < -1.3 || p_proj.y > 1.3)))
++	if (p_view.z <= 0.001f)// || ((p_proj.x < -1.3 || p_proj.x > 1.3 || p_proj.y < -1.3 || p_proj.y > 1.3)))
+ 	{
+ 		if (prefiltered)
+ 		{
+--- upstream/thirdparty/lietorch/lietorch/src/lietorch_gpu.cu
++++ port/thirdparty/lietorch/lietorch/src/lietorch_gpu.cu
+@@ -299,7 +299,7 @@
+     int batch_size = a.size(0);
+     torch::Tensor X;
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, a.type(), "exp_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, a.scalar_type(), "exp_forward_kernel", ([&] {
+         X = torch::zeros({batch_size, group_t::N}, a.options());
+         exp_forward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             a.data_ptr<scalar_t>(), 
+@@ -314,7 +314,7 @@
+     int batch_size = a.size(0);
+     torch::Tensor da = torch::zeros(a.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, a.type(), "exp_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, a.scalar_type(), "exp_backward_kernel", ([&] {
+         exp_backward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             grad.data_ptr<scalar_t>(), 
+             a.data_ptr<scalar_t>(), 
+@@ -329,7 +329,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor a;
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "log_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "log_forward_kernel", ([&] {
+         a = torch::zeros({batch_size, group_t::K}, X.options());
+         log_forward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             X.data_ptr<scalar_t>(), 
+@@ -344,7 +344,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "log_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "log_backward_kernel", ([&] {
+         log_backward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -359,7 +359,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor Y = torch::zeros_like(X);
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "inv_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "inv_forward_kernel", ([&] {
+         inv_forward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             X.data_ptr<scalar_t>(), 
+             Y.data_ptr<scalar_t>(), 
+@@ -373,7 +373,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "inv_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "inv_backward_kernel", ([&] {
+         inv_backward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -389,7 +389,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor Z = torch::zeros_like(X);
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "mul_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "mul_forward_kernel", ([&] {
+         mul_forward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             X.data_ptr<scalar_t>(), 
+             Y.data_ptr<scalar_t>(), 
+@@ -405,7 +405,7 @@
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+     torch::Tensor dY = torch::zeros(Y.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "mul_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "mul_backward_kernel", ([&] {
+         mul_backward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -422,7 +422,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor b = torch::zeros(a.sizes(), a.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "adj_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "adj_forward_kernel", ([&] {
+         adj_forward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             X.data_ptr<scalar_t>(), 
+             a.data_ptr<scalar_t>(), 
+@@ -438,7 +438,7 @@
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+     torch::Tensor da = torch::zeros(a.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "adj_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "adj_backward_kernel", ([&] {
+         adj_backward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -456,7 +456,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor b = torch::zeros(a.sizes(), a.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "adjT_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "adjT_forward_kernel", ([&] {
+         adjT_forward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             X.data_ptr<scalar_t>(), 
+             a.data_ptr<scalar_t>(), 
+@@ -472,7 +472,7 @@
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+     torch::Tensor da = torch::zeros(a.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "adjT_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "adjT_backward_kernel", ([&] {
+         adjT_backward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -491,7 +491,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor q = torch::zeros(p.sizes(), p.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "act_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "act_forward_kernel", ([&] {
+         act_forward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             X.data_ptr<scalar_t>(), 
+             p.data_ptr<scalar_t>(), 
+@@ -507,7 +507,7 @@
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+     torch::Tensor dp = torch::zeros(p.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "act_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "act_backward_kernel", ([&] {
+         act_backward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -524,7 +524,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor q = torch::zeros(p.sizes(), p.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "act4_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "act4_forward_kernel", ([&] {
+         act4_forward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             X.data_ptr<scalar_t>(), 
+             p.data_ptr<scalar_t>(), 
+@@ -540,7 +540,7 @@
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+     torch::Tensor dp = torch::zeros(p.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "act4_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "act4_backward_kernel", ([&] {
+         act4_backward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -558,7 +558,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor T4x4 = torch::zeros({X.size(0), 4, 4}, X.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "as_matrix_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "as_matrix_forward_kernel", ([&] {
+         as_matrix_forward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             X.data_ptr<scalar_t>(), 
+             T4x4.data_ptr<scalar_t>(), 
+@@ -573,7 +573,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor P;
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "orthogonal_projector_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "orthogonal_projector_kernel", ([&] {
+         P = torch::zeros({X.size(0), group_t::N, group_t::N}, X.options());
+         orthogonal_projector_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             X.data_ptr<scalar_t>(), 
+@@ -589,7 +589,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor b = torch::zeros(a.sizes(), a.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "jleft_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "jleft_forward_kernel", ([&] {
+         jleft_forward_kernel<group_t, scalar_t><<<NUM_BLOCKS(batch_size), NUM_THREADS>>>(
+             X.data_ptr<scalar_t>(), 
+             a.data_ptr<scalar_t>(), 
+--- upstream/thirdparty/lietorch/lietorch/src/lietorch_cpu.cpp
++++ port/thirdparty/lietorch/lietorch/src/lietorch_cpu.cpp
+@@ -357,7 +357,7 @@
+     int batch_size = a.size(0);
+     torch::Tensor X;
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, a.type(), "exp_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, a.scalar_type(), "exp_forward_kernel", ([&] {
+         X = torch::zeros({batch_size, group_t::N}, a.options());
+         exp_forward_kernel<group_t, scalar_t>(
+             a.data_ptr<scalar_t>(), 
+@@ -372,7 +372,7 @@
+     int batch_size = a.size(0);
+     torch::Tensor da = torch::zeros(a.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, a.type(), "exp_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, a.scalar_type(), "exp_backward_kernel", ([&] {
+         exp_backward_kernel<group_t, scalar_t>(
+             grad.data_ptr<scalar_t>(), 
+             a.data_ptr<scalar_t>(), 
+@@ -387,7 +387,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor a;
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "log_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "log_forward_kernel", ([&] {
+         a = torch::zeros({batch_size, group_t::K}, X.options());
+         log_forward_kernel<group_t, scalar_t>(
+             X.data_ptr<scalar_t>(), 
+@@ -402,7 +402,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "log_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "log_backward_kernel", ([&] {
+         log_backward_kernel<group_t, scalar_t>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -417,7 +417,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor Y = torch::zeros_like(X);
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "inv_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "inv_forward_kernel", ([&] {
+         inv_forward_kernel<group_t, scalar_t>(
+             X.data_ptr<scalar_t>(), 
+             Y.data_ptr<scalar_t>(), 
+@@ -431,7 +431,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "inv_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "inv_backward_kernel", ([&] {
+         inv_backward_kernel<group_t, scalar_t>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -447,7 +447,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor Z = torch::zeros_like(X);
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "mul_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "mul_forward_kernel", ([&] {
+         mul_forward_kernel<group_t, scalar_t>(
+             X.data_ptr<scalar_t>(), 
+             Y.data_ptr<scalar_t>(), 
+@@ -463,7 +463,7 @@
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+     torch::Tensor dY = torch::zeros(Y.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "mul_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "mul_backward_kernel", ([&] {
+         mul_backward_kernel<group_t, scalar_t>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -480,7 +480,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor b = torch::zeros(a.sizes(), a.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "adj_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "adj_forward_kernel", ([&] {
+         adj_forward_kernel<group_t, scalar_t>(
+             X.data_ptr<scalar_t>(), 
+             a.data_ptr<scalar_t>(), 
+@@ -496,7 +496,7 @@
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+     torch::Tensor da = torch::zeros(a.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "adj_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "adj_backward_kernel", ([&] {
+         adj_backward_kernel<group_t, scalar_t>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -514,7 +514,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor b = torch::zeros(a.sizes(), a.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "adjT_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "adjT_forward_kernel", ([&] {
+         adjT_forward_kernel<group_t, scalar_t>(
+             X.data_ptr<scalar_t>(), 
+             a.data_ptr<scalar_t>(), 
+@@ -530,7 +530,7 @@
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+     torch::Tensor da = torch::zeros(a.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "adjT_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "adjT_backward_kernel", ([&] {
+         adjT_backward_kernel<group_t, scalar_t>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -548,7 +548,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor q = torch::zeros(p.sizes(), p.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "act_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "act_forward_kernel", ([&] {
+         act_forward_kernel<group_t, scalar_t>(
+             X.data_ptr<scalar_t>(), 
+             p.data_ptr<scalar_t>(), 
+@@ -564,7 +564,7 @@
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+     torch::Tensor dp = torch::zeros(p.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "act_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "act_backward_kernel", ([&] {
+         act_backward_kernel<group_t, scalar_t>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -582,7 +582,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor q = torch::zeros(p.sizes(), p.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "act4_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "act4_forward_kernel", ([&] {
+         act4_forward_kernel<group_t, scalar_t>(
+             X.data_ptr<scalar_t>(), 
+             p.data_ptr<scalar_t>(), 
+@@ -598,7 +598,7 @@
+     torch::Tensor dX = torch::zeros(X.sizes(), grad.options());
+     torch::Tensor dp = torch::zeros(p.sizes(), grad.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "act4_backward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "act4_backward_kernel", ([&] {
+         act4_backward_kernel<group_t, scalar_t>(
+             grad.data_ptr<scalar_t>(), 
+             X.data_ptr<scalar_t>(), 
+@@ -616,7 +616,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor T4x4 = torch::zeros({X.size(0), 4, 4}, X.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "as_matrix_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "as_matrix_forward_kernel", ([&] {
+         as_matrix_forward_kernel<group_t, scalar_t>(
+             X.data_ptr<scalar_t>(), 
+             T4x4.data_ptr<scalar_t>(), 
+@@ -631,7 +631,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor P;
+     
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "orthogonal_projector_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "orthogonal_projector_kernel", ([&] {
+         P = torch::zeros({X.size(0), group_t::N, group_t::N}, X.options());
+         orthogonal_projector_kernel<group_t, scalar_t>(X.data_ptr<scalar_t>(), P.data_ptr<scalar_t>(), batch_size);
+     }));
+@@ -645,7 +645,7 @@
+     int batch_size = X.size(0);
+     torch::Tensor b = torch::zeros(a.sizes(), a.options());
+ 
+-    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.type(), "jleft_forward_kernel", ([&] {
++    DISPATCH_GROUP_AND_FLOATING_TYPES(group_id, X.scalar_type(), "jleft_forward_kernel", ([&] {
+         jleft_forward_kernel<group_t, scalar_t>(
+             X.data_ptr<scalar_t>(), 
+             a.data_ptr<scalar_t>(), 
+--- upstream/thirdparty/lietorch/lietorch/extras/corr_index_kernel.cu
++++ port/thirdparty/lietorch/lietorch/extras/corr_index_kernel.cu
+@@ -142,7 +142,7 @@
+   torch::Tensor corr = torch::zeros(
+     {batch_size, 2*radius+1, 2*radius+1, ht, wd}, opts);
+ 
+-  AT_DISPATCH_FLOATING_TYPES_AND_HALF(volume.type(), "sampler_forward_kernel", ([&] {
++  AT_DISPATCH_FLOATING_TYPES_AND_HALF(volume.scalar_type(), "sampler_forward_kernel", ([&] {
+     corr_index_forward_kernel<scalar_t><<<blocks, threads>>>(
+       volume.packed_accessor32<scalar_t,5,torch::RestrictPtrTraits>(),
+       coords.packed_accessor32<float,4,torch::RestrictPtrTraits>(),
+@@ -173,7 +173,7 @@
+   const dim3 threads(BLOCK, BLOCK);
+ 
+ 
+-  AT_DISPATCH_FLOATING_TYPES_AND_HALF(volume.type(), "sampler_backward_kernel", ([&] {
++  AT_DISPATCH_FLOATING_TYPES_AND_HALF(volume.scalar_type(), "sampler_backward_kernel", ([&] {
+     corr_index_backward_kernel<scalar_t><<<blocks, threads>>>(
+       coords.packed_accessor32<float,4,torch::RestrictPtrTraits>(),
+       corr_grad.packed_accessor32<scalar_t,5,torch::RestrictPtrTraits>(),

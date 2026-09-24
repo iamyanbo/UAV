@@ -1,0 +1,71 @@
+{
+  "changes": [
+    {
+      "path": "setup.py",
+      "upstream_sha256": "e5ea6b0e981b90a3bc038a0db9721914cf9a666cc496bad9b7d7d767e2797d9c",
+      "port_sha256": "75036c1d8d04423543c1648d49ba456f090b39016df60bfb292631c598d9b8dd"
+    },
+    {
+      "path": "src/mono_estimators.py",
+      "upstream_sha256": "73804c0f139ecbd28acbbe9f14fa7b73cdf8ee6b0e2a6fa4b411540a21bb6678",
+      "port_sha256": "20bc92cb38c393602b5f105d79c0442b3b80bb4e968aca98a08226b91f9e2b0f"
+    },
+    {
+      "path": "thirdparty/simple-knn/spatial.cu",
+      "upstream_sha256": "a08d56af7b3918c06591ce2f9ae5933c0d62b41f9c26a9a8cdc5a70d116771d1",
+      "port_sha256": "7620c298483f32a9f71f2fd6f1e80a1139bb8c458690a873f0c6cd3e19766c64"
+    },
+    {
+      "path": "thirdparty/diff-gaussian-rasterization-w-pose/rasterize_points.cu",
+      "upstream_sha256": "9204e0471157689de72b8b10a446fcdda3936ab0f51ffc7883559ba399c95e0a",
+      "port_sha256": "d639c5b151f7f31951c51df2102a0e6d9b96f88be2604185642afa4315c3e772"
+    },
+    {
+      "path": "thirdparty/lietorch/setup.py",
+      "upstream_sha256": "f10eba30b02e62667160174ed16d886efa8b5666836db538be8bd6d89d1f0990",
+      "port_sha256": "6f8d2d0124601fec7a900045426bbf6c582fef02083e5eb1ab5a62e01a9b1e88"
+    },
+    {
+      "path": "thirdparty/mono_priors/omnidata/modules/midas/dpt_depth.py",
+      "upstream_sha256": "f7a6c9ad899c545283f6ab22db99ef72edef11bffb6cac879010b3ebca467470",
+      "port_sha256": "2f81681e3d009288fb21a3cb37a605926af1c1b6ab762642605902ad7ced02b4"
+    },
+    {
+      "path": "thirdparty/glorie_slam/lib/correlation_kernels.cu",
+      "upstream_sha256": "0f82eed84ec5ec94b3d1451c2516033ac74e780cd2dae1876d54b357ccec9591",
+      "port_sha256": "e63da1412f703417dff6f642a0ec525b242aa0c9c6f6759cb77ac2b8bca97931"
+    },
+    {
+      "path": "thirdparty/glorie_slam/lib/altcorr_kernel.cu",
+      "upstream_sha256": "8017d82f71249cac9577791aa2b162e311343a27db78fdb45d8849aace05bba9",
+      "port_sha256": "e9733fa821e3825695dbfae04257f7c3526457b14ac80cd697c860cd33eb3795"
+    },
+    {
+      "path": "thirdparty/diff-gaussian-rasterization-w-pose/cuda_rasterizer/rasterizer_impl.h",
+      "upstream_sha256": "58b97a9728e24d41602a2ac3e8eace025cfd3228de6e75033dc458d0303a46f4",
+      "port_sha256": "7ec4e8b2ba4309f1271d65519129788efd91de987830a2a82a824d360ecea7ed"
+    },
+    {
+      "path": "thirdparty/diff-gaussian-rasterization-w-pose/cuda_rasterizer/auxiliary.h",
+      "upstream_sha256": "f3a1a046df7e68076ecb15f145aa682e51c7e69b0054d6cd59c3cadc217f918a",
+      "port_sha256": "79766aed4d1896d2d2b6fe2da7b1fe73e405eade78a7930ae209ca4a2c26b09a"
+    },
+    {
+      "path": "thirdparty/lietorch/lietorch/src/lietorch_gpu.cu",
+      "upstream_sha256": "f9a9d7d7f5e72fedb2eb0360015b2db5f840db45365d23d78c9792ec6de1eb44",
+      "port_sha256": "2cc23d8df76215de76f7d46f6b8ec1af1c7384940df76d1bb590e6945ef89a37"
+    },
+    {
+      "path": "thirdparty/lietorch/lietorch/src/lietorch_cpu.cpp",
+      "upstream_sha256": "87ed2479b77673cbf314026035bec66662ee6ad57d5f06e8046e11e7b9a061c9",
+      "port_sha256": "99324b0f8c038ced2d68e06316cccc3c3df6cf7ba6ac61845933f586bba3c49a"
+    },
+    {
+      "path": "thirdparty/lietorch/lietorch/extras/corr_index_kernel.cu",
+      "upstream_sha256": "7432aba780651e8d652082c489ee5068e94b6e7eb49c4bfd590731cabea39b5c",
+      "port_sha256": "3a9ae5c923f3379d6af9182c69bdaa502ab04e8925fdd3fc172bb78784cb21d9"
+    }
+  ],
+  "status": "source_port_prepared; numerical_validation_pending",
+  "cuda_arch": "12.1"
+}

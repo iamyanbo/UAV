@@ -13,6 +13,8 @@ REMOTE = r'''
 import base64,json
 from pathlib import Path
 root=Path('/home/iamyanbo/uav-rgb-flight');selected=set()
+for pattern in ('splat-native-port.json','splat-native.patch','before-empty-graph-splat-native*'):
+ selected.update(root.joinpath('receipts').glob(pattern))
 run_patterns=('result.json','source_hashes.json','inference-source-hashes.json','stdout.log','tracking-diagnosis.json',
  'collection/*.json','training/result.json','training/metrics.jsonl',
  'visual-training/result.json','visual-training/metrics.jsonl','visual-training/resume.json','ppo/result.json','ppo/metrics.jsonl',
@@ -42,6 +44,7 @@ for folder in root.joinpath('launches').iterdir():
                  'episode/learned-controller/runtime/alignment.jsonl',
                  'episode/learned-controller/runtime/deliberation/events.jsonl',
                  'episode/learned-controller/runtime/reconstruction/result.json',
+                 'episode/learned-controller/runtime/reconstruction.log',
                  'episode/learned-controller/runtime/reconstruction/memory/versions.jsonl',
                  'episode/learned-controller/runtime/video/result.json'):
   selected.update(folder.glob(pattern))

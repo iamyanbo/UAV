@@ -1,0 +1,138 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 1369,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "a25cfc19c4320cea205581f00e11192c72789338932eefcfbcf22619983fffc4",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "0de188d98a8a043bbb7d6363b8c4e0041bbf0d523f0513a2a74ceb46d1634f41",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "8f8afe344e1e5b4935b0e0aceb889a7253fbafa0d932c72c909500abcd676e1f",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "1246f6d147cf2810aae3fa614b82fd2b8a3cfd339218fc1dd2a776ea113982ea",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "b43014054721dcb73918f7e1e173c8efb9d6fcd4c933d149d0e80db98d6b06c2",
+      "samples": 64
+    },
+    {
+      "path": "controller-000005.pt",
+      "sha256": "c944f170bdf6b76918415845998ecf610c80771817d0be3523e61b1abfa5c00a",
+      "samples": 64
+    },
+    {
+      "path": "controller-000006.pt",
+      "sha256": "76b73d7b57abd95925964a7afe402b02301e49ce66006a92dbd580c829d27012",
+      "samples": 64
+    },
+    {
+      "path": "controller-000007.pt",
+      "sha256": "a93604e32ee663aa5a64d62cc23e6ba3a883567e9511b5146a852488a5974411",
+      "samples": 64
+    },
+    {
+      "path": "controller-000008.pt",
+      "sha256": "c0d372403aa95241bc805b98b23a81db3825f40d576ebee2525b870a40608055",
+      "samples": 64
+    },
+    {
+      "path": "controller-000009.pt",
+      "sha256": "623a2d22559c754d99e3bd4cb3fc414371b02235ebedec7f2a195d871c639178",
+      "samples": 64
+    },
+    {
+      "path": "controller-000010.pt",
+      "sha256": "0c41662f7af86ca41060ac2e0f6babcb00c291b43aed91e0c9310bfdbf115bb1",
+      "samples": 64
+    },
+    {
+      "path": "controller-000011.pt",
+      "sha256": "5b9bc68cb919ef6f7c2c339966bbdf4a1a72e1ccbd1b46e498779885160a5101",
+      "samples": 64
+    },
+    {
+      "path": "controller-000012.pt",
+      "sha256": "41c818ae4c1149562a00c5fae68cdf6b5aa3bfeff185d7e982736bfbe9d2514c",
+      "samples": 64
+    },
+    {
+      "path": "controller-000013.pt",
+      "sha256": "5f3c3a96c53452153ec270e7dd923efbad15e72308e554b371478ecd383bff1b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000014.pt",
+      "sha256": "1ab7f1a28380e92116dfd4fad71c0c8b81fb406ae61748b2902bba21fc09ae70",
+      "samples": 64
+    },
+    {
+      "path": "controller-000015.pt",
+      "sha256": "fd3e2a6b0a6bee3c23744ca230de61cc9204b14a162d9e1b6b78eea5c244da12",
+      "samples": 64
+    },
+    {
+      "path": "controller-000016.pt",
+      "sha256": "5d552434d1c26b7f49664ba4b8e33b91af3a009cc34e7d09135c83a757b1e664",
+      "samples": 64
+    },
+    {
+      "path": "controller-000017.pt",
+      "sha256": "79b186b1d3aa18790dc8425b3fb0f8940587d54b21fc93d4129852a151fa420f",
+      "samples": 64
+    },
+    {
+      "path": "controller-000018.pt",
+      "sha256": "a0a438e5fe0774bd26a7b2337461ee441fac67055d51c3dc90d2c61725e362e7",
+      "samples": 64
+    },
+    {
+      "path": "controller-000019.pt",
+      "sha256": "3934cf48bc90fe9938f59af361e8aa5aee8a766e4edb7726bf8d98f434e8b83e",
+      "samples": 64
+    },
+    {
+      "path": "controller-000020.pt",
+      "sha256": "b6496a829ccfa5bd82484c150c9f788e6391c8f06ff1aec1dc0e9ab103b98d69",
+      "samples": 64
+    },
+    {
+      "path": "controller-000021.pt",
+      "sha256": "2609dc3a8ba6c15821425ac00390134019cb5bac76860811dd2387861ff5321b",
+      "samples": 25
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": "observed-depth-motion-demonstrations/v6",
+  "final_map_status": "local_navigation",
+  "map_version": -1,
+  "map_fusion": {
+    "submitted": 0,
+    "results_polled": 0,
+    "pending_result": false,
+    "queue_bound": 1,
+    "availability": "actual CPU geometry completion, then causal publication"
+  },
+  "supported_maps_received": 49,
+  "optimized_surface_samples_received": 635744,
+  "first_supported_map_available_ns": 1790269936442642944,
+  "handover_sim_ns": 1790269926356427776,
+  "control_safety_p95_seconds": 0.10812621503137052,
+  "control_safety_missed_deadlines": 786,
+  "safety_interventions": 1
+}
