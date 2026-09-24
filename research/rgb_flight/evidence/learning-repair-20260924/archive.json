@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-09-24T13:16:19.964173+00:00",
+  "observed_utc": "2026-09-24T13:16:46.051291+00:00",
   "source_root": "/home/iamyanbo/uav-rgb-flight",
   "scope": "Execution receipts and derived summaries; active counters are snapshots; raw RGB and weights remain on Spark",
   "files": [
@@ -6284,6 +6284,16 @@
       "sha256": "f60a5531b5efa0f7807a69577f3e9faff7d7908d0bc608c0c1f7d2ee60d23005"
     },
     {
+      "path": "launches/20260924T131547Z/episode/learned-controller/runtime/capacity.json",
+      "bytes": 54,
+      "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T131547Z/episode/learned-controller/source_hashes.json",
+      "bytes": 2250,
+      "sha256": "df62429c8062508025316110daec23c1813b0f036ddb791a69f124b6914ec04c"
+    },
+    {
       "path": "recorded-image-sources.json",
       "bytes": 1119,
       "sha256": "230659c81a0e84670a2ba2d74fa83933911609d1874cfce51d862e58a6339bf8"
@@ -7006,7 +7016,7 @@
     {
       "path": "rounds/navigation-repair-r73/execution/state.json",
       "bytes": 16948,
-      "sha256": "7c46a7966b67006ed05b8ae6d91afb0443315c42218edf8eb6df9d914bad49b3"
+      "sha256": "a761ef56f485f9f74201b6329ddcf2f860ad0ab61471d47bca249347e0e3f95f"
     },
     {
       "path": "rounds/navigation-repair-r73/programme-spec.json",
