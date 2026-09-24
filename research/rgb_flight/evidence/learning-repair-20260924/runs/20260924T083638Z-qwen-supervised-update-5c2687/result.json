@@ -1,0 +1,19 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T083638Z-qwen-supervised-update-5c2687/source/stage_worker.py",
+    "train-configurator",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/configuration-data",
+    "--integration-only",
+    "--updates",
+    "1"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 40.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 71.04735336406156
+}

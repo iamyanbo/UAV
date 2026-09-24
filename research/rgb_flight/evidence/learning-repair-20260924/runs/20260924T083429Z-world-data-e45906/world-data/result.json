@@ -1,0 +1,8 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "candidate_windows": 113,
+  "timing_valid_windows": 113,
+  "training_ready": true,
+  "blocking_reasons": []
+}

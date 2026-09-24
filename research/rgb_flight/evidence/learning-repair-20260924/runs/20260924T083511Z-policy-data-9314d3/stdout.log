@@ -30,4 +30,4 @@ NOTE: The SHMEM allocation limit is set to the default of 64MB.  This may be
    insufficient for PyTorch.  NVIDIA recommends the use of the following flags:
    docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 ...
 
-{"status": "completed", "accepted": false, "candidate_windows": 113, "timing_valid_windows": 113, "training_ready": true, "blocking_reasons": []}
+{"status": "completed", "training_ready": true, "deployment_accepted": false, "accepted": false, "windows": 159, "episodes": 10, "excluded_short_or_unsupported_attempts": 0}

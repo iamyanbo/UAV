@@ -1,0 +1,95 @@
+{
+  "status": "completed",
+  "updates": 1,
+  "accepted": false,
+  "objective_version": "masked-dispatched-sequences/v3",
+  "integration_only": true,
+  "gradient_evidence": {
+    "model.log_std": {
+      "parameters": 1,
+      "trainable": 1,
+      "gradient_tensors": 0,
+      "nonzero_gradient_tensors": 0,
+      "changed_tensors": 0,
+      "frozen_changed": 0
+    },
+    "model.goal_pipeline": {
+      "parameters": 186,
+      "trainable": 0,
+      "gradient_tensors": 0,
+      "nonzero_gradient_tensors": 0,
+      "changed_tensors": 0,
+      "frozen_changed": 0
+    },
+    "model.gru": {
+      "parameters": 4,
+      "trainable": 4,
+      "gradient_tensors": 4,
+      "nonzero_gradient_tensors": 4,
+      "changed_tensors": 4,
+      "frozen_changed": 0
+    },
+    "model.mean": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    },
+    "model.value": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    },
+    "model.collision_value": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    },
+    "model.stop_head": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    },
+    "critic.goal_attention": {
+      "parameters": 4,
+      "trainable": 4,
+      "gradient_tensors": 4,
+      "nonzero_gradient_tensors": 4,
+      "changed_tensors": 4,
+      "frozen_changed": 0
+    },
+    "critic.net": {
+      "parameters": 6,
+      "trainable": 6,
+      "gradient_tensors": 6,
+      "nonzero_gradient_tensors": 6,
+      "changed_tensors": 6,
+      "frozen_changed": 0
+    }
+  },
+  "resumed_from_update": 0,
+  "optimizer_states": 22,
+  "foundation_source": {
+    "accepted": false,
+    "training_ready": true,
+    "visual_goal_runtime": true,
+    "valid_expert_episodes": 250
+  },
+  "dataset_manifest_sha256": "8d31cb6a83fd37c24d27be67194eca670d4a830d13023a2d434a54982f2a7ba5",
+  "scope": "policy imitation and primitive critic; PPO not executed",
+  "checkpoint_reload_verified": true,
+  "optimizer_reload_states": 22,
+  "initialization": null,
+  "gradient_gate_passed": true
+}

@@ -26,8 +26,4 @@ GOVERNING TERMS: The software and materials are governed by the NVIDIA Software 
 and the Product-Specific Terms for NVIDIA AI Products
 (found at https://www.nvidia.com/en-us/agreements/enterprise-software/product-specific-terms-for-ai-products/).
 
-NOTE: The SHMEM allocation limit is set to the default of 64MB.  This may be
-   insufficient for PyTorch.  NVIDIA recommends the use of the following flags:
-   docker run --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 ...
-
-{"status": "completed", "accepted": false, "candidate_windows": 113, "timing_valid_windows": 113, "training_ready": true, "blocking_reasons": []}
+{"status": "completed", "accepted": false, "learner_states": 396, "corrections": 396, "aggregated_windows": 176, "dataset": "/artifacts/dagger-data/dataset", "scope": "Recovery DAgger; no privileged hidden-goal direction labels"}

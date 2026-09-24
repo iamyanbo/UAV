@@ -1,0 +1,29 @@
+
+=============
+== PyTorch ==
+=============
+
+NVIDIA Release 25.11 (build 231036168)
+PyTorch Version 2.10.0a0+b558c98
+Container image Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+Copyright (c) 2014-2024 Facebook Inc.
+Copyright (c) 2011-2014 Idiap Research Institute (Ronan Collobert)
+Copyright (c) 2012-2014 Deepmind Technologies    (Koray Kavukcuoglu)
+Copyright (c) 2011-2012 NEC Laboratories America (Koray Kavukcuoglu)
+Copyright (c) 2011-2013 NYU                      (Clement Farabet)
+Copyright (c) 2006-2010 NEC Laboratories America (Ronan Collobert, Leon Bottou, Iain Melvin, Jason Weston)
+Copyright (c) 2006      Idiap Research Institute (Samy Bengio)
+Copyright (c) 2001-2004 Idiap Research Institute (Ronan Collobert, Samy Bengio, Johnny Mariethoz)
+Copyright (c) 2015      Google Inc.
+Copyright (c) 2015      Yangqing Jia
+Copyright (c) 2013-2016 The Caffe contributors
+All rights reserved.
+
+Various files include modifications (c) NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+
+GOVERNING TERMS: The software and materials are governed by the NVIDIA Software License Agreement
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-software-license-agreement/)
+and the Product-Specific Terms for NVIDIA AI Products
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/product-specific-terms-for-ai-products/).
+
+{"status": "completed", "updates": 1, "accepted": false, "objective_version": "masked-dispatched-sequences/v3", "integration_only": true, "gradient_evidence": {"model.log_std": {"parameters": 1, "trainable": 1, "gradient_tensors": 0, "nonzero_gradient_tensors": 0, "changed_tensors": 0, "frozen_changed": 0}, "model.goal_pipeline": {"parameters": 186, "trainable": 0, "gradient_tensors": 0, "nonzero_gradient_tensors": 0, "changed_tensors": 0, "frozen_changed": 0}, "model.gru": {"parameters": 4, "trainable": 4, "gradient_tensors": 4, "nonzero_gradient_tensors": 4, "changed_tensors": 4, "frozen_changed": 0}, "model.mean": {"parameters": 2, "trainable": 2, "gradient_tensors": 2, "nonzero_gradient_tensors": 2, "changed_tensors": 2, "frozen_changed": 0}, "model.value": {"parameters": 2, "trainable": 2, "gradient_tensors": 2, "nonzero_gradient_tensors": 2, "changed_tensors": 2, "frozen_changed": 0}, "model.collision_value": {"parameters": 2, "trainable": 2, "gradient_tensors": 2, "nonzero_gradient_tensors": 2, "changed_tensors": 2, "frozen_changed": 0}, "model.stop_head": {"parameters": 2, "trainable": 2, "gradient_tensors": 2, "nonzero_gradient_tensors": 2, "changed_tensors": 2, "frozen_changed": 0}, "critic.goal_attention": {"parameters": 4, "trainable": 4, "gradient_tensors": 4, "nonzero_gradient_tensors": 4, "changed_tensors": 4, "frozen_changed": 0}, "critic.net": {"parameters": 6, "trainable": 6, "gradient_tensors": 6, "nonzero_gradient_tensors": 6, "changed_tensors": 6, "frozen_changed": 0}}, "resumed_from_update": 0, "optimizer_states": 22, "foundation_source": {"accepted": false, "training_ready": true, "visual_goal_runtime": true, "valid_expert_episodes": 250}, "dataset_manifest_sha256": "d15fb31b11eb0decc2fcf437bc1ea69bf020087e2b5b15f0d914ae21461f3a58", "scope": "policy imitation and primitive critic; PPO not executed", "checkpoint_reload_verified": true, "optimizer_reload_states": 22, "initialization": {"sha256": "a9af909fe0598acedb73fa190beceb17c563f40b3db5b7c222aca6821ae1a817", "update": 1}, "gradient_gate_passed": true}

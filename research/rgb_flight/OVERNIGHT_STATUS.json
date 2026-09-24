@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-09-24T08:34:52.023046+00:00",
+  "observed_utc": "2026-09-24T08:45:04.223013+00:00",
   "round": "navigation-repair-r72",
   "continuation": {
     "status": "full_flow_running",
@@ -38,111 +38,720 @@
       }
     },
     "world-data": {
-      "status": "running",
-      "reason": "Owned remote guard running",
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
       "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083429Z-world-data-e45906",
-      "progress": null
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "candidate_windows": 113,
+        "timing_valid_windows": 113,
+        "training_ready": true,
+        "blocking_reasons": []
+      }
     },
     "world-update": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083502Z-world-update-290a92",
+      "progress": {
+        "status": "completed",
+        "updates": 1,
+        "accepted": false,
+        "objective_version": "masked-dispatched-state-fields/v4",
+        "integration_only": true,
+        "gradient_evidence": {
+          "model.spatial": {
+            "parameters": 1,
+            "trainable": 1,
+            "gradient_tensors": 1,
+            "nonzero_gradient_tensors": 1,
+            "changed_tensors": 1,
+            "frozen_changed": 0
+          },
+          "model.visual": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.goal_visual": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.goal_attention": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "model.goal_score": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.memory": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.context": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.transformer": {
+            "parameters": 72,
+            "trainable": 72,
+            "gradient_tensors": 72,
+            "nonzero_gradient_tensors": 72,
+            "changed_tensors": 72,
+            "frozen_changed": 0
+          },
+          "model.norm": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.belief": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "model.heads": {
+            "parameters": 48,
+            "trainable": 48,
+            "gradient_tensors": 48,
+            "nonzero_gradient_tensors": 36,
+            "changed_tensors": 48,
+            "frozen_changed": 0
+          }
+        },
+        "resumed_from_update": 0,
+        "optimizer_states": 141,
+        "foundation_source": {
+          "accepted": false,
+          "training_ready": true,
+          "valid_expert_episodes": 250,
+          "visual_goal_runtime": true
+        },
+        "dataset_manifest_sha256": "9a101051f7c1ac0a1428b9332f64f3e853da30b334f77dec42fc02c8a6fb83a6",
+        "scope": "world training",
+        "checkpoint_reload_verified": true,
+        "optimizer_reload_states": 141,
+        "initialization": null,
+        "gradient_gate_passed": true,
+        "candidate_action_gradient": {
+          "finite": true,
+          "norm": 0.007891621440649033
+        }
+      }
     },
     "policy-data": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083511Z-policy-data-9314d3",
+      "progress": {
+        "status": "completed",
+        "training_ready": true,
+        "deployment_accepted": false,
+        "accepted": false,
+        "windows": 159,
+        "episodes": 10,
+        "excluded_short_or_unsupported_attempts": 0
+      }
     },
     "policy-update": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083550Z-policy-update-4db1de",
+      "progress": {
+        "status": "completed",
+        "updates": 1,
+        "accepted": false,
+        "objective_version": "masked-dispatched-sequences/v3",
+        "integration_only": true,
+        "gradient_evidence": {
+          "model.log_std": {
+            "parameters": 1,
+            "trainable": 1,
+            "gradient_tensors": 0,
+            "nonzero_gradient_tensors": 0,
+            "changed_tensors": 0,
+            "frozen_changed": 0
+          },
+          "model.goal_pipeline": {
+            "parameters": 186,
+            "trainable": 0,
+            "gradient_tensors": 0,
+            "nonzero_gradient_tensors": 0,
+            "changed_tensors": 0,
+            "frozen_changed": 0
+          },
+          "model.gru": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "model.mean": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.value": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.collision_value": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.stop_head": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "critic.goal_attention": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "critic.net": {
+            "parameters": 6,
+            "trainable": 6,
+            "gradient_tensors": 6,
+            "nonzero_gradient_tensors": 6,
+            "changed_tensors": 6,
+            "frozen_changed": 0
+          }
+        },
+        "resumed_from_update": 0,
+        "optimizer_states": 22,
+        "foundation_source": {
+          "accepted": false,
+          "training_ready": true,
+          "visual_goal_runtime": true,
+          "valid_expert_episodes": 250
+        },
+        "dataset_manifest_sha256": "8d31cb6a83fd37c24d27be67194eca670d4a830d13023a2d434a54982f2a7ba5",
+        "scope": "policy imitation and primitive critic; PPO not executed",
+        "checkpoint_reload_verified": true,
+        "optimizer_reload_states": 22,
+        "initialization": null,
+        "gradient_gate_passed": true
+      }
     },
     "configuration-data": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083556Z-configuration-data-d37318",
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "examples": 78,
+        "observed_target_examples": 61,
+        "historical_rgb_examples": 62,
+        "excluded": [
+          {
+            "episode_id": "train-00010",
+            "reason": "Outside internal training partition"
+          },
+          {
+            "episode_id": "train-00012",
+            "reason": "Outside internal training partition"
+          }
+        ]
+      }
     },
     "qwen-supervised-update": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083638Z-qwen-supervised-update-5c2687",
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "phase": "supervised",
+        "integration_only": true,
+        "gradient_evidence": {
+          "qwen.model": {
+            "parameters": 1112,
+            "trainable": 288,
+            "gradient_tensors": 288,
+            "nonzero_gradient_tensors": 144,
+            "changed_tensors": 288,
+            "frozen_changed": 0
+          }
+        },
+        "resumed_from_updates": 0,
+        "optimizer_states": 288,
+        "examples_processed": 1,
+        "updates": 1
+      }
     },
     "trained-pack": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083749Z-trained-pack-ef5d14",
+      "progress": {
+        "schema": "visual-navigation-checkpoints/v1",
+        "status": "completed",
+        "accepted": false,
+        "artifacts": {
+          "goal": {
+            "path": "goal.pt",
+            "sha256": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/goal.pt"
+          },
+          "odometry": {
+            "path": "odometry.pt",
+            "sha256": "e0e705d8916c2592a1f9443ff0c013916002dd5e9ce861269927c1d4a77e136c",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/odometry.pt"
+          },
+          "world": {
+            "path": "world.pt",
+            "sha256": "b207c6b9c59ca96d76c462870e2509c8f00eb726ffbe5cd42e22d27fcac598dc",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083502Z-world-update-290a92/training/final.pt"
+          },
+          "policy": {
+            "path": "policy.pt",
+            "sha256": "a9af909fe0598acedb73fa190beceb17c563f40b3db5b7c222aca6821ae1a817",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083550Z-policy-update-4db1de/training/final.pt"
+          },
+          "projection": {
+            "path": "projection.pt",
+            "sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/projection.pt"
+          },
+          "safety": {
+            "path": "safety.json",
+            "sha256": "ad063b81b2ec32d9830e62f53fd75d9092600423003ae619f8159ee051cddf1d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/safety.json"
+          },
+          "qwen": {
+            "path": "qwen.pt",
+            "sha256": "800cdb5fcda611874bf4e7c72dfc07218b675f0ef1620ed58fab0b384ecd29da",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083638Z-qwen-supervised-update-5c2687/configurator/latest.pt"
+          }
+        },
+        "goal_match_threshold": 0.9,
+        "scope": "Integration snapshot. Packaging does not establish model compatibility or acceptance."
+      }
     },
     "dagger-flight": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083751Z-dagger-flight-e1c13b",
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083751Z-dagger-flight-e1c13b/collection/flights.json"
+      }
     },
     "online-trajectories": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083925Z-online-trajectories-5875d2",
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "attempts": 438,
+        "excluded": 0,
+        "unique_successful_episodes": 250,
+        "timing_passed_attempts": 11,
+        "manifest_sha256": "a16d723f3b1039c15ab61bc11424456d9e6e49e81d7d20a80f4401a0a0207179"
+      }
     },
     "dagger-data": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084035Z-dagger-data-328209",
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "learner_states": 396,
+        "corrections": 396,
+        "aggregated_windows": 176,
+        "dataset": "/artifacts/dagger-data/dataset",
+        "scope": "Recovery DAgger; no privileged hidden-goal direction labels"
+      }
     },
     "dagger-update": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084051Z-dagger-update-54726b",
+      "progress": {
+        "status": "completed",
+        "updates": 1,
+        "accepted": false,
+        "objective_version": "masked-dispatched-sequences/v3",
+        "integration_only": true,
+        "gradient_evidence": {
+          "model.log_std": {
+            "parameters": 1,
+            "trainable": 1,
+            "gradient_tensors": 0,
+            "nonzero_gradient_tensors": 0,
+            "changed_tensors": 0,
+            "frozen_changed": 0
+          },
+          "model.goal_pipeline": {
+            "parameters": 186,
+            "trainable": 0,
+            "gradient_tensors": 0,
+            "nonzero_gradient_tensors": 0,
+            "changed_tensors": 0,
+            "frozen_changed": 0
+          },
+          "model.gru": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "model.mean": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.value": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.collision_value": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.stop_head": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "critic.goal_attention": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "critic.net": {
+            "parameters": 6,
+            "trainable": 6,
+            "gradient_tensors": 6,
+            "nonzero_gradient_tensors": 6,
+            "changed_tensors": 6,
+            "frozen_changed": 0
+          }
+        },
+        "resumed_from_update": 0,
+        "optimizer_states": 22,
+        "foundation_source": {
+          "accepted": false,
+          "training_ready": true,
+          "visual_goal_runtime": true,
+          "valid_expert_episodes": 250
+        },
+        "dataset_manifest_sha256": "d15fb31b11eb0decc2fcf437bc1ea69bf020087e2b5b15f0d914ae21461f3a58",
+        "scope": "policy imitation and primitive critic; PPO not executed",
+        "checkpoint_reload_verified": true,
+        "optimizer_reload_states": 22,
+        "initialization": {
+          "sha256": "a9af909fe0598acedb73fa190beceb17c563f40b3db5b7c222aca6821ae1a817",
+          "update": 1
+        },
+        "gradient_gate_passed": true
+      }
     },
     "dagger-pack": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084058Z-dagger-pack-a0f43c",
+      "progress": {
+        "schema": "visual-navigation-checkpoints/v1",
+        "status": "completed",
+        "accepted": false,
+        "artifacts": {
+          "goal": {
+            "path": "goal.pt",
+            "sha256": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/goal.pt"
+          },
+          "odometry": {
+            "path": "odometry.pt",
+            "sha256": "e0e705d8916c2592a1f9443ff0c013916002dd5e9ce861269927c1d4a77e136c",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/odometry.pt"
+          },
+          "world": {
+            "path": "world.pt",
+            "sha256": "b207c6b9c59ca96d76c462870e2509c8f00eb726ffbe5cd42e22d27fcac598dc",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083502Z-world-update-290a92/training/final.pt"
+          },
+          "policy": {
+            "path": "policy.pt",
+            "sha256": "4d2f0face3e4d6f7fc4d1c70e75fcfa5674efdd5afb85b4c269f430d62784fc9",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084051Z-dagger-update-54726b/training/final.pt"
+          },
+          "projection": {
+            "path": "projection.pt",
+            "sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/projection.pt"
+          },
+          "safety": {
+            "path": "safety.json",
+            "sha256": "ad063b81b2ec32d9830e62f53fd75d9092600423003ae619f8159ee051cddf1d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/safety.json"
+          },
+          "qwen": {
+            "path": "qwen.pt",
+            "sha256": "800cdb5fcda611874bf4e7c72dfc07218b675f0ef1620ed58fab0b384ecd29da",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083638Z-qwen-supervised-update-5c2687/configurator/latest.pt"
+          }
+        },
+        "goal_match_threshold": 0.9,
+        "scope": "Integration snapshot. Packaging does not establish model compatibility or acceptance."
+      }
     },
     "fresh-ppo-flight": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084100Z-fresh-ppo-flight-a7d4b9",
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084100Z-fresh-ppo-flight-a7d4b9/collection/flights.json"
+      }
     },
     "ppo-data": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084235Z-ppo-data-668292",
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "unique_physics_transitions": 280,
+        "shards": 7,
+        "collected_proposals": 361
+      }
     },
     "ppo-update": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084239Z-ppo-update-a9f429",
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "integration_only": true,
+        "gradient_evidence": {
+          "policy.log_std": {
+            "parameters": 1,
+            "trainable": 1,
+            "gradient_tensors": 1,
+            "nonzero_gradient_tensors": 1,
+            "changed_tensors": 1,
+            "frozen_changed": 0
+          },
+          "policy.goal_pipeline": {
+            "parameters": 186,
+            "trainable": 0,
+            "gradient_tensors": 0,
+            "nonzero_gradient_tensors": 0,
+            "changed_tensors": 0,
+            "frozen_changed": 0
+          },
+          "policy.gru": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "policy.mean": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "policy.value": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "policy.collision_value": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "policy.stop_head": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          }
+        },
+        "unique_physics_transitions": 280,
+        "optimizer_exposures": 40,
+        "updates": 1,
+        "max_epochs": 4,
+        "kl_early_stop": false,
+        "requires_fresh_physical_rollouts": true,
+        "completed_episode_collision_rate": 0.0,
+        "constrained_collision_cost": true
+      }
     },
     "ppo-pack": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084244Z-ppo-pack-34a230",
+      "progress": {
+        "schema": "visual-navigation-checkpoints/v1",
+        "status": "completed",
+        "accepted": false,
+        "artifacts": {
+          "goal": {
+            "path": "goal.pt",
+            "sha256": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/goal.pt"
+          },
+          "odometry": {
+            "path": "odometry.pt",
+            "sha256": "e0e705d8916c2592a1f9443ff0c013916002dd5e9ce861269927c1d4a77e136c",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/odometry.pt"
+          },
+          "world": {
+            "path": "world.pt",
+            "sha256": "b207c6b9c59ca96d76c462870e2509c8f00eb726ffbe5cd42e22d27fcac598dc",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083502Z-world-update-290a92/training/final.pt"
+          },
+          "policy": {
+            "path": "policy.pt",
+            "sha256": "b6a30bad05a15ea946778cbf18922dfa3636d48829cd2f695cb473db4192fa18",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084239Z-ppo-update-a9f429/ppo/final.pt"
+          },
+          "projection": {
+            "path": "projection.pt",
+            "sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/projection.pt"
+          },
+          "safety": {
+            "path": "safety.json",
+            "sha256": "ad063b81b2ec32d9830e62f53fd75d9092600423003ae619f8159ee051cddf1d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/safety.json"
+          },
+          "qwen": {
+            "path": "qwen.pt",
+            "sha256": "800cdb5fcda611874bf4e7c72dfc07218b675f0ef1620ed58fab0b384ecd29da",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083638Z-qwen-supervised-update-5c2687/configurator/latest.pt"
+          }
+        },
+        "goal_match_threshold": 0.9,
+        "scope": "Integration snapshot. Packaging does not establish model compatibility or acceptance."
+      }
     },
     "updated-policy-flight": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084246Z-updated-policy-flight-f49d74",
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084246Z-updated-policy-flight-f49d74/collection/flights.json"
+      }
     },
     "final-reload-flight": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
+      "status": "running",
+      "reason": "Owned remote guard running",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084413Z-final-reload-flight-a4f83c",
       "progress": null
     },
     "development-flights": {

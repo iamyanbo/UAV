@@ -1,0 +1,17 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "examples": 78,
+  "observed_target_examples": 61,
+  "historical_rgb_examples": 62,
+  "excluded": [
+    {
+      "episode_id": "train-00010",
+      "reason": "Outside internal training partition"
+    },
+    {
+      "episode_id": "train-00012",
+      "reason": "Outside internal training partition"
+    }
+  ]
+}
