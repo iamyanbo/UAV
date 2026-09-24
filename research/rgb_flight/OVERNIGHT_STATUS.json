@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-09-24T08:55:17.057322+00:00",
+  "observed_utc": "2026-09-24T09:05:30.014463+00:00",
   "round": "navigation-repair-r72",
   "continuation": {
     "status": "full_flow_running",
@@ -766,15 +766,26 @@
       }
     },
     "development-flights": {
-      "status": "running",
-      "reason": "Owned remote guard running",
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
       "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084625Z-development-flights-903d46",
-      "progress": null
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 10,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": true,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084625Z-development-flights-903d46/collection/flights.json"
+      }
     },
     "matched-configuration-flights": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
+      "status": "running",
+      "reason": "Owned remote guard running",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090308Z-matched-configuration-flights-0619a8",
       "progress": null
     },
     "preference-data": {

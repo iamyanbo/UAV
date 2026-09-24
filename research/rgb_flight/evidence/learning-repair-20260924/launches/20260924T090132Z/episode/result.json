@@ -1,0 +1,113 @@
+{
+  "status": "learned_flight_finished",
+  "episode_id": "train-00102",
+  "split": "train",
+  "phase": 1,
+  "runtime_goal_sha256": "e767b5bb565ea359ce37d6a224823f35b38e681638cb833fab577acdeb6000d6",
+  "pose_setting_calls_before_recording": 1,
+  "pre_episode_goal_pose_setting_calls": 4,
+  "pose_setting_calls_after_recording": 0,
+  "clock_speed": 1.0,
+  "maximum_speed_mps": 3.0,
+  "controller_kind": "learned_mode_1",
+  "runtime_isolation": {
+    "status": "live_inference_boundary_passed",
+    "episode_id": "train-00102",
+    "rgb_bytes": 921600,
+    "first_sim_ns": 1790240520321645568,
+    "last_sim_ns": 1790240520600651520,
+    "goal_views": 4,
+    "denied_operations": 5,
+    "simulator_rpc_inaccessible": true,
+    "privileged_files_inaccessible": true
+  },
+  "controller_checkpoint_sha256": "609d21cdf12a69b02b57a8b62f93bad3857383d6c43f4d03e4486c19b81d23bf",
+  "termination": "initialization_timeout",
+  "success": false,
+  "elapsed_sim_seconds": 30.087641954421997,
+  "learned_controller": {
+    "status": "completed",
+    "accepted": false,
+    "frames": 318,
+    "error": null,
+    "shards": [
+      {
+        "path": "controller-000000.pt",
+        "sha256": "1727866b50b4e44b4be1498ec9ab8252bde08e0a4277b6b544773d930c4db539",
+        "samples": 64
+      },
+      {
+        "path": "controller-000001.pt",
+        "sha256": "5c14365560c80b9d7bce97b47d967e2645e6136e3534869e49d2a19ada3bf79a",
+        "samples": 64
+      },
+      {
+        "path": "controller-000002.pt",
+        "sha256": "2eb329036a321056fd07776b0c74b5ef1711c4991d1c5903d23573432ad9b088",
+        "samples": 64
+      },
+      {
+        "path": "controller-000003.pt",
+        "sha256": "6a303acd8485b4d71d4df2ed996948851c2fc2d01858e99b94d068dbbea21c76",
+        "samples": 64
+      },
+      {
+        "path": "controller-000004.pt",
+        "sha256": "1fa793cd963e961b16511b50a9860a41252000b84627c870f19d0a0cba347b44",
+        "samples": 62
+      }
+    ],
+    "scope": "Live Mode 1 only; no planner or Qwen configuration",
+    "sampled_policy": false,
+    "slow_planner_enabled": false,
+    "teacher_provenance": null,
+    "final_map_status": "terminated",
+    "map_version": -1,
+    "supported_maps_received": 12,
+    "optimized_surface_samples_received": 197282,
+    "first_supported_map_available_ns": 1790240559661484800,
+    "handover_sim_ns": null,
+    "control_safety_p95_seconds": 0.09379354964476078,
+    "control_safety_missed_deadlines": 175,
+    "safety_interventions": 316
+  },
+  "broker_errors": [],
+  "commands": 1265,
+  "control_latency_p95_seconds": 0.201004288,
+  "capture_interval_p95_sim_seconds": 0.132002816,
+  "fresh_rgb_hz": 13.57437104690183,
+  "control_work_p95_seconds": 0.0012458974495530124,
+  "control_missed_deadlines": 0,
+  "control_interval_p95_seconds": 0.045467519678641106,
+  "control_interval_max_seconds": 0.05081407492980361,
+  "control_schedule_missed_deadlines": 1,
+  "timing_gate": {
+    "accepted": false,
+    "capture_control_passed": false,
+    "requirements": {
+      "fresh_rgb_hz_min": 19,
+      "rgb_interval_p95_max": 0.075,
+      "control_p95_max": 0.05
+    },
+    "reason": "RGB/control acceptance is measured; application delay belongs to dispatched-command dynamics",
+    "application_timestamps_available": false
+  },
+  "depth_label_index": "training_labels/depth/index.jsonl",
+  "depth_label_samples": 0,
+  "storage": {
+    "frames": 775,
+    "stream_sha256": "43f29cf87e8a918fd93b69a5ab160afe4482227a7c3361573d5482f56fa694ab",
+    "complete": true,
+    "codec": "per-frame zlib level 1, lossless RGB24",
+    "timestamps": "original AirSim image nanoseconds",
+    "pixel_format": "RGB24",
+    "color_calibration_sha256": "fcf2a4e14f4f4ef1b93b2bf92821554a223729c8c87e159ad2907cf3e8208d4d"
+  },
+  "training_label_frames": 600,
+  "teacher_provenance": null,
+  "actual_displacement_m": 6.611705960365483,
+  "actual_path_length_m": 14.763184160297392,
+  "mean_actual_velocity_mps": 0.49018374282349214,
+  "maximum_actual_velocity_mps": 0.5358555740091016,
+  "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+}

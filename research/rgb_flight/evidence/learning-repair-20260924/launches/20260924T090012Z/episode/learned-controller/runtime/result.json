@@ -1,0 +1,44 @@
+{
+  "status": "failed",
+  "accepted": false,
+  "frames": 243,
+  "error": {
+    "type": "RuntimeError",
+    "message": "RGB mapper exited during causal replay"
+  },
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "dd0f6d714d9adb2c65fe6ac7039a7ed1c893bd6bcff89098d492eff4f6e94979",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "2f1451f3a2d4fa5beb71bf480bbbaf524533bf838dc5990e894e910e056d39d7",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "e65c2eabfb28949c9009616f31bb4accdbdb4dcb777c4208b971203329e21927",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "fc5d24c5106c3421a96aff5692942ab43e6c9478d25ffad9d258e64bc99e9aec",
+      "samples": 51
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": null,
+  "final_map_status": "initializing",
+  "map_version": -1,
+  "supported_maps_received": 7,
+  "optimized_surface_samples_received": 59986,
+  "first_supported_map_available_ns": 1790240477909764352,
+  "handover_sim_ns": null,
+  "control_safety_p95_seconds": 0.07555280860979106,
+  "control_safety_missed_deadlines": 82,
+  "safety_interventions": 241
+}
