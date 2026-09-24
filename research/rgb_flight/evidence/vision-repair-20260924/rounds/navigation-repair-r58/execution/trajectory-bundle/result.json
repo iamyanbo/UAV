@@ -1,0 +1,9 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "attempts": 385,
+  "excluded": 0,
+  "unique_successful_episodes": 250,
+  "timing_passed_attempts": 11,
+  "manifest_sha256": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e"
+}

@@ -51,8 +51,8 @@ def specification(cycle, increment, previous=None):
         # The initial imitation update precedes the DAgger optimizer round.
         base_world=rows['world-update']['progress']
         prior_updates=(int(rows['policy-update']['progress']['updates']) if module=='policy' else
-            int(base_world['updates']) if base_world.get('objective_version')!='masked-dispatched-state-fields/v4' else 0)
-        changed_objective=module=='world' and row['progress'].get('objective_version')!='masked-dispatched-state-fields/v4'
+            int(base_world['updates']) if base_world.get('objective_version')!='shared-droid-dispatched-state/v5' else 0)
+        changed_objective=module=='world' and row['progress'].get('objective_version')!='shared-droid-dispatched-state/v5'
         current_update=0 if changed_objective else int(row['progress']['updates'])
         target=min(cap-prior_updates,current_update+increment)
         if target<=current_update:continue
@@ -87,6 +87,8 @@ def specification(cycle, increment, previous=None):
         command=['python3','{source}/package_navigation.py']
         for role in ('goal','odometry','projection','safety','world','qwen'):
             command+=['--'+role,str(pack/manifest['artifacts'][role]['path'])]
+        if 'vision' in manifest['artifacts']:
+            command+=['--vision',str(pack/manifest['artifacts']['vision']['path'])]
         command+=['--policy','{stage:policy-continuation:job}/training/final.pt',
             '--goal-match-threshold',str(manifest['goal_match_threshold']),'--output',destination]
         stages.append(dict(id='continued-policy-pack',kind='cpu',peak_gib=4,seconds=1800,

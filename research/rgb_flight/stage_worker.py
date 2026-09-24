@@ -13,6 +13,7 @@ def main():
     parser.add_argument('--dataset', type=Path)
     parser.add_argument('--frames', type=int, default=0)
     parser.add_argument('--asynchronous-map', action='store_true')
+    parser.add_argument('--vision',type=Path)
     parser.add_argument('--tracking-optimizer', choices=['DSPO','DBA'], default='DSPO')
     parser.add_argument('--resume', help='Checkpoint path relative to the training bundle')
     parser.add_argument('--initialize-from',help='Legacy odometry checkpoint relative to the dataset')
@@ -187,6 +188,10 @@ def main():
         arguments += ['--asynchronous-map']
     if args.stage == 'reconstruct':
         arguments += ['--tracking-optimizer', args.tracking_optimizer]
+        if args.vision:
+            vision=args.vision.resolve()
+            if not vision.is_relative_to(root.resolve()) or not vision.is_file():raise ValueError('Study-local vision configuration required')
+            extra_mounts+=['-v',str(vision)+':/vision.json:ro'];arguments+=['--vision','/vision.json']
     if args.resume:
         resume=Path(args.resume)
         if not training or '..' in resume.parts:
@@ -207,6 +212,7 @@ def main():
                '-v', str(root / 'assets/models') + ':/models:ro',
                '-v', str(root / 'deps/vjepa2') + ':/upstream/vjepa2:ro',
                '-v', str(root / 'ports/Splat-SLAM') + ':/upstream/splat:ro',
+               '-v', str(root / 'deps/Metric3D') + ':/upstream/metric3d:ro',
                '-v', str(data.resolve()) + (':/dataset:ro' if training else ':/observations:ro'),
                *extra_mounts,
                '-v', str(job) + ':/output', image, 'python', '/source/' + script, *arguments]

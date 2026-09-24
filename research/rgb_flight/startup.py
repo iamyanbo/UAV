@@ -2,7 +2,7 @@
 import math
 from contracts import Command
 
-VERSION = 'bounded-exploration-dispatched/v3'
+VERSION = 'local-depth-exploration-dispatched/v4'
 
 
 class StartupState:
@@ -12,21 +12,24 @@ class StartupState:
         self.handover_ns = None
         self.reason = None
 
-    def update(self, now_ns, supported_map, tracking_valid):
+    def update(self, now_ns, supported_map, tracking_valid, local_ready=False):
         if self.started_ns is None: self.started_ns = now_ns
         if self.state == 'terminated': return self.state
-        ready = supported_map and tracking_valid
-        if self.state == 'mapped' and not ready:
+        mapped = supported_map and tracking_valid
+        ready = mapped or local_ready
+        if self.state in ('mapped','local_navigation') and not ready:
             self.state = 'recovering'; self.recovery_ns = now_ns; self.ready_since_ns = None
+        if self.state in ('mapped','local_navigation') and ready:
+            self.state='mapped' if mapped else 'local_navigation'
         if self.state in ('initializing', 'recovering'):
             if ready:
                 if self.ready_since_ns is None: self.ready_since_ns = now_ns
                 if now_ns - self.ready_since_ns >= 1_000_000_000:
-                    self.state = 'mapped'; self.handover_ns = self.handover_ns or now_ns
+                    self.state = 'mapped' if mapped else 'local_navigation'; self.handover_ns = self.handover_ns or now_ns
             else: self.ready_since_ns = None
             origin = self.started_ns if self.state == 'initializing' else self.recovery_ns
             limit = 30 if self.state == 'initializing' else 10
-            if self.state != 'mapped' and now_ns - origin >= limit * 1_000_000_000:
+            if self.state not in ('mapped','local_navigation') and now_ns - origin >= limit * 1_000_000_000:
                 self.reason = 'initialization_timeout' if self.state == 'initializing' else 'tracking_recovery_timeout'
                 self.state = 'terminated'
         return self.state
@@ -48,6 +51,23 @@ class StartupState:
 def demonstration(value):
     """No destination coordinates. Targets come from observed memory only."""
     state = value['map_status']; elapsed = value['initialization_elapsed_seconds']
+    if state in ('mapped','local_navigation') and value['goal_probability'] >= value.get('goal_match_threshold', .95):
+        return [0.,0.,0.,0.],True,'visually_supported_stop'
+    depth=value.get('depth_tokens')
+    if depth is not None and depth[...,1].mean()>.5 and state in ('initializing','local_navigation','mapped'):
+        grid=depth.reshape(15,20,2)
+        # Visible sectors only. The lower quartile avoids steering through a
+        # sector whose average depth conceals a nearby branch or wall.
+        clearance=[]
+        for first,last in ((0,7),(7,13),(13,20)):
+            patch=grid[4:11,first:last];samples=patch[...,0][patch[...,1]>.8]*80
+            clearance.append(float(samples.quantile(.25)) if samples.numel() else 0.)
+        if clearance[1]<4:
+            yaw=-15. if clearance[0]>clearance[2] else 15.
+            return [0.,0.,0.,yaw],False,'observed_obstacle_turn'
+        if state=='initializing' or not value['target_available']:
+            yaw=-8. if clearance[0]>clearance[2] else 8.
+            return [.4,0.,0.,yaw],False,'observed_free_translation'
     if state == 'initializing':
         # A full translating panorama scan exposes nearby structure when the
         # initial view is water/sky. Reversing yaw each phase could keep the

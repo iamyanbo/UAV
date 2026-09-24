@@ -1,0 +1,6 @@
+{
+  "reason": "Rebuild and reload matching policy/critic against verified v4 world before longer updates",
+  "replacement": "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r53",
+  "world_checkpoint_update": 37,
+  "odometry_checkpoint_update": 589
+}

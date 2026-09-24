@@ -1,4 +1,12 @@
-# Current status ? September 24, 2026, 13:22 UTC
+# Current status — September 24, 2026, 16:02 UTC
+
+## Active vision repair
+
+The RGB-only Metric3Dv2-Small/DROID branch is implemented, including independent local depth, masked global metric pose, spatial depth input for Mode 1 and compatible data/checkpoint contracts. Recorded processing and three simulator pilots ran. None reached the destination. The first flew 11.36 m but timed out initializing; the next two entered local navigation but traveled less than 1 m because the goal matcher falsely commanded stopping. Zero depth-supported scale fits passed on the recorded open-water flight.
+
+Round `metric-vision-r78` is correcting goal supervision using the best demonstration plus the latest failed attempt per task, with original attempt-specific goal pixels. Negative mining and a new optimizer round precede fresh demonstrations and whole-flow verification. **The changed depth-aware learners and complete navigation pipeline are not yet verified.** Old r72 updates below do not verify the new interfaces. Details: [vision implementation/results](VISION_REPAIR_2026-09-24.md), [postmortem](POSTMORTEM_LEARNING_LOOP_2026-09-24.md), [literature adaptation](../../docs/literature/RGB%20Vision%20Adaptation%20-%202026-09-24.md).
+
+## Previous learning-loop results
 
 ## Outcome
 

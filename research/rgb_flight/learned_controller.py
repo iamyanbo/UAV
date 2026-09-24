@@ -39,10 +39,10 @@ class Mode1Actor:
             saved=torch.load(pack.paths['policy'],map_location='cpu',weights_only=True)
             if saved.get('module')!='policy' or saved.get('update',0)<1:
                 raise ValueError('A trained Mode 1 checkpoint is required')
-            required={role:pack.spec['artifacts'][role]['sha256'] for role in ('goal','odometry','projection')}
+            required={role:pack.spec['artifacts'][role]['sha256'] for role in ('goal','odometry','projection','vision') if role in pack.spec['artifacts']}
             if saved.get('perception_artifacts_sha256')!=required:
                 raise ValueError('Policy perception provenance differs from the live checkpoint set')
-            self.policy=RecurrentPolicy(pack.paths['goal'],state_dim=32).to(core.device).eval().requires_grad_(False)
+            self.policy=RecurrentPolicy(pack.paths['goal'],state_dim=32,depth_input='vision' in pack.paths).to(core.device).eval().requires_grad_(False)
             self.policy.load_state_dict(saved['model'])
             for key,value in core.goal.state_dict().items():
                 if not torch.equal(value,self.policy.goal_pipeline.state_dict()[key]):
@@ -74,7 +74,7 @@ class Mode1Actor:
             context=(value['memory'][:,:256]*mask).sum(0)/mask.sum().clamp_min(1)
             distribution,reward_value,self.hidden=self.policy.forward_features(value['current_tokens'],value['goal_context'],
                 value['state'][None,:self.policy_state_dim],context[None],value['task'][None],value['previous_command'][None],
-                self.hidden,value['target_context'][None])
+                self.hidden,value['target_context'][None],value['depth_tokens'][None])
             stop_distribution=self.policy.stop_distribution(self.hidden)
             latent=distribution.sample() if self.stochastic else distribution.mean
             sampled_stop=stop_distribution.sample() if self.stochastic else (stop_distribution.probs>=.5).float()
@@ -83,9 +83,11 @@ class Mode1Actor:
             collision_value=float(self.policy.collision_value(self.hidden)[0,0])
         command=Command(*(planned_command if planned_command is not None else proposal.tolist()))
         speed=float(value['state'][3:6].norm())
+        if self.core.metric_vision is not None and not value['input_validity']['scale']:
+            speed=max(speed,.5) # bounded exploration envelope, not a measured velocity
         geometry_ready=value['metric_geometry_available']
         clearance=0.;unknown=1.
-        if geometry_ready:
+        if geometry_ready and self.core.metric_vision is None:
             distance,missing=self.core.geometry(self.core.position[None])
             unknown=float(missing[0]);distance=float(distance[0])
             # Inflate for metric pose/scale uncertainty and aircraft extent.
@@ -94,28 +96,46 @@ class Mode1Actor:
         now=time.monotonic();age=max(0.,now-metadata['received_monotonic'])
         # Mode 1 has no learned planner-risk result. Unknown space has risk one;
         # observed clearance is handled conservatively by braking distance.
-        if value['map_status'] in ('initializing','recovering','terminated'):
+        if age>.25:
+            filtered=Command(0,0,0,0);safety=dict(overridden=True,reason='stale_rgb',stopping_distance_m=None)
+        elif self.core.metric_vision is not None and self.core.metric_vision.usable(metadata['sim_ns']) and value['map_status'] not in ('recovering','terminated'):
+            # The first integration stays at exploration speed, including
+            # locally navigable and mapped states, until navigation qualifies.
+            command,_=self.core.startup.filter(command,age)
+            geometry_age=value['geometry_age_seconds'] or 0.
+            clearance,unknown=self.core.metric_vision.sweep(self.core,command,speed,self.safety.braking_acceleration,geometry_age+age)
+            if unknown or clearance<=self.radius+.5*geometry_age:
+                filtered=Command(0,0,0,command.yaw_dps)
+                safety=dict(overridden=True,reason='local_path_unknown' if unknown else 'local_path_obstacle',stopping_distance_m=None)
+            else:
+                filtered=command;safety=dict(overridden=False,reason=None,stopping_distance_m=None)
+        elif self.core.metric_vision is not None and value['map_status'] in ('local_navigation','mapped'):
+            filtered=Command(0,0,0,0);safety=dict(overridden=True,reason='stale_local_geometry',stopping_distance_m=None)
+        elif value['map_status'] in ('initializing','recovering','terminated'):
             filtered,reason=self.core.startup.filter(command,age)
             safety=dict(overridden=filtered!=command,reason=reason,stopping_distance_m=None)
         else:
             filtered,safety=self.safety.apply(command,age,
                 not value['input_validity']['tracking'] or not geometry_ready,float(value['state'][13]),
                 1. if unknown>0 else 0.,clearance,speed,age)
-        stop=value['map_status']=='mapped' and bool(sampled_stop.item()) and value['goal_probability']>=self.core.teacher.threshold and not safety['overridden']
-        if bool(sampled_stop.item()) and value['map_status']=='mapped':
+        stop=value['map_status'] in ('mapped','local_navigation') and bool(sampled_stop.item()) and value['goal_probability']>=self.core.teacher.threshold and not safety['overridden']
+        if bool(sampled_stop.item()) and value['map_status'] in ('mapped','local_navigation'):
             filtered=Command(0,0,0,0)
             if not stop:safety=dict(safety,overridden=True,reason=safety['reason'] or 'stop_not_visually_supported')
         trace=dict(action_semantics=ACTION_SEMANTICS,startup_contract=VERSION,map_status=value['map_status'],
             initialization_elapsed_seconds=value['initialization_elapsed_seconds'],
             termination_reason=value['termination_reason'],
             teacher_reason=teacher_reason if self.demonstrate else None,
-            teacher_provenance='observed-exploration/v4' if self.demonstrate else None,
+            teacher_provenance='observed-depth-exploration/v5' if self.demonstrate else None,
             episode_id=self.core.episode_id,frame_id=metadata['frame_id'],sim_ns=metadata['sim_ns'],
             behavior_policy_sha256=None if self.demonstrate else self.core.checkpoints.spec['artifacts']['policy']['sha256'],
             stochastic=self.stochastic,latent_action=None if latent is None else latent[0].tolist(),sampled_stop=bool(sampled_stop.item()),
             proposal=proposal.tolist(),proposal_log_probability=None if logprob is None else float(logprob[0]),
             reward_value=None if reward_value is None else float(reward_value[0]),collision_cost_value=collision_value,
             submitted_after_safety=list(asdict(filtered).values()),submitted_stop=stop,safety=safety,
+            local_geometry_age_seconds=value.get('geometry_age_seconds'),
+            depth_valid_fraction=float(value['depth_tokens'][:,1].mean()),
+            global_metric_pose_valid=value['input_validity']['scale'],
             source_available_monotonic=metadata['received_monotonic'],decision_monotonic=time.monotonic(),
             safety_vehicle_radius_m=self.radius,
             mode='deterministic_observation_teacher' if self.demonstrate else 'predictive_then_independent_safety' if planned_command is not None else 'mode_1_geometry_safety_planner_disabled')
@@ -152,7 +172,7 @@ def main():
         actor=Mode1Actor(core,args.maximum_speed_mps,args.sample_policy,args.demonstrate)
         torch.save(dict(tokens=core.goal_tokens[0].cpu(),goal_sha256=identities[0]),output/'goal-tokens.pt')
         video=AsyncVideoFeatures(args.episode_id,output/'video')
-        mapping=AsyncMapping(args.episode_id,output/'reconstruction',args.socket)
+        mapping=AsyncMapping(args.episode_id,output/'reconstruction',args.socket,pack.paths.get('vision'))
         if args.with_deliberation:
             from live_deliberation import LiveDeliberation
             deliberation=LiveDeliberation(core,views,output/'deliberation')
@@ -190,11 +210,11 @@ def main():
             latencies.append(trace['processing_seconds']);interventions+=int(trace['safety']['overridden'])
             with (output/'proposals.jsonl').open('a') as stream:stream.write(json.dumps(trace)+'\n')
             runtime={k:value[k].detach().cpu() for k in ('state','memory','memory_valid','task','previous_command','target_context','z')}
-            runtime.update(current_tokens=value['current_tokens'][0].cpu(),goal_context=value['goal_context'][0].cpu())
+            runtime.update(current_tokens=value['current_tokens'][0].cpu(),goal_context=value['goal_context'][0].cpu(),depth_tokens=value['depth_tokens'].cpu())
             teacher_command,teacher_stop,teacher_reason=demonstration(value)
             correction=dict(episode_id=args.episode_id,frame_id=last,sim_ns=metadata['sim_ns'],
                 expert_observation_conditioned=True,expert_command=teacher_command,explicit_stop=teacher_stop,
-                teacher='observed-exploration/v4',reason=teacher_reason,
+                teacher='observed-depth-exploration/v5',reason=teacher_reason,
                 behavior_policy_sha256=trace['behavior_policy_sha256'])
             if args.demonstrate:
                 correction.update(expert_command=list(asdict(command).values()),explicit_stop=stop,
@@ -235,7 +255,7 @@ def main():
         result=dict(status='failed' if error else 'completed',accepted=False,frames=count,error=error,shards=shards,
                     scope='Mode 1, Qwen and frozen predictive planning' if deliberation else 'Live Mode 1 only; no planner or Qwen configuration',
                     sampled_policy=args.sample_policy,slow_planner_enabled=args.with_deliberation,
-                    teacher_provenance='observed-exploration/v4' if args.demonstrate else None,
+                    teacher_provenance='observed-depth-exploration/v5' if args.demonstrate else None,
                     final_map_status=core.startup.state if core else None,
                     map_version=core.latest_map_version if core else None,
                     supported_maps_received=core.supported_maps_received if core else 0,

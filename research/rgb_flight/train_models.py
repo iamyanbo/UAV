@@ -21,7 +21,7 @@ from learning_models import WorldModel, RecurrentPolicy, PrimitiveCritic, bootst
 
 
 def objective_version(module):
-    return 'masked-dispatched-state-fields/v4' if module=='world' else 'masked-dispatched-sequences/v3'
+    return 'shared-droid-dispatched-state/v5' if module=='world' else 'spatial-depth-dispatched-sequences/v4'
 
 
 class TrajectoryBundle:
@@ -62,13 +62,13 @@ class TrajectoryBundle:
         data = torch.load(path, map_location='cpu', weights_only=True)
         if data['episode_id'] != record['episode_id']:
             raise ValueError('Window episode mismatch')
-        allowed_teachers={'observed_frontier_local_expert','observed-exploration/v4'}
+        allowed_teachers={'observed_frontier_local_expert','observed-depth-exploration/v5'}
         if self.module == 'policy' and data.get('teacher_source') not in allowed_teachers:
             raise ValueError('Search imitation requires observation-conditioned target selection before local expert execution')
         runtime = data['runtime']
         allowed = {'z', 'state', 'belief', 'memory', 'memory_valid', 'action', 'task', 'goal_tokens',
                    'target_context', 'image', 'previous_command',
-                   'current_tokens','goal_context',
+                   'current_tokens','goal_context','depth_tokens',
                    'maximum_speed_mps',
                    'sim_ns', 'latest_observation_ns', 'visual_available'}
         if set(runtime) - allowed:
@@ -153,7 +153,7 @@ def policy_objective(policy, critic, runtime, labels):
             if 'current_tokens' in runtime:
                 distribution,value,hidden=policy.forward_features(runtime['current_tokens'][:,step],runtime['goal_context'][:,step],
                     runtime['state'][:,step],context,runtime['task'][:,step],runtime['previous_command'][:,step],hidden,
-                    runtime['target_context'][:,step])
+                    runtime['target_context'][:,step],runtime['depth_tokens'][:,step] if 'depth_tokens' in runtime else None)
             else:
                 distribution, value, hidden = policy(runtime['image'][:, step], runtime['state'][:, step], context,
                                                 runtime['task'][:, step], runtime['previous_command'][:, step], hidden,
@@ -194,7 +194,7 @@ def save_checkpoint(path, model, critic, optimizer, scheduler, update, best, rng
     state['exposed_train_window_indices'] = sorted(bundle.exposed_windows)
     state['exposed_train_episode_ids'] = sorted(bundle.exposed_episodes)
     state.update(module=bundle.module,objective_version=objective_version(bundle.module),
-        action_semantics='post-safety-dispatch/50ms-v3',belief_version='masked-map-dispatch-state/v3',teacher_version='observed-exploration/v4',
+        action_semantics='post-safety-dispatch/50ms-v3',belief_version='shared-droid-local-depth/v4',teacher_version='observed-depth-exploration/v5',
         goal_encoder_checkpoint_sha256=bundle.goal_encoder_sha256,
         world_checkpoint_sha256=bundle.manifest.get('world_checkpoint_sha256'),
         projection_sha256=bundle.manifest.get('projection_sha256'),
@@ -239,7 +239,7 @@ def main():
     reference = config['reference_budgets']['world_updates' if is_world else 'imitation_updates']
     effective_batch = 16 if is_world else 32
     if args.integration_only:effective_batch=2
-    model = (WorldModel() if is_world else RecurrentPolicy(args.goal_checkpoint)).cuda()
+    model = (WorldModel() if is_world else RecurrentPolicy(args.goal_checkpoint,depth_input='vision' in bundle.manifest.get('perception_artifacts_sha256',{}))).cuda()
     critic = None if is_world else PrimitiveCritic().cuda()
     normalizer_path = (bundle.root / bundle.manifest['normalization']['path']).resolve()
     if not normalizer_path.is_relative_to(bundle.root) or hashlib.sha256(normalizer_path.read_bytes()).hexdigest() != bundle.manifest['normalization']['sha256']:

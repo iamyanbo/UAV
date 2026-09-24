@@ -1,0 +1,1 @@
+{"pid": 2578491, "source": "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r59", "command": ["python3", "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r59/run_after_perception.py", "--perception-cycle", "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58", "--output", "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r59", "--hours", "8"]}

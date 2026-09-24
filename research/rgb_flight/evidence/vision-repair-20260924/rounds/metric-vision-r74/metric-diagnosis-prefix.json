@@ -1,0 +1,63 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "purpose": "Offline privileged diagnosis only; no fitted transform may enter runtime",
+  "episode": "/home/iamyanbo/uav-rgb-flight/launches/20260924T085839Z/episode",
+  "gauges": [
+    {
+      "gauge": 0,
+      "paired_frames": 265,
+      "relative_rotation_rmse_degrees": 0.7846851002283693,
+      "posthoc_scale_for_diagnosis_only": 247.0984502315182,
+      "posthoc_translation_rmse_m": 0.35831659604669563,
+      "true_motion_radius_m": 3.3703525341977265,
+      "residual_to_motion_radius": 0.1063142779311627
+    }
+  ],
+  "rejected": {
+    "uninitialized": 543,
+    "unbracketed_or_label_gap": 1
+  },
+  "metric_scale_qualified_frames": 0,
+  "unaligned_metric_horizons": {
+    "1": {
+      "windows": 0,
+      "translation_rmse_m": null
+    },
+    "2": {
+      "windows": 0,
+      "translation_rmse_m": null
+    },
+    "4": {
+      "windows": 0,
+      "translation_rmse_m": null
+    },
+    "10": {
+      "windows": 0,
+      "translation_rmse_m": null
+    }
+  },
+  "rejected_metric_horizons_diagnostic_only": {
+    "1": {
+      "windows": 248,
+      "translation_rmse_m": 0.5171351494724223
+    },
+    "2": {
+      "windows": 233,
+      "translation_rmse_m": 1.0013535657778532
+    },
+    "4": {
+      "windows": 208,
+      "translation_rmse_m": 1.9782799648377536
+    },
+    "10": {
+      "windows": 137,
+      "translation_rmse_m": 4.871240448883336
+    }
+  },
+  "source_hashes": {
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T153536Z-metric-depth-full-recorded-23aa40/reconstruction/tracking.jsonl": "943105d2aaea1c7c0f0849d717a60f31fde45d598dae6515255af84fc4374af4",
+    "/home/iamyanbo/uav-rgb-flight/launches/20260924T085839Z/episode/training_labels/frames.jsonl": "49f9abaf70a3a83bc7b2947eefe47cbeb7cb6c71557531662b96de8a8e53f873",
+    "/home/iamyanbo/uav-rgb-flight/launches/20260924T085839Z/episode/observations/frames.jsonl": "b770bfe9765b7f5a77ab3fe2c72d98e4a9f01fbd618fad8dfd9f8545882f06f2"
+  }
+}

@@ -42,7 +42,7 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
     goals=torch.load(goal_path,weights_only=True)['tokens'].cuda()
     saved=torch.load(world_checkpoint,map_location='cpu',weights_only=True)
     if saved.get('module')!='world' or saved.get('update',0)<1:raise ValueError('Trained world checkpoint required')
-    required={role:pack.spec['artifacts'][role]['sha256'] for role in ('goal','odometry','projection')}
+    required={role:pack.spec['artifacts'][role]['sha256'] for role in ('goal','odometry','projection','vision') if role in pack.spec['artifacts']}
     if saved.get('perception_artifacts_sha256')!=required:raise ValueError('World perception differs')
     model=WorldModel().cuda().eval().requires_grad_(False);model.load_state_dict(saved['model'])
     hidden=torch.zeros(1,256,device='cuda');last_tick=None;belief_valid=True;origin=None
@@ -76,10 +76,10 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
         if not bool(((times.diff()>0)&(times.diff()<=250000000)).all()):continue
         if not all(r['belief_valid'] for r in selected):continue
         teachers=[corrections.get(r['frame_id']) for r in selected]
-        recovery=torch.tensor([bool(t and t.get('teacher')=='observed-exploration/v4' and t.get('expert_observation_conditioned')) for t in teachers])
+        recovery=torch.tensor([bool(t and t.get('teacher')=='observed-depth-exploration/v5' and t.get('expert_observation_conditioned')) for t in teachers])
         if not bool(recovery[20:].any()):continue
         runtime={key:torch.stack([r[key] for r in selected]) for key in
-            ('z','state','belief','memory','memory_valid','task','target_context','previous_command','current_tokens','goal_context')}
+            ('z','state','belief','memory','memory_valid','task','target_context','previous_command','current_tokens','goal_context','depth_tokens')}
         runtime.update(goal_tokens=goals.cpu(),sim_ns=times,
             latest_observation_ns=torch.tensor([r['latest_observation_ns'] for r in selected],dtype=torch.int64),
             visual_available=torch.tensor([r['visual_available'] for r in selected]),
@@ -96,7 +96,7 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
             collision_return=torch.full((40,),float(collision)),primitive_return=primitive,primitive_valid=valid)
         path=output/'windows'/f'policy-{len(windows):06d}.pt'
         torch.save(dict(episode_id=attempt['episode_id'],attempt_id=attempt['attempt_id'],runtime=runtime,
-            training_labels=supervision,teacher_source='observed-exploration/v4',teacher_reasons=[t.get('reason') if t else 'missing_supervision' for t in teachers]),path)
+            training_labels=supervision,teacher_source='observed-depth-exploration/v5',teacher_reasons=[t.get('reason') if t else 'missing_supervision' for t in teachers]),path)
         windows.append(dict(module='policy',episode_id=attempt['episode_id'],attempt_id=attempt['attempt_id'],path=str(path.relative_to(output)),sha256=checksum(path),
                             timing_qualified=bool((times.diff()<=75000000).all())))
         if attempt['split']=='train':primitive_values.append(primitive)
@@ -111,13 +111,13 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
         scope='Executed observation-conditioned exploration and recovery; deployment remains unqualified',
         training_ready=bool(windows),deployment_accepted=False)
     audited=[corrections[r['frame_id']] for r in rows if r['frame_id'] in corrections and
-        corrections[r['frame_id']].get('teacher')=='observed-exploration/v4' and
+        corrections[r['frame_id']].get('teacher')=='observed-depth-exploration/v5' and
         corrections[r['frame_id']].get('expert_observation_conditioned')]
     from collections import Counter
     result['demonstration_coverage']=dict(unique_audited_observations=len(audited),
         explicit_stops=sum(bool(t.get('explicit_stop')) for t in audited),
         reasons=dict(Counter(t.get('reason','unspecified') for t in audited)))
-    spec=dict(schema='policy-sequence-views/v1',action_semantics='post-safety-dispatch/50ms-v3',belief_version='masked-map-dispatch-state/v3',teacher_version='observed-exploration/v4',foundation=dict(accepted=False,training_ready=True,visual_goal_runtime=True,
+    spec=dict(schema='policy-sequence-views/v1',action_semantics='post-safety-dispatch/50ms-v3',belief_version='shared-droid-local-depth/v4',teacher_version='observed-depth-exploration/v5',foundation=dict(accepted=False,training_ready=True,visual_goal_runtime=True,
         valid_expert_episodes=source.get('unique_successful_expert_episodes',0)),
         episodes=[dict(episode_id=attempt['episode_id'],split=attempt['split'],goal_region_id=attempt['goal_region_id'],
             start_goal_pair_id=evaluator.get('start_goal_pair_id',attempt['episode_id']),

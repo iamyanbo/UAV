@@ -42,7 +42,7 @@ def dagger_data(args,pack,episode,result,runtime,receipt,rows):
     for row in rows:
         if not row['metric_geometry_available']:
             correction=corrections.get(row['frame_id'])
-            if not correction or correction.get('teacher')!='observed-exploration/v4' or not correction['expert_observation_conditioned']:
+            if not correction or correction.get('teacher')!='observed-depth-exploration/v5' or not correction['expert_observation_conditioned']:
                 raise ValueError('Missing audited correction at a learner-visited recovery state')
         public.append(dict(row['runtime'],frame_id=row['frame_id'],sim_ns=row['sim_ns'],
             latest_observation_ns=row['latest_observation_ns'],visual_available=row['visual_available'],
@@ -126,7 +126,7 @@ def ppo_data(args,pack,episode,result,runtime,receipt,rows):
         valid=torch.tensor([[False]*20+[e['valid'] for e in events[20:]]])
         if not bool(valid.any()):continue
         features={key:torch.stack([r['runtime'][key] for r in selected])[None] for key in
-            ('state','task','previous_command','target_context','current_tokens','goal_context')}
+            ('state','task','previous_command','target_context','current_tokens','goal_context','depth_tokens')}
         context=[]
         for row in selected:
             mask=row['runtime']['memory_valid'][:,None]
@@ -157,7 +157,7 @@ def ppo_data(args,pack,episode,result,runtime,receipt,rows):
         reward_privileged_distance_progress_training_only=True,behavior_policy_sha256=behavior,
         behavior_frozen_during_collection=True,safety_filter_active=True,slow_planner_disabled=True,
         initial_policy_checkpoint='initial-policy.pt',goal_encoder_checkpoint_sha256=pack.spec['artifacts']['goal']['sha256'],
-        perception_artifacts_sha256={role:pack.spec['artifacts'][role]['sha256'] for role in ('goal','odometry','projection')},
+        perception_artifacts_sha256={role:pack.spec['artifacts'][role]['sha256'] for role in ('goal','odometry','projection','vision') if role in pack.spec['artifacts']},
         completed_episodes=[dict(attempt_id=episode.parent.name,termination=termination,
             collision=bool(result.get('airsim_collision') or result.get('geometry_collision')))],shards=shards,
         collected_proposals=len(rows),unique_learning_transitions=len(used),skipped_gap_windows=skipped,

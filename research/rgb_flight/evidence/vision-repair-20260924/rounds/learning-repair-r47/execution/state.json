@@ -1,0 +1,291 @@
+{
+  "schema": "training-round/v1",
+  "contract": {
+    "spec_sha256": "e26d0296eae2f040065804af6e90b3fc092ceebb52096870ffeec209721ce8b0",
+    "source_hashes": {
+      "acquire.py": "b95bb2f3e72d27a9e9766a1c6f9c3402c41e93767ada550cd0ee47899e6fdd13",
+      "acquire_reference_geometry.py": "7c46e9d141c88278abd763b9df8a39acb43c4ea4d87791437ff9362847632c8d",
+      "action_intervals.py": "bc369d100921d423ebe9d16e29bd5cf64a56e4a5484a8dea1321379d439e27ef",
+      "after_reference_survey.py": "fef6e3b39d7d58e842a881bb966d7e2f8671c2556b9afbe945b68f2b0b9e3b40",
+      "archive_video.py": "c2e87aad14dade7966b592c5bd9499a79c7144c4f74cb3ec4a8d9e15bbc89f28",
+      "async_mapping.py": "5f19bbc24d5f9a9fa98dfe93e0a968a3347a6a79f034c14bf8d692faca990a1e",
+      "async_video.py": "a69eb20c97e539415a3345afe4b57c6336ae87fca23883f1b2458a81c0ead496",
+      "audit_obstacle_coverage.py": "29d7857dfee9175b055fb3e4d22f274ca2ee2b9870dee27791a3929fd9973bfd",
+      "await_demonstrations.py": "8ed57caee24a89c08fa44eb93e578fc5710497c429016e0671c7ca4aa76a8387",
+      "broker.py": "e4aaecfe13c2189fca98ed453eaf602b5a6dd6b752c8896f15e21beeef3c08b8",
+      "build_configuration_examples.py": "fa5f24883ab9903d4d0c70b0c74c61e9b5fc021ed2cbeac90a935227c917ecc7",
+      "build_dzn.py": "e66028973cddeb7133dfbbc8f0a6ed0364998a0354f80d046ba1e5ed3bf093be",
+      "build_goal_round.py": "0d685bd0f060993a029299344670dcb98d58a5d82b6800d3605891ed5094edac",
+      "build_model_stack.py": "b8e287bd9f326fad405418b77a2abed7ee120f1cca37060aff1418e4cc0c77d9",
+      "build_online_learning.py": "ad787459b99d754e0be66bad893f5ff07c76bfe4ca334b1ec94318eae9080f5c",
+      "build_policy_sequences.py": "e65490adaddee6ba816af2e16db7963c15310d07105311020dbe2800224cb9d7",
+      "build_preference_examples.py": "cc3ba49e6f0a0b353ee9f8b6898f0db75c344f0067a0eb7c6a613786cb8c0c9e",
+      "build_visual_dataset.py": "4cda396df43de6fdfa53fb35eb9ebe6c194699034fe776704898dd868f93457a",
+      "build_world_sequences.py": "67be0d1dd2818bac6703b70f550749e4c6229758f843c312ef56da6e91000ec9",
+      "calibration.py": "df92730cc2f3f7d7b956b6191db47c4af0cd6e352ed265ea947c1ade007c0499",
+      "camera_profile.py": "5639f3f4d7b744cee70600e50e4d8297c00b943596cdba5ac001986004fd8308",
+      "campaign.json": "55b31fe0d50d86df8873df005926e451d34364ec8500f39304337b9aac5fe53d",
+      "capture_goal.py": "2bf4596e1c916e098e6b8f4e686e5a14c4928c02764c2c7a2689efccd8638619",
+      "capture_obstacle_field.py": "b69b223ea60af0a27c8fd4adf051d84a303d54741a110fbcee3f20a42c4151c8",
+      "causal_mapper.py": "a285dc37038efc97340f146e5bd69254a7c81c209e877ffdcaac2e8f2158bb82",
+      "causal_pose.py": "e4930f4d695dfdf28ed5219ea6860759ed9d663891914aaa29c6ae04feafede9",
+      "collect_configuration_preferences.py": "746136a0b95c4883cce994076b937fadfcc553a8099373123b4258a45b76ac06",
+      "collect_learning_round.py": "91e45cf00557b457837d9072cc76ea6984b8b37cab71acb693d3d447ea667a0e",
+      "collect_safety_profile.py": "737c6b87a8a96605506436fc0e5d9ae3b7cd618c36191ba0365803d59343c633",
+      "configurator.py": "0f9d8862f554dd2adc370c5f19b56e480a925a4fd6dd47d19a312d4c4a70689e",
+      "container_job.py": "21227d097672c2231545a1c559567d69c1c88602e512c2e4250143c1d0f4b8b8",
+      "contracts.py": "159f1016c9601f00417cbf8db8ec4d3fec69021dd7267094223b47c7880ce737",
+      "controller.py": "3b02681afcc1a6e421844202f9b8b9806fbd1c902f98fa1c0906ba9cdcbf2100",
+      "dagger.py": "b606d9e72de98c712362c8868091ce69bfe26ff89311434254dfc918a946962f",
+      "download_models.py": "d4665f029e59da87a57d66221dbf0e9f157e98a1d68013282c6fa4b6b04763ef",
+      "dynamics_probe.py": "daa6f116604ed86f22bc4e4e7214bb92e70c8ad0a20231d842854c8fabc52401",
+      "episode_generation.py": "3cf1c3da8c3db729c4192c5a3b0148ccfa7abe3a0eff25044f0897822f65b1dd",
+      "episode_store.py": "368cf2b1d5e0d18fe504157e9139c3c87075a03c47f0209251a1fc1e23d5fffd",
+      "evaluate_visual_goal.py": "68e26e0427cc0c0c5933621ee98a52f45e6ebd1abefbde419d6a571eeea2d80b",
+      "feature_cache.py": "0bbea9d9c9ab3ecb691d9600b014c3b4520789476698a109f526e3263995dcb3",
+      "fit_runtime_projection.py": "5b6b454e2d826b03c7d5cc6d793212644219f4eb0e3fe03648f6bc3d9cba3a7b",
+      "flight_evaluator.py": "f216e3d20d91f78f5827e95a21560c7193e91e397c741a3e9aaeba1b1e1b0879",
+      "goal_io.py": "945cbdcd19dab726b68eb6b8699512d106f12e61f0c3c5f0c115c5bcc1356300",
+      "goal_matching.py": "664369e29212074fe20942913654d01083db210071a6130d6c7094d044a310a3",
+      "graphics_probe.py": "32066a2a6128df2b64f663e6d2fe975cc9339136e4f46bb2b4d0eb2cea2b7eee",
+      "inspect_episode.py": "0d7d3777c8209fe090b4a66bebdd3c762045b59a773c3746087f6e248292c9d4",
+      "inspect_simulator.py": "10c577d0dfa6a5335234d48d1843ba1c5c8861022066891038235ec063024a39",
+      "install_mapping_runtime.py": "8f6ae9e7d43d2d509ae9ac44e0e83537e106f898ff0938d8a0889eec062d9eb7",
+      "install_swiftshader.py": "780d2e3e11219d759b88f6fa6d8909435a4e6c7abc81144947a179aa764345f7",
+      "isolation.py": "53b80814fb18899cde24e6aa280ee4887d1bff17f9fd7ce06687490a567ffd84",
+      "isolation_client.py": "80ded5c2c3c3710b3cf23c5de62f28b2bf765d670839e1bd3dfed5fc0b23682c",
+      "learned_controller.py": "6e02d1a4735d63f652ff716434eb3040fb8309f5978ce32eee6ac5fcf2e5f317",
+      "learning_data_job.py": "7c3f7b97c89139d21d13b3d522673bc1350f77b750d11530cd332ce6b1f0b290",
+      "learning_models.py": "fbebd3ad6d59c6cc2306db6f534fa0cef279c9de274c0f2adcc59484221d192b",
+      "linux_probe.py": "4dfb4ac3cd28254ae5d29097ac06adba37685a484b16476e3a6aaca2095cdff0",
+      "live_controller_process.py": "fbcc57e8ea9bc8f022ae641e0a373e3b3a90621f8c93281cc00721cd124f4e57",
+      "live_deliberation.py": "4c9aa1ee7749af9fa0e23d52b60fb8d81887f6055312ab2508ed8e774b4f410c",
+      "live_perception.py": "50623a91f6c32ce5b4d59bcd62d04a331fa7a1eae12000def6c2c58bcd564f92",
+      "live_visual.py": "1676db4d7d82c8fa51f61324b211b953fafacdc8b62446a3fc10b7c165edd5c4",
+      "mapping_worker.py": "3f53840ae67e3fa2762f5559da9e1ef6cebe92ea1628fe9e2609419275a26539",
+      "memory_snapshot.py": "d3e4baf356ae24ce8f934cd24687e04bce1e135ffc9f59f6772f8b0c8341d615",
+      "metric_alignment.py": "df98f44e5d6e8b2ac81d162f8a8f5f1fa55ecb89c9c865c691ebaf223e439dbd",
+      "mine_goal_negatives.py": "6eef3082faa91d2726bafa55f337674d12795aea75dbe6304dd152d734760a4c",
+      "model_probe.py": "862cc4376bb9a545296d5076d8e26b2bfb527cd8d93ea213e864ba3a4b9814c9",
+      "native_cuda_check.py": "931ba324b9ab24ab183c2c4b6f3dab3bb1e7c6a881eaacf04b43be4d7e6c04a5",
+      "navigation_process.py": "305f2e782f5a4a237a99b0292740eb8c7b038db4675eb6239d29bbfdd470b22b",
+      "navigation_state.py": "7c5fddd8111b2ec083b6299681f4e081e69f04adae158b7df3b465e30feba0c5",
+      "obstacle_field.py": "dfd48f8d5f89b4a3bcfd449aad631607d8e3643bc2558b441c13e870348a81aa",
+      "package_navigation.py": "af693a83fbaca2934a71411b174c178c73be8bb3345cb00a9a582f011b97931c",
+      "parameter_evidence.py": "81cb7b20e82fa939f8f85a93c28630290671f571fa8bd591715f2f166fb75bae",
+      "perception_metrics.py": "320aa3eea9a08c555fc099f24cf45e7281179ad3d60bb4b4dfc9f1e289ee78eb",
+      "perception_process.py": "ee85f4fff73831a9253d6d663e6fc7028f1fb857fb12c8ee8e8d377311b7fae3",
+      "port_splat.py": "7ea43b36b7772744ec927d7db18201d0a9a3e08b87a2cb152846abed98a4c835",
+      "ppo_learning.py": "db59c35a68639c6aa53406eaf5806f2b6a7a6034d11155c79d288ae68d97635f",
+      "predictive_planner.py": "ec9f4bf786fd84e6e0af80d9777841bfd1dde17c239f1d357fa7fd758050f053",
+      "preflight.py": "941a3c65df2b31d825ea64f2ae9d73c11a1664166a6a54fe283529a3fade6800",
+      "prepare_learning_data.py": "7f447334073c68c455b5ddd959749f07b413e4c6251aafef87cd32c91f2443d2",
+      "prepare_scale_campaign.py": "34c2d5a2faa05460324121c78ea03bdb7a3c298019cafa9e4939e5d7e01b0ed1",
+      "probe_models.py": "7d67e47bb9cc80fa587ec5b0c39023ff1eac2117d99e90926e63a51c3064235c",
+      "program_scheduler.py": "a2ecad074a5223e3f7ec584bdcdbdfa6de91820a975cabdb3adb719fb0dc1029",
+      "provision_models.py": "32aa9e0b18ed87faad91df1e46eba4d17c8265bca4cfaaa61b1dda2282b8ca14",
+      "qualify_goal.py": "19dce26e1b1a6666bc7512ca268cc0bb1838be44045686e3ea82e54548c7ad64",
+      "qualify_odometry.py": "60385430307b7e82e7645bb378ab2250e0f51fb828566e6ade1ad3e6b899a50b",
+      "reconstruct.py": "c62c5d631b0e5a8dd244737859ed58d4a714356704bdf12f76fd439666b2521c",
+      "recorded_broker.py": "43c0a417b3767f342fde8ae80c5b45345692aab88f04270f4955d36d17536263",
+      "reference_campaign.py": "b29476fc26e302db209c854c33097593b28d1823ad75497a85211646049efa0f",
+      "reference_flight.py": "6932eb853404c5158e02b12c7479b07e875be13304b4f4bfc11872ba6e28ca2f",
+      "reference_routes.py": "baec694570c5913bd224bc6d653445e220bfaf45f45c9afd9d88b5ae9fdfb72c",
+      "reformat_configuration_dataset.py": "a4b4b29e5afef50e47118a505b1aecbc48ea3152678fca27f444fcad80c65aba",
+      "replay_collection.py": "65fdf1dc79f7e0d38a54e1abbc410f58270b4e291c06ae68fd87e60709f7908f",
+      "replay_navigation.py": "bb97deacdb5d01b879de322a51d166aae0af410c2838f27228a971fb39c1e032",
+      "resource_admission.py": "8d97457d0b3580dbfb2a9f084a1d585ec921c777334d184e91b4348215c84be6",
+      "resume_connected_cycle.py": "b65240fe049eabb9bff641509b4f36bbbe1ce4edc3b3ec2f26fe56cbf2814083",
+      "rpc_probe.py": "25b095d1f584e4160b669969c68a524b31927de4cea702f8933b7da3a402730f",
+      "run.py": "683bd12f12f28c3e75fcd48246c6de067c3c959c06bb86688f4694a1e5defe2f",
+      "run_connected_cycle.py": "8a8c916bc6a8037eb711a95228d04b366e52ff2e4b3df38e244e75847b841f83",
+      "run_continuation_window.py": "9d87b83e664d3a27c0fb56663dd3e08cdc3b3245efd554242f297f5aa7663647",
+      "runtime_capacity.py": "ac4f859faf5a738d51d0c478b72309dcd8fc34419ffb8296d3a12ba760b7c907",
+      "scale-calibration.json": "af37b3b42ff13bc56b519ade73e75de1fdc1b9f79b6490b53338eed8bdf8e4f0",
+      "scale_data.py": "5d877d675006ccc07ac88bdb26269143f881ad16d85836733696044efeaa11bd",
+      "scale_features.py": "4fdcfb256aaa127a5392b4eb9dd5af80cca0922060c3b4752537d4681888b135",
+      "scale_runtime.py": "987fc6a8780a5cbd4b46574821f7a890f5a734066aec3dcb9a5d9b8117e859ce",
+      "simulator_gate.py": "a9039dc852a24d238d718594a0f4fe35ed8e111484fed8ffe8e8e262d5ac2d83",
+      "spark_guard.py": "2bf7479bc3d298a60ac8b39f868a1a4669006500921091e1dfa833ac30acc89d",
+      "spark_launch.py": "0575935724cee2106acffeb7ba9a4a16c1483853eb26697a055cbc123f6e82a8",
+      "spark_manage.py": "905da0202f0dd762b467f01da8a2e847bab258f3b8bde82850dc3e411a532b90",
+      "spark_remote.py": "627adb35ccde84f2f941df20432da0f3db7adffc935eecd4daa85d8718af0345",
+      "spark_setup.py": "3308c05e3fa79c4e7bd9dad0df5919bf2218f571c9c734fb51fbb59c4ad475fd",
+      "spatial_memory.py": "c2f2aa68f3a751ea03425b70153922b801812072715c6912b07b82a0ca9323bf",
+      "splat_kernel_check.py": "dbc57e48d906dd02a14dd2a299f0505582dc0ef08968a2a8415c34c677dee3aa",
+      "splat_raster_check.py": "8e70cdad1ea22a622f9a9cb2b47407ef199a7873fbeecdb2e964f01121e2dad7",
+      "splat_tracking_probe.py": "67e9baab250e38c731571b444551b87aea783587b530c5b9b08aa88118910100",
+      "stage_worker.py": "c49ead6301119ad97591d81481a096d2a5307d6d79d7320aaf752a78501babc2",
+      "startup.py": "744b6d574f4467fe6ebfce8906251bbe98109ab8b59875c0b48b007b3140304c",
+      "train_configurator.py": "07a90a95f7381599ecc4c9379cd5d3b7d644653145c7071be0a8b0154f8d2654",
+      "train_models.py": "bb231e3c67a58930e5c07e69bb99f7e8fda9fbba08bab1f0d3b205227100cc51",
+      "train_odometry_sequences.py": "0eb4f60e7d14d0840c938789e8d77ad58e6ec485d67ccef6d2ca64a305b68e43",
+      "train_ppo.py": "704a915d9b506568e33b6d88b7eeb63485ba2c73a3c3e3e3971c2869350979a4",
+      "train_scale.py": "03d811cf4124b963743b8e349285b870ba56edd21fa84a86d2744fb2d3044202",
+      "train_visual_components.py": "e1e5161853ea35f2a0a95f597996009f460c0ade38c425b46c9b4d901ede1262",
+      "training_labels.py": "20ca0f3bf19a8584d28e8b6cf160b341351c698578464df96f4eac62ca8cbb6f",
+      "training_program.py": "3b072ddf29520b4152b2d46ba48a636b4a4000fc274e952e8777aa787946a90d",
+      "trajectory_bundle.py": "fd97c1adf23ec36b058632af32418902633d4258dc8ab84e2998752f12a1d462",
+      "verify_reference_evidence.py": "30f4ec3b877e574bdffc8c349fc22eb8dc304ca28b3a563aace6762403c3dc4d",
+      "visual_contract_check.py": "41ec2ad8ccca2bc06bc23c5cae80840365cd51a093afba79d9f7abe60c065174",
+      "visual_encoder.py": "7ca46b22eb601d8b3db5bc6bfa57edc4ce14295c9e12360f1f3bb9fe708f1f79",
+      "visual_goal_campaign.py": "b8a142eaacea270d0fc7d5b95a18605e5917f7397f00ccc74dd64750691ab662",
+      "visual_goal_flight.py": "342e1123b2c85e594bb95b90953bff1dc36d7bc513dbd7db6b100e512c509c2f",
+      "wire.py": "bbe7c55d4edd8b1cb414cfcb848db25ecd56af6c5c98c91f7c1426670db844a2"
+    },
+    "inputs": {
+      "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r46/execution/ppo-pack/checkpoints.json": "85fdd6ccea76cf52be17af9c495ad0e5e496db88f5f562c65df61ea7751bfa84",
+      "/home/iamyanbo/uav-rgb-flight/runs/20260924T035124Z-ppo-update-e73cfc/ppo/final.pt": "890a27b60f0ede12c480c6c90b064d6eb251a7a4f96dcecc38aaa5d5f1014362",
+      "/home/iamyanbo/uav-rgb-flight/runs/20260924T034456Z-world-update-f1d44d/training/final.pt": "dce916ba49378221d6acb4747a6efed6763075129b5c62ec06b5642d1479b4e0",
+      "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/safety.json": "ad063b81b2ec32d9830e62f53fd75d9092600423003ae619f8159ee051cddf1d",
+      "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/checkpoints.json": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4"
+    }
+  },
+  "round_id": "execution",
+  "stages": {
+    "updated-policy-flight": {
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2538804,
+            "start_ticks": "132125040",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r47/execution/updated-policy-flight-000.log"
+        }
+      ],
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r46/execution/ppo-pack/checkpoints.json": "85fdd6ccea76cf52be17af9c495ad0e5e496db88f5f562c65df61ea7751bfa84"
+      },
+      "process": {
+        "pid": 2538804,
+        "start_ticks": "132125040",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r47/execution/updated-policy-flight-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/learning-repair-r47/spark_guard.py",
+        "--name",
+        "updated-policy-flight",
+        "--seconds",
+        "1200",
+        "--kind",
+        "flight",
+        "--peak-gib",
+        "72",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/learning-repair-r47/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r46/execution/ppo-pack",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T034035Z-exploration-demonstrations-0ec7d6/collection/flights.json"
+      ],
+      "started_unix": 1790222118.280743,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T035518Z-updated-policy-flight-2cc2eb",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T035518Z-updated-policy-flight-2cc2eb/result.json",
+        "sha256": "3867ed8c685e38d72492281782c48cbfcb2d9622c8f55de6b970fe0b86db4fed"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T035518Z-updated-policy-flight-2cc2eb/collection/result.json",
+        "sha256": "d0e5ed5298663b70bcd5b5c77c845bc2ce63f549ab100aadae45c6e5ee5da50a"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T035518Z-updated-policy-flight-2cc2eb/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T035518Z-updated-policy-flight-2cc2eb/collection/flights.json",
+          "sha256": "10f8797e8347586f34bfa42c39bfa0cd24074f6ed9fc9191b1b54815e64bf7be"
+        }
+      ]
+    },
+    "final-reload-flight": {
+      "status": "running",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2539641,
+            "start_ticks": "132134650",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r47/execution/final-reload-flight-000.log"
+        }
+      ],
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r46/execution/ppo-pack/checkpoints.json": "85fdd6ccea76cf52be17af9c495ad0e5e496db88f5f562c65df61ea7751bfa84"
+      },
+      "process": {
+        "pid": 2539641,
+        "start_ticks": "132134650",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r47/execution/final-reload-flight-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/learning-repair-r47/spark_guard.py",
+        "--name",
+        "final-reload-flight",
+        "--seconds",
+        "1200",
+        "--kind",
+        "flight",
+        "--peak-gib",
+        "72",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/learning-repair-r47/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r46/execution/ppo-pack",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T034035Z-exploration-demonstrations-0ec7d6/collection/flights.json",
+        "--with-deliberation"
+      ],
+      "started_unix": 1790222214.3795085,
+      "reason": "Owned remote guard running",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T035654Z-final-reload-flight-673a8d"
+    },
+    "development-flights": {
+      "status": "ready",
+      "attempts": []
+    },
+    "matched-configuration-flights": {
+      "status": "ready",
+      "attempts": []
+    },
+    "preference-data": {
+      "status": "ready",
+      "attempts": []
+    },
+    "qwen-preference-update": {
+      "status": "ready",
+      "attempts": []
+    },
+    "preference-pack": {
+      "status": "ready",
+      "attempts": []
+    },
+    "preference-updated-flight": {
+      "status": "ready",
+      "attempts": []
+    }
+  },
+  "updated_unix": 1790222370.5465171
+}

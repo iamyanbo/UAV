@@ -20,13 +20,19 @@ def build(bundle,output,initialization):
     manifest_path=bundle/'manifest.json';manifest=json.loads(manifest_path.read_text())
     if manifest['schema']!='visual-trajectory-bundle/v1':raise ValueError('Aligned trajectory bundle required')
     root=Path(manifest['collection_root']);episodes=[];windows=[];seen={}
-    # One attempt per task for visual sampling; keep failures if no success is
-    # available. All attempts remain available in the trajectory bundle.
+    # Keep the strongest recorded demonstration and the latest failed attempt
+    # per task. Otherwise successful expert flights hide learner false matches.
+    failures={}
     for item in manifest['attempts']:
         old=seen.get(item['episode_id'])
         if old is None or (item['success'],item['aligned_frames'])>(old['success'],old['aligned_frames']):
             seen[item['episode_id']]=item
-    for item in seen.values():
+        if not item['success']:
+            old=failures.get(item['episode_id'])
+            if old is None or item['episode_path']>old['episode_path']:failures[item['episode_id']]=item
+    selected=list(seen.values())
+    selected += [item for key,item in failures.items() if item['attempt_id']!=seen[key]['attempt_id']]
+    for item in selected:
         if item['campaign_split']!='train':raise ValueError('Sealed campaign split in training bundle')
         runtime_path=bundle/item['runtime']['path'];label_path=bundle/item['training_labels']['path']
         if digest(runtime_path)!=item['runtime']['sha256'] or digest(label_path)!=item['training_labels']['sha256']:
@@ -56,6 +62,7 @@ def build(bundle,output,initialization):
         for frame,category in chosen:
             remaining=max(0.,(end_ns-frames[frame]['sim_ns'])/1e9)
             windows.append(dict(module='goal',episode_id=episode_id,episode_path=relative,frame_id=frame,
+                attempt_id=item['attempt_id'],goal_sha256=runtime['goal_sha256'],
                 category=category,training_labels=dict(near_goal=category=='positive',match_valid=True,
                 time_to_goal_seconds=remaining,time_valid=item['success'],
                 terminal_return=1.-min(1.,remaining/180.) if item['success'] else 0.,value_valid=item['success'])))
@@ -69,6 +76,7 @@ def build(bundle,output,initialization):
         source_manifest_sha256=digest(manifest_path),initialization_sha256=digest(initialization) if initialization else None,
         label_alignment='interpolated at exposure; <=250 ms state bracket; 10 cm goal-boundary ambiguity band',
         time_supervision='successful demonstration remaining time only; unsuccessful outcomes censored',
+        attempt_selection='best demonstration plus latest failed attempt per task; attempt-specific original goals',
         objective_version='goal-recognition-calibration/v3')
     (output/'visual-training.json').write_text(json.dumps(value,allow_nan=False))
     categories={split:{kind:sum(r['category']==kind and next(e['split'] for e in episodes if e['episode_id']==r['episode_id'])==split for r in windows)

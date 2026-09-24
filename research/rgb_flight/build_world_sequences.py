@@ -33,7 +33,7 @@ def build(bundle,checkpoints,replays,output):
     for directory in replays:
         replay=json.loads((directory/'manifest.json').read_text())
         if replay['checkpoint_set_sha256']!=pack.identity:
-            perception={k:pack.spec['artifacts'][k]['sha256'] for k in ('goal','odometry','projection')}
+            perception={k:pack.spec['artifacts'][k]['sha256'] for k in ('goal','odometry','projection','vision') if k in pack.spec['artifacts']}
             if replay.get('perception_artifacts_sha256')!=perception:
                 raise ValueError('Mixed perception checkpoints require separate causal data rounds')
         if not (replay['slow_feature_mode'].startswith('measured paced replay') or replay['slow_feature_mode']=='actual online publication at physical learner-visited states'):
@@ -146,9 +146,9 @@ def build(bundle,checkpoints,replays,output):
     if normalizer is None:reasons.append('insufficient_training_normalization')
     result=dict(status='completed',accepted=False,candidate_windows=len(windows),
         timing_valid_windows=sum(w['action_timing_valid'] for w in windows),training_ready=not reasons,blocking_reasons=reasons)
-    manifest=dict(schema='world-sequence-views/v2',action_semantics='post-safety-dispatch/50ms-v3',belief_version='masked-map-dispatch-state/v3',foundation=dict(accepted=False,training_ready=not reasons,
+    manifest=dict(schema='world-sequence-views/v2',action_semantics='post-safety-dispatch/50ms-v3',belief_version='shared-droid-local-depth/v4',foundation=dict(accepted=False,training_ready=not reasons,
         valid_expert_episodes=source.get('unique_successful_expert_episodes',source['unique_successful_episodes']),visual_goal_runtime=True),
-        perception_artifacts_sha256={role:pack.spec['artifacts'][role]['sha256'] for role in ('goal','odometry','projection') if role in pack.spec['artifacts']},
+        perception_artifacts_sha256={role:pack.spec['artifacts'][role]['sha256'] for role in ('goal','odometry','projection','vision') if role in pack.spec['artifacts']},
         goal_encoder_checkpoint_sha256=pack.spec['artifacts']['goal']['sha256'],
         projection_sha256=pack.spec['artifacts'].get('projection',{}).get('sha256'),
         navigation_checkpoint_set_sha256=pack.identity,source_bundle_sha256=checksum(bundle/'manifest.json'),

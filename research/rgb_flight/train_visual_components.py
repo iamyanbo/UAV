@@ -67,7 +67,7 @@ def recorded_rgb(episode,index,frame_id):
 
 def load_record(root,row,goal_hashes):
     if 'episode_path' in row:
-        episode,index,goal_rgb=indexed_episode(str(root),row['episode_path'],goal_hashes[row['episode_id']])
+        episode,index,goal_rgb=indexed_episode(str(root),row['episode_path'],row.get('goal_sha256',goal_hashes[row['episode_id']]))
         current=recorded_rgb(episode,index,row['frame_id'])
         if row['module']=='goal':
             runtime=dict(current_rgb=current,goal_rgb=goal_rgb)

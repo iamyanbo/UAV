@@ -1,0 +1,21 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T153207Z-metric-depth-recorded-dc6ee2/source/stage_worker.py",
+    "reconstruct",
+    "--observations",
+    "/home/iamyanbo/uav-rgb-flight/launches/20260924T085839Z/episode/observations",
+    "--vision",
+    "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r74/metric-vision.json",
+    "--frames",
+    "160",
+    "--asynchronous-map"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 48.0,
+  "status": "finished",
+  "return_code": 1,
+  "elapsed_seconds": 4.0145813398994505
+}

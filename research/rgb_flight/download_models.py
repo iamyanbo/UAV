@@ -81,7 +81,23 @@ def inside():
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--inside',action='store_true')
+    parser.add_argument('--metric-depth',action='store_true',help='Download only the checksum-pinned Metric3Dv2-Small weights')
     args=parser.parse_args()
+    if args.metric_depth:
+        spec=json.loads(Path(__file__).with_name('metric-vision.json').read_text())
+        root=Path.home()/'uav-rgb-flight/assets/models';root.mkdir(parents=True,exist_ok=True)
+        target=root/'metric3d-vit-small.pth'
+        url='https://huggingface.co/JUGGHM/Metric3D/resolve/main/metric_depth_vit_small_800k.pth'
+        if not target.exists():
+            temporary=target.with_suffix('.partial')
+            subprocess.run(['curl','-fL','--retry','3','-o',str(temporary),url],check=True)
+            if digest(temporary)!=spec['checkpoint_sha256']:raise ValueError('Metric3D release changed; preserve candidate and review')
+            temporary.replace(target)
+        if digest(target)!=spec['checkpoint_sha256']:raise ValueError('Changed Metric3D checkpoint')
+        (root/'receipts').mkdir(exist_ok=True)
+        (root/'receipts/metric3d.json').write_text(json.dumps(dict(source=url,sha256=digest(target),
+            bytes=target.stat().st_size,source_revision=spec['source_revision'],status='downloaded'),indent=2))
+        return
     if args.inside:
         inside(); return
     root=Path.home()/'uav-rgb-flight'

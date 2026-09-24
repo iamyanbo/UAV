@@ -6,6 +6,7 @@ The original research and literature documents are preserved here with their ori
 - [Full UAV VLM literature review](UAV%20VLM%20Literature%20Review%20-%20Full.md)
 - [Navigation papers in depth](UAV%20Navigation%20Papers%20in%20Depth.md)
 - [General literature review](UAV%20General%20Literature%20Review%20-%202026-09-20.md)
+- [RGB vision adaptation and verified research boundaries](RGB%20Vision%20Adaptation%20-%202026-09-24.md)
 - [Review presentation PDF](UAV_Navigation_Literature_Review_Presentation.pdf)
 - [Review presentation source](UAV_Navigation_Literature_Review_Presentation.md)
 

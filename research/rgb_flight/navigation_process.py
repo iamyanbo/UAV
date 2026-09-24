@@ -33,7 +33,7 @@ def main():
     # collection/evaluator scripts. Neither that parent nor those scripts is
     # mounted into inference, even through the writable output directory.
     runtime_source=job/'inference-source';runtime_source.mkdir()
-    public_modules=('startup.py','runtime_capacity.py','replay_navigation.py','navigation_state.py','contracts.py','goal_matching.py','goal_io.py',
+    public_modules=('metric_depth.py','metric_navigation.py','startup.py','runtime_capacity.py','replay_navigation.py','navigation_state.py','contracts.py','goal_matching.py','goal_io.py',
         'learning_models.py','metric_alignment.py','spatial_memory.py','episode_store.py','wire.py',
         'visual_encoder.py','action_intervals.py','async_video.py','async_mapping.py','recorded_broker.py',
         'reconstruct.py','causal_pose.py','causal_mapper.py','mapping_worker.py','memory_snapshot.py')
@@ -50,6 +50,7 @@ def main():
         '-v',str(runtime_source)+':/source:ro','-v',str(root/'assets/models')+':/models:ro',
         '-v',str(root/'deps/vjepa2')+':/upstream/vjepa2:ro',
         '-v',str(root/'ports/Splat-SLAM')+':/upstream/splat:ro',
+        '-v',str(root/'deps/Metric3D')+':/upstream/metric3d:ro',
         '-v',str(inputs[0])+':/observations:ro','-v',str(inputs[1])+':/goal:ro',
         '-v',str(inputs[2])+':/navigation:ro','-v',str(writable)+':/output',image,
         'python','/source/replay_navigation.py','--frames',str(args.frames),

@@ -34,6 +34,7 @@ def specification(visual_pack,safety,episode,demonstrations=None,initial_world=N
     def pack(name,policy,world,qwen,depends):
         destination='{round}/'+name;command=['python3','{source}/package_navigation.py']
         for role in ('goal','odometry','projection'):command+=['--'+role,artifact(role)]
+        if 'vision' in visual['artifacts']:command+=['--vision',artifact('vision')]
         command+=['--safety',str(safety),'--policy',policy,'--world',world,'--qwen',qwen,
             '--goal-match-threshold',str(visual['goal_match_threshold']),'--output',destination]
         stage(name,'cpu',command,destination+'/checkpoints.json',[destination+'/checkpoints.json'],depends,peak=4,
@@ -67,7 +68,7 @@ def specification(visual_pack,safety,episode,demonstrations=None,initial_world=N
     else:
         stage('bootstrap-flight','flight',['python3','{source}/collect_learning_round.py','--demonstration-batch',
             '--controller-checkpoints',str(visual_pack)],'{job}/collection/result.json',
-            ['{job}/collection/flights.json'],peak=72,seconds=1800)
+            ['{job}/collection/flights.json'],peak=72,seconds=7200)
         collection=job('bootstrap-flight','collection/flights.json');bootstrap_dependencies=['bootstrap-flight']
     bundle=trajectories('trajectories',bootstrap_dependencies)
     stage('world-data','gpu',['python3','{source}/learning_data_job.py','--phase','world',
@@ -111,7 +112,7 @@ def specification(visual_pack,safety,episode,demonstrations=None,initial_world=N
     flight('final-reload-flight',updated,['updated-policy-flight'],combined=True)
     stage('development-flights','flight',['python3','{source}/collect_learning_round.py','--development-batch',
         '--controller-checkpoints',updated],'{job}/collection/result.json',['{job}/collection/flights.json'],
-        ['final-reload-flight'],peak=72,seconds=1800)
+        ['final-reload-flight'],peak=72,seconds=7200)
     stage('matched-configuration-flights','flight',['python3','{source}/collect_configuration_preferences.py',
         '--checkpoints',updated,'--qwen',qwen,'--goal-collection',collection,
         '--episode-id',episode],'{job}/configuration-preferences/result.json',['{job}/configuration-preferences/outcomes.json'],

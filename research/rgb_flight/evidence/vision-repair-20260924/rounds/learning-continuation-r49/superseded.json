@@ -1,0 +1,4 @@
+{
+  "reason": "Queued collection must load the continued policy checkpoint",
+  "replacement": "/home/iamyanbo/uav-rgb-flight/rounds/learning-continuation-r50"
+}

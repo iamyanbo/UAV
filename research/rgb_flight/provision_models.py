@@ -42,11 +42,15 @@ def main():
         lock = json.loads(lock_path.read_text()) if lock_path.exists() else {}
         repos = {'Splat-SLAM': 'https://github.com/google-research/Splat-SLAM.git',
                  'vjepa2': 'https://github.com/facebookresearch/vjepa2.git',
-                 'OpenFly-Platform': 'https://github.com/SHAILAB-IPEC/OpenFly-Platform.git'}
+                 'OpenFly-Platform': 'https://github.com/SHAILAB-IPEC/OpenFly-Platform.git',
+                 'Metric3D': 'https://github.com/YvanYin/Metric3D.git'}
         for name, url in repos.items():
             target = root / 'deps' / name
             if not target.exists():
                 subprocess.run(['git', 'clone', '--recursive', url, str(target)], check=True)
+                if name == 'Metric3D':
+                    revision=json.loads(Path(__file__).with_name('metric-vision.json').read_text())['source_revision']
+                    subprocess.run(['git','-C',str(target),'checkout','--detach',revision],check=True)
             commit = checked(['git', '-C', str(target), 'rev-parse', 'HEAD']).strip()
             if name in lock and lock[name]['commit'] != commit:
                 raise RuntimeError('Source revision changed: ' + name)

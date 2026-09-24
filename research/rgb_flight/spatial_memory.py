@@ -182,7 +182,7 @@ class ConservativeGeometry:
     def build(self, device):
         from scipy.ndimage import distance_transform_edt
         occupied = self.occupied > 0
-        known = (self.free >= 2) | occupied
+        known = (self.free >= getattr(self,'minimum_free_observations',2)) | occupied
         if occupied.any():
             distances = torch.from_numpy(distance_transform_edt(~occupied.numpy())).float() * self.resolution
         else:

@@ -1,0 +1,8 @@
+{
+  "status": "window_ended",
+  "accepted": false,
+  "reason": "Assistant checkpointed downstream continuation to prioritize causal VO/SLAM/metric-alignment diagnosis after user questioned the training strategy",
+  "world_status": "checkpointed",
+  "world_updates": 2042,
+  "policy_updates": 2001
+}

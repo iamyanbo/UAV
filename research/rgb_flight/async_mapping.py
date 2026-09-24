@@ -11,12 +11,13 @@ from memory_snapshot import MemorySnapshot
 
 
 class AsyncMapping:
-    def __init__(self,episode_id,directory,socket_path):
+    def __init__(self,episode_id,directory,socket_path,vision=None):
         self.episode_id=episode_id;self.directory=Path(directory);self.tracking_count=0;self.map_version=-1;self.tracking=[]
         self.executor=ThreadPoolExecutor(max_workers=1,thread_name_prefix='map-publication',initializer=slow_worker);self.pending=None
         self.log=self.directory.with_suffix('.log').open('x')
         command=[sys.executable,str(Path(__file__).with_name('reconstruct.py')),'--output',str(self.directory),
                  '--broker-socket',str(socket_path),'--episode-id',episode_id,'--asynchronous-map']
+        if vision is not None:command+=['--vision',str(vision)]
         self.process=subprocess.Popen(slow_command(command),stdout=self.log,stderr=subprocess.STDOUT)
         deadline=time.monotonic()+120
         while not Path('/output/tracker.ready').exists():
@@ -39,11 +40,20 @@ class AsyncMapping:
             for line in lines[self.tracking_count:]:
                 if not line.endswith('\n'):break
                 row=json.loads(line);self.tracking_count+=1;self.tracking.append(row)
+                metric=None
+                if row.get('metric_depth_file'):
+                    metric=torch.load(self.directory/row['metric_depth_file'],map_location='cpu',weights_only=True)
+                    if metric['frame_id']!=row['frame_id'] or metric['observation_ns']!=row['sim_ns']:
+                        raise ValueError('Metric depth source differs from tracking source')
                 results.append(('tracking',dict(episode_id=self.episode_id,version=self.tracking_count,
                     observation_ns=row['sim_ns'],available_monotonic=time.monotonic(),
                     upstream_available_monotonic=row['processed_monotonic_seconds'],
-                    initialized=row['initialized'],c2w=row['estimated_c2w_arbitrary_scale'],gauge_version=row['gauge_changes'])))
+                    initialized=row['initialized'],c2w=row['estimated_c2w_arbitrary_scale'],gauge_version=row['gauge_changes'],
+                    metric=metric,pose_quality=row.get('pose_quality'),source_frame_id=row['frame_id'])))
         folder=self.directory/'memory'
+        # Process the newest pose/depth only; retain all raw tracker receipts
+        # on disk, but do not build local grids for already superseded images.
+        if results:results=[results[-1]]
         if not (folder/'versions.jsonl').exists():return results
         versions=[json.loads(line) for line in (folder/'versions.jsonl').read_text().splitlines(keepends=True) if line.endswith('\n')]
         eligible=[r for r in versions if r['latest_observation_ns']<=metadata['sim_ns'] and r['published_monotonic_seconds']<=metadata['received_monotonic']]

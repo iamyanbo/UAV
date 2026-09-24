@@ -53,8 +53,8 @@ def main():
     if not transition_ids or transition_ids.intersection(manifest.get('previously_consumed_transition_ids',[])):
         raise ValueError('Empty/reused physical rollout batch')
     args.output.mkdir(parents=True,exist_ok=False);torch.manual_seed(args.seed);rng=np.random.default_rng(args.seed)
-    policy=RecurrentPolicy(args.goal_checkpoint).cuda()
     initialization=torch.load(args.policy,map_location='cpu',weights_only=True)
+    policy=RecurrentPolicy(args.goal_checkpoint,depth_input='vision' in initialization.get('perception_artifacts_sha256',{})).cuda()
     if manifest.get('perception_artifacts_sha256')!=initialization.get('perception_artifacts_sha256') or not initialization.get('perception_artifacts_sha256'):
         raise ValueError('Fresh rollouts must bind the behavior policy perception snapshots')
     policy.load_state_dict(initialization['model'],strict=True)

@@ -17,10 +17,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--episode', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--tracking',type=Path,help='A new causal reconstruction of this exact recorded episode')
     args = parser.parse_args()
     if not (args.episode / 'result.json').exists():
         raise ValueError('Diagnose only a completed episode')
-    tracking = args.episode / 'learned-controller/runtime/reconstruction/tracking.jsonl'
+    tracking = args.tracking or args.episode / 'learned-controller/runtime/reconstruction/tracking.jsonl'
     labels = args.episode / 'training_labels/frames.jsonl'
     observations = args.episode / 'observations/frames.jsonl'
     lines = lambda p: [json.loads(x) for x in p.read_text().splitlines()]
@@ -31,6 +32,7 @@ def main():
     lever = np.asarray(calibration['camera_origin_body_m'])
     groups = defaultdict(list)
     rejected = defaultdict(int)
+    metric_values=[];rejected_metric_values=[]
     for row in lines(tracking):
         if not row['initialized']:
             rejected['uninitialized'] += 1
@@ -50,6 +52,11 @@ def main():
         position = (1 - fraction) * np.asarray(a['true_position_ned_m']) + fraction * np.asarray(b['true_position_ned_m'])
         pose = np.asarray(row['estimated_c2w_arbitrary_scale'])
         groups[row['gauge_changes']].append((pose[:3, 3], pose[:3, :3], position + body @ lever, body @ extrinsic))
+        scale=row.get('metric_scale')
+        if scale and scale.get('usable'):
+            metric_values.append((now,pose,position+body@lever,body@extrinsic,scale['meters_per_map_unit']))
+        elif scale and scale.get('meters_per_map_unit'):
+            rejected_metric_values.append((now,pose,position+body@lever,body@extrinsic,scale['meters_per_map_unit']))
     results = []
     for gauge, values in groups.items():
         estimated, rotation, actual, actual_rotation = map(np.asarray, zip(*values))
@@ -72,10 +79,25 @@ def main():
                         posthoc_translation_rmse_m=rmse, true_motion_radius_m=radius,
                         residual_to_motion_radius=rmse / radius if radius > 0 else None)
         results.append(item)
+    metric_errors={str(h):[] for h in (1,2,4,10)}
+    rejected_errors={str(h):[] for h in (1,2,4,10)}
+    for values,errors in ((metric_values,metric_errors),(rejected_metric_values,rejected_errors)):
+      for i,(now,pose,true_pos,true_rot,scale) in enumerate(values):
+        for h in (1,2,4,10):
+            candidates=[v for v in values[i+1:] if h<=(v[0]-now)/1e9<=h+.25]
+            if not candidates:continue
+            _,future,actual,actual_rotation,_=candidates[0]
+            # Start-pose orientation defines the frame; never fit scale to GT.
+            estimate=scale*(pose[:3,:3].T@(future[:3,3]-pose[:3,3]))
+            truth_delta=true_rot.T@(actual-true_pos)
+            errors[str(h)].append(float(np.linalg.norm(estimate-truth_delta)))
     result = dict(status='completed', accepted=False,
         purpose='Offline privileged diagnosis only; no fitted transform may enter runtime',
         episode=str(args.episode), gauges=results, rejected=dict(rejected),
-        source_hashes={str(p.relative_to(args.episode)): hashlib.sha256(p.read_bytes()).hexdigest()
+        metric_scale_qualified_frames=len(metric_values),
+        unaligned_metric_horizons={h:dict(windows=len(v),translation_rmse_m=float(np.sqrt(np.mean(np.square(v)))) if v else None) for h,v in metric_errors.items()},
+        rejected_metric_horizons_diagnostic_only={h:dict(windows=len(v),translation_rmse_m=float(np.sqrt(np.mean(np.square(v)))) if v else None) for h,v in rejected_errors.items()},
+        source_hashes={str(p): hashlib.sha256(p.read_bytes()).hexdigest()
                        for p in (tracking, labels, observations)})
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open('x') as stream:

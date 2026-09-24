@@ -1,0 +1,6 @@
+{
+  "source": "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71",
+  "reason": "Historical RGB grounding evidence contract changed; fresh demonstrations and optimizer rounds",
+  "preserved_optimizer_cycle": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle",
+  "superseded_downstream": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/learning-flow"
+}

@@ -1,0 +1,8 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "examples": 19,
+  "observed_target_examples": 17,
+  "historical_rgb_examples": 17,
+  "excluded": []
+}

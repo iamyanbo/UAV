@@ -1,0 +1,18 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T154112Z-metric-local-pilot-8ca21c/source/collect_learning_round.py",
+    "--episode-id",
+    "train-00000",
+    "--controller-checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r75/perception-checkpoints",
+    "--demonstrate"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "flight",
+  "peak_gib": 72.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 95.06897190096788
+}

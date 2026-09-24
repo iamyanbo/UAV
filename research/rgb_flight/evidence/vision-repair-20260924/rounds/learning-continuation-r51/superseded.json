@@ -1,0 +1,4 @@
+{
+  "reason": "Add a one-update v4 migration receipt before cumulative training",
+  "replacement": "/home/iamyanbo/uav-rgb-flight/rounds/learning-continuation-r52"
+}

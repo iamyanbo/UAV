@@ -23,6 +23,7 @@ def main():
                         help='Released Splat-SLAM pose optimizer; diagnostic choice is recorded')
     parser.add_argument('--broker-socket')
     parser.add_argument('--episode-id')
+    parser.add_argument('--vision', help='Immutable RGB metric-depth configuration')
     args = parser.parse_args()
     if not args.broker_socket:
         verified_rgb_storage(args.observations)
@@ -57,6 +58,14 @@ def main():
     video = gauge_tracked_video(DepthVideo)(cfg, SimpleNamespace(print=lambda *args: None))
     pose_estimator = CausalPoseEstimator(net, video)
     map_gauge = CausalMapGauge()
+    metric_depth = None
+    metric_frames = OrderedDict()
+    metric_scale = None
+    metric_usable_count = 0
+    if args.vision:
+        from metric_depth import MetricDepth, fit_depth_scale
+        metric_depth = MetricDepth(args.vision)
+        (output/'metric').mkdir()
     motion = MotionFilter(net, video, cfg, thresh=cfg['tracking']['motion_filter']['thresh'], device='cuda:0')
     frontend, backend = Frontend(net, video, cfg), Backend(net, video, cfg)
     mapper = None
@@ -118,6 +127,8 @@ def main():
             received[index] = rgb
             sources.append(record)
             image = torch.from_numpy(np.frombuffer(rgb, np.uint8).copy().reshape(480, 640, 3)).permute(2, 0, 1)[None].float() / 255
+            if metric_depth is not None:
+                metric_frames[index] = metric_depth(np.frombuffer(rgb,np.uint8).reshape(480,640,3),record['calibration'])
             intrinsic = torch.tensor([record['calibration'][k] for k in ('fx', 'fy', 'cx', 'cy')])
             with torch.no_grad():
                 motion.track(index, image, intrinsic)
@@ -142,6 +153,15 @@ def main():
                         tracking_failure=str(error)))+'\n');log.flush();count+=1
                     continue
                 # Avoid the newest, still-removable frontend keyframe.
+                if metric_depth is not None:
+                    pairs=[]
+                    for video_index in range(max(0,current-7),current+1):
+                        key=int(video.timestamp[video_index].item())
+                        if key not in metric_frames:continue
+                        d,v,_=video.get_depth_and_pose(video_index,'cuda:0')
+                        pairs.append((metric_frames[key],d.cpu()*map_gauge.scale,v.cpu()))
+                    metric_scale=fit_depth_scale(pairs)
+                    metric_usable_count+=int(metric_scale['usable'])
                 stable = max(0, current - 2)
                 source_index = int(video.timestamp[stable].item())
                 if source_index > last_mapped_frame and source_index in received:
@@ -167,6 +187,9 @@ def main():
                 oldest_needed = int(video.timestamp[max(0, current - 3)].item())
                 while received and next(iter(received)) < oldest_needed:
                     received.popitem(last=False)
+                retained={int(video.timestamp[k].item()) for k in range(max(0,current-8),current+1)}
+                for key in list(metric_frames):
+                    if key not in retained and key!=index:del metric_frames[key]
             if frontend.is_initialized:
                 pose, pose_quality = pose_estimator.estimate(index, image, intrinsic)
                 pose_index = index
@@ -175,12 +198,20 @@ def main():
                 pose_index = int(video.timestamp[current].item())
                 pose_quality = dict(method='uninitialized_keyframe', correspondence_weight=None, reprojection_error_pixels=None)
             pose = map_gauge.pose(pose).tolist()
+            metric_file=None
+            if metric_depth is not None:
+                metric_file='metric/'+str(record['frame_id'])+'.pt'
+                path=output/metric_file
+                torch.save(dict(depth=metric_frames[index][::8,::8],frame_id=record['frame_id'],
+                    observation_ns=record['sim_ns'],scale=metric_scale,calibration=record['calibration']),path.with_suffix('.tmp'))
+                path.with_suffix('.tmp').replace(path)
             initialized_count += int(frontend.is_initialized)
             log.write(json.dumps(dict(frame_id=record['frame_id'], sim_ns=record['sim_ns'],
                        estimated_pose_source_frame=sources[pose_index]['frame_id'],
                        estimated_pose_age_sim_seconds=(record['sim_ns']-sources[pose_index]['sim_ns'])/1e9,
                        processed_monotonic_seconds=time.monotonic(),
                        estimated_c2w_arbitrary_scale=pose, initialized=bool(frontend.is_initialized),
+                       metric_depth_file=metric_file,metric_scale=metric_scale,
                        memory_version=mapper.version, gauge_scale=video.gauge_scale,
                        causal_map_gauge_scale=map_gauge.scale, gauge_alignment_residual=map_gauge.alignment_residual,
                        gauge_changes=video.gauge_changes, pose_quality=pose_quality)) + '\n')
@@ -192,7 +223,8 @@ def main():
                   frames=count, memory_versions=mapper.version if mapper else 0,
                   elapsed_wall_seconds=time.monotonic() - begin,
                   peak_allocated_bytes=torch.cuda.max_memory_allocated(), peak_reserved_bytes=torch.cuda.max_memory_reserved(),
-                  metric_scale_established=False, live_async_execution=bool(args.broker_socket), foundation_passed=False,
+                  metric_scale_established=metric_usable_count>0, metric_scale_usable_frames=metric_usable_count,
+                  metric_uncertainty_calibrated=False,live_async_execution=bool(args.broker_socket), foundation_passed=False,
                   tracking_initialized_frames=initialized_count, sampling_skipped_frames=sampled_out,
                   current_pose_method='past_anchor_pose_only', coordinate_gauge='causal_common_camera_similarity; arbitrary_scale',
                   gauge_changes=video.gauge_changes)

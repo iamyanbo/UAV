@@ -24,6 +24,8 @@ class LiveDeliberation:
         pack=core.checkpoints
         if not {'world','policy','qwen'}<=pack.paths.keys():raise ValueError('Deliberation requires trained world, critic and Qwen adapter')
         world=WorldModel().cuda();saved=torch.load(pack.paths['world'],map_location='cpu',weights_only=True)
+        required={k:v['sha256'] for k,v in pack.spec['artifacts'].items() if k in ('goal','odometry','projection','vision')}
+        if saved.get('perception_artifacts_sha256')!=required:raise ValueError('Planner perception provenance differs')
         world.load_state_dict(saved['model'])
         policy=torch.load(pack.paths['policy'],map_location='cpu',weights_only=True)
         if policy.get('world_checkpoint_sha256')!=pack.spec['artifacts']['world']['sha256']:

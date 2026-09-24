@@ -27,15 +27,22 @@ def main():
     with torch.inference_mode():
         for row in records['validation']:
             value=load_record(data_root,row,hashes);rgb=value['runtime'];labels=value['training_labels']
-            if row['episode_id'] not in cache:
-                cache[row['episode_id']]=model.encoder(rgb['goal_rgb'].cuda())[None]
-            prediction=model.matcher(model.encoder(rgb['current_rgb'][None].cuda()),cache[row['episode_id']])
+            key=(row['episode_id'],row.get('goal_sha256',hashes[row['episode_id']]))
+            if key not in cache:
+                cache[key]=model.encoder(rgb['goal_rgb'].cuda())[None]
+            prediction=model.matcher(model.encoder(rgb['current_rgb'][None].cuda()),cache[key])
             rows.append(dict(episode_id=row['episode_id'],frame_id=row['frame_id'],
                 probability=float(prediction['match_logit'].sigmoid()),near_goal=bool(labels['near_goal']),
                 time_prediction=float(prediction['time_to_goal_seconds']),time_label=float(labels['time_to_goal_seconds']),
                 time_valid=bool(labels.get('time_valid',True))))
     p=np.asarray([r['probability'] for r in rows]);y=np.asarray([r['near_goal'] for r in rows]);guess=p>=.5
     tp=int(np.sum(guess&y));fp=int(np.sum(guess&~y));fn=int(np.sum(~guess&y));tn=int(np.sum(~guess&~y))
+    stopping=[]
+    for threshold in (.9,.95,.99):
+        selected=p>=threshold;correct=int((selected&y).sum());incorrect=int((selected&~y).sum())
+        stopping.append(dict(threshold=threshold,true_stops=correct,false_stops=incorrect,
+            precision=correct/(correct+incorrect) if correct+incorrect else None,
+            recall=correct/int(y.sum()) if y.any() else None))
     bins=[]
     for index in range(10):
         mask=(p>=index/10)&(p<(index+1)/10 if index<9 else p<=1)
@@ -43,9 +50,11 @@ def main():
             confidence=float(p[mask].mean()) if mask.any() else None,
             accuracy=float(y[mask].mean()) if mask.any() else None))
     result=dict(status='completed',accepted=False,checkpoint_sha256=digest(args.checkpoint),
-        checkpoint_update=saved['update'],manifest_sha256=sha,development_examples=len(rows),development_episodes=len(cache),
+        checkpoint_update=saved['update'],manifest_sha256=sha,development_examples=len(rows),development_episodes=len({r['episode_id'] for r in rows}),
+        development_goal_captures=len(cache),
         threshold=.5,precision=tp/(tp+fp) if tp+fp else None,recall=tp/(tp+fn) if tp+fn else None,
         false_positive_rate=fp/(fp+tn) if fp+tn else None,confusion=dict(tp=tp,fp=fp,fn=fn,tn=tn),
+        stopping_thresholds=stopping,
         brier_score=float(np.mean((p-y)**2)),calibration_bins=bins,
         expected_calibration_error=sum(b['count']*abs(b['confidence']-b['accuracy']) for b in bins if b['count'])/len(rows),
         time_mae_seconds=float(np.mean([abs(r['time_prediction']-r['time_label']) for r in rows if r['time_valid']])),

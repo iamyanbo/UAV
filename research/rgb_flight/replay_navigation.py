@@ -43,7 +43,7 @@ def main():
         from recorded_broker import RecordedRGBBroker
         from async_mapping import AsyncMapping
         broker=RecordedRGBBroker(args.output/'ipc/rgb.sock',goal)
-        mapping=AsyncMapping(goal.episode_id,args.output/'reconstruction',broker.path)
+        mapping=AsyncMapping(goal.episode_id,args.output/'reconstruction',broker.path,checkpoints.paths.get('vision'))
     replay_start=time.monotonic();original_start=None;publication_lateness=[];video_receipt=None
     count=0;chunks=[];shards=[];timings=[];last_ns=-1;missing_video=missing_geometry=0
     goal_conditioned_frames=0;alignment_reasons={};last_grounding_ns=None

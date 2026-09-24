@@ -20,12 +20,13 @@ run_patterns=('result.json','source_hashes.json','inference-source-hashes.json',
  'world-data/manifest.json','world-data/result.json','policy-data/manifest.json','policy-data/result.json',
  'navigation-replay/result.json','navigation-replay/manifest.json','navigation-replay/alignment.jsonl',
  'navigation-replay/reconstruction/result.json','navigation-replay/video/result.json',
- 'odometry-qualification/result.json','odometry-qualification/episodes.jsonl')
+ 'odometry-qualification/result.json','odometry-qualification/episodes.jsonl',
+ 'goal-qualification/result.json','reconstruction/result.json')
 for folder in root.joinpath('runs').iterdir():
  if folder.name<'20260924T030000Z':continue
  for pattern in run_patterns:selected.update(folder.glob(pattern))
 for folder in root.joinpath('rounds').iterdir():
- if not folder.name.startswith(('learning-repair-','learning-continuation-','navigation-repair-','navigation-mapping-')):continue
+ if not folder.name.startswith(('learning-repair-','learning-continuation-','navigation-repair-','navigation-mapping-','metric-vision-')):continue
  for pattern in ('*.json','execution/state.json','execution/*/result.json','execution/*/checkpoints.json',
                  'cumulative-window/*.json','cumulative-window/execution/state.json',
                  'perception-cycle/*.json','perception-cycle/execution/state.json',
@@ -59,9 +60,10 @@ def main():
     parser.add_argument('--host',default='iamyanbo@10.31.12.8')
     parser.add_argument('--key',type=Path,required=True)
     parser.add_argument('--output',type=Path,default=Path(__file__).parent/'evidence/learning-repair-20260924')
+    parser.add_argument('--since',default='20260924T030000Z',help='Earliest run/flight directory timestamp to archive')
     args=parser.parse_args()
     raw=subprocess.check_output(['ssh','-i',str(args.key),'-o','BatchMode=yes',args.host,
-        shlex.join(['python3','-c',REMOTE])],text=True,timeout=90)
+        shlex.join(['python3','-c',REMOTE.replace("'20260924T030000Z'",repr(args.since))])],text=True,timeout=90)
     args.output.mkdir(parents=True,exist_ok=True)
     for relative,encoded in json.loads(raw):
         destination=(args.output/relative).resolve()

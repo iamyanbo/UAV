@@ -1,0 +1,113 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Actual split-isolated dataset processing, adapter reload and combined physical flight",
+  "stages": [
+    {
+      "id": "training-only-grounding-batch",
+      "kind": "gpu",
+      "seconds": 1800,
+      "peak_gib": 12,
+      "depends_on": [],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "build-configurator-view",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/trajectories",
+        "--collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T052652Z-new-perception-demonstrations-9bb40b/collection/flights.json",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T054334Z-world-data-167238/world-data-replays/0",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T054334Z-world-data-167238/world-data-replays/1",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T054334Z-world-data-167238/world-data-replays/2",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T054334Z-world-data-167238/world-data-replays/3",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T054334Z-world-data-167238/world-data-replays/4",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T054334Z-world-data-167238/world-data-replays/5",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T054334Z-world-data-167238/world-data-replays/6",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T054334Z-world-data-167238/world-data-replays/7",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T054334Z-world-data-167238/world-data-replays/8",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T054334Z-world-data-167238/world-data-replays/9",
+        "--artifact-output",
+        "{round}/legacy-grounding-data"
+      ],
+      "receipt": "{round}/legacy-grounding-data/result.json",
+      "outputs": [
+        "{round}/legacy-grounding-data/configurator.json"
+      ]
+    },
+    {
+      "id": "historical-grounding-pack",
+      "kind": "cpu",
+      "seconds": 1800,
+      "peak_gib": 4,
+      "depends_on": [
+        {
+          "stage": "training-only-grounding-batch",
+          "status": "completed"
+        }
+      ],
+      "command": [
+        "python3",
+        "{source}/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/goal.pt",
+        "--odometry",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/odometry.pt",
+        "--projection",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/projection.pt",
+        "--safety",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/safety.json",
+        "--world",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/world.pt",
+        "--policy",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/policy.pt",
+        "--qwen",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T062914Z-historical-qwen-update-d3cf42/configurator/latest.pt",
+        "--goal-match-threshold",
+        "0.9",
+        "--output",
+        "{round}/historical-grounding-pack"
+      ],
+      "receipt": "{round}/historical-grounding-pack/checkpoints.json",
+      "outputs": [
+        "{round}/historical-grounding-pack/checkpoints.json"
+      ]
+    },
+    {
+      "id": "historical-grounding-flight",
+      "kind": "flight",
+      "seconds": 1200,
+      "peak_gib": 72,
+      "depends_on": [
+        {
+          "stage": "historical-grounding-pack",
+          "status": "completed"
+        }
+      ],
+      "command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "{round}/historical-grounding-pack",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T052652Z-new-perception-demonstrations-9bb40b/collection/flights.json",
+        "--with-deliberation"
+      ],
+      "receipt": "{job}/collection/result.json",
+      "outputs": [
+        "{job}/collection/flights.json"
+      ]
+    }
+  ]
+}

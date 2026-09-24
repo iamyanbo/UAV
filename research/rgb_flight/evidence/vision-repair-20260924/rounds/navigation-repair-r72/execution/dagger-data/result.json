@@ -1,0 +1,9 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "learner_states": 396,
+  "corrections": 396,
+  "aggregated_windows": 176,
+  "dataset": "/artifacts/dagger-data/dataset",
+  "scope": "Recovery DAgger; no privileged hidden-goal direction labels"
+}

@@ -51,12 +51,12 @@ def main():
     if bool(args.additional_collection)!=bool(args.additional_checkpoints):raise ValueError('Additional collection requires its actual checkpoint pack')
     if args.additional_collection and args.phase!='world':raise ValueError('Additional learner data requires audited policy corrections before imitation')
     pack_spec=json.loads((args.checkpoints/'checkpoints.json').read_text())
-    perception={k:pack_spec['artifacts'][k]['sha256'] for k in ('goal','odometry','projection')}
+    perception={k:pack_spec['artifacts'][k]['sha256'] for k in ('goal','odometry','projection','vision') if k in pack_spec['artifacts']}
     rows=json.loads(args.collection.read_text());identity=checksum(args.checkpoints/'checkpoints.json')
     collection_receipt=json.loads((args.collection.parent/'result.json').read_text())
     if collection_receipt.get('status')!='completed' or len(rows)!=10 or len({r['result']['episode_id'] for r in rows})!=10:
         raise ValueError('Preparation requires the completed ten-episode demonstration batch')
-    if any(r['result'].get('controller_checkpoint_sha256')!=identity or r['result'].get('teacher_provenance')!='observed-exploration/v4' for r in rows):
+    if any(r['result'].get('controller_checkpoint_sha256')!=identity or r['result'].get('teacher_provenance')!='observed-depth-exploration/v5' for r in rows):
         raise ValueError('Demonstration checkpoint or teacher identity differs')
     replay_root=args.output.parent/(args.output.name+'-replays');replay_root.mkdir()
     replays=[]

@@ -1,0 +1,162 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Attempt-aware goal correction for the frozen RGB-depth integration; complete flights and navigation remain separate qualification",
+  "stages": [
+    {
+      "id": "trajectory-bundle",
+      "kind": "cpu",
+      "peak_gib": 8,
+      "seconds": 1800,
+      "depends_on": [],
+      "inputs": [],
+      "command": [
+        "/home/iamyanbo/uav-rgb-flight/envs/airsim/bin/python",
+        "{source}/trajectory_bundle.py",
+        "--collection-root",
+        "/home/iamyanbo/uav-rgb-flight/launches",
+        "--output",
+        "{round}/trajectory-bundle"
+      ],
+      "receipt": "{round}/trajectory-bundle/result.json",
+      "outputs": [
+        "{round}/trajectory-bundle/manifest.json"
+      ]
+    },
+    {
+      "id": "aligned-goal-supervision",
+      "kind": "cpu",
+      "peak_gib": 8,
+      "seconds": 1800,
+      "depends_on": [
+        {
+          "stage": "trajectory-bundle",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/trajectory-bundle/manifest.json",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T023445Z-goal-corrective-training-d4f310/visual-training/best.pt"
+      ],
+      "command": [
+        "/home/iamyanbo/uav-rgb-flight/envs/airsim/bin/python",
+        "{source}/build_goal_round.py",
+        "--bundle",
+        "{round}/trajectory-bundle",
+        "--output",
+        "{round}/goal-candidates",
+        "--initialization",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T023445Z-goal-corrective-training-d4f310/visual-training/best.pt"
+      ],
+      "receipt": "{round}/goal-candidates/result.json",
+      "outputs": [
+        "{round}/goal-candidates/visual-training.json"
+      ]
+    },
+    {
+      "id": "visual-negative-mining",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 3600,
+      "depends_on": [
+        {
+          "stage": "aligned-goal-supervision",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/goal-candidates/visual-training.json",
+        "{round}/goal-candidates/initialization.pt"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "mine-goal",
+        "--dataset",
+        "{round}/goal-candidates",
+        "--artifact-output",
+        "{round}/goal-data"
+      ],
+      "receipt": "{round}/goal-data/result.json",
+      "outputs": [
+        "{round}/goal-data/visual-training.json",
+        "{round}/goal-data/mining-scores.jsonl"
+      ]
+    },
+    {
+      "id": "goal-corrective-training",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 18000,
+      "depends_on": [
+        {
+          "stage": "visual-negative-mining",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/goal-data/visual-training.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-goal",
+        "--dataset",
+        "{round}/goal-data",
+        "--initialize-from",
+        "initialization.pt",
+        "--updates",
+        "4000",
+        "--validation-every",
+        "500"
+      ],
+      "resume_command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-goal",
+        "--dataset",
+        "{round}/goal-data",
+        "--resume",
+        "{checkpoint}",
+        "--updates",
+        "4000",
+        "--validation-every",
+        "500"
+      ],
+      "receipt": "{job}/visual-training/result.json",
+      "checkpoint": "{job}/visual-training/latest.pt",
+      "outputs": [
+        "{job}/visual-training/best.pt",
+        "{job}/visual-training/final.pt"
+      ]
+    },
+    {
+      "id": "corrected-goal-qualification",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 3600,
+      "depends_on": [
+        {
+          "stage": "goal-corrective-training",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/goal-data/visual-training.json",
+        "{stage:goal-corrective-training:job}/visual-training/best.pt"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "qualify-goal",
+        "--dataset",
+        "{round}/goal-data",
+        "--goal-checkpoint",
+        "{stage:goal-corrective-training:job}/visual-training/best.pt"
+      ],
+      "receipt": "{job}/goal-qualification/result.json",
+      "outputs": [
+        "{job}/goal-qualification/predictions.jsonl"
+      ]
+    }
+  ]
+}

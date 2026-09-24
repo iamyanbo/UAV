@@ -1,0 +1,20 @@
+{
+  "pid": 2547597,
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/submissions/learning-repair-r49/continue_after_integration.py",
+    "--cycle",
+    "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r48",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/learning-continuation-r49",
+    "--hours",
+    "8",
+    "--perception-source",
+    "/home/iamyanbo/uav-rgb-flight/submissions/hover-correction-r36",
+    "--perception-spec",
+    "/home/iamyanbo/uav-rgb-flight/submissions/hover-correction-r36/hover-correction-round.json",
+    "--perception-round",
+    "/home/iamyanbo/uav-rgb-flight/rounds/hover-correction-r36"
+  ],
+  "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+}

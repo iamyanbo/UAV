@@ -1,0 +1,29 @@
+{
+  "schema": "visual-navigation-checkpoints/v1",
+  "status": "completed",
+  "accepted": false,
+  "artifacts": {
+    "goal": {
+      "path": "goal.pt",
+      "sha256": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/goal.pt"
+    },
+    "odometry": {
+      "path": "odometry.pt",
+      "sha256": "9d9c6a340b908c7e324d3438c7e1761b1b8dd373c845f9636bf07225fed659bc",
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T051243Z-balanced-motion-training-5b8884/visual-training/best.pt"
+    },
+    "projection": {
+      "path": "projection.pt",
+      "sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/projection.pt"
+    },
+    "safety": {
+      "path": "safety.json",
+      "sha256": "ad063b81b2ec32d9830e62f53fd75d9092600423003ae619f8159ee051cddf1d",
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/safety.json"
+    }
+  },
+  "goal_match_threshold": 0.9,
+  "scope": "Integration snapshot. Packaging does not establish model compatibility or acceptance."
+}

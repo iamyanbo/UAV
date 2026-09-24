@@ -38,7 +38,7 @@ def recurrent_ppo_loss(policy, batch, burn_in=20, clip=.2, collision_lagrange=No
             if 'current_tokens' in runtime:
                 distribution,value,hidden=policy.forward_features(runtime['current_tokens'][:,step],runtime['goal_context'][:,step],
                     runtime['state'][:,step],runtime['memory_context'][:,step],runtime['task'][:,step],
-                    runtime['previous_command'][:,step],hidden,runtime['target_context'][:,step])
+                    runtime['previous_command'][:,step],hidden,runtime['target_context'][:,step],runtime['depth_tokens'][:,step] if 'depth_tokens' in runtime else None)
             else:
                 distribution, value, hidden = policy(runtime['image'][:, step], runtime['state'][:, step],
                     runtime['memory_context'][:, step], runtime['task'][:, step], runtime['previous_command'][:, step],

@@ -1,5 +1,19 @@
 # Learning-loop failure postmortem
 
+## Minimal vision repair: additional failures and corrections
+
+The first Metric3D integration attempts failed before flight because dependency installation replaced OpenCV with a build requiring unavailable GUI libraries, and because a historical image tag differed from the exact working image receipt. The repair now extends the receipt-pinned image and installs only the required pure-Python dependencies, preserving existing OpenCV/Open3D. The released depth checkpoint also omits an unused training mask token; this specific omission is allowed, while other parameter mismatches remain errors. All failed run receipts are preserved.
+
+The full recorded open-water flight produced zero accepted depth-supported scale fits. Pretraining is not proof of metric accuracy on this scene. The scale gate was not relaxed to manufacture a handover.
+
+The first simulator pilot of the new branch flew 11.36 m without a controller crash but timed out during initialization. My initial implementation still published local depth behind slow tracking. That reproduced the architectural dependency we intended to remove. The corrected implementation runs local depth independently and keeps local geometry in the camera/body frame. The second pilot entered sustained local navigation; this does not yet establish goal-reaching success.
+
+Current details and subsequent measurements are maintained in [VISION_REPAIR_2026-09-24.md](VISION_REPAIR_2026-09-24.md).
+
+The second pilot completed 180 seconds but traveled only 0.879 m: 880 of 903 teacher decisions falsely requested a goal stop. My first report of sustained local navigation described a controller state, not useful navigation. Removing the global-map gate exposed an existing recognition failure that the old startup deadlock had concealed. The pack also retained the older update-250 goal checkpoint despite a better update-2000 checkpoint already existing. Switching to that checkpoint did not resolve the failure: the third pilot traveled 0.968 m and timed out. Neither flight is a navigation success.
+
+Goal-data preparation selected one successful attempt per task and discarded later failed learner attempts. This prevented these false-match states from entering corrective supervision. The builder now retains the best demonstration and latest failed attempt, with attempt-specific goal hashes and separate caches; mining also keys examples by attempt. Internal development remains separate by task/goal region. A new dataset starts a new optimizer round. This repair is necessary data plumbing, not evidence that recognition has already improved.
+
 The previous integration failed to produce useful autonomous movement. This was an implementation and validation failure: I assembled individually executable components without proving that their combined control and training rules could escape initialization. Completed updates did not establish a functioning learning loop.
 
 ## Why it failed

@@ -76,14 +76,16 @@ class CausalNavigationState:
         saved=torch.load(checkpoints.paths['goal'],map_location='cpu',weights_only=True)
         if saved['module']!='goal':raise ValueError('Wrong goal checkpoint role')
         self.goal.load_state_dict(saved['model'])
-        saved=torch.load(checkpoints.paths['odometry'],map_location='cpu',weights_only=True)
-        if saved.get('objective_version') not in ('metric-sequence-nll-se3/v1','metric-long-sequence-fixed-bn/v2','metric-long-sequence-motion-rate/v3','metric-motion-rate-balanced-regimes/v4'):
-            raise ValueError('Metric sequence odometry required')
-        mode='rate' if saved['objective_version'] in ('metric-long-sequence-motion-rate/v3','metric-motion-rate-balanced-regimes/v4') else 'increment'
-        if saved.get('motion_parameterization',mode)!=mode:raise ValueError('Inconsistent odometry objective/parameterization')
-        self.odometry=FastVisualOdometry(backbone,motion_parameterization=mode).to(device).eval().requires_grad_(False)
-        self.odometry.load_state_dict(saved['model'])
-        self.required_warmup=saved.get('warmup_steps',4)
+        self.odometry=None;self.required_warmup=1
+        if 'vision' not in checkpoints.paths:
+            saved=torch.load(checkpoints.paths['odometry'],map_location='cpu',weights_only=True)
+            if saved.get('objective_version') not in ('metric-sequence-nll-se3/v1','metric-long-sequence-fixed-bn/v2','metric-long-sequence-motion-rate/v3','metric-motion-rate-balanced-regimes/v4'):
+                raise ValueError('Metric sequence odometry required')
+            mode='rate' if saved['objective_version'] in ('metric-long-sequence-motion-rate/v3','metric-motion-rate-balanced-regimes/v4') else 'increment'
+            if saved.get('motion_parameterization',mode)!=mode:raise ValueError('Inconsistent odometry objective/parameterization')
+            self.odometry=FastVisualOdometry(backbone,motion_parameterization=mode).to(device).eval().requires_grad_(False)
+            self.odometry.load_state_dict(saved['model'])
+            self.required_warmup=saved.get('warmup_steps',4)
         with torch.inference_mode():self.goal_tokens=self.goal.encoder(goal_rgb.to(device))[None]
         self.projection=None
         if 'projection' in checkpoints.paths:
@@ -93,7 +95,7 @@ class CausalNavigationState:
         self.memory=SpatialMemory(episode_id);self.alignment=CausalMetricAlignment(episode_id)
         self.geometry=ConservativeGeometry((-40.,-40.,-20.),.5,shape=(160,160,80))
         self.teacher=FrontierTeacher(episode_id,checkpoints.spec['goal_match_threshold'])
-        self.hidden=self.odometry.temporal.weight_hh.new_zeros(1,256)
+        self.hidden=torch.zeros(1,256,device=device)
         self.position=torch.zeros(3,device=device);self.rotation=torch.eye(3,device=device)
         self.velocity=torch.zeros(3,device=device);self.variance=torch.zeros(6,device=device)
         self.covariance=torch.zeros(6,6,device=device);self.last_body_motion=self.last_motion_std=None
@@ -110,9 +112,17 @@ class CausalNavigationState:
         self.startup=StartupState()
         self.hazard_version=0
         self.map_correction_version=0;self.geometry_scale=None
+        self.metric_vision=None
+        self.depth_worker=None
+        if 'vision' in checkpoints.paths:
+            from metric_navigation import MetricNavigation
+            self.metric_vision=MetricNavigation(self.device)
+            self.required_warmup=1
+            from metric_depth import AsyncLocalDepth
+            self.depth_worker=AsyncLocalDepth(checkpoints.paths['vision'])
 
     def enqueue(self,component,payload):
-        if component not in ('video','tracking','map','configuration'):raise ValueError('Unexpected runtime result')
+        if component not in ('video','tracking','map','configuration','depth'):raise ValueError('Unexpected runtime result')
         if payload.get('episode_id')!=self.episode_id:raise ValueError('Cross-episode asynchronous result')
         if not isinstance(payload.get('version'),int):raise ValueError('Runtime result needs a version')
         if not math.isfinite(payload['available_monotonic']):raise ValueError('Invalid availability timestamp')
@@ -125,7 +135,9 @@ class CausalNavigationState:
             else:pending.append((component,row))
         self.pending=pending
         for component,row in sorted(ready,key=lambda pair:pair[1]['available_monotonic']):
-            if component=='video':
+            if component=='depth':
+                if self.metric_vision:self.metric_vision.ingest_depth(self,row)
+            elif component=='video':
                 if self.projection is None:continue
                 if row.get('encoder_checkpoint_sha256')!=self.projection.get('encoder_checkpoint_sha256'):
                     raise ValueError('Video encoder differs from training-fitted projection')
@@ -150,6 +162,8 @@ class CausalNavigationState:
             elif component=='tracking':
                 if self.tracking and row['observation_ns']<=self.tracking['observation_ns']:continue
                 self.tracking=row
+                if self.metric_vision is not None:
+                    self.metric_vision.ingest(self,row)
                 if not row['initialized']:
                     self.scale=None;self.alignment.pairs.clear();self._clear_frontiers()
                     self.diagnostics.append(dict(component='alignment',observation_ns=row['observation_ns'],
@@ -160,7 +174,8 @@ class CausalNavigationState:
                     self.geometry=ConservativeGeometry((-40.,-40.,-20.),.5,shape=(160,160,80))
                     self.cached_map=None;self._clear_frontiers()
                     self.geometry_scale=None
-                    self.scale=None;self.alignment.pairs.clear()
+                    if self.metric_vision is None:self.scale=None
+                    self.alignment.pairs.clear()
             elif component=='map':
                 if row['version']<=self.latest_map_version or row['gauge_version']!=self.gauge_version:continue
                 if self.cached_map is None or row['version']>self.cached_map['version']:
@@ -172,9 +187,10 @@ class CausalNavigationState:
                         pairs.append((camera['observation_ns'],camera['map_position'],
                             historical['camera_position'].cpu().numpy(),
                             float(historical['camera_covariance'].trace().clamp_min(0).sqrt())))
-                    self.scale=self.alignment.update_prefix(self.episode_id,row['observation_ns'],ns,
-                        self.gauge_version,pairs,ns)
-                    self.diagnostics.append(dict(self.scale,component='alignment',map_version=row['version'],
+                    if self.metric_vision is None:
+                        self.scale=self.alignment.update_prefix(self.episode_id,row['observation_ns'],ns,
+                            self.gauge_version,pairs,ns)
+                    self.diagnostics.append(dict(self.scale or {'usable':False,'reason':'metric_depth_pending'},component='alignment',map_version=row['version'],
                         observation_ns=row['observation_ns'],available_ns=ns,
                         published_camera_count=len(row['alignment_cameras'])))
                     samples=sum(len(c['points']) for c in row.get('optimized_surfaces',[]))
@@ -310,17 +326,23 @@ class CausalNavigationState:
         if self.closed or metadata['episode_id']!=self.episode_id or metadata['frame_id']<=self.latest_frame:
             raise ValueError('Closed/cross-episode/noncausal runtime observation')
         ns=metadata['sim_ns'];wall=metadata['received_monotonic']
+        if self.depth_worker:
+            depth=self.depth_worker.observe(metadata,rgb)
+            if depth is not None:self.enqueue('depth',depth)
         calibration=Calibration(**metadata['calibration'])
         if calibration.camera_origin_body_m is None:raise ValueError('Metric camera alignment requires calibrated extrinsics')
         if self.previous_ns is not None and ns<=self.previous_ns:raise ValueError('Nonmonotonic exposure time')
         image=torch.from_numpy(np.frombuffer(rgb,np.uint8).copy().reshape(480,640,3)).permute(2,0,1)[None].to(self.device)
         self.source_rgb[metadata['frame_id']]=dict(observed_ns=ns,rgb_sha256=hashlib.sha256(rgb).hexdigest(),rgb=bytes(rgb))
         while len(self.source_rgb)>96:self.source_rgb.popitem(last=False)
-        feature=self.odometry.encode(image);history=metadata.get('command_history',[])
+        feature=self.odometry.encode(image) if self.metric_vision is None else image.new_zeros((1,1),dtype=torch.float32)
+        history=metadata.get('command_history',[])
         previous_command=torch.tensor(history[-1]['values'] if history else [0.,0.,0.,0.],
             device=self.device,dtype=feature.dtype)[None]
         interval=0. if self.previous_ns is None else (ns-self.previous_ns)/1e9
-        if self.previous_feature is not None and interval<=.25:
+        if self.metric_vision is not None:
+            self._deliver(ns,wall)
+        elif self.previous_feature is not None and interval<=.25:
             prediction=self.odometry.forward_features(self.previous_feature,feature,self.previous_command,
                 feature.new_tensor([interval]),self.hidden)
             motion=prediction['body_motion'][0].float();self.hidden=prediction['hidden'];self.warmup+=1
@@ -367,7 +389,11 @@ class CausalNavigationState:
         feature_age=(ns-self.visual['observation_ns'])/1e9 if self.visual else 0.
         tracking_age=(ns-self.tracking['observation_ns'])/1e9 if self.tracking else 0.
         tracking_valid=bool(self.tracking and self.tracking['initialized'] and tracking_age<=1.)
-        map_status=self.startup.update(ns,usable and self.latest_map_version>=0,tracking_valid)
+        # Camera-relative metric depth supports local flight even while the
+        # global translation/scale remains explicitly invalid in state masks.
+        local_ready=bool(self.metric_vision and self.metric_vision.usable(ns) and
+                         float(self.metric_vision.depth_tokens[:,1].mean())>=.5)
+        map_status=self.startup.update(ns,usable and self.latest_map_version>=0,tracking_valid,local_ready)
         state=torch.cat((self.position,self.velocity,self.rotation[:,0],self.rotation[:,1],
             feature.new_tensor([scale_log,scale_sigma,confidence,feature_age,float(self.variance[:3].sum().sqrt()),tracking_age])))
         # Explicit masks and current timing context are model inputs, never
@@ -377,7 +403,9 @@ class CausalNavigationState:
         timing=[last.get('observation_age_seconds',last.get('source_received_to_command_wall_seconds',0.)) or 0.,
             last.get('dispatch_interval_seconds',0.) or 0.,last.get('timing_uncertainty_seconds',0.) or 0.,
             float(last.get('watchdog_override',False)),float(timing_valid)]
-        flags=[float(map_status==name) for name in ('initializing','mapped','recovering','terminated')]
+        # Local navigation shares the moving-state bit; map validity is an
+        # independent mask. Keep the 32-D world interface; version semantics.
+        flags=[float(map_status==name or name=='mapped' and map_status=='local_navigation') for name in ('initializing','mapped','recovering','terminated')]
         state=torch.cat((state,feature.new_tensor(flags+[float(usable),float(self.visual is not None),
             float(tracking_valid),min(30.,self.startup.elapsed(ns)),float(self.warmup>=self.required_warmup)]+timing)))
         memory,valid=self.memory.retrieve(self.position,ns,device=self.device)
@@ -395,13 +423,16 @@ class CausalNavigationState:
         target=self.memory.target_context(config.target_id,ns,device=self.device) if config and config.target_id is not None else state.new_zeros(264)
         task=visual_task_tensor(dict(match_probability=probability,time_to_goal_seconds=float(match['time_to_goal_seconds']),
             terminal_value=float(match['terminal_value'])),config,0.,scale_sigma,1. if config else 0.).to(self.device)
-        return dict(episode_id=self.episode_id,frame_id=metadata['frame_id'],sim_ns=ns,
+        return dict(depth_tokens=self.metric_vision.depth_tokens if self.metric_vision and self.metric_vision.usable(ns) else state.new_zeros(300,2),
+            local_geometry_available=local_ready,
+            geometry_age_seconds=(ns-self.metric_vision.local_ns)/1e9 if self.metric_vision and self.metric_vision.local_ns is not None else None,
+            episode_id=self.episode_id,frame_id=metadata['frame_id'],sim_ns=ns,
             latest_observation_ns=self.visual['observation_ns'] if self.visual else ns,
             state=state,memory=memory,memory_valid=valid,goal_tokens=self.goal_tokens[0],target_context=target,
             task=task,previous_command=previous_command[0],image=image[0],
             z=self.visual['tokens'] if self.visual else state.new_zeros(64,256),visual_available=self.visual is not None,
             target_available=config is not None and config.target_id is not None,config=config,goal_probability=probability,current_tokens=current_tokens,
-            goal_context=match['goal_context'],metric_geometry_available=usable and self.latest_map_version>=0,
+            goal_context=match['goal_context'],metric_geometry_available=local_ready or usable and self.latest_map_version>=0,
             memory_version=self.memory.version,gauge_version=self.gauge_version,
             tracking_confidence=confidence,feature_age_seconds=feature_age,tracking_age_seconds=tracking_age,
             map_status=map_status,initialization_elapsed_seconds=self.startup.elapsed(ns),
@@ -411,4 +442,5 @@ class CausalNavigationState:
             input_validity=dict(scale=usable,visual=self.visual is not None,tracking=tracking_valid))
 
     def close(self):
+        if self.depth_worker:self.depth_worker.close()
         self.memory.close();self.history.clear();self.pending.clear();self.source_rgb.clear();self.keyframe_rgb.clear();self.closed=True

@@ -1,0 +1,10 @@
+{
+  "schema": "droid-metric3d-local/v1",
+  "model": "metric3d_vit_small",
+  "checkpoint_sha256": "b34b2a2be9148054991cef7e417930e1320602ba7bc503b0ee4e7888543728f6",
+  "source": "https://github.com/YvanYin/Metric3D",
+  "source_revision": "eb5b6fac0dc155e4e52f576e304fbf11655ff339",
+  "maximum_depth_m": 80.0,
+  "uncertainty_calibrated": false,
+  "scope": "RGB-only integration candidate; requires recorded-data qualification"
+}

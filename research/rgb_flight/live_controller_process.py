@@ -27,7 +27,7 @@ class LiveControllerProcess:
             raise ValueError('IPC namespace may contain only the runtime socket')
         self.output=Path(output);self.output.mkdir(parents=True,exist_ok=False)
         source=self.output/'source';source.mkdir();writable=self.output/'runtime';writable.mkdir();self.writable=writable
-        modules=('startup.py','runtime_capacity.py','learned_controller.py','controller.py','navigation_state.py','contracts.py','goal_matching.py','goal_io.py',
+        modules=('metric_depth.py','metric_navigation.py','startup.py','runtime_capacity.py','learned_controller.py','controller.py','navigation_state.py','contracts.py','goal_matching.py','goal_io.py',
             'learning_models.py','metric_alignment.py','spatial_memory.py','episode_store.py','wire.py',
             'visual_encoder.py','action_intervals.py','async_video.py','async_mapping.py',
             'reconstruct.py','causal_pose.py','causal_mapper.py','mapping_worker.py','memory_snapshot.py',
@@ -45,6 +45,7 @@ class LiveControllerProcess:
             '-v',str(source)+':/source:ro','-v',str(root/'assets/models')+':/models:ro',
             '-v',str(root/'deps/vjepa2')+':/upstream/vjepa2:ro',
             '-v',str(root/'ports/Splat-SLAM')+':/upstream/splat:ro',
+        '-v',str(root/'deps/Metric3D')+':/upstream/metric3d:ro',
             '-v',str(socket_path.parent)+':/ipc:ro','-v',str(checkpoints)+':/navigation:ro',
             '-v',str(writable)+':/output',image,'python','/source/learned_controller.py',
             '--episode-id',episode_id,'--maximum-speed-mps',str(maximum_speed),

@@ -12,7 +12,7 @@ from torch import nn
 from torch.nn import functional as F
 
 STATE_DIM = 32
-BELIEF_VERSION = "masked-map-dispatch-state/v3"
+BELIEF_VERSION = "shared-droid-local-depth/v4"
 TASK_DIM = 12
 PRIMITIVES = ('clearance', 'collision', 'visual_goal', 'time', 'command', 'smoothness', 'information', 'failure')
 
@@ -156,7 +156,7 @@ class ScaleEstimator(nn.Module):
 
 
 class RecurrentPolicy(nn.Module):
-    def __init__(self, goal_checkpoint, backbone_checkpoint='/models/mobilenet-v3-large-imagenet1k-v2.pt',state_dim=STATE_DIM):
+    def __init__(self, goal_checkpoint, backbone_checkpoint='/models/mobilenet-v3-large-imagenet1k-v2.pt',state_dim=STATE_DIM,depth_input=False):
         super().__init__()
         from goal_matching import GoalMatcherPipeline
         self.goal_pipeline = GoalMatcherPipeline(backbone_checkpoint)
@@ -171,6 +171,9 @@ class RecurrentPolicy(nn.Module):
         self.value = nn.Linear(256, 1)
         self.collision_value = nn.Linear(256, 1)
         self.stop_head = nn.Linear(256, 1)
+        self.depth_input=depth_input
+        if depth_input:
+            self.depth_encoder=nn.Sequential(nn.Linear(600,128),nn.SiLU(),nn.Linear(128,256))
 
     def stop_distribution(self, hidden):
         return torch.distributions.Bernoulli(logits=self.stop_head(hidden).squeeze(-1))
@@ -189,11 +192,16 @@ class RecurrentPolicy(nn.Module):
         return self.forward_features(current,grounded['goal_context'],state,memory_context,task,
                                      previous_command,hidden,target_context)
 
-    def forward_features(self,current,goal_context,state,memory_context,task,previous_command,hidden,target_context):
+    def forward_features(self,current,goal_context,state,memory_context,task,previous_command,hidden,target_context,depth_tokens=None):
         """Use the shared frozen causal encoder result without re-encoding RGB."""
         if current.ndim!=3 or current.shape[-1]!=256 or target_context.shape!=(len(current),264):
             raise ValueError('Invalid shared policy features')
-        hidden = self.gru(torch.cat((current.mean(1), goal_context, state,
+        visual=current.mean(1)
+        if self.depth_input:
+            if depth_tokens is None or depth_tokens.shape!=(len(current),300,2):
+                raise ValueError('Spatial-depth policy requires source-matched depth and validity tokens')
+            visual=visual+self.depth_encoder(depth_tokens.flatten(1))
+        hidden = self.gru(torch.cat((visual, goal_context, state,
                                      memory_context, task, previous_command, target_context), -1), hidden)
         distribution = torch.distributions.Normal(self.mean(hidden), self.log_std.clamp(-5, 1).exp())
         return distribution, self.value(hidden).squeeze(-1), hidden
