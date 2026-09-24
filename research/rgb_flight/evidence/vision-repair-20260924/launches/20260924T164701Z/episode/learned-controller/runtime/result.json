@@ -1,0 +1,41 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 208,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "d61c0124f23806768f0cc0d4dc33cab15bd3b10929bd85fe0b27150f9512f5e1",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "7c0e13811d24f6471c797484f817c07d7ea52e007584f2c4c6aa6209b5dff2f0",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "6b118c884fc2b9f7b187473b5d74dc1166eeaca9e1ebfa5c46e9c3204900dc2b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "fb5d1bb59275f7a4f521a9c92250224215417df614bf48ded7003e00edfaa08c",
+      "samples": 16
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": "observed-depth-motion-demonstrations/v6",
+  "final_map_status": "terminated",
+  "map_version": 18,
+  "supported_maps_received": 17,
+  "optimized_surface_samples_received": 221146,
+  "first_supported_map_available_ns": 1790268491698167808,
+  "handover_sim_ns": 1790268480030918912,
+  "control_safety_p95_seconds": 0.14769561772700368,
+  "control_safety_missed_deadlines": 126,
+  "safety_interventions": 57
+}

@@ -1,4 +1,9 @@
 {
-  "status": "full_flow_running",
-  "accepted": false
+  "status": "window_ended",
+  "independent_flow_completed": false,
+  "preference_status": "ready",
+  "cumulative_window": null,
+  "scheduler_return_code": 2,
+  "accepted": false,
+  "reason": "Movement, map handover and navigation are measured separately; timing optimization is deferred"
 }

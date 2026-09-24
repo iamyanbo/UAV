@@ -1,0 +1,6 @@
+{
+  "status": "checkpointed",
+  "accepted": false,
+  "complete_flights": 5,
+  "all_failures_retained": true
+}

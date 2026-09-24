@@ -258,6 +258,7 @@ def main():
                     teacher_provenance='observed-depth-motion-demonstrations/v6' if args.demonstrate else None,
                     final_map_status=core.startup.state if core else None,
                     map_version=core.latest_map_version if core else None,
+                    map_fusion=core.map_fusion.receipt() if core else None,
                     supported_maps_received=core.supported_maps_received if core else 0,
                     optimized_surface_samples_received=core.optimized_surface_samples_received if core else 0,
                     first_supported_map_available_ns=core.first_supported_map_available_ns if core else None,

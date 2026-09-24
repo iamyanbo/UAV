@@ -1,0 +1,141 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 1521,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "d668291842849310005c14baf7aca93303bccd8d40d76d90e4597301d71a0dfd",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "4ee3adc6c1273670606fa0dcf0cd29bb5fdd23944183a680974e35bdaf485e7b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "f12dc14ce88b5e55b704362680bae12d0b1bc401546e947bb15ee22693831bc0",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "1281f0a32e89bf5c6dba4491295fef182c15c9afda607d902909c7a66dc2338a",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "108465a1e9697e2d87eec433c018c600561455abb332b375119bd427f529f623",
+      "samples": 64
+    },
+    {
+      "path": "controller-000005.pt",
+      "sha256": "81263276b31316e2356859c30b8a75c8805b47e00653732b780777eacedd95b6",
+      "samples": 64
+    },
+    {
+      "path": "controller-000006.pt",
+      "sha256": "e91ad3653b400a95babe649f1350db02f17d2794c14ffdfe632541744f145641",
+      "samples": 64
+    },
+    {
+      "path": "controller-000007.pt",
+      "sha256": "989c11da20d3c0c6bdefd93c04ad446909a11ffeff71d3b704f9809e2b2a9688",
+      "samples": 64
+    },
+    {
+      "path": "controller-000008.pt",
+      "sha256": "40dd6c797b5e82b013f9311df0effdfd93a373eff491355fe1305291d03ad709",
+      "samples": 64
+    },
+    {
+      "path": "controller-000009.pt",
+      "sha256": "1fd76928a9cb9f87443ebe2c4c3e4bcdd67124e6c1a6fdf3fde5e826c2fadaa7",
+      "samples": 64
+    },
+    {
+      "path": "controller-000010.pt",
+      "sha256": "26c26ab9c2eedc13dbef186e86b1e693089fc412fb608693d3f0407b1c60d9d2",
+      "samples": 64
+    },
+    {
+      "path": "controller-000011.pt",
+      "sha256": "d5b8758953ab26b1dc6fbb4c17f034f4749b7350992921454d2a61819bd92759",
+      "samples": 64
+    },
+    {
+      "path": "controller-000012.pt",
+      "sha256": "10de00978f70e62b684eb2629418ca5e01191c51209a55c88c4da2bfe738f9a4",
+      "samples": 64
+    },
+    {
+      "path": "controller-000013.pt",
+      "sha256": "595d0f5cb2a2551ae32bf7ac6bff8da2222b685987549f15aeccf0e1fcd43aa7",
+      "samples": 64
+    },
+    {
+      "path": "controller-000014.pt",
+      "sha256": "cfb5d4a082c80fbcb0e7933c35896c6d02698149ac597544951ae54fb4201f89",
+      "samples": 64
+    },
+    {
+      "path": "controller-000015.pt",
+      "sha256": "e01a467553fbc631637fa683d1760159de95ea7791b43152f9ca9b7a35034cfd",
+      "samples": 64
+    },
+    {
+      "path": "controller-000016.pt",
+      "sha256": "2eb9eabd0587037e3957b6a49332331b2337e81a5c2ac2b348c08768af308b06",
+      "samples": 64
+    },
+    {
+      "path": "controller-000017.pt",
+      "sha256": "d7a7cd511a7f31be2463be41d36768eeb2ebeac1cb9eaa8c5b441d64b7cd4003",
+      "samples": 64
+    },
+    {
+      "path": "controller-000018.pt",
+      "sha256": "95f85e4021e8e7e2e3c2c64a292525bcb9c1337023ae8f4182b475fbaaa6036b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000019.pt",
+      "sha256": "db34f71252bb4000bf24c8a0dac11f538e6b918c1601339c811cefd3cb37a614",
+      "samples": 64
+    },
+    {
+      "path": "controller-000020.pt",
+      "sha256": "14143f3c87e980aa15038cba78d6b46731445c5f3814613a14deebb370e949b3",
+      "samples": 64
+    },
+    {
+      "path": "controller-000021.pt",
+      "sha256": "b6efb5b6c8816de217756c85f955f8256a99910cdd9d590c4459adaed4cdf500",
+      "samples": 64
+    },
+    {
+      "path": "controller-000022.pt",
+      "sha256": "df377cd1db87c365006ce13ce1e350a2d20db042b6d91b0132b0c7b66c734a45",
+      "samples": 64
+    },
+    {
+      "path": "controller-000023.pt",
+      "sha256": "33d5b56e28dab893ede7ff251a8e3a8f7a9243e3845865f9a8f993298598dfeb",
+      "samples": 49
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": "observed-depth-motion-demonstrations/v6",
+  "final_map_status": "local_navigation",
+  "map_version": -1,
+  "supported_maps_received": 57,
+  "optimized_surface_samples_received": 1274457,
+  "first_supported_map_available_ns": 1790268253212818432,
+  "handover_sim_ns": 1790268234564420608,
+  "control_safety_p95_seconds": 0.11838481808081269,
+  "control_safety_missed_deadlines": 856,
+  "safety_interventions": 4
+}

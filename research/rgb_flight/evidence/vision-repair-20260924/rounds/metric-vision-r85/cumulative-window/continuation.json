@@ -1,0 +1,10 @@
+{
+  "status": "waiting_for_integration",
+  "cycle": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r85",
+  "physical": {
+    "updated-policy-flight": "ready",
+    "final-reload-flight": "ready",
+    "development-flights": "ready"
+  },
+  "preference_status": "ready"
+}

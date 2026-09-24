@@ -19,6 +19,7 @@ from goal_matching import GoalMatcherPipeline,visual_task_tensor
 from learning_models import FastVisualOdometry,rotation_increment
 from metric_alignment import CausalMetricAlignment
 from spatial_memory import SpatialMemory,SpatialRecord,ConservativeGeometry
+from async_geometry import AsyncGeometry
 
 
 def checksum(path):
@@ -94,6 +95,7 @@ class CausalNavigationState:
             self.projection=projection
         self.memory=SpatialMemory(episode_id);self.alignment=CausalMetricAlignment(episode_id)
         self.geometry=ConservativeGeometry((-40.,-40.,-20.),.5,shape=(160,160,80))
+        self.map_fusion=AsyncGeometry()
         self.teacher=FrontierTeacher(episode_id,checkpoints.spec['goal_match_threshold'])
         self.hidden=torch.zeros(1,256,device=device)
         self.position=torch.zeros(3,device=device);self.rotation=torch.eye(3,device=device)
@@ -122,13 +124,15 @@ class CausalNavigationState:
             self.depth_worker=AsyncLocalDepth(checkpoints.paths['vision'])
 
     def enqueue(self,component,payload):
-        if component not in ('video','tracking','map','configuration','depth'):raise ValueError('Unexpected runtime result')
+        if component not in ('video','tracking','map','configuration','depth','geometry'):raise ValueError('Unexpected runtime result')
         if payload.get('episode_id')!=self.episode_id:raise ValueError('Cross-episode asynchronous result')
         if not isinstance(payload.get('version'),int):raise ValueError('Runtime result needs a version')
         if not math.isfinite(payload['available_monotonic']):raise ValueError('Invalid availability timestamp')
         self.pending.append((component,payload))
 
     def _deliver(self,ns,wall):
+        fused=self.map_fusion.poll()
+        if fused is not None:self.enqueue('geometry',fused)
         ready=[];pending=[]
         for component,row in self.pending:
             if row['observation_ns']<=ns and row['available_monotonic']<=wall:ready.append((component,row))
@@ -200,59 +204,49 @@ class CausalNavigationState:
                         self.supported_maps_received+=1
                         self.optimized_surface_samples_received+=samples
                         if self.first_supported_map_available_ns is None:self.first_supported_map_available_ns=ns
+            elif component=='geometry':
+                self._apply_geometry(row,ns)
             elif component=='configuration':
                 config=VisualTaskConfig(**row['configuration'])
                 config.validate_grounding(self.episode_id,self.memory.observed_ids,ns/1e9)
                 self.configuration=config
-        # A map can arrive before scale has sufficient support. Retain it and
-        # integrate only after a later causal fit becomes usable.
+        # Keep only the latest map while a bounded slow fusion job runs.
         row=self.cached_map
         if (row is not None and row['gauge_version']==self.gauge_version and
                 row['version']>self.latest_map_version and self.scale and self.scale.get('usable')
-                and row.get('optimizer_updates',0)>0 and any(len(c['points']) for c in row.get('optimized_surfaces',[]))):
-            # Only geometrically supported, observed RGB-estimated points.
-            rotation=torch.tensor(self.scale['rotation']);translation=torch.tensor(self.scale['translation'])
-            if self.geometry_scale is not None:
-                previous=self.geometry_scale
-                relative=(self.scale['meters_per_map_unit']/previous['meters_per_map_unit'])*rotation@torch.tensor(previous['rotation']).T
-                shift=translation-relative@torch.tensor(previous['translation'])
-                # Bound a similarity correction over the whole navigation
-                # grid, not just at the current pose. Half a voxel is the
-                # material geometry-change threshold for an existing plan.
-                corners=torch.cartesian_prod(*[torch.tensor([0.,float(n)]) for n in self.geometry.shape])
-                corners=self.geometry.origin+corners*self.geometry.resolution
-                correction=float((corners@relative.T+shift-corners).norm(dim=1).max())
-                correction+=abs(self.scale['fit_rmse_m']-previous['fit_rmse_m'])
-                if correction>self.geometry.resolution/2:self.map_correction_version+=1
-            self.geometry_scale=dict(self.scale)
-            # Rays belong to their source view; historical surfaces are not
-            # assumed visible from the latest camera.
-            previous_occupied=self.geometry.occupied.clone()
-            self.geometry=ConservativeGeometry((-40.,-40.,-20.),.5,shape=(160,160,80))
-            for ray in row['observed_rays']:
-                points=ray['points'].float().cpu()
-                points=self.scale['meters_per_map_unit']*(points@rotation.T)+translation
-                camera=self.scale['meters_per_map_unit']*(torch.as_tensor(ray['camera_position']).float()@rotation.T)+translation
-                self.geometry.integrate(camera,points,self.scale['fit_rmse_m'],occupy_endpoints=False)
-            for identifier in [key for key in self.memory.records if key.startswith('surface-')]:
-                del self.memory.records[identifier]
-            for chunk in row['optimized_surfaces']:
-                if not len(chunk['points']):continue
-                scale=self.scale['meters_per_map_unit']
-                centers=scale*(chunk['points'].float()@rotation.T)+translation
-                self.geometry.integrate_surfaces(centers,scale*chunk['extent'],self.scale['fit_rmse_m'])
-                source=self.source_features.get(chunk['source']['frame_id'])
-                if source is None:continue # No appearance invented for unsupported source images.
-                for index in range(0,len(centers),max(1,len(centers)//64)):
-                    record=SpatialRecord('surface-'+str(chunk['source']['frame_id'])+'-'+str(index),
-                        self.episode_id,int(chunk['observed_ns'][index]),source.source_frame,centers[index],
-                        torch.eye(3)*self.scale['fit_rmse_m']**2,source.feature,
-                        int(chunk['observation_count'][index]),source.confidence)
-                    self.memory.append(record,available_ns=ns)
-            self.hazard_version+=int(bool(((self.geometry.occupied>0)&(previous_occupied==0)).any()))
-            self.latest_map_version=row['version']
-            self._clear_frontiers()
-            self._frontiers(row,ns)
+                and row.get('optimizer_updates',0)>0 and any(len(c['points']) for c in row.get('optimized_surfaces',[]))
+                and not any(component=='geometry' for component,_ in self.pending)):
+            self.map_fusion.submit(self.episode_id,row,self.scale,self.source_features,self.geometry.occupied)
+
+    def _apply_geometry(self,prepared,ns):
+        if (prepared['gauge_version']!=self.gauge_version or prepared['version']<=self.latest_map_version
+                or not self.scale or not self.scale.get('usable')):
+            self.diagnostics.append(dict(component='geometry',reason='expired_gauge_version_or_scale',
+                observation_ns=prepared['observation_ns'],available_ns=ns))
+            return
+        scale=prepared['scale'];rotation=torch.tensor(scale['rotation']);translation=torch.tensor(scale['translation'])
+        if self.geometry_scale is not None:
+            previous=self.geometry_scale
+            relative=(scale['meters_per_map_unit']/previous['meters_per_map_unit'])*rotation@torch.tensor(previous['rotation']).T
+            shift=translation-relative@torch.tensor(previous['translation'])
+            corners=torch.cartesian_prod(*[torch.tensor([0.,float(n)]) for n in self.geometry.shape])
+            corners=self.geometry.origin+corners*self.geometry.resolution
+            correction=float((corners@relative.T+shift-corners).norm(dim=1).max())
+            correction+=abs(scale['fit_rmse_m']-previous['fit_rmse_m'])
+            if correction>self.geometry.resolution/2:self.map_correction_version+=1
+        self.geometry_scale=scale;self.geometry=prepared['geometry']
+        # CPU distance-field construction completed before publication. Only
+        # the final tensor transfer and episode-memory insertion remain here.
+        self.geometry.field=self.geometry.field.to(self.device)
+        for identifier in [key for key in self.memory.records if key.startswith('surface-')]:
+            del self.memory.records[identifier]
+        for record in prepared['records']:self.memory.append(record,available_ns=ns)
+        self.hazard_version+=int(prepared['new_hazard'])
+        self.latest_map_version=prepared['version']
+        self._clear_frontiers();self._frontiers(prepared['source_map'],ns)
+        self.diagnostics.append(dict(component='geometry',reason='slow_fusion_published',
+            map_version=prepared['version'],observation_ns=prepared['observation_ns'],available_ns=ns,
+            processing_seconds=prepared['processing_seconds']))
 
     def _clear_frontiers(self):
         # Rebuilt/corrected geometry cannot leave stale free-space targets.
@@ -449,4 +443,5 @@ class CausalNavigationState:
 
     def close(self):
         if self.depth_worker:self.depth_worker.close()
+        self.map_fusion.close()
         self.memory.close();self.history.clear();self.pending.clear();self.source_rgb.clear();self.keyframe_rgb.clear();self.closed=True

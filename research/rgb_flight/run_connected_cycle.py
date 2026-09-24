@@ -10,7 +10,8 @@ from pathlib import Path
 from program_scheduler import run
 
 
-def specification(visual_pack,safety,episode,demonstrations=None,initial_world=None,initial_policy=None,initial_qwen=None,world_collection=None,world_collection_checkpoints=None):
+def specification(visual_pack,safety,episode,demonstrations=None,initial_world=None,initial_policy=None,initial_qwen=None,world_collection=None,world_collection_checkpoints=None,import_demonstrations=None):
+    if demonstrations and import_demonstrations:raise ValueError('Choose a complete batch or import a partial batch')
     if bool(world_collection)!=bool(world_collection_checkpoints):raise ValueError('Supplemental world data requires its checkpoint pack')
     root=Path.home()/'uav-rgb-flight';stages=[]
     visual=json.loads((visual_pack/'checkpoints.json').read_text())
@@ -29,7 +30,10 @@ def specification(visual_pack,safety,episode,demonstrations=None,initial_world=N
             item['resume_command']=resume+['--resume','{checkpoint}']
         elif any(x.endswith('/collect_learning_round.py') for x in command):
             item['checkpoint']='{job}/collection/flights.json'
-            item['resume_command']=list(command)+['--import-collection','{checkpoint}']
+            resume=list(command)
+            if '--import-collection' in resume:
+                offset=resume.index('--import-collection');del resume[offset:offset+2]
+            item['resume_command']=resume+['--import-collection','{checkpoint}']
         stages.append(item)
     def pack(name,policy,world,qwen,depends):
         destination='{round}/'+name;command=['python3','{source}/package_navigation.py']
@@ -67,8 +71,8 @@ def specification(visual_pack,safety,episode,demonstrations=None,initial_world=N
         bootstrap_dependencies=['demonstrations-complete']
     else:
         stage('bootstrap-flight','flight',['python3','{source}/collect_learning_round.py','--demonstration-batch',
-            '--controller-checkpoints',str(visual_pack)],'{job}/collection/result.json',
-            ['{job}/collection/flights.json'],peak=72,seconds=7200)
+            '--controller-checkpoints',str(visual_pack),*(['--import-collection',str(import_demonstrations)] if import_demonstrations else [])],'{job}/collection/result.json',
+            ['{job}/collection/flights.json'],peak=72,seconds=7200,inputs=[str(import_demonstrations)] if import_demonstrations else [])
         collection=job('bootstrap-flight','collection/flights.json');bootstrap_dependencies=['bootstrap-flight']
     bundle=trajectories('trajectories',bootstrap_dependencies)
     stage('world-data','gpu',['python3','{source}/learning_data_job.py','--phase','world',
@@ -136,11 +140,13 @@ if __name__=='__main__':
     parser.add_argument('--visual-pack',type=Path,required=True);parser.add_argument('--safety-profile',type=Path,required=True)
     parser.add_argument('--episode-id',default='train-00000');parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--demonstrations',type=Path)
+    parser.add_argument('--import-demonstrations',type=Path,help='Retain completed compatible attempts and collect only the missing task IDs')
     parser.add_argument('--initial-world',type=Path);parser.add_argument('--initial-policy',type=Path)
     parser.add_argument('--initial-qwen',type=Path)
     parser.add_argument('--hours',type=float,default=8);args=parser.parse_args()
     if not 0<args.hours<=8:parser.error('At most eight-hour resumable windows')
-    spec=specification(args.visual_pack.resolve(),args.safety_profile.resolve(),args.episode_id,args.demonstrations,args.initial_world,args.initial_policy,args.initial_qwen)
+    spec=specification(args.visual_pack.resolve(),args.safety_profile.resolve(),args.episode_id,args.demonstrations,args.initial_world,args.initial_policy,args.initial_qwen,
+        import_demonstrations=args.import_demonstrations)
     args.output.mkdir(parents=True,exist_ok=True);path=args.output/'programme-spec.json'
     if path.exists() and json.loads(path.read_text())!=spec:raise ValueError('Changed cycle inputs require a new output round')
     if not path.exists():path.write_text(json.dumps(spec,indent=2))

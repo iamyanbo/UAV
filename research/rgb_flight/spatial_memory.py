@@ -154,7 +154,12 @@ class ConservativeGeometry:
         for points in endpoints.split(512):
             vectors = points - camera
             distances = vectors.norm(dim=-1)
-            fractions = torch.arange(0, float(distances.max()), self.resolution)
+            # Rays outside this bounded field cannot add free cells. Avoid
+            # allocating samples all the way to very distant map surfaces.
+            corners=torch.cartesian_prod(*[torch.tensor([0.,float(n)]) for n in self.shape])
+            corners=self.origin+corners*self.resolution
+            limit=float((corners-camera).norm(dim=1).max())+self.resolution
+            fractions = torch.arange(0, min(float(distances.max()),limit), self.resolution)
             valid = fractions[None] < (distances[:, None] - uncertainty_m - self.resolution)
             rays = camera + vectors[:, None] / distances[:, None, None].clamp_min(1e-6) * fractions[None, :, None]
             self._increment(self.free, rays[valid])
