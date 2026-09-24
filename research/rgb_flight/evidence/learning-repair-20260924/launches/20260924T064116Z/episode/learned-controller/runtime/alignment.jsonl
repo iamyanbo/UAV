@@ -620,3 +620,62 @@
 {"component": "alignment", "observation_ns": 1790232172019239424, "available_ns": 1790232172136241920, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
 {"component": "alignment", "observation_ns": 1790232172079240704, "available_ns": 1790232172196243200, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
 {"component": "alignment", "observation_ns": 1790232172136241920, "available_ns": 1790232172265244672, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232172196243200, "available_ns": 1790232172325245952, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232172265244672, "available_ns": 1790232172397247488, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232172325245952, "available_ns": 1790232172460248832, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232172397247488, "available_ns": 1790232172565251072, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232172460248832, "available_ns": 1790232172634252544, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "configuration", "observation_ns": 1790232172634252544, "reason": "configuration_invalidated_by_current_observed_memory"}
+{"component": "alignment", "observation_ns": 1790232172565251072, "available_ns": 1790232172709254144, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232172634252544, "available_ns": 1790232172799256064, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232172709254144, "available_ns": 1790232172904258304, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232172799256064, "available_ns": 1790232172967259648, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232172904258304, "available_ns": 1790232172967259648, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232172967259648, "available_ns": 1790232173042261248, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232173042261248, "available_ns": 1790232173111262720, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232173111262720, "available_ns": 1790232173255265792, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232173189264384, "available_ns": 1790232173390268672, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232173255265792, "available_ns": 1790232173504271104, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232173324267264, "available_ns": 1790232173504271104, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232173390268672, "available_ns": 1790232173504271104, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232173504271104, "available_ns": 1790232173696275200, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232173594273024, "available_ns": 1790232173801277440, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232173696275200, "available_ns": 1790232173894279424, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232173801277440, "available_ns": 1790232174005281792, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232173894279424, "available_ns": 1790232174068283136, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232174005281792, "available_ns": 1790232174161285120, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232174068283136, "available_ns": 1790232174161285120, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232174161285120, "available_ns": 1790232174443291136, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232174278287616, "available_ns": 1790232174515292672, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232174443291136, "available_ns": 1790232174650295552, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232174515292672, "available_ns": 1790232174734297344, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232174650295552, "available_ns": 1790232174878300416, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232174734297344, "available_ns": 1790232174950301952, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232174878300416, "available_ns": 1790232175088304896, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232174950301952, "available_ns": 1790232175160306432, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232175088304896, "available_ns": 1790232175253308416, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232175160306432, "available_ns": 1790232175322309888, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232175253308416, "available_ns": 1790232175412311808, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232175322309888, "available_ns": 1790232175520314112, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232175412311808, "available_ns": 1790232175598315776, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232175520314112, "available_ns": 1790232175664317184, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232175598315776, "available_ns": 1790232175730318592, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232175664317184, "available_ns": 1790232175868321536, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232175730318592, "available_ns": 1790232175967323648, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232175868321536, "available_ns": 1790232176030324992, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232175967323648, "available_ns": 1790232176108326656, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232176030324992, "available_ns": 1790232176219329024, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232176108326656, "available_ns": 1790232176303330816, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232176219329024, "available_ns": 1790232176375332352, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"component": "alignment", "observation_ns": 1790232176303330816, "available_ns": 1790232176477334528, "gauge_version": 0, "usable": false, "reason": "tracking_lost"}
+{"usable": false, "reason": "insufficient_causal_support", "component": "alignment", "observation_ns": 1790232176375332352, "available_ns": 1790232179042389248}
+{"usable": false, "reason": "insufficient_causal_support", "component": "alignment", "observation_ns": 1790232178847385088, "available_ns": 1790232180287415808}
+{"usable": false, "reason": "insufficient_causal_support", "component": "alignment", "observation_ns": 1790232180191413760, "available_ns": 1790232182063453696}
+{"usable": false, "reason": "insufficient_causal_support", "component": "alignment", "observation_ns": 1790232181928450816, "available_ns": 1790232184463504896}
+{"usable": false, "reason": "insufficient_causal_support", "component": "alignment", "observation_ns": 1790232184298501376, "available_ns": 1790232186278543616}
+{"usable": false, "reason": "insufficient_causal_support", "component": "alignment", "observation_ns": 1790232188126583040, "available_ns": 1790232189755617792}
+{"usable": false, "reason": "insufficient_causal_support", "component": "alignment", "observation_ns": 1790232189629615104, "available_ns": 1790232191504655104}
+{"usable": false, "reason": "causal_fit", "meters_per_map_unit": 18.989250582229445, "log_scale_sigma": 0.922387847539378, "rotation": [[0.6164967693260744, 0.7840955860903966, 0.07159500879300815], [0.7197371330650263, -0.5243479172348517, -0.455013978882858], [-0.31923375870645326, 0.3320442343499298, -0.8876015061597855]], "translation": [2.678958673509655, 0.2003655754672723, -1.9492724327096342], "fit_rmse_m": 0.30380035786034354, "support": 8, "latest_observation_ns": 1790232191354651904, "available_ns": 1790232193274692864, "gauge_version": 0, "uncertainty_status": "conservative residual/odometry propagation; held-out calibration required", "component": "alignment", "observation_ns": 1790232191354651904}
+{"usable": false, "reason": "causal_fit", "meters_per_map_unit": 21.120098485179888, "log_scale_sigma": 0.739793911485111, "rotation": [[0.49958380899735555, 0.8514203830168534, 0.1596851563894707], [0.8304073813826762, -0.4182096109799741, -0.36813625497788854], [-0.24665684408274696, 0.31651864505493876, -0.9159565211295377]], "translation": [2.5492792050153907, 0.0855501013850809, -1.9077370386094086], "fit_rmse_m": 0.3713637705502958, "support": 9, "latest_observation_ns": 1790232193118689536, "available_ns": 1790232194969729024, "gauge_version": 0, "uncertainty_status": "conservative residual/odometry propagation; held-out calibration required", "component": "alignment", "observation_ns": 1790232193118689536}
+{"usable": false, "reason": "causal_fit", "meters_per_map_unit": 22.730174939308906, "log_scale_sigma": 0.6536872410730177, "rotation": [[0.273455600794786, 0.9546315004810305, 0.11790136845389501], [0.9285332717669136, -0.22998664276745923, -0.2914311365835589], [-0.2510936032952538, 0.18916881994105617, -0.9492982460461594]], "translation": [2.4982573924976093, -0.09699785713886977, -1.764574012199951], "fit_rmse_m": 0.5029126872468922, "support": 10, "latest_observation_ns": 1790232194879727104, "available_ns": 1790232196793767936, "gauge_version": 0, "uncertainty_status": "conservative residual/odometry propagation; held-out calibration required", "component": "alignment", "observation_ns": 1790232194879727104}
+{"usable": false, "reason": "causal_fit", "meters_per_map_unit": 22.88638793105076, "log_scale_sigma": 0.5966434506217534, "rotation": [[0.28763788172676014, 0.7021576932470138, 0.6513363361657126], [0.9559347655030617, -0.16875447978138994, -0.24023040951619504], [-0.05876370562131568, 0.6917344138957839, -0.7197571309364752]], "translation": [2.2689593270736133, -0.17217581473438814, -2.3216502341173872], "fit_rmse_m": 0.6129574945540156, "support": 11, "latest_observation_ns": 1790232196637764608, "available_ns": 1790232198440803072, "gauge_version": 0, "uncertainty_status": "conservative residual/odometry propagation; held-out calibration required", "component": "alignment", "observation_ns": 1790232196637764608}

@@ -1,0 +1,46 @@
+[
+  {
+    "applied_predictive_commands": 0,
+    "complete_flight": true,
+    "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T063853Z/episode",
+    "result_sha256": "6d97327d9b829a79bcd372fbe64f10ea0f118a3b569eff361d44837469206b91",
+    "configuration": {
+      "target_id": null,
+      "grounded_kind": "none",
+      "intention": "search",
+      "goal_weight": 1.0,
+      "time_weight": 1.0,
+      "information_weight": 1.0,
+      "additional_caution": 1.0,
+      "confidence": 0.0,
+      "validity_horizon_seconds": 4.0,
+      "deliberate_immediately": true
+    },
+    "collision": false,
+    "success": false,
+    "elapsed_sim_seconds": 30.015640258789062,
+    "termination": "initialization_timeout"
+  },
+  {
+    "applied_predictive_commands": 0,
+    "complete_flight": true,
+    "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T064116Z/episode",
+    "result_sha256": "aeddbe4f6d9a345ad48c824ad87893429dc2894637a307f58285ceeaf9db76be",
+    "configuration": {
+      "target_id": null,
+      "grounded_kind": "none",
+      "intention": "search",
+      "goal_weight": 1.0,
+      "time_weight": 1.0,
+      "information_weight": 1.0,
+      "additional_caution": 2.0,
+      "confidence": 0.0,
+      "validity_horizon_seconds": 4.0,
+      "deliberate_immediately": true
+    },
+    "collision": false,
+    "success": false,
+    "elapsed_sim_seconds": 30.078641653060913,
+    "termination": "initialization_timeout"
+  }
+]

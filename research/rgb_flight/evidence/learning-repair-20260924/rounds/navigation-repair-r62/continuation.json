@@ -1,4 +1,9 @@
 {
-  "status": "full_flow_running",
-  "accepted": false
+  "status": "window_ended",
+  "independent_flow_completed": true,
+  "preference_status": "blocked",
+  "cumulative_window": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/cumulative-window",
+  "scheduler_return_code": 2,
+  "accepted": false,
+  "reason": "Movement, map handover and navigation are measured separately; timing optimization is deferred"
 }

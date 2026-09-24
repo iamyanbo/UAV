@@ -1,14 +1,14 @@
 {
   "schema": "training-round/v1",
   "contract": {
-    "spec_sha256": "9f8e8fcabb2001a47a62b7ba9ff83114f4d3471bc35b29089cee786896c43e81",
+    "spec_sha256": "14c81d42510c8763f3debe8ffc3c3fe6806e50a4f7e7ca80cebf32233596b909",
     "source_hashes": {
       "acquire.py": "b95bb2f3e72d27a9e9766a1c6f9c3402c41e93767ada550cd0ee47899e6fdd13",
       "acquire_reference_geometry.py": "7c46e9d141c88278abd763b9df8a39acb43c4ea4d87791437ff9362847632c8d",
       "action_intervals.py": "bc369d100921d423ebe9d16e29bd5cf64a56e4a5484a8dea1321379d439e27ef",
       "after_reference_survey.py": "fef6e3b39d7d58e842a881bb966d7e2f8671c2556b9afbe945b68f2b0b9e3b40",
       "archive_video.py": "c2e87aad14dade7966b592c5bd9499a79c7144c4f74cb3ec4a8d9e15bbc89f28",
-      "async_mapping.py": "9b50f944d64e49bcffbaee8878c416db83878d4d4800916d423fee74deea46f8",
+      "async_mapping.py": "5f19bbc24d5f9a9fa98dfe93e0a968a3347a6a79f034c14bf8d692faca990a1e",
       "async_video.py": "a69eb20c97e539415a3345afe4b57c6336ae87fca23883f1b2458a81c0ead496",
       "audit_obstacle_coverage.py": "29d7857dfee9175b055fb3e4d22f274ca2ee2b9870dee27791a3929fd9973bfd",
       "await_demonstrations.py": "8ed57caee24a89c08fa44eb93e578fc5710497c429016e0671c7ca4aa76a8387",
@@ -18,7 +18,7 @@
       "build_goal_round.py": "0d685bd0f060993a029299344670dcb98d58a5d82b6800d3605891ed5094edac",
       "build_model_stack.py": "b8e287bd9f326fad405418b77a2abed7ee120f1cca37060aff1418e4cc0c77d9",
       "build_online_learning.py": "f567fd32eed8d482e2d41a43f36ccee986f8b051e470a31bc9741a952dcf2350",
-      "build_policy_sequences.py": "80765a961bb7e03999c8cbbb9244a885b0f4c30bc1db335fcd1b684c40ca5893",
+      "build_policy_sequences.py": "949b5aaf2a384076d388447e57a33c73c0a506b01adb78eab09c1410558eca1d",
       "build_preference_examples.py": "cc3ba49e6f0a0b353ee9f8b6898f0db75c344f0067a0eb7c6a613786cb8c0c9e",
       "build_visual_dataset.py": "4cda396df43de6fdfa53fb35eb9ebe6c194699034fe776704898dd868f93457a",
       "build_world_sequences.py": "778562b1b76d8c50417f8ca8baa550e904e1a5a6f7d92c34e904b8dce25d2a50",
@@ -27,8 +27,8 @@
       "campaign.json": "55b31fe0d50d86df8873df005926e451d34364ec8500f39304337b9aac5fe53d",
       "capture_goal.py": "2bf4596e1c916e098e6b8f4e686e5a14c4928c02764c2c7a2689efccd8638619",
       "capture_obstacle_field.py": "b69b223ea60af0a27c8fd4adf051d84a303d54741a110fbcee3f20a42c4151c8",
-      "causal_mapper.py": "9d5b15c5ed6bce8e0123ac05d6ea045fd779b1d531bdef9fcf0c46c53053b028",
-      "causal_pose.py": "4618b81fed322d75064ee9c5890e171e52295385e5e8bebc0911abc0b15be3b9",
+      "causal_mapper.py": "a285dc37038efc97340f146e5bd69254a7c81c209e877ffdcaac2e8f2158bb82",
+      "causal_pose.py": "e4930f4d695dfdf28ed5219ea6860759ed9d663891914aaa29c6ae04feafede9",
       "collect_configuration_preferences.py": "746136a0b95c4883cce994076b937fadfcc553a8099373123b4258a45b76ac06",
       "collect_learning_round.py": "d07d893ef86ab2109f1f1a0ae808e69452293ea83e51586dd4c3fd78693e8b2f",
       "collect_safety_profile.py": "737c6b87a8a96605506436fc0e5d9ae3b7cd618c36191ba0365803d59343c633",
@@ -39,7 +39,6 @@
       "contracts.py": "159f1016c9601f00417cbf8db8ec4d3fec69021dd7267094223b47c7880ce737",
       "controller.py": "3b02681afcc1a6e421844202f9b8b9806fbd1c902f98fa1c0906ba9cdcbf2100",
       "dagger.py": "b606d9e72de98c712362c8868091ce69bfe26ff89311434254dfc918a946962f",
-      "diagnose_recorded_tracking.py": "8fb9a7ce461f62827b37f2c8ac6e900caa9d4bb6d2db38a3fb92a979f7f25585",
       "download_models.py": "d4665f029e59da87a57d66221dbf0e9f157e98a1d68013282c6fa4b6b04763ef",
       "dynamics_probe.py": "daa6f116604ed86f22bc4e4e7214bb92e70c8ad0a20231d842854c8fabc52401",
       "episode_generation.py": "3cf1c3da8c3db729c4192c5a3b0148ccfa7abe3a0eff25044f0897822f65b1dd",
@@ -57,22 +56,22 @@
       "install_swiftshader.py": "780d2e3e11219d759b88f6fa6d8909435a4e6c7abc81144947a179aa764345f7",
       "isolation.py": "53b80814fb18899cde24e6aa280ee4887d1bff17f9fd7ce06687490a567ffd84",
       "isolation_client.py": "80ded5c2c3c3710b3cf23c5de62f28b2bf765d670839e1bd3dfed5fc0b23682c",
-      "learned_controller.py": "bab954d1cda1d115a748e61a33b2143163e988819888d85c314b60af2643a573",
+      "learned_controller.py": "f197b120ebcf375b677b66cdf77d62f1f82eb7771f0859f852b347638321b6e7",
       "learning_data_job.py": "7c3f7b97c89139d21d13b3d522673bc1350f77b750d11530cd332ce6b1f0b290",
       "learning_models.py": "4536ebf001638136c0990078c4456f52cf67bc6195eddfa3c1404135b9dd9883",
       "linux_probe.py": "4dfb4ac3cd28254ae5d29097ac06adba37685a484b16476e3a6aaca2095cdff0",
       "live_controller_process.py": "67f9fef298d80ec3a58cdb271feb4c83181088a8e4ae7b19a74fc00d669ba42a",
-      "live_deliberation.py": "a44254b3bde61fff3e1a8e17595bfdc0661c174ebb8e3243f0a3c4d20674fbb6",
+      "live_deliberation.py": "d5930d3f133a6b380ab2a3072a8e99b7791bd87d0db55e8f9947d999b8a0dc3a",
       "live_perception.py": "50623a91f6c32ce5b4d59bcd62d04a331fa7a1eae12000def6c2c58bcd564f92",
       "live_visual.py": "1676db4d7d82c8fa51f61324b211b953fafacdc8b62446a3fc10b7c165edd5c4",
-      "mapping_worker.py": "6118ed999bf940178d97faafcaed9594979ea830027d78377135c2bf656e4421",
+      "mapping_worker.py": "3f53840ae67e3fa2762f5559da9e1ef6cebe92ea1628fe9e2609419275a26539",
       "memory_snapshot.py": "8c6709f195bd62f2dd2ec77dc7fc3b36481cbc48cafa1a42008ea58465ff4773",
-      "metric_alignment.py": "dbba5b6f0d4730056d43ec189e7644d2e670e1503f29842c8165133556659a80",
+      "metric_alignment.py": "df98f44e5d6e8b2ac81d162f8a8f5f1fa55ecb89c9c865c691ebaf223e439dbd",
       "mine_goal_negatives.py": "6eef3082faa91d2726bafa55f337674d12795aea75dbe6304dd152d734760a4c",
       "model_probe.py": "862cc4376bb9a545296d5076d8e26b2bfb527cd8d93ea213e864ba3a4b9814c9",
       "native_cuda_check.py": "931ba324b9ab24ab183c2c4b6f3dab3bb1e7c6a881eaacf04b43be4d7e6c04a5",
       "navigation_process.py": "305f2e782f5a4a237a99b0292740eb8c7b038db4675eb6239d29bbfdd470b22b",
-      "navigation_state.py": "12d9b42725b4808143b9701d7d67f102989c01920376b410695f007e06d4a0c9",
+      "navigation_state.py": "2ade26f9cdc4feaeeaa6b4692d446ecf335f621c57d124a7f46ae00b09b4ba82",
       "obstacle_field.py": "dfd48f8d5f89b4a3bcfd449aad631607d8e3643bc2558b441c13e870348a81aa",
       "package_navigation.py": "af693a83fbaca2934a71411b174c178c73be8bb3345cb00a9a582f011b97931c",
       "parameter_evidence.py": "81cb7b20e82fa939f8f85a93c28630290671f571fa8bd591715f2f166fb75bae",
@@ -104,7 +103,6 @@
       "run_after_perception.py": "de9964e8b4a16349364e5dd4dd3f4d219ef4d8a8a85bde4ab0361393db69191d",
       "run_connected_cycle.py": "e640a3e13127702c8d2260c42f78f4179b411c46cf4109a9e3eb1128b0cc595b",
       "run_continuation_window.py": "dccb404723884b7c14f1dd720d0259f647358ebf07756daf0f3d3fb74cfa1fda",
-      "run_navigation_window.py": "edcfcedc985dfdb720a6f5db091897eca45d6aa2602513587245a022819b381a",
       "runtime_capacity.py": "ac4f859faf5a738d51d0c478b72309dcd8fc34419ffb8296d3a12ba760b7c907",
       "scale-calibration.json": "af37b3b42ff13bc56b519ade73e75de1fdc1b9f79b6490b53338eed8bdf8e4f0",
       "scale_data.py": "5d877d675006ccc07ac88bdb26269143f881ad16d85836733696044efeaa11bd",
@@ -122,7 +120,7 @@
       "splat_tracking_probe.py": "67e9baab250e38c731571b444551b87aea783587b530c5b9b08aa88118910100",
       "stage_worker.py": "bbc6804baa27303cc03126bb07609563c6e788420900ca0568d13f3bef122c19",
       "startup.py": "4295488a4b8f3e4099f130826c43d93ce93a9dc9e235ad48a43168238afa7534",
-      "sync_repair_evidence.py": "11e5af512e05c70dd9fc45feae8f2dd60498589bb6ca91b3253ce20a98900bd9",
+      "sync_repair_evidence.py": "030a3938e11b18d416dc2db2f598542ecedb9ce616c439d0c6a1dcc2c448b9d7",
       "train_configurator.py": "07a90a95f7381599ecc4c9379cd5d3b7d644653145c7071be0a8b0154f8d2654",
       "train_models.py": "649186bf3d5930e571fccf01adf6e6281dd3623b069238ccfac78f839973850a",
       "train_odometry_sequences.py": "8842fa1a50718219b21887fa710fc9ddb12802f6d5dead293e7b489d81b577da",
@@ -140,162 +138,36 @@
       "wire.py": "bbe7c55d4edd8b1cb414cfcb848db25ecd56af6c5c98c91f7c1426670db844a2"
     },
     "inputs": {
-      "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/trajectory-bundle/manifest.json": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e",
-      "/home/iamyanbo/uav-rgb-flight/runs/20260924T051243Z-balanced-motion-training-5b8884/visual-training/latest.pt": "e35bc2b2312e6f3884a05677b432c0245a32fd492c39378395ab2ab71bfa2467",
-      "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/checkpoints.json": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
-      "/home/iamyanbo/uav-rgb-flight/runs/20260924T034035Z-exploration-demonstrations-0ec7d6/collection/flights.json": "38f8620a30ee4140be2e83a6e6438e800eb93e2e23856d811b8353520bed140a"
+      "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/checkpoints.json": "41d0255a8e876a6560e33f2fa352e61cb77e368a7748391f976ca33b0de5db76",
+      "/home/iamyanbo/uav-rgb-flight/runs/20260924T055047Z-updated-policy-flight-024a66/collection/flights.json": "ecb981bab6252259733e697b81853d2ab100bbfb1014b0a33ca631e75cc28027",
+      "/home/iamyanbo/uav-rgb-flight/runs/20260924T054334Z-world-data-167238/world-data/manifest.json": "a15b3abc867d90c07c29b60b1d7edc43da49e02753709e2da9084b4349a700e5",
+      "/home/iamyanbo/uav-rgb-flight/runs/20260924T054403Z-world-update-7e2811/training/final.pt": "3f3ad896c84e10cc59818c8e4daab98c703d1e12aecae7494248e25f59374dd0",
+      "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/dagger-data/dataset/manifest.json": "727f3a0db811849b1bda7d94c09cda8922a32b3a74e3afec64dc13890566488e",
+      "/home/iamyanbo/uav-rgb-flight/runs/20260924T054856Z-dagger-update-2280dd/training/final.pt": "2b3a3c551aa6f7372842d0d5e184d0068d98494f782a7172951b55c89bb69a25",
+      "/home/iamyanbo/uav-rgb-flight/launches/20260922T002848Z/manifests/evaluator_labels/train.json": "aa8b084b346c6a6d39ea616b64b8aa160901b8bffbc2ce7b8d9e48108bd97d63"
     }
   },
   "round_id": "execution",
   "stages": {
-    "balanced-motion-training": {
-      "status": "running",
-      "attempts": [
-        {
-          "process": {
-            "pid": 2613551,
-            "start_ticks": "132942497",
-            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
-          },
-          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/balanced-motion-training-000.log"
-        },
-        {
-          "process": {
-            "pid": 2623703,
-            "start_ticks": "133134844",
-            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
-          },
-          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/balanced-motion-training-001.log"
-        }
-      ],
-      "reason": "Owned remote guard running",
-      "input_hashes": {
-        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/trajectory-bundle/manifest.json": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e",
-        "/home/iamyanbo/uav-rgb-flight/runs/20260924T051243Z-balanced-motion-training-5b8884/visual-training/latest.pt": "e35bc2b2312e6f3884a05677b432c0245a32fd492c39378395ab2ab71bfa2467"
-      },
-      "process": {
-        "pid": 2623703,
-        "start_ticks": "133134844",
-        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
-      },
-      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/balanced-motion-training-001.log",
-      "command": [
-        "python3",
-        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r68/spark_guard.py",
-        "--name",
-        "balanced-motion-training",
-        "--seconds",
-        "7200",
-        "--kind",
-        "gpu",
-        "--peak-gib",
-        "16",
-        "--",
-        "python3",
-        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r68/stage_worker.py",
-        "train-odometry",
-        "--dataset",
-        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/trajectory-bundle",
-        "--resume",
-        "/home/iamyanbo/uav-rgb-flight/runs/20260924T061132Z-balanced-motion-training-4fd8af/visual-training/latest.pt",
-        "--updates",
-        "2000",
-        "--validation-every",
-        "200"
-      ],
-      "started_unix": 1790232216.32025,
-      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T064336Z-balanced-motion-training-777e68",
-      "guard_receipt": {
-        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T061132Z-balanced-motion-training-4fd8af/result.json",
-        "sha256": "4fe3d1417cd97311332e7293c17a47e21248d1e083cfc4c605cf1bf6bb682d1f"
-      },
-      "worker_receipt": {
-        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T061132Z-balanced-motion-training-4fd8af/visual-training/result.json",
-        "sha256": "eaed30118bf0b7609a0f9181527878c36237185a9e04abbcd8e5c2bc582008a7"
-      },
-      "progress": {
-        "status": "checkpointed",
-        "accepted": false,
-        "updates": 633,
-        "resumed_from_update": 200,
-        "objective_version": "metric-motion-rate-balanced-regimes/v4",
-        "manifest_sha256": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e",
-        "resume_evidence": {
-          "checkpoint_sha256": "e35bc2b2312e6f3884a05677b432c0245a32fd492c39378395ab2ab71bfa2467",
-          "restored_update": 200,
-          "optimizer_states": 178,
-          "optimizer_step_min": 200.0,
-          "optimizer_step_max": 200.0
-        },
-        "gradient_evidence": {
-          "encoder": {
-            "finite_gradients": true,
-            "changed": true
-          },
-          "temporal": {
-            "finite_gradients": true,
-            "changed": true
-          },
-          "motion": {
-            "finite_gradients": true,
-            "changed": true
-          },
-          "motion_uncertainty": {
-            "finite_gradients": true,
-            "changed": true
-          }
-        },
-        "train_windows": 299,
-        "development_windows": 68,
-        "elapsed_seconds": 1388.188952920027,
-        "reason": "Full held-out trajectory drift and uncertainty qualification still required",
-        "sampling_regimes": {
-          "stationary": 137,
-          "slow": 46,
-          "cruise": 116
-        },
-        "sequence_steps": 160,
-        "warmup_steps": 32,
-        "normalization": "fixed inference BatchNorm statistics",
-        "activation_checkpointing": true,
-        "motion_parameterization": "rate",
-        "checkpoint_selection": "development normalized motion-rate error plus normalized accumulated drift"
-      },
-      "artifacts": [
-        {
-          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T061132Z-balanced-motion-training-4fd8af/visual-training/latest.pt",
-          "sha256": "1c13a78bc703d22c95d58e99fc61949ea3916342950a1938688456baa904dbd6"
-        },
-        {
-          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T061132Z-balanced-motion-training-4fd8af/visual-training/best.pt",
-          "sha256": "cc19a05d7cc966532f46ee945cb3dfc607c6c01e9e7824e5229dc9c37a8b37fa"
-        }
-      ],
-      "checkpoint": {
-        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T061132Z-balanced-motion-training-4fd8af/visual-training/latest.pt",
-        "sha256": "1c13a78bc703d22c95d58e99fc61949ea3916342950a1938688456baa904dbd6"
-      }
-    },
-    "selected-perception-pack": {
+    "source-reload-flight": {
       "status": "ready",
-      "attempts": [],
-      "reason": "Waiting for balanced-motion-training=completed"
+      "attempts": []
     },
-    "recorded-odometry-qualification": {
+    "world-continuation": {
       "status": "ready",
-      "attempts": [],
-      "reason": "Waiting for selected-perception-pack=completed"
+      "attempts": []
     },
-    "new-perception-pilot": {
+    "policy-continuation": {
       "status": "ready",
-      "attempts": [],
-      "reason": "Waiting for recorded-odometry-qualification=completed"
+      "attempts": []
     },
-    "new-perception-demonstrations": {
+    "continued-policy-pack": {
       "status": "ready",
-      "attempts": [],
-      "reason": "Waiting for new-perception-pilot=completed"
+      "attempts": []
+    },
+    "next-training-collection": {
+      "status": "ready",
+      "attempts": []
     }
-  },
-  "updated_unix": 1790232782.0604517
+  }
 }

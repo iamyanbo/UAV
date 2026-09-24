@@ -1,0 +1,141 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "control_exposure_blocked": true,
+  "matched_conditions": {
+    "episode_id": "train-00000",
+    "goal_panorama_sha256": "c3a21e3f1ddf5373110da085c0d2ba821e23dd0e4b52ae0c3d589803255b2aa5",
+    "clock_speed": 1.0,
+    "maximum_speed_mps": 3.0,
+    "rollout_seed": 0,
+    "scene": "env_airsim_16",
+    "controller_sha256": "57bc1d220fa681b2be8a95e0b556261e296fbfe63427905936594e9a43c5b094",
+    "target_rule": "same deterministic causal frontier teacher, refreshed against currently observed IDs; compare bounded scoring multipliers"
+  },
+  "matched_conditions_sha256": "893ee05b3e025e246e2c1cc6928e07fa9cbb5ac6aa9476f3fb5fca580b5fa048",
+  "controller_sha256": "57bc1d220fa681b2be8a95e0b556261e296fbfe63427905936594e9a43c5b094",
+  "outcomes": [
+    {
+      "applied_predictive_commands": 0,
+      "complete_flight": true,
+      "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T063853Z/episode",
+      "result_sha256": "6d97327d9b829a79bcd372fbe64f10ea0f118a3b569eff361d44837469206b91",
+      "configuration": {
+        "target_id": null,
+        "grounded_kind": "none",
+        "intention": "search",
+        "goal_weight": 1.0,
+        "time_weight": 1.0,
+        "information_weight": 1.0,
+        "additional_caution": 1.0,
+        "confidence": 0.0,
+        "validity_horizon_seconds": 4.0,
+        "deliberate_immediately": true
+      },
+      "collision": false,
+      "success": false,
+      "elapsed_sim_seconds": 30.015640258789062,
+      "termination": "initialization_timeout"
+    },
+    {
+      "applied_predictive_commands": 0,
+      "complete_flight": true,
+      "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T064116Z/episode",
+      "result_sha256": "aeddbe4f6d9a345ad48c824ad87893429dc2894637a307f58285ceeaf9db76be",
+      "configuration": {
+        "target_id": null,
+        "grounded_kind": "none",
+        "intention": "search",
+        "goal_weight": 1.0,
+        "time_weight": 1.0,
+        "information_weight": 1.0,
+        "additional_caution": 2.0,
+        "confidence": 0.0,
+        "validity_horizon_seconds": 4.0,
+        "deliberate_immediately": true
+      },
+      "collision": false,
+      "success": false,
+      "elapsed_sim_seconds": 30.078641653060913,
+      "termination": "initialization_timeout"
+    }
+  ],
+  "winner": null,
+  "ambiguous": true,
+  "ranking": "collision avoidance, then success, then completion time among successes; <=1 s is a timing tie",
+  "preference_update_ready": false,
+  "reason": "Neither configuration affected dispatched controls; preference learning blocked",
+  "pairs": [
+    {
+      "status": "completed",
+      "accepted": false,
+      "control_exposure_blocked": true,
+      "matched_conditions": {
+        "episode_id": "train-00000",
+        "goal_panorama_sha256": "c3a21e3f1ddf5373110da085c0d2ba821e23dd0e4b52ae0c3d589803255b2aa5",
+        "clock_speed": 1.0,
+        "maximum_speed_mps": 3.0,
+        "rollout_seed": 0,
+        "scene": "env_airsim_16",
+        "controller_sha256": "57bc1d220fa681b2be8a95e0b556261e296fbfe63427905936594e9a43c5b094",
+        "target_rule": "same deterministic causal frontier teacher, refreshed against currently observed IDs; compare bounded scoring multipliers"
+      },
+      "matched_conditions_sha256": "893ee05b3e025e246e2c1cc6928e07fa9cbb5ac6aa9476f3fb5fca580b5fa048",
+      "controller_sha256": "57bc1d220fa681b2be8a95e0b556261e296fbfe63427905936594e9a43c5b094",
+      "outcomes": [
+        {
+          "applied_predictive_commands": 0,
+          "complete_flight": true,
+          "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T063853Z/episode",
+          "result_sha256": "6d97327d9b829a79bcd372fbe64f10ea0f118a3b569eff361d44837469206b91",
+          "configuration": {
+            "target_id": null,
+            "grounded_kind": "none",
+            "intention": "search",
+            "goal_weight": 1.0,
+            "time_weight": 1.0,
+            "information_weight": 1.0,
+            "additional_caution": 1.0,
+            "confidence": 0.0,
+            "validity_horizon_seconds": 4.0,
+            "deliberate_immediately": true
+          },
+          "collision": false,
+          "success": false,
+          "elapsed_sim_seconds": 30.015640258789062,
+          "termination": "initialization_timeout"
+        },
+        {
+          "applied_predictive_commands": 0,
+          "complete_flight": true,
+          "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T064116Z/episode",
+          "result_sha256": "aeddbe4f6d9a345ad48c824ad87893429dc2894637a307f58285ceeaf9db76be",
+          "configuration": {
+            "target_id": null,
+            "grounded_kind": "none",
+            "intention": "search",
+            "goal_weight": 1.0,
+            "time_weight": 1.0,
+            "information_weight": 1.0,
+            "additional_caution": 2.0,
+            "confidence": 0.0,
+            "validity_horizon_seconds": 4.0,
+            "deliberate_immediately": true
+          },
+          "collision": false,
+          "success": false,
+          "elapsed_sim_seconds": 30.078641653060913,
+          "termination": "initialization_timeout"
+        }
+      ],
+      "winner": null,
+      "ambiguous": true,
+      "ranking": "collision avoidance, then success, then completion time among successes; <=1 s is a timing tie",
+      "preference_update_ready": false,
+      "reason": "Neither configuration affected dispatched controls; preference learning blocked"
+    }
+  ],
+  "matched_pairs": 1,
+  "ties": 1,
+  "preference_status": "blocked"
+}
