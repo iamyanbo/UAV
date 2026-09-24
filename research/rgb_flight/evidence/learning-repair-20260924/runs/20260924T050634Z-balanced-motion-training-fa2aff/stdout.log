@@ -1,0 +1,29 @@
+
+=============
+== PyTorch ==
+=============
+
+NVIDIA Release 25.11 (build 231036168)
+PyTorch Version 2.10.0a0+b558c98
+Container image Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+Copyright (c) 2014-2024 Facebook Inc.
+Copyright (c) 2011-2014 Idiap Research Institute (Ronan Collobert)
+Copyright (c) 2012-2014 Deepmind Technologies    (Koray Kavukcuoglu)
+Copyright (c) 2011-2012 NEC Laboratories America (Koray Kavukcuoglu)
+Copyright (c) 2011-2013 NYU                      (Clement Farabet)
+Copyright (c) 2006-2010 NEC Laboratories America (Ronan Collobert, Leon Bottou, Iain Melvin, Jason Weston)
+Copyright (c) 2006      Idiap Research Institute (Samy Bengio)
+Copyright (c) 2001-2004 Idiap Research Institute (Ronan Collobert, Samy Bengio, Johnny Mariethoz)
+Copyright (c) 2015      Google Inc.
+Copyright (c) 2015      Yangqing Jia
+Copyright (c) 2013-2016 The Caffe contributors
+All rights reserved.
+
+Various files include modifications (c) NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+
+GOVERNING TERMS: The software and materials are governed by the NVIDIA Software License Agreement
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-software-license-agreement/)
+and the Product-Specific Terms for NVIDIA AI Products
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/product-specific-terms-for-ai-products/).
+
+{"status": "checkpointed", "accepted": false, "updates": 89, "resumed_from_update": 0, "objective_version": "metric-motion-rate-balanced-regimes/v4", "manifest_sha256": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e", "resume_evidence": null, "gradient_evidence": {"encoder": {"finite_gradients": true, "changed": true}, "temporal": {"finite_gradients": true, "changed": true}, "motion": {"finite_gradients": true, "changed": true}, "motion_uncertainty": {"finite_gradients": true, "changed": true}}, "train_windows": 299, "development_windows": 68, "elapsed_seconds": 294.6627733078785, "reason": "Full held-out trajectory drift and uncertainty qualification still required", "sampling_regimes": {"stationary": 137, "slow": 46, "cruise": 116}, "sequence_steps": 160, "warmup_steps": 32, "normalization": "fixed inference BatchNorm statistics", "activation_checkpointing": true, "motion_parameterization": "rate", "checkpoint_selection": "development normalized motion-rate error plus normalized accumulated drift"}

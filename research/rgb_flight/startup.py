@@ -49,10 +49,13 @@ def demonstration(value):
     """No destination coordinates. Targets come from observed memory only."""
     state = value['map_status']; elapsed = value['initialization_elapsed_seconds']
     if state == 'initializing':
-        # Translating turns, vertical excitation and short braking examples.
+        # A full translating panorama scan exposes nearby structure when the
+        # initial view is water/sky. Reversing yaw each phase could keep the
+        # entire startup in the same uninformative view. Braking remains an
+        # explicit example, and no hidden target chooses the scan direction.
         phase = int(elapsed // 4) % 6
-        commands = ((.4,0,0,12),(.35,.1,-.15,-12),(.4,0,.15,10),
-                    (0,0,0,0),(.3,-.15,0,-12),(.4,0,0,12))
+        commands = ((.5,0,0,15),(.45,.1,-.15,15),(.5,0,.15,15),
+                    (0,0,0,0),(.45,-.15,0,15),(.5,0,0,15))
         return list(commands[phase]), False, 'initialization_brake' if phase == 3 else 'initialization_translation'
     if state == 'recovering': return [0.,0.,0.,15.], False, 'tracking_recovery_scan'
     if state == 'terminated': return [0.,0.,0.,0.], False, 'episode_terminated'

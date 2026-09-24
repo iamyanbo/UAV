@@ -132,6 +132,13 @@ class CausalMapper(Mapper):
         self.last_observation_ns = -1
         self.initialized = True
         self.set_hyperparams()
+        # The released single-view bootstrap can occupy the whole 30-second
+        # exploration interval. Keep its work budget, but admit new RGB views
+        # between short optimizer batches. Remaining work becomes multi-view
+        # refinement rather than blocking publication on one old camera.
+        self.refinement_pending = 0
+        self.scheduled_optimizer_updates = 0
+        self.optimizer_batch = 8
 
     @torch.no_grad()
     def update_mapping_points(self, frame_idx, w2c, w2c_old, depth, depth_old, intrinsics, method=None):
@@ -214,6 +221,7 @@ class CausalMapper(Mapper):
             raise ValueError('Noncausal or repeated mapping update')
         if source['episode_id'] != self.episode_id:
             raise ValueError('Cross-episode map update')
+        self.last_observation_ns = observed_ns
         # Apply only corrections computed from this received prefix.
         intrinsic = torch.tensor([[calibration['fx'], 0, calibration['cx']],
                                   [0, calibration['fy'], calibration['cy']], [0, 0, 1]], device=self.device)
@@ -231,7 +239,9 @@ class CausalMapper(Mapper):
             camera.depth = corrected_depth.detach().cpu().numpy()
             self.depth_dict[old_key] = corrected_depth.detach().clone()
         if keyframe in self.viewpoints:
-            return None
+            # Corrections above belong to this newer observed prefix even
+            # when no new keyframe is inserted. Publish their real timestamp.
+            return self.refine() if self.refinement_pending else self.publish_current()
         if valid.sum().item() < 100:
             return None
         if len(self.current_window) == 8:
@@ -260,18 +270,38 @@ class CausalMapper(Mapper):
         self.depth_dict[keyframe] = filtered
         self.add_next_kf(keyframe, camera, init=first, depth_map=filtered.cpu().numpy())
         if first:
-            self.initialize_map(keyframe, camera)
+            budget = self.init_itr_num
+            self.scheduled_optimizer_updates += budget
+            self.init_itr_num = min(32, budget)
+            try:
+                self.initialize_map(keyframe, camera)
+            finally:
+                self.init_itr_num = budget
+            self.refinement_pending += budget - min(32, budget)
         params = [{'params': [view.exposure_a, view.exposure_b], 'lr': .01} for view in self.viewpoints.values()]
         self.keyframe_optimizers = torch.optim.Adam(params)
-        self.map(self.current_window, iters=self.mapping_itr_num)
+        self.refinement_pending += self.mapping_itr_num
+        self.scheduled_optimizer_updates += self.mapping_itr_num
+        self.last_observation_ns = observed_ns
+        return self.refine()
+
+    def refine(self):
+        """One optimizer batch; the worker checks for newer views before more."""
+        if not self.current_window or not self.refinement_pending:
+            return None
+        iterations = min(self.optimizer_batch, self.refinement_pending)
+        self.map(self.current_window, iters=iterations)
+        self.refinement_pending -= iterations
+        return self.publish_current()
+
+    def publish_current(self):
         bad = {name: int((~torch.isfinite(getattr(self.gaussians, name))).sum()) for name in ('_xyz', '_scaling', '_rotation', '_opacity')}
         if any(bad.values()):
             raise RuntimeError('Nonfinite Gaussian reconstruction: ' + json.dumps(bad))
         if len(self.gaussians._xyz) > self.gaussians.cap:
             raise RuntimeError('Gaussian capacity exceeded')
         self.version += 1
-        self.last_observation_ns = observed_ns
-        return self.publish(observed_ns)
+        return self.publish(self.last_observation_ns)
 
     def publish(self, observed_ns):
         cameras = {}
@@ -284,14 +314,21 @@ class CausalMapper(Mapper):
                      historical_anchors=self.historical_anchors,
                      unsupported_depth_corrections=getattr(self, 'rejected_depth_corrections', 0),
                      capacity_limited_densification_candidates=getattr(self.gaussians, 'capacity_limited_candidates', 0),
-                     optimizer_updates=self.iteration_count, gaussian_opacity_is_collision_probability=False)
+                     optimizer_updates=self.iteration_count,
+                     optimizer_schedule='incremental-observed-multiview/v1',
+                     scheduled_optimizer_updates=self.scheduled_optimizer_updates,
+                     refinement_pending=self.refinement_pending,
+                     gaussian_opacity_is_collision_probability=False)
         path = self.output / f'memory-v{self.version:06d}.pt'
         torch.save(state, path)
         row = dict(version=self.version, latest_observation_ns=observed_ns, path=path.name,
                    published_monotonic_seconds=time.monotonic(),
                    sha256=hashlib.sha256(path.read_bytes()).hexdigest(), active_keyframes=len(cameras),
                    active_gaussians=len(self.gaussians._xyz), historical_submaps=len(self.history),
-                   optimizer_updates=self.iteration_count)
+                   optimizer_updates=self.iteration_count,
+                   optimizer_schedule='incremental-observed-multiview/v1',
+                   scheduled_optimizer_updates=self.scheduled_optimizer_updates,
+                   refinement_pending=self.refinement_pending)
         with (self.output / 'versions.jsonl').open('a') as stream:
             stream.write(json.dumps(row) + '\n')
         return row

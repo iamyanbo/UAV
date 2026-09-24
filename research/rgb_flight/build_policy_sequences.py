@@ -73,7 +73,7 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
         if not bool(((times.diff()>0)&(times.diff()<=250000000)).all()):continue
         if not all(r['belief_valid'] for r in selected):continue
         teachers=[corrections.get(r['frame_id']) for r in selected]
-        recovery=torch.tensor([bool(t and t.get('teacher')=='observed-exploration/v3' and t.get('expert_observation_conditioned')) for t in teachers])
+        recovery=torch.tensor([bool(t and t.get('teacher')=='observed-exploration/v4' and t.get('expert_observation_conditioned')) for t in teachers])
         if not bool(recovery[20:].any()):continue
         runtime={key:torch.stack([r[key] for r in selected]) for key in
             ('z','state','belief','memory','memory_valid','task','target_context','previous_command','current_tokens','goal_context')}
@@ -93,7 +93,7 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
             collision_return=torch.full((40,),float(collision)),primitive_return=primitive,primitive_valid=valid)
         path=output/'windows'/f'policy-{len(windows):06d}.pt'
         torch.save(dict(episode_id=attempt['episode_id'],attempt_id=attempt['attempt_id'],runtime=runtime,
-            training_labels=supervision,teacher_source='observed-exploration/v3',teacher_reasons=[t.get('reason') if t else 'missing_supervision' for t in teachers]),path)
+            training_labels=supervision,teacher_source='observed-exploration/v4',teacher_reasons=[t.get('reason') if t else 'missing_supervision' for t in teachers]),path)
         windows.append(dict(module='policy',episode_id=attempt['episode_id'],attempt_id=attempt['attempt_id'],path=str(path.relative_to(output)),sha256=checksum(path),
                             timing_qualified=bool((times.diff()<=75000000).all())))
         if attempt['split']=='train':primitive_values.append(primitive)
@@ -107,7 +107,7 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
         observation_grid='all original timestamps; no duplication; gaps <=250 ms match live recurrent reset; 75 ms acceptance unchanged',
         scope='Executed observation-conditioned exploration and recovery; deployment remains unqualified',
         training_ready=bool(windows),deployment_accepted=False)
-    spec=dict(schema='policy-sequence-views/v1',action_semantics='post-safety-dispatch/50ms-v3',belief_version='masked-map-dispatch-state/v3',teacher_version='observed-exploration/v3',foundation=dict(accepted=False,training_ready=True,visual_goal_runtime=True,
+    spec=dict(schema='policy-sequence-views/v1',action_semantics='post-safety-dispatch/50ms-v3',belief_version='masked-map-dispatch-state/v3',teacher_version='observed-exploration/v4',foundation=dict(accepted=False,training_ready=True,visual_goal_runtime=True,
         valid_expert_episodes=source.get('unique_successful_expert_episodes',0)),
         episodes=[dict(episode_id=attempt['episode_id'],split=attempt['split'],goal_region_id=attempt['goal_region_id'],
             start_goal_pair_id=evaluator.get('start_goal_pair_id',attempt['episode_id']),

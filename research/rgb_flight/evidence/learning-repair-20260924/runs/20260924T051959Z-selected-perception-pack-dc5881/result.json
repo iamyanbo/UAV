@@ -1,0 +1,25 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T051959Z-selected-perception-pack-dc5881/source/package_navigation.py",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/goal.pt",
+    "--odometry",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T051243Z-balanced-motion-training-5b8884/visual-training/best.pt",
+    "--projection",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/projection.pt",
+    "--safety",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/safety.json",
+    "--goal-match-threshold",
+    ".9",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 4.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 1.013405797071755
+}

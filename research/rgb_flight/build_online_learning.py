@@ -42,7 +42,7 @@ def dagger_data(args,pack,episode,result,runtime,receipt,rows):
     for row in rows:
         if not row['metric_geometry_available']:
             correction=corrections.get(row['frame_id'])
-            if not correction or correction.get('teacher')!='observed-exploration/v3' or not correction['expert_observation_conditioned']:
+            if not correction or correction.get('teacher')!='observed-exploration/v4' or not correction['expert_observation_conditioned']:
                 raise ValueError('Missing audited correction at a learner-visited recovery state')
         public.append(dict(row['runtime'],frame_id=row['frame_id'],sim_ns=row['sim_ns'],
             latest_observation_ns=row['latest_observation_ns'],visual_available=row['visual_available'],

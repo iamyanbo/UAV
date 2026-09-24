@@ -56,7 +56,7 @@ def main():
     collection_receipt=json.loads((args.collection.parent/'result.json').read_text())
     if collection_receipt.get('status')!='completed' or len(rows)!=10 or len({r['result']['episode_id'] for r in rows})!=10:
         raise ValueError('Preparation requires the completed ten-episode demonstration batch')
-    if any(r['result'].get('controller_checkpoint_sha256')!=identity or r['result'].get('teacher_provenance')!='observed-exploration/v3' for r in rows):
+    if any(r['result'].get('controller_checkpoint_sha256')!=identity or r['result'].get('teacher_provenance')!='observed-exploration/v4' for r in rows):
         raise ValueError('Demonstration checkpoint or teacher identity differs')
     replay_root=args.output.parent/(args.output.name+'-replays');replay_root.mkdir()
     replays=[]
@@ -78,10 +78,16 @@ def main():
             export_live(Path(row['episode_path']),replay,additional_identity,actual_perception);replays.append(replay)
     if args.phase=='world':result=world_data(args.bundle,args.checkpoints/'checkpoints.json',replays,args.output)
     else:
-        args.output.mkdir();(args.output/'windows').mkdir();merged=None;scales=[];train_ids=[]
+        args.output.mkdir();(args.output/'windows').mkdir();merged=None;scales=[];train_ids=[];excluded=[]
         for index,replay in enumerate(replays):
             part=replay_root/('policy-'+str(index))
-            policy_data(args.bundle,replay,args.checkpoints,args.world,part)
+            try:policy_data(args.bundle,replay,args.checkpoints,args.world,part)
+            except ValueError as error:
+                if str(error)!='No fresh contiguous training windows with causal world beliefs':raise
+                excluded.append(dict(episode_path=rows[index]['episode_path'],
+                    episode_id=rows[index]['result']['episode_id'],reason=str(error),
+                    outcome=rows[index]['result'].get('termination')))
+                continue
             spec=json.loads((part/'manifest.json').read_text())
             if merged is None:
                 merged=dict(spec,windows=[],episodes=[],attempts=[])
@@ -93,13 +99,14 @@ def main():
             merged['episodes']+=spec['episodes'];merged['attempts']+=spec['attempts']
             norm=torch.load(part/'normalization.pt',weights_only=True)
             if norm['episode_ids']:scales.append(norm['primitive_scale']);train_ids+=norm['episode_ids']
-        if not scales or not any(e['split']=='validation' for e in merged['episodes']):
+        if merged is None or not scales or not any(e['split']=='validation' for e in merged['episodes']):
             raise ValueError('Training and disjoint development demonstrations required')
         norm=args.output/'normalization.pt'
         torch.save(dict(fit_split='train',episode_ids=train_ids,primitive_scale=torch.stack(scales).mean(0)),norm)
+        merged['excluded_policy_attempts']=excluded
         merged['normalization']=dict(path=norm.name,sha256=checksum(norm))
         result=dict(status='completed',training_ready=True,deployment_accepted=False,accepted=False,
-            windows=len(merged['windows']),episodes=len(merged['episodes']))
+            windows=len(merged['windows']),episodes=len(merged['episodes']),excluded_short_or_unsupported_attempts=len(excluded))
         merged['readiness']=result
         (args.output/'manifest.json').write_text(json.dumps(merged,indent=2))
         (args.output/'result.json').write_text(json.dumps(result,indent=2))

@@ -1,0 +1,30 @@
+[
+  {
+    "episode_id": "train-00001",
+    "frame_id": 749,
+    "rgb_sha256": "7d327002fb43c47c391ce86405d3388b593e05cca4d02de0647e22ac440af764",
+    "source": "/home/iamyanbo/uav-rgb-flight/launches/20260924T031318Z/episode",
+    "file": "train-00001-initial-rgb.png"
+  },
+  {
+    "episode_id": "train-00002",
+    "frame_id": 847,
+    "rgb_sha256": "6d0f192819c08fd89e54d437039e5d0bf232cd5a750bddf38bb5c9eb8fdb0109",
+    "source": "/home/iamyanbo/uav-rgb-flight/launches/20260924T031455Z/episode",
+    "file": "train-00002-initial-rgb.png"
+  },
+  {
+    "episode_id": "train-00003",
+    "frame_id": 912,
+    "rgb_sha256": "7164d643a9ab5f56ff882754e10984ca4d1a05a26e4133561a3dc5b550eadbd0",
+    "source": "/home/iamyanbo/uav-rgb-flight/launches/20260924T031628Z/episode",
+    "file": "train-00003-initial-rgb.png"
+  },
+  {
+    "episode_id": "train-00000",
+    "frame_id": 594,
+    "rgb_sha256": "2dd4960c4d891bea9feddd63e05e8a0f6cc486584ec5c872cd8ee2fbc57fa332",
+    "source": "/home/iamyanbo/uav-rgb-flight/launches/20260924T031144Z/episode",
+    "file": "recorded-moving-frame.png"
+  }
+]

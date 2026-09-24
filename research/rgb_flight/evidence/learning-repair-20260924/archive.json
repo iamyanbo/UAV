@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-09-24T05:06:07.880738+00:00",
+  "observed_utc": "2026-09-24T05:36:27.532630+00:00",
   "source_root": "/home/iamyanbo/uav-rgb-flight",
   "scope": "Execution receipts and derived summaries; active counters are snapshots; raw RGB and weights remain on Spark",
   "files": [
@@ -9,9 +9,19 @@
       "sha256": "7448c339f692a0fc376096c8b0cea07c2a4ad719baaab71c7da9afe4f521ad5c"
     },
     {
+      "path": "launches/20260924T030920Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 15750,
+      "sha256": "82f3aab1181087dc0b9e1ef16587fdb4fc273d2a543dcfbb8607ca0fca6fbc00"
+    },
+    {
       "path": "launches/20260924T030920Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T030920Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "0e0a2910cfd2d1e451fc05fa8193a3c0742a7afc725fa6e876aca5461e29125c"
     },
     {
       "path": "launches/20260924T030920Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -49,9 +59,19 @@
       "sha256": "9ccff68f189c2d92694bbdf4fdb6c3700cf3229ac6727414f157f0f8fd113720"
     },
     {
+      "path": "launches/20260924T031144Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 14744,
+      "sha256": "db465554ab0f0e50e23a5a267777a345afd0fea1ae34c4f0c775722e55c02212"
+    },
+    {
       "path": "launches/20260924T031144Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T031144Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "e788c9b28937bf4aad176760a126a75430b4cc6d30d007060a71a051ea3362bf"
     },
     {
       "path": "launches/20260924T031144Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -89,9 +109,19 @@
       "sha256": "f5494ef68d56e8b532de2ff051c615f6b0065b137c43a43c11c4fe3bd711a9a5"
     },
     {
+      "path": "launches/20260924T031318Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 21660,
+      "sha256": "5d390beb7dcd982529168f27a1a7072af5293bb156e982db5c1303ebc3656593"
+    },
+    {
       "path": "launches/20260924T031318Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T031318Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "767f58b9ec6da4d960ca496ae621878f16b61a30309e8aea630921653edfde74"
     },
     {
       "path": "launches/20260924T031318Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -129,9 +159,19 @@
       "sha256": "cad1b5b68ab93695c0a6055592d785ebba40a519569138eb622281a9393960d0"
     },
     {
+      "path": "launches/20260924T031455Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 17174,
+      "sha256": "8d073c416eb9b96bb2dbafa72502f0ba25adccf834848b770c4c84ed8533804f"
+    },
+    {
       "path": "launches/20260924T031455Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T031455Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "901623f77e81fd87600de3d600cea9f5a10cfe425b14f6f6025659fe3ef18241"
     },
     {
       "path": "launches/20260924T031455Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -169,9 +209,19 @@
       "sha256": "94b96d1dd23e596a42df69a13ca9e827a9c44f916d5737ceb5588ce5c7f22976"
     },
     {
+      "path": "launches/20260924T031628Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 18174,
+      "sha256": "b6b543277c0fd98ae65cbd73120218d635523a47c18786515165dbad230571f2"
+    },
+    {
       "path": "launches/20260924T031628Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T031628Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "1f0c9a1b60312bf5c4f35ee5bcb83fe2e3a46a0aa6d24d23a2ccecdc6827bc9f"
     },
     {
       "path": "launches/20260924T031628Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -209,9 +259,19 @@
       "sha256": "6aa889027d2749aa8ab66b598f1db48d93d4935d7e36dc429467793b136192f9"
     },
     {
+      "path": "launches/20260924T031803Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 13457,
+      "sha256": "6fbc77e99fb3a769a54df6fe4b3443848b1b3e1108fbcd459f9598d35e1e6d44"
+    },
+    {
       "path": "launches/20260924T031803Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T031803Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 319,
+      "sha256": "333170c5d73f9d1d899ea6b418e367d4f4618b7cbccba127e0f718fab10f1a81"
     },
     {
       "path": "launches/20260924T031803Z/episode/learned-controller/runtime/result.json",
@@ -244,6 +304,11 @@
       "sha256": "ddc4d0676348e9d5317e4602706c0115761f1cad1ae29c0548b15d197c72389f"
     },
     {
+      "path": "launches/20260924T032356Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 6841,
+      "sha256": "473c7493330725b73033c227a435a3e9ffc4ae5afe22b166c0fcf9beb2312a55"
+    },
+    {
       "path": "launches/20260924T032356Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
@@ -274,9 +339,19 @@
       "sha256": "3e1a111166372658164974e8013242f3108bf0f5cd7633a5d63ce9cf842475c0"
     },
     {
+      "path": "launches/20260924T032605Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 11788,
+      "sha256": "bae3f2bc13f1d5df6c653acefe399a0ad3d5bb85cd6783ff4934a5c192892312"
+    },
+    {
       "path": "launches/20260924T032605Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T032605Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 319,
+      "sha256": "67a32111e84ca3fa23d06c7c037572631f71d387de388c6123a64b32180fe71f"
     },
     {
       "path": "launches/20260924T032605Z/episode/learned-controller/runtime/result.json",
@@ -309,9 +384,19 @@
       "sha256": "c6286839afe8d022922910377135e8a7c44610f960f036c5faa39fa1ee6f71f1"
     },
     {
+      "path": "launches/20260924T032938Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 13405,
+      "sha256": "e96a41a915ba3796863b0b7e114447a8894e715211365fa8e671afd1a04b4e84"
+    },
+    {
       "path": "launches/20260924T032938Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T032938Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "2097727d47d3da44177aae8934bbab954f2df236fcb591ae32b24e37de9fbb1f"
     },
     {
       "path": "launches/20260924T032938Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -349,9 +434,19 @@
       "sha256": "582271f69d97e0cbb3f62378387f732d4edd0675bf666a783e15265a24bb8dbf"
     },
     {
+      "path": "launches/20260924T033105Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 11061,
+      "sha256": "96f834b282523f2e16f7a67ea5829dab620952704f5f6314a28e371f61fdb07c"
+    },
+    {
       "path": "launches/20260924T033105Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T033105Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "1e5d5fa1c095492c0bc5ad9cf90037a2b12b3860eb30fb52ec80e4fdbf40bbc1"
     },
     {
       "path": "launches/20260924T033105Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -389,9 +484,19 @@
       "sha256": "7c7ff09d2946b6e85f434f58befc5749adde091051adec90e78460342451a482"
     },
     {
+      "path": "launches/20260924T033238Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 15091,
+      "sha256": "0e6e853133463110c1d086e5ba5f7b712685788ae420325d2d458290620e48dd"
+    },
+    {
       "path": "launches/20260924T033238Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T033238Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "0a5cda280d5aeaec8e80ccc8260bf42210854746ca3f154b1a2425f6b43c7cb4"
     },
     {
       "path": "launches/20260924T033238Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -429,9 +534,19 @@
       "sha256": "0f1299712dcf48eaafceb04b13cffb6f1429d582c0d1b21d302840b8122392fc"
     },
     {
+      "path": "launches/20260924T033412Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 19383,
+      "sha256": "152b674c0d8d5559d8d397d59de4ecc4fddeb76f5cbdd6a3994ba36cc651b8c9"
+    },
+    {
       "path": "launches/20260924T033412Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T033412Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "8d1f9ea8e7722c4199b0e4f4b721b1f8bc19c48e8bd8b5edb7fcce9ebbf597ab"
     },
     {
       "path": "launches/20260924T033412Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -499,9 +614,19 @@
       "sha256": "c2fe2ab538827f8b202ec0f88300f8d3e3e6e1789113d007b9af173aa1afd59b"
     },
     {
+      "path": "launches/20260924T034035Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 10743,
+      "sha256": "6af9fe89a4e00b170e419e8fd7dda4f5197009673fb19ae02768c73958a6117b"
+    },
+    {
       "path": "launches/20260924T034035Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T034035Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "d2e423a582eda269c87b603290e4ec18f98badf8ce22a3e04089b463b6601143"
     },
     {
       "path": "launches/20260924T034035Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -539,9 +664,19 @@
       "sha256": "758077d97c7ba74dc87a38aa3898609855b8464cd1faa36e2cf593086a2793a4"
     },
     {
+      "path": "launches/20260924T034210Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 12203,
+      "sha256": "003fa71a7131769b929c0d600d399924997b15f239e3e03aadbcc075703e028d"
+    },
+    {
       "path": "launches/20260924T034210Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T034210Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "5a09e5bcfaa107f166b1e7ff5ded6b3676cbb8a91f2e9b9108d188fe8ffca5f8"
     },
     {
       "path": "launches/20260924T034210Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -579,9 +714,19 @@
       "sha256": "9d6f656942983e4dc3b96e5b291f823bdceaa11015f1a97b30ad46d8ba7c7618"
     },
     {
+      "path": "launches/20260924T034708Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 31804,
+      "sha256": "ff6c544f275e7bc517ed77cf340921cd2dbf5fa401d5e3adc2b1a544953c7966"
+    },
+    {
       "path": "launches/20260924T034708Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T034708Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "3b5074c5328694f70cb7e590502ebde4361c25b877d42058729000b27a877e17"
     },
     {
       "path": "launches/20260924T034708Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -619,9 +764,19 @@
       "sha256": "02af6f50a5d737ab7cce33ec59c0ecd3ae4eb842e75e947f34c105cb8f3cb277"
     },
     {
+      "path": "launches/20260924T034945Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 20868,
+      "sha256": "f9f57c5a8bbd4a51be4b4823eacee945292875c94ca57fc75f2251a898481d8b"
+    },
+    {
       "path": "launches/20260924T034945Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T034945Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "13e0a0f6d623a02c3dc61b315a2c34355ab458ef1cd035d2f71a93ddeb847653"
     },
     {
       "path": "launches/20260924T034945Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -664,9 +819,19 @@
       "sha256": "3b79932881d81da513b1a97969e3d7a36f56c11abb4d05aad2b313054ac32277"
     },
     {
+      "path": "launches/20260924T035518Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 27729,
+      "sha256": "10cad432666ad67d9fb7a53c3d57d037e33ebbcbcffdd5212902f56d007bb4f5"
+    },
+    {
       "path": "launches/20260924T035518Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T035518Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 638,
+      "sha256": "d8b4ef19e44625f34e4116de0a0c186c3b4a54bb235307b1ee468812cb438620"
     },
     {
       "path": "launches/20260924T035518Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -794,6 +959,11 @@
       "sha256": "2ee80ce7dc2ed14791ef4ab71dd68e44acdf542940aa0e5bd5433f0455db59a1"
     },
     {
+      "path": "launches/20260924T040024Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 108353,
+      "sha256": "d198bbcb1031a76a08b20d882c5e218b8a41dd8d810c2a075b901d5eb050241f"
+    },
+    {
       "path": "launches/20260924T040024Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
@@ -807,6 +977,11 @@
       "path": "launches/20260924T040024Z/episode/learned-controller/runtime/deliberation/result.json",
       "bytes": 300,
       "sha256": "af4a090f62a3c03a59babe076be3cab674a44e71375fd6c06f203c2f30af4686"
+    },
+    {
+      "path": "launches/20260924T040024Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "54759137fba39ea4d2ce330572129d7c2f95fda4ed09dc5a7004c53682cf627c"
     },
     {
       "path": "launches/20260924T040024Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -844,9 +1019,19 @@
       "sha256": "4024e7502714a9a753a4a2ec4f000ff0cdfcb48b30e16cd94a43b9a282c84f1a"
     },
     {
+      "path": "launches/20260924T040245Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 33800,
+      "sha256": "00e1eb7d5befe3303a1409fc0b2db5dce718adcdc633df4b9f0dc52c88590dc2"
+    },
+    {
       "path": "launches/20260924T040245Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T040245Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 638,
+      "sha256": "e03626a263f313edc6c46a1436f98e6e3d2fda527032e0412cb80e459cd6cf91"
     },
     {
       "path": "launches/20260924T040245Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -884,9 +1069,19 @@
       "sha256": "f4f7f12707083500a1c10b6d271b2bf0669c032809cd2fe5e480296d3f24966a"
     },
     {
+      "path": "launches/20260924T040414Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 18208,
+      "sha256": "5a9afada7343e5e181486a18562b238a46a85b390f3e972228f7429e43129ef4"
+    },
+    {
       "path": "launches/20260924T040414Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T040414Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "977cd9271152782193ac1388ebbaeebc38d8c893cfc1d27eb253f4ccdc634b78"
     },
     {
       "path": "launches/20260924T040414Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -924,9 +1119,19 @@
       "sha256": "37c641f45fa117e27f9e080778c45393e58c4a75a3d4c290152a8c0c26460787"
     },
     {
+      "path": "launches/20260924T040540Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 9662,
+      "sha256": "26c618ea765423956e92b283244261529dd370c58e7cb9dfae874d90272807aa"
+    },
+    {
       "path": "launches/20260924T040540Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T040540Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "b8b9f0a15b531f78ccc85b38cf4b38e2a6beabccebac73f7a8e0be2165840540"
     },
     {
       "path": "launches/20260924T040540Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -959,9 +1164,19 @@
       "sha256": "bcede5f0a504cd3453355c3cb27aa2a78e6096d7d14be6644a0961589abcb869"
     },
     {
+      "path": "launches/20260924T040700Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 25481,
+      "sha256": "199e727e49355e5e3b0019f66becb7029350452b77a91401771fe1a92a9d6d70"
+    },
+    {
       "path": "launches/20260924T040700Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T040700Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 638,
+      "sha256": "fdc0bcc89fb5c51de6ffc3ba178c668a175fb862d26e5c7a66b29b5359fafd5f"
     },
     {
       "path": "launches/20260924T040700Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -999,9 +1214,19 @@
       "sha256": "7ac47f7835042341d83186245b22f2a4f695fbe827d072f9380e681cf939ca2c"
     },
     {
+      "path": "launches/20260924T040827Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 16243,
+      "sha256": "54d7714f693751772e9929f081d683890583c390adf688db237650a7cab73b9e"
+    },
+    {
       "path": "launches/20260924T040827Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T040827Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "5dac09c0b45283418b2071bc91b1d3ef9d991b638c8c5a87c9929dcd3540d93c"
     },
     {
       "path": "launches/20260924T040827Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -1039,9 +1264,19 @@
       "sha256": "98e2661aef0d2a09ef534f8b11b08cebeba1c660160d62c432e29c5dd2a2a9e8"
     },
     {
+      "path": "launches/20260924T040954Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 37014,
+      "sha256": "40100814843c74134a59c27ad0eea58a4280c6cf331a7a5200d0dd0914cd42ed"
+    },
+    {
       "path": "launches/20260924T040954Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T040954Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "3b6dbab11b4d12e82c598e7e09eed486f31e0d6c95290a35f91b0daac6f8c4f5"
     },
     {
       "path": "launches/20260924T040954Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -1079,9 +1314,19 @@
       "sha256": "4b9407653478ab19f3a67ae23d69a91fe8a7dce960bb8feced9a982800597838"
     },
     {
+      "path": "launches/20260924T041131Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 45291,
+      "sha256": "3219dffc280b91c280e2d4998b3d222ce616b029c28d7d3241a9f3e010d2e17d"
+    },
+    {
       "path": "launches/20260924T041131Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T041131Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 320,
+      "sha256": "d1e88a1df23bcd3cd11ae49c2b540aa2b3b6398bb3b71270f1d8df075b9ba6ed"
     },
     {
       "path": "launches/20260924T041131Z/episode/learned-controller/runtime/result.json",
@@ -1114,9 +1359,19 @@
       "sha256": "584eee72d3acb3b6e75c049b04fd685f2ee64cdde2998a5b9d727fdc21d0b473"
     },
     {
+      "path": "launches/20260924T041306Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 41110,
+      "sha256": "c0337d14af13c9c368846077d8cabca7d61980b7c0ba9448c569dda71ab16159"
+    },
+    {
       "path": "launches/20260924T041306Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T041306Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "458405f3618df1fdcf9447614f5055e5ba6412e1cef5a78e7cd90ef80b1623d2"
     },
     {
       "path": "launches/20260924T041306Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -1154,9 +1409,19 @@
       "sha256": "5c784bd00143a7da3f883bc5b5ecd9765bfe64a613743e4230f2f043bf7b634b"
     },
     {
+      "path": "launches/20260924T041440Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 46371,
+      "sha256": "38252e0b3eb5b610df4be0ba9822561026a7676434cb040a707e1ec5966b7103"
+    },
+    {
       "path": "launches/20260924T041440Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T041440Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "8f78d217d9bb5f3544cda4143a1ae8d6c197cecb970b7fdcd5df3959ca8234e6"
     },
     {
       "path": "launches/20260924T041440Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -1194,9 +1459,19 @@
       "sha256": "b2f08b28941ad33c6a6d1b69f53e4ee1f898e5db02246419f781341283e63944"
     },
     {
+      "path": "launches/20260924T041612Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 18041,
+      "sha256": "3b5198b09f690e1b6e7e2e610a2f0d4a9061a2d969ce244449db32f2967e6093"
+    },
+    {
       "path": "launches/20260924T041612Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T041612Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "4ca953512e3038cf43cb1bf244b62895988cf760195d7b55fb5cea2da7f7a964"
     },
     {
       "path": "launches/20260924T041612Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -1234,9 +1509,19 @@
       "sha256": "7c08dcb353387923d8b8579cbd61c109d8539e6509bf9903eecf1558aa64411c"
     },
     {
+      "path": "launches/20260924T041749Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 24830,
+      "sha256": "cb1a832a6fbc7e732a28b7a6dbdedb5af7b1ff73736b994a5bcef91a345aa654"
+    },
+    {
       "path": "launches/20260924T041749Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T041749Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "7bae421bcbb7d3b1ffa06a1917b5793bff990ed32f93d8d3cf7b909f5200f97a"
     },
     {
       "path": "launches/20260924T041749Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -1274,6 +1559,11 @@
       "sha256": "e89da8af08a230fce52ac40dba9df2cb651d35c14e1bd78b0f42430c8ebf5a58"
     },
     {
+      "path": "launches/20260924T041921Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 123438,
+      "sha256": "0cfa27fe28385ac6b49b2c3f49d5469c59d849fe44f9b34adb799e77b7073dd3"
+    },
+    {
       "path": "launches/20260924T041921Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
@@ -1287,6 +1577,11 @@
       "path": "launches/20260924T041921Z/episode/learned-controller/runtime/deliberation/result.json",
       "bytes": 487,
       "sha256": "de9f79bfc49cdfd417c15dac55b8acdeae148f91f0eb850e117bab05ae55f978"
+    },
+    {
+      "path": "launches/20260924T041921Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "fcccee4eed95d3bb5bd00c248f2a021411adc544c4f70925ac5c0fdad1d4b992"
     },
     {
       "path": "launches/20260924T041921Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -1324,6 +1619,11 @@
       "sha256": "786d038422a21711c5468319a0f8a9f2a819bf2b5742ffea91f4c5c0215f5706"
     },
     {
+      "path": "launches/20260924T042139Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 124057,
+      "sha256": "0acd82ddb4a0769017e4f470475b75b417c72b5f5aeed567533887e58fe0d29a"
+    },
+    {
       "path": "launches/20260924T042139Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
@@ -1337,6 +1637,11 @@
       "path": "launches/20260924T042139Z/episode/learned-controller/runtime/deliberation/result.json",
       "bytes": 482,
       "sha256": "ec934c05adf045ef372a69c64d60d9747d0bd59196080c3823dd011c12632842"
+    },
+    {
+      "path": "launches/20260924T042139Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "1c421f0bd8c64ae643cec13b4212bdee6c59931a37953f7550b23ec198a7b9cd"
     },
     {
       "path": "launches/20260924T042139Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -1374,6 +1679,11 @@
       "sha256": "86ff634d51651a2c8b410bf82f0df298b28bc09c1da2129f35a03fc40ed0d7dd"
     },
     {
+      "path": "launches/20260924T042402Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 108371,
+      "sha256": "d0046e833d9878940563ed54f6c5feeacb134d76452ab2f86211abcafcb7a0a5"
+    },
+    {
       "path": "launches/20260924T042402Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
@@ -1387,6 +1697,11 @@
       "path": "launches/20260924T042402Z/episode/learned-controller/runtime/deliberation/result.json",
       "bytes": 406,
       "sha256": "210e44f9064556baaf6f2be18d31956aaff254b2e99c709e8b92bd6d2016d0b5"
+    },
+    {
+      "path": "launches/20260924T042402Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "f7b93abdad165fb3304ca6dfbd0e6fa9eafa60268319509728b6c2e923dfe220"
     },
     {
       "path": "launches/20260924T042402Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -1424,6 +1739,11 @@
       "sha256": "49e5102ad08b0d233d7cb3569c63c445c05847a92479a6b9d35215cfd99a2da4"
     },
     {
+      "path": "launches/20260924T043337Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 60430,
+      "sha256": "512a478b55c40f9d6261f1d6d9ee74363f41cb9d7c6542b1f8fa14b390e949ed"
+    },
+    {
       "path": "launches/20260924T043337Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 54,
       "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
@@ -1437,6 +1757,11 @@
       "path": "launches/20260924T043337Z/episode/learned-controller/runtime/deliberation/result.json",
       "bytes": 406,
       "sha256": "210e44f9064556baaf6f2be18d31956aaff254b2e99c709e8b92bd6d2016d0b5"
+    },
+    {
+      "path": "launches/20260924T043337Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 637,
+      "sha256": "e8c3e1a52c4b967b26f435f85e17708fa3ded5f2728995f84e93882b85eb453c"
     },
     {
       "path": "launches/20260924T043337Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -1474,6 +1799,11 @@
       "sha256": "23c8257b1773d3935236917813c3282b94df28ce0c7ff2098044b07da4a1f1a4"
     },
     {
+      "path": "launches/20260924T044412Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 109271,
+      "sha256": "6df0cc7fa07c09ff7b159f9befc69c58c7942455b539c002b40c48d93aa9fcd0"
+    },
+    {
       "path": "launches/20260924T044412Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 87,
       "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
@@ -1487,6 +1817,11 @@
       "path": "launches/20260924T044412Z/episode/learned-controller/runtime/deliberation/result.json",
       "bytes": 494,
       "sha256": "2b540d1ce3c47af980b4fb59696ab127a75a7595c02d519cfebff929f545c875"
+    },
+    {
+      "path": "launches/20260924T044412Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "347990d2605d7533cfe63420dbffb6f1dc33529a68f530327454a77dcd25d719"
     },
     {
       "path": "launches/20260924T044412Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -1522,6 +1857,11 @@
       "path": "launches/20260924T044412Z/result.json",
       "bytes": 585,
       "sha256": "e0ba68365918bed387962bc486b4803694bf59e0ec25a2d0a02ba2a13ae240c0"
+    },
+    {
+      "path": "launches/20260924T044741Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 107244,
+      "sha256": "b5b17768cfd0384b657e59a81c8b1e1f24c0318e071535e9836ae50755c35968"
     },
     {
       "path": "launches/20260924T044741Z/episode/learned-controller/runtime/capacity.json",
@@ -1564,6 +1904,11 @@
       "sha256": "a75e3174073371c3c05c93bf1587a4876c07666cdf5688ce9bb37a221d9d9c59"
     },
     {
+      "path": "launches/20260924T044741Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "b3ef4c1345e839eb5485d9ca186374cec32da26510dc7e92deebce1640a19a85"
+    },
+    {
       "path": "launches/20260924T044741Z/episode/learned-controller/runtime/reconstruction/result.json",
       "bytes": 680,
       "sha256": "b3ecb043f8bec333c436fdfa96eb0b3c2ff3016893f151b57dcf932249f07d51"
@@ -1599,9 +1944,19 @@
       "sha256": "c5782833e315af3c6530d9347ab016924cbadaed486a4a6429769ce810c6d92f"
     },
     {
+      "path": "launches/20260924T045747Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 33245,
+      "sha256": "356dd5ed812d647a864b512806fa8e48c8c210b64a258d40d55327c777e59666"
+    },
+    {
       "path": "launches/20260924T045747Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 87,
       "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T045747Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 319,
+      "sha256": "e2606e15d3587fca225ebcf4dafdbb880ab255ed13a20be995057c3d287ced6e"
     },
     {
       "path": "launches/20260924T045747Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -1634,9 +1989,19 @@
       "sha256": "e3b8c55aede6d4bed9d5088724d3a7c914b3498a5b847286e570458ffb82b687"
     },
     {
+      "path": "launches/20260924T050027Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 40953,
+      "sha256": "2cfdbe9541ff3c11fedcb40b327c6f510db3253473d2c247c0dcd7fefd0cd31a"
+    },
+    {
       "path": "launches/20260924T050027Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 87,
       "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T050027Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 638,
+      "sha256": "4aa275371674cf4bbcd79364f04c94a735c90036934db3a70ba0f289b33449f4"
     },
     {
       "path": "launches/20260924T050027Z/episode/learned-controller/runtime/reconstruction/result.json",
@@ -1674,6 +2039,11 @@
       "sha256": "8f6f10eb3bb36f7c246fb04f6515bcb53e55683532f5c0eda4dbb8166e66fe66"
     },
     {
+      "path": "launches/20260924T050213Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 16199,
+      "sha256": "1f2d252d338e5057266e9ef106985ee8724b040a358ec79b84a5c9536a95f135"
+    },
+    {
       "path": "launches/20260924T050213Z/episode/learned-controller/runtime/capacity.json",
       "bytes": 87,
       "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
@@ -1707,6 +2077,11 @@
       "path": "launches/20260924T050213Z/result.json",
       "bytes": 585,
       "sha256": "276c7d6ba8e5832be7e425905ca46f9e6870081aa8d1ae6c022db5ab2bb4ca85"
+    },
+    {
+      "path": "launches/20260924T050322Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 109683,
+      "sha256": "a5b1fd7941a58c5ed2d664fdd176fde5b9cddd8dfc2777406871a25a6ebae454"
     },
     {
       "path": "launches/20260924T050322Z/episode/learned-controller/runtime/capacity.json",
@@ -1749,6 +2124,11 @@
       "sha256": "0cb54f5af1bb0cd22124b73ac4fcb6cd467cf2e37e711bfecd86bc00aec41132"
     },
     {
+      "path": "launches/20260924T050322Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "97b85e41bda52502a3c77df62cdaab101e14098959bfc4f68f40f17a9561e2fe"
+    },
+    {
       "path": "launches/20260924T050322Z/episode/learned-controller/runtime/reconstruction/result.json",
       "bytes": 681,
       "sha256": "f6594e343af188b7763980dbc370c8e58fe0d50addc71b73b6e8fe1414b010f5"
@@ -1782,6 +2162,361 @@
       "path": "launches/20260924T050322Z/result.json",
       "bytes": 585,
       "sha256": "c128de805c8a3e9c3e986753b67c0bba5cebde99393ef6f1b74689898a49bf4d"
+    },
+    {
+      "path": "launches/20260924T052517Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 14098,
+      "sha256": "d49eede3b3663e83682609f99c92eb34c46cb098cdc63327daf18f429595dafb"
+    },
+    {
+      "path": "launches/20260924T052517Z/episode/learned-controller/runtime/capacity.json",
+      "bytes": 87,
+      "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T052517Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "80e50ad9b87496b21b6fdb3432d5d69cd795d08ff5f473aec616d01e680e369e"
+    },
+    {
+      "path": "launches/20260924T052517Z/episode/learned-controller/runtime/reconstruction/result.json",
+      "bytes": 680,
+      "sha256": "176fee01dca52be97f5f53dd2e747dfb199386e9369de3762be70aa263cc5c44"
+    },
+    {
+      "path": "launches/20260924T052517Z/episode/learned-controller/runtime/result.json",
+      "bytes": 1414,
+      "sha256": "b2d6b65262e2dd4e6e48da14da449482dd33eb00a2aa835e22fadc3f444d92b3"
+    },
+    {
+      "path": "launches/20260924T052517Z/episode/learned-controller/runtime/termination.json",
+      "bytes": 36,
+      "sha256": "bd41a9e416bb70ee36946fc10ccd1eb393c173dfad3dd70e274c4ad9003f7401"
+    },
+    {
+      "path": "launches/20260924T052517Z/episode/learned-controller/runtime/video/result.json",
+      "bytes": 247,
+      "sha256": "221032d9f59806247c0b446ce8727057601e5b1d8eb5de3fa8144ba51b0d955b"
+    },
+    {
+      "path": "launches/20260924T052517Z/episode/learned-controller/source_hashes.json",
+      "bytes": 2250,
+      "sha256": "9e676e324da46358f250b7e57304a8ff40e9e0267660c807fe668d43320bcd98"
+    },
+    {
+      "path": "launches/20260924T052517Z/episode/result.json",
+      "bytes": 4153,
+      "sha256": "79d3a2678518b75f85769d002ea5e4c0897867cf83e093b4bcbeb3df618099d5"
+    },
+    {
+      "path": "launches/20260924T052517Z/result.json",
+      "bytes": 585,
+      "sha256": "026adb0f2f5ff401f624c857b7b2cedc840878955fe3033783908fe573959318"
+    },
+    {
+      "path": "launches/20260924T052652Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 17095,
+      "sha256": "8878afadc272f44b4bbcfd9c4339e9abcc60799b966cafec51d840b013b68d00"
+    },
+    {
+      "path": "launches/20260924T052652Z/episode/learned-controller/runtime/capacity.json",
+      "bytes": 87,
+      "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T052652Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "001ed96b6aa04cb2833849c6274677991fe78a804c4bee76649972b7fb6a31e3"
+    },
+    {
+      "path": "launches/20260924T052652Z/episode/learned-controller/runtime/reconstruction/result.json",
+      "bytes": 682,
+      "sha256": "5904780a4b416275c5172706d112276b1b7feae9cb7aade300a6b2aff6274726"
+    },
+    {
+      "path": "launches/20260924T052652Z/episode/learned-controller/runtime/result.json",
+      "bytes": 1261,
+      "sha256": "25367d6fbf291cc69168464ecfb1e2a2a6d96309caa6ce7bbd2181c6dc9e214b"
+    },
+    {
+      "path": "launches/20260924T052652Z/episode/learned-controller/runtime/video/result.json",
+      "bytes": 246,
+      "sha256": "2990da57295b36e089ef666714416ecffde5af4e4e84e0016db96152bf59d4b5"
+    },
+    {
+      "path": "launches/20260924T052652Z/episode/learned-controller/source_hashes.json",
+      "bytes": 2250,
+      "sha256": "9e676e324da46358f250b7e57304a8ff40e9e0267660c807fe668d43320bcd98"
+    },
+    {
+      "path": "launches/20260924T052652Z/episode/result.json",
+      "bytes": 4385,
+      "sha256": "920e2b5ee52d523497d99ff4d0690aded36b626f7ddccfe3e382c533ae719de9"
+    },
+    {
+      "path": "launches/20260924T052652Z/result.json",
+      "bytes": 585,
+      "sha256": "7e1d924ae559fe703c595e99ca31ea37ff66aa5bcd3b161413c4621700dafc0b"
+    },
+    {
+      "path": "launches/20260924T052818Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 20242,
+      "sha256": "9f97b7085930985736f48eb4acc09331c23ce93501ba93b66d6f2a9fdf6d5b80"
+    },
+    {
+      "path": "launches/20260924T052818Z/episode/learned-controller/runtime/capacity.json",
+      "bytes": 87,
+      "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T052818Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 639,
+      "sha256": "2aa99fdad9b460b32e9cd039e713f75e23accc49f2aa7d9fd2f6c7e2e589dfaf"
+    },
+    {
+      "path": "launches/20260924T052818Z/episode/learned-controller/runtime/reconstruction/result.json",
+      "bytes": 681,
+      "sha256": "632153a06bd1c47ba511a774fa2c998c54466856ab8c6980311ad83eb0f630b7"
+    },
+    {
+      "path": "launches/20260924T052818Z/episode/learned-controller/runtime/result.json",
+      "bytes": 1414,
+      "sha256": "05f9ade81c44e4e5627b82e958ed0d58fa540345cc822019eb6b0092eac6754f"
+    },
+    {
+      "path": "launches/20260924T052818Z/episode/learned-controller/runtime/termination.json",
+      "bytes": 36,
+      "sha256": "bd41a9e416bb70ee36946fc10ccd1eb393c173dfad3dd70e274c4ad9003f7401"
+    },
+    {
+      "path": "launches/20260924T052818Z/episode/learned-controller/runtime/video/result.json",
+      "bytes": 246,
+      "sha256": "a1801fe696478c3bfac316cadfaee3d919d1a19ff2f2541137caea6da2c545b0"
+    },
+    {
+      "path": "launches/20260924T052818Z/episode/learned-controller/source_hashes.json",
+      "bytes": 2250,
+      "sha256": "9e676e324da46358f250b7e57304a8ff40e9e0267660c807fe668d43320bcd98"
+    },
+    {
+      "path": "launches/20260924T052818Z/episode/result.json",
+      "bytes": 4155,
+      "sha256": "f7c2911a5ed0b596bdef87c7eabf98ab89a9e191f58753b7db11250e09e9b09f"
+    },
+    {
+      "path": "launches/20260924T052818Z/result.json",
+      "bytes": 584,
+      "sha256": "86de69b08710033399dac0a8cea2c1e73d9b48d9d8bb07150bca4817193fadb8"
+    },
+    {
+      "path": "launches/20260924T052942Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 17711,
+      "sha256": "05bfddbe644225e769ca7c1d36a10b4e34bd0c9ae322196dc30dda74dd6bf9b8"
+    },
+    {
+      "path": "launches/20260924T052942Z/episode/learned-controller/runtime/capacity.json",
+      "bytes": 87,
+      "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T052942Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "08718feb7978d8c0e4a40ceb2cc0ea2c3d3fe00903b975feac0fd08ea56f6a22"
+    },
+    {
+      "path": "launches/20260924T052942Z/episode/learned-controller/runtime/reconstruction/result.json",
+      "bytes": 681,
+      "sha256": "26d2a954ebf8a74b529715119199529bec831ddc92faa5d4f40b657acbdbfe6d"
+    },
+    {
+      "path": "launches/20260924T052942Z/episode/learned-controller/runtime/result.json",
+      "bytes": 1414,
+      "sha256": "b93db05ee9587bcfc3d286a678174f26d8118acb0ae4be36fe90e1b5b6ceeefe"
+    },
+    {
+      "path": "launches/20260924T052942Z/episode/learned-controller/runtime/termination.json",
+      "bytes": 36,
+      "sha256": "bd41a9e416bb70ee36946fc10ccd1eb393c173dfad3dd70e274c4ad9003f7401"
+    },
+    {
+      "path": "launches/20260924T052942Z/episode/learned-controller/runtime/video/result.json",
+      "bytes": 246,
+      "sha256": "29c800e04e326f53ff12bda9abc4ee350c09315afd51c12835de78519019c720"
+    },
+    {
+      "path": "launches/20260924T052942Z/episode/learned-controller/source_hashes.json",
+      "bytes": 2250,
+      "sha256": "9e676e324da46358f250b7e57304a8ff40e9e0267660c807fe668d43320bcd98"
+    },
+    {
+      "path": "launches/20260924T052942Z/episode/result.json",
+      "bytes": 4155,
+      "sha256": "142090ba77229d8098228546791bfe125ceab3d98777ed244b7cfc0883df045e"
+    },
+    {
+      "path": "launches/20260924T052942Z/result.json",
+      "bytes": 585,
+      "sha256": "cf98a4c9e744febdd60d9827599297d4d16104c2e2cc10e2a793d704c9f5cda0"
+    },
+    {
+      "path": "launches/20260924T053113Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 5505,
+      "sha256": "1afa11ad58ddfbeffcc282e1654c561ee2f9ec9b05b9a683bb7436e50d155c2d"
+    },
+    {
+      "path": "launches/20260924T053113Z/episode/learned-controller/runtime/capacity.json",
+      "bytes": 87,
+      "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T053113Z/episode/learned-controller/runtime/result.json",
+      "bytes": 877,
+      "sha256": "fbf0b6072210cfd33427032664771f60bd2354a9a463b4249f0ba4c718e053ef"
+    },
+    {
+      "path": "launches/20260924T053113Z/episode/learned-controller/runtime/video/result.json",
+      "bytes": 245,
+      "sha256": "f56fa53a2dc1537f2e140a65537644cb2a8429dd8f012a6f5864d6d1f580fe3c"
+    },
+    {
+      "path": "launches/20260924T053113Z/episode/learned-controller/source_hashes.json",
+      "bytes": 2250,
+      "sha256": "9e676e324da46358f250b7e57304a8ff40e9e0267660c807fe668d43320bcd98"
+    },
+    {
+      "path": "launches/20260924T053113Z/episode/result.json",
+      "bytes": 3566,
+      "sha256": "d7cf29f8d96ca62961be78efdacf2b1aed9aec425d92dcfc5adc8a95199c8c30"
+    },
+    {
+      "path": "launches/20260924T053113Z/result.json",
+      "bytes": 585,
+      "sha256": "8150df79677251c822a6d75bafbb89b1ea65e845650035a2cc353f749bfe66cd"
+    },
+    {
+      "path": "launches/20260924T053217Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 17256,
+      "sha256": "a5d7aeb283f8e43199f0e9e8be6d4b54d3ac5425361d4871724a7399e12c1445"
+    },
+    {
+      "path": "launches/20260924T053217Z/episode/learned-controller/runtime/capacity.json",
+      "bytes": 87,
+      "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T053217Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 638,
+      "sha256": "33fa25b1d523ab437767da20a2e7883ba358e8e7e34861feefe50ec32a7c5c7e"
+    },
+    {
+      "path": "launches/20260924T053217Z/episode/learned-controller/runtime/reconstruction/result.json",
+      "bytes": 680,
+      "sha256": "d502ae92d4a90bb9f94cc7a39c6f7462dee1a3a8434bff2791e706fe5fb2e12c"
+    },
+    {
+      "path": "launches/20260924T053217Z/episode/learned-controller/runtime/result.json",
+      "bytes": 1414,
+      "sha256": "154756cee0c4213d83d7fc952766de15675849c0de93d6529f143727c690c406"
+    },
+    {
+      "path": "launches/20260924T053217Z/episode/learned-controller/runtime/termination.json",
+      "bytes": 36,
+      "sha256": "bd41a9e416bb70ee36946fc10ccd1eb393c173dfad3dd70e274c4ad9003f7401"
+    },
+    {
+      "path": "launches/20260924T053217Z/episode/learned-controller/runtime/video/result.json",
+      "bytes": 246,
+      "sha256": "369f7be2a41859afaffe66694651f3534521491195d67804e7a0c016a509a592"
+    },
+    {
+      "path": "launches/20260924T053217Z/episode/learned-controller/source_hashes.json",
+      "bytes": 2250,
+      "sha256": "9e676e324da46358f250b7e57304a8ff40e9e0267660c807fe668d43320bcd98"
+    },
+    {
+      "path": "launches/20260924T053217Z/episode/result.json",
+      "bytes": 4163,
+      "sha256": "2c0704635bc0b635685a03b37a9f701b2909e7249cf139db3ac9fdf1a9ec14ce"
+    },
+    {
+      "path": "launches/20260924T053217Z/result.json",
+      "bytes": 585,
+      "sha256": "ecf231f113ab5a38028b5c8c2e0eddcb835022f9712327baaa1468a8997fc2d6"
+    },
+    {
+      "path": "launches/20260924T053350Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 17285,
+      "sha256": "7aa87a5d1c9259a7c52c7fd28c21cf0084318d7e71a98e42fa7fecae3d6eb462"
+    },
+    {
+      "path": "launches/20260924T053350Z/episode/learned-controller/runtime/capacity.json",
+      "bytes": 87,
+      "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T053350Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 640,
+      "sha256": "ef7ef40cd9c80f3a632dc128b71edc92764bafbd7ae1829ec408dacfe5c81ee7"
+    },
+    {
+      "path": "launches/20260924T053350Z/episode/learned-controller/runtime/reconstruction/result.json",
+      "bytes": 680,
+      "sha256": "f7b04a0ed7cdceb4f94a7907dac7291a6ce824af25016fc3467f67339a1ec0de"
+    },
+    {
+      "path": "launches/20260924T053350Z/episode/learned-controller/runtime/result.json",
+      "bytes": 1259,
+      "sha256": "1147fa70d95bba65c450c2022f6b5fae6fbfadbcb481416b47d8fb504d1e8497"
+    },
+    {
+      "path": "launches/20260924T053350Z/episode/learned-controller/runtime/termination.json",
+      "bytes": 36,
+      "sha256": "bd41a9e416bb70ee36946fc10ccd1eb393c173dfad3dd70e274c4ad9003f7401"
+    },
+    {
+      "path": "launches/20260924T053350Z/episode/learned-controller/runtime/video/result.json",
+      "bytes": 246,
+      "sha256": "ce99fb2b6653d352390f101e347b92f3c8b404617f938f2d0bd45e8dd45b4cb4"
+    },
+    {
+      "path": "launches/20260924T053350Z/episode/learned-controller/source_hashes.json",
+      "bytes": 2250,
+      "sha256": "9e676e324da46358f250b7e57304a8ff40e9e0267660c807fe668d43320bcd98"
+    },
+    {
+      "path": "launches/20260924T053350Z/episode/result.json",
+      "bytes": 3997,
+      "sha256": "8296dc106af05b34a631d806a60cc8fda03a14015c3c10f27a92fc8c55ae977e"
+    },
+    {
+      "path": "launches/20260924T053350Z/result.json",
+      "bytes": 585,
+      "sha256": "c09cbe34a6b83287f47971d543e2f3d93c5a50a9c9377ac1fbf687ef4475dba4"
+    },
+    {
+      "path": "launches/20260924T053520Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 5487,
+      "sha256": "1f849baf71159eea5ba7a12b0a4bd739ca61270bab2984b6d93a2fa476e621c3"
+    },
+    {
+      "path": "launches/20260924T053520Z/episode/learned-controller/runtime/capacity.json",
+      "bytes": 87,
+      "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T053520Z/episode/learned-controller/source_hashes.json",
+      "bytes": 2250,
+      "sha256": "9e676e324da46358f250b7e57304a8ff40e9e0267660c807fe668d43320bcd98"
+    },
+    {
+      "path": "recorded-image-sources.json",
+      "bytes": 1119,
+      "sha256": "230659c81a0e84670a2ba2d74fa83933911609d1874cfce51d862e58a6339bf8"
+    },
+    {
+      "path": "recorded-moving-frame.png",
+      "bytes": 352462,
+      "sha256": "342d3d6332bb1c2ab56925921157521f3ac1393ac69067fcd25c159398d5f821"
     },
     {
       "path": "rounds/learning-continuation-r49/continuation.json",
@@ -2124,9 +2859,19 @@
       "sha256": "d750b97798d3125122f1d974d29f0b2f44506fc792fc13a1c82fe5441283fe06"
     },
     {
+      "path": "rounds/navigation-mapping-r57/tracking-diagnosis.json",
+      "bytes": 889,
+      "sha256": "2b52f3a21ce79cd95cf5640b45a8e4cc737e85be41c1d7e96a725e5ce9d9c9cd"
+    },
+    {
       "path": "rounds/navigation-repair-r58/execution/state.json",
-      "bytes": 16193,
-      "sha256": "1469be1edb0179262e8fe2a109b713f61f55606d7ef5cb11d51205e1e9c1aa5a"
+      "bytes": 18868,
+      "sha256": "c414efedebc4f8711a4847c85e1fda304d1e89299bc847b003ec68b5f2bc0454"
+    },
+    {
+      "path": "rounds/navigation-repair-r58/execution/trajectory-bundle/result.json",
+      "bytes": 242,
+      "sha256": "0f26037b8e8a0d70423fb0552999eb840291a06e914d3ccc41d3fc87d0f3a86d"
     },
     {
       "path": "rounds/navigation-repair-r58/process.json",
@@ -2139,14 +2884,74 @@
       "sha256": "1dee99dd0a16037d93762df607968ec3daf648c33308f228caf0d9421e4fd529"
     },
     {
+      "path": "rounds/navigation-repair-r58/superseded.json",
+      "bytes": 201,
+      "sha256": "a714b807677079c19ef0b113767068220be0374b505469f9fc83a71268e36f33"
+    },
+    {
       "path": "rounds/navigation-repair-r59/continuation.json",
-      "bytes": 80,
-      "sha256": "c437a3b04121f21c82f7977aa9890a585286cd0845139d8cd0c1520b785fd219"
+      "bytes": 55,
+      "sha256": "7c8e612e92d46429fee42f8be8ec7a248e56823f0490d55aa139b9fc2db91b8b"
     },
     {
       "path": "rounds/navigation-repair-r59/process.json",
       "bytes": 382,
       "sha256": "ff0234993b51e798b88c3dd20cb9d6cbc456adadf4030d8606c649635607f903"
+    },
+    {
+      "path": "rounds/navigation-repair-r60/execution/perception-checkpoints/checkpoints.json",
+      "bytes": 1212,
+      "sha256": "abff2d3f36efa8eef959e14c50a4eb356fdd8def7eec7c6669f8c273f99f42ae"
+    },
+    {
+      "path": "rounds/navigation-repair-r60/execution/state.json",
+      "bytes": 33580,
+      "sha256": "71f66f77932c87e0dfda58932a5ec0af4676639f5fc7fda77c3206b87921b22a"
+    },
+    {
+      "path": "rounds/navigation-repair-r60/process.json",
+      "bytes": 93,
+      "sha256": "604a897969bf94427c19450b5a06efeee4ebca1a1adc206547b4fc2b4d58d531"
+    },
+    {
+      "path": "rounds/navigation-repair-r60/programme-spec.json",
+      "bytes": 6813,
+      "sha256": "852a0818205fbcf72d1c93ec590a78085458d194fe33288d26b2b5524dd072ec"
+    },
+    {
+      "path": "rounds/navigation-repair-r61/continuation.json",
+      "bytes": 55,
+      "sha256": "7c8e612e92d46429fee42f8be8ec7a248e56823f0490d55aa139b9fc2db91b8b"
+    },
+    {
+      "path": "rounds/navigation-repair-r61/process.json",
+      "bytes": 382,
+      "sha256": "f456b0b6c0b10ad7b41e0b5c381abb501715fc1630922933819fec4b62353cd5"
+    },
+    {
+      "path": "rounds/navigation-repair-r61/superseded.json",
+      "bytes": 213,
+      "sha256": "809d77d0dbea53e249c3fdf6771934303472e3d5d89699ab625ceb13cf080d5a"
+    },
+    {
+      "path": "rounds/navigation-repair-r62/continuation.json",
+      "bytes": 80,
+      "sha256": "c437a3b04121f21c82f7977aa9890a585286cd0845139d8cd0c1520b785fd219"
+    },
+    {
+      "path": "rounds/navigation-repair-r62/process.json",
+      "bytes": 382,
+      "sha256": "e5f579c65bc120462ff28e3da56535c6c3a2774447107cbcd7d5df63aad813b7"
+    },
+    {
+      "path": "rounds/navigation-repair-r63/execution/state.json",
+      "bytes": 13696,
+      "sha256": "f163d2aed723346469b9969adb6e4c289c9893f1afe374cdf91b70f5913e2334"
+    },
+    {
+      "path": "rounds/navigation-repair-r63/programme-spec.json",
+      "bytes": 1110,
+      "sha256": "f76fd80091fffc9f829468f1d874b9d71db20522021915a722ac540166ed6182"
     },
     {
       "path": "runs/20260924T030919Z-exploration-pilot-aa761f/collection/flights.json",
@@ -3704,14 +4509,174 @@
       "sha256": "8d737510a5dd9ad2b2940b3a02a3fbdff8457877b24faefb893ac8c97620b363"
     },
     {
+      "path": "runs/20260924T050543Z-moving-trajectory-preparation-268c46/result.json",
+      "bytes": 782,
+      "sha256": "7fd774c4e76ebba4cf3f810fe1984cbf07cea0f32c151eb2d74a26ffee047767"
+    },
+    {
       "path": "runs/20260924T050543Z-moving-trajectory-preparation-268c46/source_hashes.json",
       "bytes": 12175,
       "sha256": "345e130d73ce4c0b211ed7977a7ccd06720e44552e53094194ee406f87117079"
     },
     {
       "path": "runs/20260924T050543Z-moving-trajectory-preparation-268c46/stdout.log",
+      "bytes": 227,
+      "sha256": "95aef03b65a25ae0facafa634d48379fef3475b36e51b4bf8451e14c65685d94"
+    },
+    {
+      "path": "runs/20260924T050634Z-balanced-motion-training-fa2aff/result.json",
+      "bytes": 658,
+      "sha256": "c8dfd782321cdc562df71a276efa505afdde9f54896d16ffa138de1adc286e2b"
+    },
+    {
+      "path": "runs/20260924T050634Z-balanced-motion-training-fa2aff/source_hashes.json",
+      "bytes": 12175,
+      "sha256": "345e130d73ce4c0b211ed7977a7ccd06720e44552e53094194ee406f87117079"
+    },
+    {
+      "path": "runs/20260924T050634Z-balanced-motion-training-fa2aff/stdout.log",
+      "bytes": 2428,
+      "sha256": "3156a971c4541e7da8074a4fe5c8c815d2ea8ff07110d644a85a81288402f90a"
+    },
+    {
+      "path": "runs/20260924T050634Z-balanced-motion-training-fa2aff/visual-training/metrics.jsonl",
+      "bytes": 33167,
+      "sha256": "591d29b06f0e6ea730cd13caaa6916a78b5e20eb039bed821b9bb508f096eee5"
+    },
+    {
+      "path": "runs/20260924T050634Z-balanced-motion-training-fa2aff/visual-training/result.json",
+      "bytes": 1182,
+      "sha256": "a50eac05b2625db681865e7aa9ecaf8c2fad65ae124a87c04c486faaeffb63fc"
+    },
+    {
+      "path": "runs/20260924T051243Z-balanced-motion-training-5b8884/result.json",
+      "bytes": 740,
+      "sha256": "97dcb118e0e48b29f574eaface81994d0c7bbb4aef38bc722a032bd32b33422e"
+    },
+    {
+      "path": "runs/20260924T051243Z-balanced-motion-training-5b8884/source_hashes.json",
+      "bytes": 12369,
+      "sha256": "5573777b1cabd53488c8e47de2047740d46b72a10632ee7f4178d9fc6066cf59"
+    },
+    {
+      "path": "runs/20260924T051243Z-balanced-motion-training-5b8884/stdout.log",
+      "bytes": 2615,
+      "sha256": "7b3b37542067806d6a17506b454bf67e02848cb394f529ce96d773329e68fb30"
+    },
+    {
+      "path": "runs/20260924T051243Z-balanced-motion-training-5b8884/visual-training/metrics.jsonl",
+      "bytes": 42151,
+      "sha256": "6446d84542124589cf205ebde39bf6cf48573668278e05a0bffbfa8083ab953b"
+    },
+    {
+      "path": "runs/20260924T051243Z-balanced-motion-training-5b8884/visual-training/result.json",
+      "bytes": 1393,
+      "sha256": "9e1078d26ef8361d4d9463196db15e08414a037888cfd986c8e3b1ee41c57b84"
+    },
+    {
+      "path": "runs/20260924T051959Z-selected-perception-pack-dc5881/result.json",
+      "bytes": 1012,
+      "sha256": "72f929dda6db3df3b65af508e21fc706fb5d9b40cf02990f3ddf9418ae6d2923"
+    },
+    {
+      "path": "runs/20260924T051959Z-selected-perception-pack-dc5881/source_hashes.json",
+      "bytes": 12369,
+      "sha256": "5573777b1cabd53488c8e47de2047740d46b72a10632ee7f4178d9fc6066cf59"
+    },
+    {
+      "path": "runs/20260924T051959Z-selected-perception-pack-dc5881/stdout.log",
+      "bytes": 1083,
+      "sha256": "6c65622b9adb8af7d261fc5fbc0ae03a107adb177f8324dfddaea13e83db1a00"
+    },
+    {
+      "path": "runs/20260924T052001Z-recorded-odometry-qualification-cef6f5/odometry-qualification/episodes.jsonl",
+      "bytes": 30171,
+      "sha256": "bc0e7dad4a521afb6a056a7b6b8b3108555557718b117a0ea69d2c6c60ec9a62"
+    },
+    {
+      "path": "runs/20260924T052001Z-recorded-odometry-qualification-cef6f5/odometry-qualification/result.json",
+      "bytes": 1819,
+      "sha256": "bcfea9787f94a47ba59dcbb190667d5cf64336b10be9a9618ab910c18ff41889"
+    },
+    {
+      "path": "runs/20260924T052001Z-recorded-odometry-qualification-cef6f5/result.json",
+      "bytes": 676,
+      "sha256": "3edb079221eac1b3b24200983c70104447323146149442ee59a0b4b8ba3e0554"
+    },
+    {
+      "path": "runs/20260924T052001Z-recorded-odometry-qualification-cef6f5/source_hashes.json",
+      "bytes": 12369,
+      "sha256": "5573777b1cabd53488c8e47de2047740d46b72a10632ee7f4178d9fc6066cf59"
+    },
+    {
+      "path": "runs/20260924T052001Z-recorded-odometry-qualification-cef6f5/stdout.log",
+      "bytes": 2943,
+      "sha256": "75084e3c64e361e2e36ddca761a21c76877b05f44eeef4ab6f50d58c16ffcaea"
+    },
+    {
+      "path": "runs/20260924T052517Z-new-perception-pilot-98fa94/collection/flights.json",
+      "bytes": 4753,
+      "sha256": "01de24c30d34e0475b8f64d79a21979632b81f9647927ff0f39fce07dc5c9764"
+    },
+    {
+      "path": "runs/20260924T052517Z-new-perception-pilot-98fa94/collection/result.json",
+      "bytes": 377,
+      "sha256": "aa8bc4ef67ffbfb1d8248a34325849c4de797b20ca6eb8469c5303796d5a0e0e"
+    },
+    {
+      "path": "runs/20260924T052517Z-new-perception-pilot-98fa94/result.json",
+      "bytes": 751,
+      "sha256": "f5d2d80b3a720e83031a974598b299b88a39fe5f00ef38ae66a2c935acce9aca"
+    },
+    {
+      "path": "runs/20260924T052517Z-new-perception-pilot-98fa94/source_hashes.json",
+      "bytes": 12369,
+      "sha256": "5573777b1cabd53488c8e47de2047740d46b72a10632ee7f4178d9fc6066cf59"
+    },
+    {
+      "path": "runs/20260924T052517Z-new-perception-pilot-98fa94/stdout.log",
+      "bytes": 356,
+      "sha256": "476ab76fbb89a31bd9990b624a7a8f7564ead7a6cfcbcbf653cebd259d00bac1"
+    },
+    {
+      "path": "runs/20260924T052652Z-new-perception-demonstrations-9bb40b/collection/flights.json",
+      "bytes": 28598,
+      "sha256": "6ab4ec94fca802f98cf5e25a4b47554d3f733d176878e160cebb642c68991c00"
+    },
+    {
+      "path": "runs/20260924T052652Z-new-perception-demonstrations-9bb40b/collection/imported-failures.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "runs/20260924T052652Z-new-perception-demonstrations-9bb40b/collection/infrastructure-failures.json",
+      "bytes": 4756,
+      "sha256": "1cf6e89212f94098688475d74eb16b8bb6d05b49833c2b6860cf6ed5d12a55fb"
+    },
+    {
+      "path": "runs/20260924T052652Z-new-perception-demonstrations-9bb40b/source_hashes.json",
+      "bytes": 12369,
+      "sha256": "5573777b1cabd53488c8e47de2047740d46b72a10632ee7f4178d9fc6066cf59"
+    },
+    {
+      "path": "runs/20260924T052652Z-new-perception-demonstrations-9bb40b/stdout.log",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "train-00001-initial-rgb.png",
+      "bytes": 371969,
+      "sha256": "f6ec8ea26b8d5113ebf8ae89d6b20c36d74a49a0207accdb152eeae9e4178941"
+    },
+    {
+      "path": "train-00002-initial-rgb.png",
+      "bytes": 317875,
+      "sha256": "a20475af3313f4e6e899a5688dcc255e1bf231ddb3d432676babff41c0085954"
+    },
+    {
+      "path": "train-00003-initial-rgb.png",
+      "bytes": 435969,
+      "sha256": "4d281e369f92aba0966772ef36975db2abe5021f2117c81a17538da57a3c63cc"
     }
   ]
 }

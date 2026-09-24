@@ -14,7 +14,13 @@ def _worker(config, directory, episode_id, incoming, outgoing):
         open3d.utility.random.seed(43)
         mapper = CausalMapper(config, directory, episode_id)
         while True:
-            packet = incoming.get()
+            try:
+                packet = incoming.get(timeout=.02)
+            except queue.Empty:
+                result = mapper.refine()
+                if result:
+                    outgoing.put(dict(result=result))
+                continue
             if packet is None:
                 break
             key, source, image, depth, valid, pose, calibration, now, corrections = packet
@@ -22,7 +28,9 @@ def _worker(config, directory, episode_id, incoming, outgoing):
             result = mapper.update(key, source, image, depth.cuda(), valid.cuda(), pose.cuda(), calibration, now, corrections)
             if result:
                 outgoing.put(dict(result=result))
-        outgoing.put(dict(finished=True, version=mapper.version))
+        outgoing.put(dict(finished=True, version=mapper.version,
+            optimizer_updates=mapper.iteration_count,
+            refinement_pending=mapper.refinement_pending))
     except BaseException:
         outgoing.put(dict(error=traceback.format_exc()))
         raise

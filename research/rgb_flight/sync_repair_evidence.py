@@ -34,8 +34,10 @@ for folder in root.joinpath('launches').iterdir():
  for pattern in ('result.json','episode/result.json','episode/learned-controller/source_hashes.json',
                  'episode/learned-controller/runtime/result.json','episode/learned-controller/runtime/termination.json',
                  'episode/learned-controller/runtime/capacity.json','episode/learned-controller/runtime/deliberation/*.json',
+                 'episode/learned-controller/runtime/alignment.jsonl',
                  'episode/learned-controller/runtime/deliberation/events.jsonl',
                  'episode/learned-controller/runtime/reconstruction/result.json',
+                 'episode/learned-controller/runtime/reconstruction/memory/versions.jsonl',
                  'episode/learned-controller/runtime/video/result.json'):
   selected.update(folder.glob(pattern))
 result=[]

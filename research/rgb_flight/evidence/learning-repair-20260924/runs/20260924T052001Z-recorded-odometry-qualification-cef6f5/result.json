@@ -1,0 +1,18 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T052001Z-recorded-odometry-qualification-cef6f5/source/stage_worker.py",
+    "qualify-odometry",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/trajectory-bundle",
+    "--navigation-pack",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints"
+  ],
+  "seconds": 3600,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 16.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 315.2276002499275
+}

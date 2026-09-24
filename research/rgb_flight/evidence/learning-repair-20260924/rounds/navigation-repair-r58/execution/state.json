@@ -144,7 +144,7 @@
   "round_id": "execution",
   "stages": {
     "moving-trajectory-preparation": {
-      "status": "running",
+      "status": "completed",
       "attempts": [
         {
           "process": {
@@ -155,7 +155,7 @@
           "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/moving-trajectory-preparation-000.log"
         }
       ],
-      "reason": "Owned remote guard running",
+      "reason": "Worker completed; acceptance not inferred",
       "input_hashes": {
         "/home/iamyanbo/uav-rgb-flight/runs/20260924T042617Z-motion-rate-training-1b019e/visual-training/latest.pt": "4b353a6c356eee224447efcfb1a9a4305cb9fb356b0f418256845ab581d405a6"
       },
@@ -187,12 +187,79 @@
         "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/trajectory-bundle"
       ],
       "started_unix": 1790226343.4716828,
-      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T050543Z-moving-trajectory-preparation-268c46"
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T050543Z-moving-trajectory-preparation-268c46",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T050543Z-moving-trajectory-preparation-268c46/result.json",
+        "sha256": "7fd774c4e76ebba4cf3f810fe1984cbf07cea0f32c151eb2d74a26ffee047767"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/trajectory-bundle/result.json",
+        "sha256": "0f26037b8e8a0d70423fb0552999eb840291a06e914d3ccc41d3fc87d0f3a86d"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "attempts": 385,
+        "excluded": 0,
+        "unique_successful_episodes": 250,
+        "timing_passed_attempts": 11,
+        "manifest_sha256": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/trajectory-bundle/manifest.json",
+          "sha256": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e"
+        }
+      ]
     },
     "balanced-motion-training": {
-      "status": "ready",
-      "attempts": [],
-      "reason": "Waiting for moving-trajectory-preparation=completed"
+      "status": "running",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2579145,
+            "start_ticks": "132552664",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/balanced-motion-training-000.log"
+        }
+      ],
+      "reason": "Owned remote guard running",
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/trajectory-bundle/manifest.json": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e"
+      },
+      "process": {
+        "pid": 2579145,
+        "start_ticks": "132552664",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/balanced-motion-training-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r58/spark_guard.py",
+        "--name",
+        "balanced-motion-training",
+        "--seconds",
+        "7200",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "16",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r58/stage_worker.py",
+        "train-odometry",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/trajectory-bundle",
+        "--initialize-from",
+        "initialization.pt",
+        "--updates",
+        "200",
+        "--validation-every",
+        "50"
+      ],
+      "started_unix": 1790226394.5138643,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T050634Z-balanced-motion-training-fa2aff"
     },
     "selected-perception-pack": {
       "status": "ready",
@@ -215,5 +282,5 @@
       "reason": "Waiting for new-perception-pilot=completed"
     }
   },
-  "updated_unix": 1790226363.486686
+  "updated_unix": 1790226714.947653
 }

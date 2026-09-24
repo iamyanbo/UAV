@@ -1,0 +1,31 @@
+{
+  "status": "failed",
+  "accepted": false,
+  "frames": 117,
+  "error": {
+    "type": "RuntimeError",
+    "message": "RGB mapper exited during causal replay"
+  },
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "a90ac522471541fdc387c1eea5c3835c4d7e6276f2590f9fdeb57335797fcc8d",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "1ad54be4fd9865e137900bb2b2e8a64abfd8a79838c0395c320f24e28c1738bb",
+      "samples": 53
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": "observed-exploration/v4",
+  "final_map_status": "initializing",
+  "map_version": -1,
+  "handover_sim_ns": null,
+  "control_safety_p95_seconds": 0.06896672984585162,
+  "control_safety_missed_deadlines": 23,
+  "safety_interventions": 0
+}

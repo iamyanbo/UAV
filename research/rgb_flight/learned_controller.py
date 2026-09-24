@@ -109,7 +109,7 @@ class Mode1Actor:
             initialization_elapsed_seconds=value['initialization_elapsed_seconds'],
             termination_reason=value['termination_reason'],
             teacher_reason=teacher_reason if self.demonstrate else None,
-            teacher_provenance='observed-exploration/v3' if self.demonstrate else None,
+            teacher_provenance='observed-exploration/v4' if self.demonstrate else None,
             episode_id=self.core.episode_id,frame_id=metadata['frame_id'],sim_ns=metadata['sim_ns'],
             behavior_policy_sha256=None if self.demonstrate else self.core.checkpoints.spec['artifacts']['policy']['sha256'],
             stochastic=self.stochastic,latent_action=None if latent is None else latent[0].tolist(),sampled_stop=bool(sampled_stop.item()),
@@ -118,7 +118,7 @@ class Mode1Actor:
             submitted_after_safety=list(asdict(filtered).values()),submitted_stop=stop,safety=safety,
             source_available_monotonic=metadata['received_monotonic'],decision_monotonic=time.monotonic(),
             safety_vehicle_radius_m=self.radius,
-            mode='predictive_then_independent_safety' if planned_command is not None else 'mode_1_geometry_safety_planner_disabled')
+            mode='deterministic_observation_teacher' if self.demonstrate else 'predictive_then_independent_safety' if planned_command is not None else 'mode_1_geometry_safety_planner_disabled')
         return filtered,stop,trace,initial_hidden[0]
 
 
@@ -131,7 +131,7 @@ def main():
     parser.add_argument('--with-deliberation',action='store_true')
     parser.add_argument('--demonstrate',action='store_true')
     args=parser.parse_args();output=Path('/output');client=BrokerClient(args.socket,args.episode_id)
-    if args.with_deliberation and args.sample_policy:parser.error('Initial PPO disables slow planning')
+    if args.with_deliberation and (args.sample_policy or args.demonstrate):parser.error('PPO and deterministic demonstrations disable slow planning')
     core=video=mapping=deliberation=None;count=0;error=None;chunks=[];shards=[];latencies=[];interventions=0
     def flush():
         if not chunks:return
@@ -194,7 +194,7 @@ def main():
             teacher_command,teacher_stop,teacher_reason=demonstration(value)
             correction=dict(episode_id=args.episode_id,frame_id=last,sim_ns=metadata['sim_ns'],
                 expert_observation_conditioned=True,expert_command=teacher_command,explicit_stop=teacher_stop,
-                teacher='observed-exploration/v3',reason=teacher_reason,
+                teacher='observed-exploration/v4',reason=teacher_reason,
                 behavior_policy_sha256=trace['behavior_policy_sha256'])
             if args.demonstrate:
                 correction.update(expert_command=list(asdict(command).values()),explicit_stop=stop,
@@ -231,7 +231,7 @@ def main():
         result=dict(status='failed' if error else 'completed',accepted=False,frames=count,error=error,shards=shards,
                     scope='Mode 1, Qwen and frozen predictive planning' if deliberation else 'Live Mode 1 only; no planner or Qwen configuration',
                     sampled_policy=args.sample_policy,slow_planner_enabled=args.with_deliberation,
-                    teacher_provenance='observed-exploration/v3' if args.demonstrate else None,
+                    teacher_provenance='observed-exploration/v4' if args.demonstrate else None,
                     final_map_status=core.startup.state if core else None,
                     map_version=core.latest_map_version if core else None,
                     handover_sim_ns=core.startup.handover_ns if core else None,

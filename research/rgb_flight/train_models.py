@@ -62,7 +62,7 @@ class TrajectoryBundle:
         data = torch.load(path, map_location='cpu', weights_only=True)
         if data['episode_id'] != record['episode_id']:
             raise ValueError('Window episode mismatch')
-        allowed_teachers={'observed_frontier_local_expert','observed-exploration/v3'}
+        allowed_teachers={'observed_frontier_local_expert','observed-exploration/v4'}
         if self.module == 'policy' and data.get('teacher_source') not in allowed_teachers:
             raise ValueError('Search imitation requires observation-conditioned target selection before local expert execution')
         runtime = data['runtime']
@@ -194,7 +194,7 @@ def save_checkpoint(path, model, critic, optimizer, scheduler, update, best, rng
     state['exposed_train_window_indices'] = sorted(bundle.exposed_windows)
     state['exposed_train_episode_ids'] = sorted(bundle.exposed_episodes)
     state.update(module=bundle.module,objective_version=objective_version(bundle.module),
-        action_semantics='post-safety-dispatch/50ms-v3',belief_version='masked-map-dispatch-state/v3',teacher_version='observed-exploration/v3',
+        action_semantics='post-safety-dispatch/50ms-v3',belief_version='masked-map-dispatch-state/v3',teacher_version='observed-exploration/v4',
         goal_encoder_checkpoint_sha256=bundle.goal_encoder_sha256,
         world_checkpoint_sha256=bundle.manifest.get('world_checkpoint_sha256'),
         projection_sha256=bundle.manifest.get('projection_sha256'),

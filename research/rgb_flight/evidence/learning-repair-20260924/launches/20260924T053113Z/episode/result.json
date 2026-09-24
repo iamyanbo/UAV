@@ -1,0 +1,97 @@
+{
+  "status": "failed",
+  "episode_id": "train-00004",
+  "split": "train",
+  "phase": 2,
+  "runtime_goal_sha256": "c716f35a72de37b4f0e3e7f28a0b284bab8a7767c6f75161afbffe328a9e84d7",
+  "pose_setting_calls_before_recording": 1,
+  "pre_episode_goal_pose_setting_calls": 0,
+  "pose_setting_calls_after_recording": 0,
+  "clock_speed": 1.0,
+  "maximum_speed_mps": 3.0,
+  "controller_kind": "learned_mode_1",
+  "runtime_isolation": {
+    "status": "live_inference_boundary_passed",
+    "episode_id": "train-00004",
+    "rgb_bytes": 921600,
+    "first_sim_ns": 1790227898568769024,
+    "last_sim_ns": 1790227898826774528,
+    "goal_views": 4,
+    "denied_operations": 5,
+    "simulator_rpc_inaccessible": true,
+    "privileged_files_inaccessible": true
+  },
+  "controller_checkpoint_sha256": "abff2d3f36efa8eef959e14c50a4eb356fdd8def7eec7c6669f8c273f99f42ae",
+  "error_type": "RuntimeError",
+  "error": "Live controller exited; inspect preserved inference receipt/log",
+  "learned_controller": {
+    "status": "failed",
+    "accepted": false,
+    "frames": 117,
+    "error": {
+      "type": "RuntimeError",
+      "message": "RGB mapper exited during causal replay"
+    },
+    "shards": [
+      {
+        "path": "controller-000000.pt",
+        "sha256": "a90ac522471541fdc387c1eea5c3835c4d7e6276f2590f9fdeb57335797fcc8d",
+        "samples": 64
+      },
+      {
+        "path": "controller-000001.pt",
+        "sha256": "1ad54be4fd9865e137900bb2b2e8a64abfd8a79838c0395c320f24e28c1738bb",
+        "samples": 53
+      }
+    ],
+    "scope": "Live Mode 1 only; no planner or Qwen configuration",
+    "sampled_policy": false,
+    "slow_planner_enabled": false,
+    "teacher_provenance": "observed-exploration/v4",
+    "final_map_status": "initializing",
+    "map_version": -1,
+    "handover_sim_ns": null,
+    "control_safety_p95_seconds": 0.06896672984585162,
+    "control_safety_missed_deadlines": 23,
+    "safety_interventions": 0
+  },
+  "broker_errors": [],
+  "commands": 755,
+  "control_latency_p95_seconds": 0.189004032,
+  "capture_interval_p95_sim_seconds": 0.078001664,
+  "fresh_rgb_hz": 16.64274616836924,
+  "control_work_p95_seconds": 0.000985039141960442,
+  "control_missed_deadlines": 0,
+  "control_interval_p95_seconds": 0.04565085005015135,
+  "control_interval_max_seconds": 0.05034198798239231,
+  "control_schedule_missed_deadlines": 1,
+  "timing_gate": {
+    "accepted": false,
+    "capture_control_passed": false,
+    "requirements": {
+      "fresh_rgb_hz_min": 19,
+      "rgb_interval_p95_max": 0.075,
+      "control_p95_max": 0.05
+    },
+    "reason": "RGB/control acceptance is measured; application delay belongs to dispatched-command dynamics",
+    "application_timestamps_available": false
+  },
+  "depth_label_index": "training_labels/depth/index.jsonl",
+  "depth_label_samples": 0,
+  "storage": {
+    "frames": 566,
+    "stream_sha256": "9de893105c0f4d34eb572bacd1da0b62f24a8e7df4bbde6358b5fc3c41f998ba",
+    "complete": false,
+    "codec": "per-frame zlib level 1, lossless RGB24",
+    "timestamps": "original AirSim image nanoseconds",
+    "pixel_format": "RGB24",
+    "color_calibration_sha256": "8d9d4b66da2da97f65bf43f66c74405d0adc40500d97c1d428dc91f1a9fe6051"
+  },
+  "training_label_frames": 174,
+  "teacher_provenance": "observed-exploration/v4",
+  "actual_displacement_m": 2.8726359884348924,
+  "actual_path_length_m": 3.549289899710958,
+  "mean_actual_velocity_mps": 0.40620718422228913,
+  "maximum_actual_velocity_mps": 0.5079905419492718,
+  "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+}
