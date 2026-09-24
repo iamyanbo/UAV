@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-09-24T06:42:16.219918+00:00",
+  "observed_utc": "2026-09-24T06:42:57.872491+00:00",
   "source_root": "/home/iamyanbo/uav-rgb-flight",
   "scope": "Execution receipts and derived summaries; active counters are snapshots; raw RGB and weights remain on Spark",
   "files": [
@@ -3714,9 +3714,19 @@
       "sha256": "2dbce0435badc9957f7c1a0f58cca7e73190199cd62262bf07a5eb188f3d9f64"
     },
     {
+      "path": "launches/20260924T064116Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 103874,
+      "sha256": "00c24d0354f9f820619d83ab51e487b97be2033ea5ecf7d7d2cc3444ce923f6f"
+    },
+    {
       "path": "launches/20260924T064116Z/episode/learned-controller/runtime/capacity.json",
-      "bytes": 54,
-      "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+      "bytes": 87,
+      "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T064116Z/episode/learned-controller/runtime/deliberation/events.jsonl",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "path": "launches/20260924T064116Z/episode/learned-controller/source_hashes.json",
@@ -4185,8 +4195,8 @@
     },
     {
       "path": "rounds/navigation-repair-r62/execution/state.json",
-      "bytes": 95101,
-      "sha256": "2f91c9b9c6b5564019009f339b9a08163ac184240b47b62a6a561a7fc38fc9e9"
+      "bytes": 95102,
+      "sha256": "71ccd8ad1a579f3e607fdb6db2a538c107ff644807548456e9994c3cd8386676"
     },
     {
       "path": "rounds/navigation-repair-r62/execution/trained-pack/checkpoints.json",
@@ -4276,7 +4286,7 @@
     {
       "path": "rounds/navigation-repair-r68/perception-cycle/execution/state.json",
       "bytes": 19759,
-      "sha256": "5c64a990daa1791b6cf682f81e84c3a411252a3a0b44ccb86587d60fb42a7a3d"
+      "sha256": "cc38c43da585e2d6d80a53393b53e68b6db784e4b6547101dee5e21cc5025080"
     },
     {
       "path": "rounds/navigation-repair-r68/perception-cycle/programme-spec.json",
