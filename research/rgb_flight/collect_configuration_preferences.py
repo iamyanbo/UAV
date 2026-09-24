@@ -63,6 +63,8 @@ def main():
         command=[sys.executable,str(Path(__file__).with_name('package_navigation.py'))]
         for role in ('goal','odometry','world','policy','projection','safety'):
             command+=['--'+role,str(args.checkpoints/manifest['artifacts'][role]['path'])]
+        if 'vision' in manifest['artifacts']:
+            command+=['--vision',str(args.checkpoints/manifest['artifacts']['vision']['path'])]
         command+=['--qwen',str(args.qwen),'--configuration',str(config),'--goal-match-threshold',str(manifest['goal_match_threshold']),
                   '--output',str(pack)]
         subprocess.run(command,check=True)

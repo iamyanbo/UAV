@@ -32,6 +32,21 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
     labels=checked_json(bundle,attempt['training_labels'])
     correction_path=Path(attempt['episode_path'])/'training_labels/dagger.jsonl'
     corrections={r['frame_id']:r for r in (json.loads(line) for line in correction_path.read_text().splitlines())} if correction_path.exists() else {}
+    # A classifier's false stop is a failed action, not an expert target. The
+    # evaluator is used only here, after flight, to mask invalid supervision;
+    # it supplies neither a search direction nor a runtime goal coordinate.
+    evaluator=json.loads(Path(labels['evaluator_path']).read_text())
+    goal=torch.tensor(evaluator['goal_ned_m'])
+    aligned={r['frame_id']:r for r in labels['frames']}
+    rejected_stops=set()
+    for frame,teacher in corrections.items():
+        if not teacher.get('explicit_stop'):continue
+        label=aligned.get(frame)
+        valid=bool(label and label.get('motion_valid'))
+        if valid:
+            delta=torch.tensor(label['true_position_ned_m'])-goal
+            valid=bool(delta[:2].norm()<=3. and delta[2].abs()<=2.)
+        if not valid:rejected_stops.add(frame)
     rows=[]
     for reference in manifest['shards']:
         path=replay/reference['path']
@@ -76,7 +91,8 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
         if not bool(((times.diff()>0)&(times.diff()<=250000000)).all()):continue
         if not all(r['belief_valid'] for r in selected):continue
         teachers=[corrections.get(r['frame_id']) for r in selected]
-        recovery=torch.tensor([bool(t and t.get('teacher')=='observed-depth-exploration/v5' and t.get('expert_observation_conditioned')) for t in teachers])
+        recovery=torch.tensor([bool(t and t.get('teacher')=='observed-depth-exploration/v5' and t.get('expert_observation_conditioned')
+            and r['frame_id'] not in rejected_stops) for r,t in zip(selected,teachers)])
         if not bool(recovery[20:].any()):continue
         runtime={key:torch.stack([r[key] for r in selected]) for key in
             ('z','state','belief','memory','memory_valid','task','target_context','previous_command','current_tokens','goal_context','depth_tokens')}
@@ -115,6 +131,7 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
         corrections[r['frame_id']].get('expert_observation_conditioned')]
     from collections import Counter
     result['demonstration_coverage']=dict(unique_audited_observations=len(audited),
+        rejected_false_or_unverifiable_stops=len(rejected_stops),
         explicit_stops=sum(bool(t.get('explicit_stop')) for t in audited),
         reasons=dict(Counter(t.get('reason','unspecified') for t in audited)))
     spec=dict(schema='policy-sequence-views/v1',action_semantics='post-safety-dispatch/50ms-v3',belief_version='shared-droid-local-depth/v4',teacher_version='observed-depth-exploration/v5',foundation=dict(accepted=False,training_ready=True,visual_goal_runtime=True,

@@ -14,6 +14,8 @@ The second pilot completed 180 seconds but traveled only 0.879 m: 880 of 903 tea
 
 Goal-data preparation selected one successful attempt per task and discarded later failed learner attempts. This prevented these false-match states from entering corrective supervision. The builder now retains the best demonstration and latest failed attempt, with attempt-specific goal hashes and separate caches; mining also keys examples by attempt. Internal development remains separate by task/goal region. A new dataset starts a new optimizer round. This repair is necessary data plumbing, not evidence that recognition has already improved.
 
+The same false classifier outputs were also eligible as imitation stop targets. Policy preparation now masks false or unverifiable stops against aligned post-flight labels, without inserting a privileged direction. Source review additionally caught a missing vision artifact in matched-configuration packaging before that stage ran; it now preserves the same perception fingerprint as the policy. These findings show why a pilot and an optimizer update alone cannot qualify every downstream reload path.
+
 The previous integration failed to produce useful autonomous movement. This was an implementation and validation failure: I assembled individually executable components without proving that their combined control and training rules could escape initialization. Completed updates did not establish a functioning learning loop.
 
 ## Why it failed

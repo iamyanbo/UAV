@@ -21,7 +21,7 @@ from learning_models import WorldModel, RecurrentPolicy, PrimitiveCritic, bootst
 
 
 def objective_version(module):
-    return 'shared-droid-dispatched-state/v5' if module=='world' else 'spatial-depth-dispatched-sequences/v4'
+    return 'shared-droid-dispatched-state/v5' if module=='world' else 'spatial-depth-audited-stops/v5'
 
 
 class TrajectoryBundle:

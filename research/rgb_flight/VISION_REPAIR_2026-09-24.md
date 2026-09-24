@@ -34,4 +34,12 @@ The new goal-supervision round retains the best recorded demonstration and lates
 
 Uncertainty bounds remain explicitly uncalibrated engineering assumptions. Reserved validation/test episodes are untouched. The new spatial-depth policy has not yet completed its optimizer/reload verification; older r72 updates do not validate changed inputs.
 
+## Active execution
+
+Round `metric-vision-r78` built 24,431 goal examples from 327 attempts covering 310 training-manifest tasks; 27 tasks remain internal development. The corrective optimizer starts fresh from the selected prior goal checkpoint. At update 500, development Brier score changed from 0.1971 to 0.1080 and false-positive rate at the diagnostic 0.5 threshold from 24.91% to 8.60%. Stopping acceptance is not inferred from that threshold.
+
+Round `metric-vision-r81` uses the existing `run_after_perception.py --goal-cycle ... --base-pack ...` continuation, bounded to eight hours including waiting. It verifies qualification/checkpoint identity, packages the selected goal model with the vision artifact, then runs the existing ten-demonstration and connected learner flow. Matched configuration packs also carry the vision artifact, avoiding an incompatible policy reload. Earlier waiting continuations r79/r80 were superseded before collecting data.
+
+Policy preparation now masks false or unverifiable stop demonstrations using separate, timestamp-aligned post-flight labels. It does not invent replacement movement directions. The changed imitation objective is `spatial-depth-audited-stops/v5`; incompatible optimizer state cannot resume silently.
+
 Completion requires real finite learner updates, verified frozen parameters, action-dependent predictions, reloads and successful goal-reaching flights. Movement and completed software stages alone cannot pass navigation acceptance.
