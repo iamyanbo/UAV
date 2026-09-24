@@ -1,0 +1,5 @@
+{
+  "reason": "Preserve optimizer progress and raise ten-flight collection allowance to 7200 seconds in new immutable source round",
+  "requested_unix": 1790276873.9444625,
+  "next_round": "metric-vision-r92"
+}

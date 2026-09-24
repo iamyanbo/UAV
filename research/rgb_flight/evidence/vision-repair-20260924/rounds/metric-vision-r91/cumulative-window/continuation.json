@@ -1,10 +1,8 @@
 {
-  "status": "waiting_for_integration",
-  "cycle": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r91",
-  "physical": {
-    "updated-policy-flight": "completed",
-    "final-reload-flight": "completed",
-    "development-flights": "completed"
-  },
-  "preference_status": "ready"
+  "status": "window_ended",
+  "return_codes": [
+    2
+  ],
+  "accepted": false,
+  "reason": "Inspect stage receipts; an ended window is not navigation acceptance"
 }

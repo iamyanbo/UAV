@@ -108,7 +108,7 @@ def specification(cycle, increment, previous=None):
     if candidates:
         command=['python3','{source}/collect_learning_round.py','--controller-checkpoints',collection_pack]
         for identifier in candidates:command+=['--episode-id',identifier]
-        stages.append(dict(id='next-training-collection',kind='flight',peak_gib=72,seconds=1800,
+        stages.append(dict(id='next-training-collection',kind='flight',peak_gib=72,seconds=7200,
             depends_on=[dict(stage='continued-policy-pack',status='completed')] if collection_pack!=str(pack) else [],
             inputs=[collection_pack+'/checkpoints.json',str(labels)],command=command,
             receipt='{job}/collection/result.json',outputs=['{job}/collection/flights.json']))

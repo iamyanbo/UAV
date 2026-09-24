@@ -218,3 +218,12 @@ R91 checks finite positive depths below the same truncation before inserting a c
 ## Integration flight reachability is limited by the exploration cap
 
 Post-flight labels show that four of the first six development goals start farther than 90 horizontal meters away. The integration controller remains capped at 0.5 m/s for a 180-second episode, so those goals are unreachable even on a straight unobstructed path. These flights can assess the learning loop, movement, collisions and recovery, but their zero success rate is not a fair navigation benchmark at the later protocol speeds. The two nearer goals also failed. Final speed progression and sealed evaluation remain deferred; neither update completion nor this limited batch establishes navigation acceptance.
+
+
+## Final integration outcome and scheduling correction
+
+The completed learned development batch moved in all ten flights, but produced eight timeouts, two collisions and zero sustained metric handovers. Five goals were beyond the capped integration reach. One extra Gaussian infrastructure failure is retained separately. Replaying its original RGB with the support repair completed 1,141 frames and 230 map versions without a crash; it still established no usable metric scale. This is limited verification, not a guarantee against every asynchronous native failure.
+
+I left the cumulative ten-flight job allowance at 1,800 seconds even though ten physical 180-second episodes plus model loading necessarily need longer. It is now 7,200 seconds. Before source migration, cumulative world training was checkpointed at update 53 with all 141 optimizer states and a verified reload. R92 resumes that exact dataset/objective/checkpoint under the original window deadline. No training progress or failure evidence was discarded.
+
+The matched pair tied with zero planning/control exposure, so preference training correctly made no update. The pipeline now processes moving data and performs real learning/reload stages, but it has not delivered successful navigation. Missing successful terminal-stop demonstrations, unqualified goal stopping and absent sustained metric handover are upstream gaps; increasing downstream update counts alone cannot resolve them. The architecture is not deployment accepted, and the full cumulative training budgets remain unfinished.

@@ -1,0 +1,9 @@
+{
+  "status": "running",
+  "pid": 2757452,
+  "deadline_unix": 1790304304.6425176,
+  "hours_at_launch": 7.603933902382851,
+  "resumed_world_update": 53,
+  "previous_window": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r91/cumulative-window",
+  "accepted": false
+}

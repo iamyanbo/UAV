@@ -77,3 +77,19 @@ R88 corrected the PPO trainer allowlist to accept the already-recorded RGB depth
 
 
 The post-PPO flight (`launches/20260924T180145Z`) completed without a controller error: 33.83 m path, 17.01 m displacement, timeout, no goal success. R89 continues at the combined Qwen/planning reload and uses a separate one-second metric-support timer, fixing immediate global handover after local readiness. Earlier mapped-state counts do not establish the corrected timing requirement.
+
+
+## Completed development batch
+
+The source-bound r91 audit covers ten completed internal-development flights from the campaign training manifest: all moved, eight timed out and two collided, with zero goal successes and zero sustained metric handovers. They received 490 supported map versions and completed 14 recovery-to-navigation transitions. One additional mapper infrastructure failure and its retry are preserved separately; eight completed flights came from r89 and the final two from the r91 point-support repair. All four original 640 x 480 goal views were byte-verified for each flight, and every receipt records zero pose-setting calls after recording began. Reserved validation/test episodes were untouched.
+
+Five goals start beyond 90 horizontal meters, outside the best-case reach of the 0.5 m/s, 180-second integration cap. This batch verifies movement and exercises failures/recovery, not navigation acceptance at the later speed protocol. The demonstration audit also found zero verified positive terminal-stop labels. More updates on the same demonstrations cannot supply that missing stopping supervision. The matched pair completed as a tie with no configuration exposure to dispatched controls; preference training is blocked without an update.
+
+
+## Recorded repair verification and continuation
+
+The original Gaussian-failure RGB recording completed with r91: 1,141 frames, 230 map versions, 402.93 seconds of reconstruction and 411.29 seconds including the worker, exit code zero. Metric scale remained unusable. Recorded replay differs from live asynchronous scheduling; this confirms processing of the failed input, not immunity to every native-kernel failure.
+
+Cumulative world training resumed the matching dataset/objective at update 1 and reached update 53. Its receipt verifies 141 optimizer states, finite changed parameters, checkpoint reload and nonzero candidate-action gradient norm 0.01195. A controlled checkpoint preserved that progress for r92, which changes the next ten-flight collection allowance from 1,800 to 7,200 seconds. The previous source and execution state remain immutable. R92 keeps the original window deadline (2026-09-25 02:45 UTC); it does not restart an additional eight-hour budget. World and policy targets in this window remain 2,001 updates each, followed by packaging and new training collection as time permits. This is ongoing training, not a completed campaign.
+
+No matched recorded-state ablation in this repair establishes a navigation benefit from optimized Gaussian geometry. The development flights did not achieve the sustained global handover, and the matched configurations affected no controls. Architecture wiring, map receipt counts and real optimizer updates do not close those acceptance gaps.

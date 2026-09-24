@@ -31,6 +31,7 @@ for folder in root.joinpath('rounds').iterdir():
  if not folder.name.startswith(('learning-repair-','learning-continuation-','navigation-repair-','navigation-mapping-','metric-vision-')):continue
  for pattern in ('*.json','execution/state.json','execution/*/result.json','execution/*/checkpoints.json',
                  'cumulative-window/*.json','cumulative-window/execution/state.json',
+                 'gaussian-replay/*.json','gaussian-replay/execution/state.json',
                  'perception-cycle/*.json','perception-cycle/execution/state.json',
                  'perception-cycle/execution/*/checkpoints.json',
                  'learning-flow/*.json','learning-flow/execution/state.json',

@@ -1,0 +1,20 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T190039Z-world-continuation-402684/source/stage_worker.py",
+    "train-world",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data",
+    "--updates",
+    "2001",
+    "--resume",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt"
+  ],
+  "seconds": 7200,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 36.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 438.33323489991017
+}
