@@ -1,0 +1,76 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 651,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "73ed5f6f22e3559624286aa3dd474ce3d85aa2d3627c1e5464eeff9a6eb4f5a2",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "da1b99e023ca98855f2313ba6fd1c37c01296a778d38c9e23164563b172cb467",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "c88a59ca3fb8712e82076759fa10f5d35ba60a8f205e8638e2441af3ec8a5459",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "582f7094c14fa72bfc45809e876b00b310ee58a581caa85aa79519cb05cb6892",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "f915c428b8d858f7ec716979d7ba82e54a44ce615b443ae6b09ca881fae7da25",
+      "samples": 64
+    },
+    {
+      "path": "controller-000005.pt",
+      "sha256": "00dfa3d164bbe7c1792fbe2635671f826882134808e74823fa2dc1affa0d1266",
+      "samples": 64
+    },
+    {
+      "path": "controller-000006.pt",
+      "sha256": "a305c820541e5a6e42d594ee1075fea3e6f5462e478ac1cc40b39b56eb3cb59b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000007.pt",
+      "sha256": "028e83a707a626d51d3b11c89db1c1b5903f5cf1b51353b418abac5f211c63a8",
+      "samples": 64
+    },
+    {
+      "path": "controller-000008.pt",
+      "sha256": "8c07c403132aec3bf39426e30dd3af76cdefb4dc38b01af6e880b49f82f449d2",
+      "samples": 64
+    },
+    {
+      "path": "controller-000009.pt",
+      "sha256": "e61f6656fe91f2f8dad94fbaf470edd5f042de7bd7ca9cb422741b29b0a37848",
+      "samples": 64
+    },
+    {
+      "path": "controller-000010.pt",
+      "sha256": "03013a64a8a92e53b16e0d44f9b2e919c5af1914b60ac3473c2f9934b055dd3e",
+      "samples": 11
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": "observed-depth-exploration/v5",
+  "final_map_status": "local_navigation",
+  "map_version": -1,
+  "supported_maps_received": 0,
+  "optimized_surface_samples_received": 0,
+  "first_supported_map_available_ns": null,
+  "handover_sim_ns": 1790267832609213952,
+  "control_safety_p95_seconds": 0.11615831358358264,
+  "control_safety_missed_deadlines": 402,
+  "safety_interventions": 8
+}

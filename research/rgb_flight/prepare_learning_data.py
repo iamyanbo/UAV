@@ -56,7 +56,7 @@ def main():
     collection_receipt=json.loads((args.collection.parent/'result.json').read_text())
     if collection_receipt.get('status')!='completed' or len(rows)!=10 or len({r['result']['episode_id'] for r in rows})!=10:
         raise ValueError('Preparation requires the completed ten-episode demonstration batch')
-    if any(r['result'].get('controller_checkpoint_sha256')!=identity or r['result'].get('teacher_provenance')!='observed-depth-exploration/v5' for r in rows):
+    if any(r['result'].get('controller_checkpoint_sha256')!=identity or r['result'].get('teacher_provenance')!='observed-depth-motion-demonstrations/v6' for r in rows):
         raise ValueError('Demonstration checkpoint or teacher identity differs')
     replay_root=args.output.parent/(args.output.name+'-replays');replay_root.mkdir()
     replays=[]

@@ -1,0 +1,131 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 1398,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "a8578d605a6bcf2515a91a8d875a323848164650fbbe853746be1e4f444c2588",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "a85ff90f3e0d25d7b9104080241af2cb0bae1de98d22d66a73db6dac90dcd0d2",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "613f95a626467917cd9bd218b5919d5550e2ac1e0c77d5c9108ceda9a2739bff",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "91281005fa27ff845d14e30f424cac0bc45c8c5f64a11e3c413cdf46ae05093b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "07a73e35158f5dc988e871b011d5b1d4c92332854fe87d6171c6750cdfb9216b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000005.pt",
+      "sha256": "ae723d9d1716f3783632edefd4bbfe96fedf5dd0ab2108ecffa4581656fd12db",
+      "samples": 64
+    },
+    {
+      "path": "controller-000006.pt",
+      "sha256": "9547f5ec24d032e80e24301aa159b53d5230def9c7d448c39f71414736c87f6c",
+      "samples": 64
+    },
+    {
+      "path": "controller-000007.pt",
+      "sha256": "4457e3b3759121ba042e601bb37ec6ac19bc2dc6ae0b6d05f9b46e204b4c4dae",
+      "samples": 64
+    },
+    {
+      "path": "controller-000008.pt",
+      "sha256": "f605db7775772b1021230bdb007da3d609f0f8d7c856f60edc7d36373edcd23b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000009.pt",
+      "sha256": "6a95f4959b8973d5bef989977cd83d2cee0232cb0a5cbbfa44e43da4f507c8a8",
+      "samples": 64
+    },
+    {
+      "path": "controller-000010.pt",
+      "sha256": "119c4bab0d657993d34a58b79aace53507d090eed88c1517320755040cff8eeb",
+      "samples": 64
+    },
+    {
+      "path": "controller-000011.pt",
+      "sha256": "b1771ec1816c567ecaacba54f3b18ac73571df116a660255f03465a1e2f0df4b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000012.pt",
+      "sha256": "f6b0cc86af33062df00c57e06abe6fa42227df14ac8aaecfc316019979098ceb",
+      "samples": 64
+    },
+    {
+      "path": "controller-000013.pt",
+      "sha256": "046262077dbe0f9cdd69c63b8e4b7dd01010b28929b78726cf0f583efa0e3f87",
+      "samples": 64
+    },
+    {
+      "path": "controller-000014.pt",
+      "sha256": "d9eed2c73e0155b83fd1a45e97059bb990e38e3da81dca748864a9d20e6eb774",
+      "samples": 64
+    },
+    {
+      "path": "controller-000015.pt",
+      "sha256": "15624d08957340acf2f4aa49cfd866d662f6c158e505e8b83321405e51dc220e",
+      "samples": 64
+    },
+    {
+      "path": "controller-000016.pt",
+      "sha256": "6aac4d7dc8a4a2b920a9220059c33f21161d9ffa357dacc96022af1dc3b94ddd",
+      "samples": 64
+    },
+    {
+      "path": "controller-000017.pt",
+      "sha256": "6c5adf91fe2f700826cd7a8e73d4ddb9fdebe043757639288222fc30771ec4bc",
+      "samples": 64
+    },
+    {
+      "path": "controller-000018.pt",
+      "sha256": "41e13fe2153427f0de018bd1bd63ad747d9fd2c1595b1d34a6d2e4853f97863f",
+      "samples": 64
+    },
+    {
+      "path": "controller-000019.pt",
+      "sha256": "e1cf149da279f298afb1ac0476c9feb124979311ab8e27fc4e814093196abd56",
+      "samples": 64
+    },
+    {
+      "path": "controller-000020.pt",
+      "sha256": "1436429afbdb0d2b5c6f8dce6991d594e08cb9525c4195924c7cc45d7809b902",
+      "samples": 64
+    },
+    {
+      "path": "controller-000021.pt",
+      "sha256": "bdaccb05a85961572f5a689b2c21e58dc0ca7ab64abe44b0d40ed11321b34fa5",
+      "samples": 54
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": "observed-depth-exploration/v5",
+  "final_map_status": "local_navigation",
+  "map_version": -1,
+  "supported_maps_received": 84,
+  "optimized_surface_samples_received": 1284324,
+  "first_supported_map_available_ns": 1790268034135210496,
+  "handover_sim_ns": 1790267996427406080,
+  "control_safety_p95_seconds": 0.11251089476281774,
+  "control_safety_missed_deadlines": 754,
+  "safety_interventions": 11
+}

@@ -16,6 +16,8 @@ Goal-data preparation selected one successful attempt per task and discarded lat
 
 The same false classifier outputs were also eligible as imitation stop targets. Policy preparation now masks false or unverifiable stops against aligned post-flight labels, without inserting a privileged direction. Source review additionally caught a missing vision artifact in matched-configuration packaging before that stage ran; it now preserves the same perception fingerprint as the policy. These findings show why a pilot and an optimizer update alone cannot qualify every downstream reload path.
 
+The first post-correction flights achieved sustained movement, but fast local handover bypassed the original vertical/braking demonstration phases. I caught this before downstream policy training, preserved the partial v5 collection, and started an explicit v6 teacher round. The existing 24-second bounded motion schedule now remains active after local handover when no observed target is available; observed obstacles and independent safety filtering retain priority. The first v6 flight recorded 55 dispatched vertical commands and 37 deliberate braking samples within 42 simulated seconds. This verifies those data paths, not destination stopping or successful navigation.
+
 The previous integration failed to produce useful autonomous movement. This was an implementation and validation failure: I assembled individually executable components without proving that their combined control and training rules could escape initialization. Completed updates did not establish a functioning learning loop.
 
 ## Why it failed

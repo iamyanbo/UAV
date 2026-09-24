@@ -340,7 +340,7 @@ def main():
         if writer:
             result['storage']=writer.close(result.get('status') in ('expert_flight_finished','learned_flight_finished'))
         result['training_label_frames']=len(states)
-        result['teacher_provenance']='observed-depth-exploration/v5' if args.demonstrate else None
+        result['teacher_provenance']='observed-depth-motion-demonstrations/v6' if args.demonstrate else None
         if states:
             positions=np.asarray([row['true_position_ned_m'] for row in states])
             result['actual_displacement_m']=float(np.linalg.norm(positions[-1]-positions[0]))

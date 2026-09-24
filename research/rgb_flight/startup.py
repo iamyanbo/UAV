@@ -48,6 +48,13 @@ class StartupState:
                        max(-.2,min(.2,command.down_mps)),max(-15.,min(15.,command.yaw_dps))), 'initialization_limits'
 
 
+def exploration_motion(elapsed):
+    phase=int(elapsed//4)%6
+    commands=((.5,0,0,15),(.45,.1,-.15,15),(.5,0,.15,15),
+              (0,0,0,0),(.45,-.15,0,15),(.5,0,0,15))
+    return list(commands[phase]),False,'exploration_brake' if phase==3 else 'exploration_motion_probe'
+
+
 def demonstration(value):
     """No destination coordinates. Targets come from observed memory only."""
     state = value['map_status']; elapsed = value['initialization_elapsed_seconds']
@@ -65,6 +72,12 @@ def demonstration(value):
         if clearance[1]<4:
             yaw=-15. if clearance[0]>clearance[2] else 15.
             return [0.,0.,0.,yaw],False,'observed_obstacle_turn'
+        if elapsed<24 and state in ('initializing','local_navigation') and not value['target_available']:
+            # Local handover can occur after one second. It must not erase
+            # the bounded translating-turn, vertical and braking examples.
+            # Observed obstacles above and the independent path filter still
+            # override this deterministic simulator exploration schedule.
+            return exploration_motion(elapsed)
         if state=='initializing' or not value['target_available']:
             # Translating turns bootstrap parallax. Once local vision is
             # ready, an open forward sector permits straight exploration;
@@ -76,10 +89,7 @@ def demonstration(value):
         # initial view is water/sky. Reversing yaw each phase could keep the
         # entire startup in the same uninformative view. Braking remains an
         # explicit example, and no hidden target chooses the scan direction.
-        phase = int(elapsed // 4) % 6
-        commands = ((.5,0,0,15),(.45,.1,-.15,15),(.5,0,.15,15),
-                    (0,0,0,0),(.45,-.15,0,15),(.5,0,0,15))
-        return list(commands[phase]), False, 'initialization_brake' if phase == 3 else 'initialization_translation'
+        return exploration_motion(elapsed)
     if state == 'recovering': return [0.,0.,0.,15.], False, 'tracking_recovery_scan'
     if state == 'terminated': return [0.,0.,0.,0.], False, 'episode_terminated'
     if value['goal_probability'] >= value.get('goal_match_threshold', .95):

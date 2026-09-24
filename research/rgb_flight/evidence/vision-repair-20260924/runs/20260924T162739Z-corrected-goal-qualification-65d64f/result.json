@@ -1,0 +1,18 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T162739Z-corrected-goal-qualification-65d64f/source/stage_worker.py",
+    "qualify-goal",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r78/goal-data",
+    "--goal-checkpoint",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T161453Z-goal-corrective-training-f8c5b8/visual-training/best.pt"
+  ],
+  "seconds": 3600,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 16.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 25.024874933995306
+}

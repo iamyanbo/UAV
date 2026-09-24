@@ -150,7 +150,7 @@ def build(root, output, initialization=None):
                 infrastructure.append(dict(path=str(path),sha256=digest(path),episode_id=receipt.get('episode_id'),
                     probe=receipt.get('probe'),status=receipt['status'],
                     identity_status='recorded' if receipt.get('episode_id') else 'legacy_launch_identity_requires_campaign_receipt'))
-    manifest=dict(schema='visual-trajectory-bundle/v1',action_semantics='post-safety-dispatch/50ms-v3',teacher_contract='observed-depth-exploration/v5',teacher_versions=sorted({x['teacher_provenance'] for x in attempts if x['teacher_provenance']}),collection_root=str(root),attempts=attempts,
+    manifest=dict(schema='visual-trajectory-bundle/v1',action_semantics='post-safety-dispatch/50ms-v3',teacher_contract='observed-depth-motion-demonstrations/v6',teacher_versions=sorted({x['teacher_provenance'] for x in attempts if x['teacher_provenance']}),collection_root=str(root),attempts=attempts,
         infrastructure_failures=infrastructure,
         initialization=initial,
         excluded_attempts=excluded,source_sha256=digest(__file__),

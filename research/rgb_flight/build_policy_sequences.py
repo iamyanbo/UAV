@@ -91,7 +91,7 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
         if not bool(((times.diff()>0)&(times.diff()<=250000000)).all()):continue
         if not all(r['belief_valid'] for r in selected):continue
         teachers=[corrections.get(r['frame_id']) for r in selected]
-        recovery=torch.tensor([bool(t and t.get('teacher')=='observed-depth-exploration/v5' and t.get('expert_observation_conditioned')
+        recovery=torch.tensor([bool(t and t.get('teacher')=='observed-depth-motion-demonstrations/v6' and t.get('expert_observation_conditioned')
             and r['frame_id'] not in rejected_stops) for r,t in zip(selected,teachers)])
         if not bool(recovery[20:].any()):continue
         runtime={key:torch.stack([r[key] for r in selected]) for key in
@@ -112,7 +112,7 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
             collision_return=torch.full((40,),float(collision)),primitive_return=primitive,primitive_valid=valid)
         path=output/'windows'/f'policy-{len(windows):06d}.pt'
         torch.save(dict(episode_id=attempt['episode_id'],attempt_id=attempt['attempt_id'],runtime=runtime,
-            training_labels=supervision,teacher_source='observed-depth-exploration/v5',teacher_reasons=[t.get('reason') if t else 'missing_supervision' for t in teachers]),path)
+            training_labels=supervision,teacher_source='observed-depth-motion-demonstrations/v6',teacher_reasons=[t.get('reason') if t else 'missing_supervision' for t in teachers]),path)
         windows.append(dict(module='policy',episode_id=attempt['episode_id'],attempt_id=attempt['attempt_id'],path=str(path.relative_to(output)),sha256=checksum(path),
                             timing_qualified=bool((times.diff()<=75000000).all())))
         if attempt['split']=='train':primitive_values.append(primitive)
@@ -127,14 +127,14 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
         scope='Executed observation-conditioned exploration and recovery; deployment remains unqualified',
         training_ready=bool(windows),deployment_accepted=False)
     audited=[corrections[r['frame_id']] for r in rows if r['frame_id'] in corrections and
-        corrections[r['frame_id']].get('teacher')=='observed-depth-exploration/v5' and
+        corrections[r['frame_id']].get('teacher')=='observed-depth-motion-demonstrations/v6' and
         corrections[r['frame_id']].get('expert_observation_conditioned')]
     from collections import Counter
     result['demonstration_coverage']=dict(unique_audited_observations=len(audited),
         rejected_false_or_unverifiable_stops=len(rejected_stops),
         explicit_stops=sum(bool(t.get('explicit_stop')) for t in audited),
         reasons=dict(Counter(t.get('reason','unspecified') for t in audited)))
-    spec=dict(schema='policy-sequence-views/v1',action_semantics='post-safety-dispatch/50ms-v3',belief_version='shared-droid-local-depth/v4',teacher_version='observed-depth-exploration/v5',foundation=dict(accepted=False,training_ready=True,visual_goal_runtime=True,
+    spec=dict(schema='policy-sequence-views/v1',action_semantics='post-safety-dispatch/50ms-v3',belief_version='shared-droid-local-depth/v4',teacher_version='observed-depth-motion-demonstrations/v6',foundation=dict(accepted=False,training_ready=True,visual_goal_runtime=True,
         valid_expert_episodes=source.get('unique_successful_expert_episodes',0)),
         episodes=[dict(episode_id=attempt['episode_id'],split=attempt['split'],goal_region_id=attempt['goal_region_id'],
             start_goal_pair_id=evaluator.get('start_goal_pair_id',attempt['episode_id']),

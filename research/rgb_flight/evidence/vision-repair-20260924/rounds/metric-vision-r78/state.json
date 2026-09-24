@@ -391,7 +391,7 @@
       ]
     },
     "goal-corrective-training": {
-      "status": "running",
+      "status": "completed",
       "attempts": [
         {
           "process": {
@@ -410,7 +410,7 @@
           "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r78/goal-corrective-training-001.log"
         }
       ],
-      "reason": "Owned remote guard running",
+      "reason": "Worker completed; acceptance not inferred",
       "input_hashes": {
         "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r78/goal-data/visual-training.json": "c0eab34c715f4b6269247bed18a18a03b49d2ce1c83d0168db586a496633fe2f"
       },
@@ -447,18 +447,18 @@
       "started_unix": 1790266493.3312232,
       "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T161453Z-goal-corrective-training-f8c5b8",
       "guard_receipt": {
-        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T160306Z-goal-corrective-training-553e5e/result.json",
-        "sha256": "b7884f4e4bad5dcfde1adaa696d01d099d6433cf757fa6a158ea6279291b0336"
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T161453Z-goal-corrective-training-f8c5b8/result.json",
+        "sha256": "5f9877dd188e5443412ba4cf62ae093cdfa35c4a2f23502f3950c7cf6bbbe72e"
       },
       "worker_receipt": {
-        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T160306Z-goal-corrective-training-553e5e/visual-training/result.json",
-        "sha256": "48f5660c3b28dfc0f19e76ccc55f4c5e49c510ae1d0a1bb4730d95c985b9e755"
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T161453Z-goal-corrective-training-f8c5b8/visual-training/result.json",
+        "sha256": "27cdb58127cc1f610285bfb756797ac82907300f0bc633d8052c00d7446795df"
       },
       "progress": {
-        "status": "checkpointed",
+        "status": "completed",
         "accepted": false,
         "module": "goal",
-        "updates": 1962,
+        "updates": 4000,
         "manifest_sha256": "c0eab34c715f4b6269247bed18a18a03b49d2ce1c83d0168db586a496633fe2f",
         "objective_version": "goal-recognition-fixed-bn-prevalence/v4",
         "gradient_evidence": {
@@ -478,12 +478,22 @@
           "update": 2000,
           "optimizer_reset": true
         },
-        "resume_evidence": null
+        "resume_evidence": {
+          "checkpoint_sha256": "2d29d847c79d81f70a378f8390298493abaaea75076c7d78c53c23548e2f0f60",
+          "restored_update": 1962,
+          "optimizer_states": 186,
+          "optimizer_step_min": 1962.0,
+          "optimizer_step_max": 1962.0
+        }
       },
       "artifacts": [
         {
-          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T160306Z-goal-corrective-training-553e5e/visual-training/best.pt",
-          "sha256": "0d2ab55c14a2c902aded814335deeb280dce944b2c3ca343720dcd9d87568db1"
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T161453Z-goal-corrective-training-f8c5b8/visual-training/best.pt",
+          "sha256": "135aff99bf25f1faee24fc5737e572f1f19cf1fa3ce52972e4656bb046e9db0a"
+        },
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T161453Z-goal-corrective-training-f8c5b8/visual-training/final.pt",
+          "sha256": "f39cfd25467fc03ad94a398d14bd17c16d6af7469dad9f027cb4891c44f8b332"
         }
       ],
       "checkpoint": {
@@ -492,10 +502,188 @@
       }
     },
     "corrected-goal-qualification": {
-      "status": "ready",
-      "attempts": [],
-      "reason": "Waiting for goal-corrective-training=completed"
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2699007,
+            "start_ticks": "136639166",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r78/corrected-goal-qualification-000.log"
+        }
+      ],
+      "reason": "Worker completed; acceptance not inferred",
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r78/goal-data/visual-training.json": "c0eab34c715f4b6269247bed18a18a03b49d2ce1c83d0168db586a496633fe2f",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T161453Z-goal-corrective-training-f8c5b8/visual-training/best.pt": "135aff99bf25f1faee24fc5737e572f1f19cf1fa3ce52972e4656bb046e9db0a"
+      },
+      "process": {
+        "pid": 2699007,
+        "start_ticks": "136639166",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r78/corrected-goal-qualification-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r78/spark_guard.py",
+        "--name",
+        "corrected-goal-qualification",
+        "--seconds",
+        "3600",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "16",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r78/stage_worker.py",
+        "qualify-goal",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r78/goal-data",
+        "--goal-checkpoint",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T161453Z-goal-corrective-training-f8c5b8/visual-training/best.pt"
+      ],
+      "started_unix": 1790267259.542041,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T162739Z-corrected-goal-qualification-65d64f",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T162739Z-corrected-goal-qualification-65d64f/result.json",
+        "sha256": "c76ff09d571ceaa333670fca4cb46d7879e28413e9c9bf2dd14374577b9a5963"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T162739Z-corrected-goal-qualification-65d64f/goal-qualification/result.json",
+        "sha256": "f38cc4bae7ea9c916bc71510e75b46c47ed5a73692c65104c9061b8aae344db2"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "checkpoint_sha256": "135aff99bf25f1faee24fc5737e572f1f19cf1fa3ce52972e4656bb046e9db0a",
+        "checkpoint_update": 3500,
+        "manifest_sha256": "c0eab34c715f4b6269247bed18a18a03b49d2ce1c83d0168db586a496633fe2f",
+        "development_examples": 2628,
+        "development_episodes": 27,
+        "development_goal_captures": 36,
+        "threshold": 0.5,
+        "precision": 0.37538461538461537,
+        "recall": 0.5020576131687243,
+        "false_positive_rate": 0.08511530398322852,
+        "confusion": {
+          "tp": 122,
+          "fp": 203,
+          "fn": 121,
+          "tn": 2182
+        },
+        "stopping_thresholds": [
+          {
+            "threshold": 0.9,
+            "true_stops": 0,
+            "false_stops": 0,
+            "precision": null,
+            "recall": 0.0
+          },
+          {
+            "threshold": 0.95,
+            "true_stops": 0,
+            "false_stops": 0,
+            "precision": null,
+            "recall": 0.0
+          },
+          {
+            "threshold": 0.99,
+            "true_stops": 0,
+            "false_stops": 0,
+            "precision": null,
+            "recall": 0.0
+          }
+        ],
+        "brier_score": 0.08722631154035868,
+        "calibration_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 1563,
+            "confidence": 0.01728217031245709,
+            "accuracy": 0.023032629558541268
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 243,
+            "confidence": 0.14649858684451492,
+            "accuracy": 0.07818930041152264
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 173,
+            "confidence": 0.24809108028522117,
+            "accuracy": 0.06358381502890173
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 160,
+            "confidence": 0.3469306197017431,
+            "accuracy": 0.09375
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 164,
+            "confidence": 0.44987053624013573,
+            "accuracy": 0.24390243902439024
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 128,
+            "confidence": 0.549160344991833,
+            "accuracy": 0.3359375
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 136,
+            "confidence": 0.6438576697426683,
+            "accuracy": 0.4411764705882353
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 52,
+            "confidence": 0.7394953415944026,
+            "accuracy": 0.3076923076923077
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 9,
+            "confidence": 0.8158366547690498,
+            "accuracy": 0.3333333333333333
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "confidence": null,
+            "accuracy": null
+          }
+        ],
+        "expected_calibration_error": 0.08122070140397222,
+        "time_mae_seconds": 18.1467907043605,
+        "time_supervision": "remaining time on successful demonstration; not optimal time-to-goal",
+        "limitations": [
+          "Development includes aligned boundary negatives; visually similar negative mining is separate",
+          "Operational stopping precision and complete-flight acceptance not established"
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T162739Z-corrected-goal-qualification-65d64f/goal-qualification/predictions.jsonl",
+          "sha256": "ec58b8336e224ed4ebf23c09db1352b61c3d1c5afcf0d311848e26663094008b"
+        }
+      ]
     }
   },
-  "updated_unix": 1790266620.5194902
+  "updated_unix": 1790267285.5720558
 }

@@ -126,7 +126,7 @@ class Mode1Actor:
             initialization_elapsed_seconds=value['initialization_elapsed_seconds'],
             termination_reason=value['termination_reason'],
             teacher_reason=teacher_reason if self.demonstrate else None,
-            teacher_provenance='observed-depth-exploration/v5' if self.demonstrate else None,
+            teacher_provenance='observed-depth-motion-demonstrations/v6' if self.demonstrate else None,
             episode_id=self.core.episode_id,frame_id=metadata['frame_id'],sim_ns=metadata['sim_ns'],
             behavior_policy_sha256=None if self.demonstrate else self.core.checkpoints.spec['artifacts']['policy']['sha256'],
             stochastic=self.stochastic,latent_action=None if latent is None else latent[0].tolist(),sampled_stop=bool(sampled_stop.item()),
@@ -214,7 +214,7 @@ def main():
             teacher_command,teacher_stop,teacher_reason=demonstration(value)
             correction=dict(episode_id=args.episode_id,frame_id=last,sim_ns=metadata['sim_ns'],
                 expert_observation_conditioned=True,expert_command=teacher_command,explicit_stop=teacher_stop,
-                teacher='observed-depth-exploration/v5',reason=teacher_reason,
+                teacher='observed-depth-motion-demonstrations/v6',reason=teacher_reason,
                 behavior_policy_sha256=trace['behavior_policy_sha256'])
             if args.demonstrate:
                 correction.update(expert_command=list(asdict(command).values()),explicit_stop=stop,
@@ -255,7 +255,7 @@ def main():
         result=dict(status='failed' if error else 'completed',accepted=False,frames=count,error=error,shards=shards,
                     scope='Mode 1, Qwen and frozen predictive planning' if deliberation else 'Live Mode 1 only; no planner or Qwen configuration',
                     sampled_policy=args.sample_policy,slow_planner_enabled=args.with_deliberation,
-                    teacher_provenance='observed-depth-exploration/v5' if args.demonstrate else None,
+                    teacher_provenance='observed-depth-motion-demonstrations/v6' if args.demonstrate else None,
                     final_map_status=core.startup.state if core else None,
                     map_version=core.latest_map_version if core else None,
                     supported_maps_received=core.supported_maps_received if core else 0,
