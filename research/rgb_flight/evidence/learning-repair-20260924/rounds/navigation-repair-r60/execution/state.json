@@ -560,7 +560,7 @@
       ]
     },
     "new-perception-demonstrations": {
-      "status": "running",
+      "status": "completed",
       "attempts": [
         {
           "process": {
@@ -604,9 +604,35 @@
         "/home/iamyanbo/uav-rgb-flight/runs/20260924T052517Z-new-perception-pilot-98fa94/collection/flights.json"
       ],
       "started_unix": 1790227612.1276968,
-      "reason": "Owned remote guard running",
-      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T052652Z-new-perception-demonstrations-9bb40b"
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T052652Z-new-perception-demonstrations-9bb40b",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T052652Z-new-perception-demonstrations-9bb40b/result.json",
+        "sha256": "dceca1d24ae8eb63b86950b39c88afcefb3ee75b65feae63222844b075f1b3ae"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T052652Z-new-perception-demonstrations-9bb40b/collection/result.json",
+        "sha256": "92e3a0fb539749750fe79d28590c944b5dec1cf55700e8929e6024e34100b3f7"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 10,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": true,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T052652Z-new-perception-demonstrations-9bb40b/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T052652Z-new-perception-demonstrations-9bb40b/collection/flights.json",
+          "sha256": "231ca1c28865327b1b5984d29c82c3609a0743608f0f242f07f02fe94f8cb77e"
+        }
+      ]
     }
   },
-  "updated_unix": 1790228182.8598707
+  "updated_unix": 1790228471.2385967
 }

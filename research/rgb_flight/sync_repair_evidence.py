@@ -13,7 +13,7 @@ REMOTE = r'''
 import base64,json
 from pathlib import Path
 root=Path('/home/iamyanbo/uav-rgb-flight');selected=set()
-run_patterns=('result.json','source_hashes.json','inference-source-hashes.json','stdout.log',
+run_patterns=('result.json','source_hashes.json','inference-source-hashes.json','stdout.log','tracking-diagnosis.json',
  'collection/*.json','training/result.json','training/metrics.jsonl',
  'visual-training/result.json','visual-training/metrics.jsonl','ppo/result.json','ppo/metrics.jsonl',
  'configurator/result.json','configurator/metrics.jsonl','configuration-preferences/*.json',
@@ -27,7 +27,11 @@ for folder in root.joinpath('runs').iterdir():
 for folder in root.joinpath('rounds').iterdir():
  if not folder.name.startswith(('learning-repair-','learning-continuation-','navigation-repair-','navigation-mapping-')):continue
  for pattern in ('*.json','execution/state.json','execution/*/result.json','execution/*/checkpoints.json',
-                 'cumulative-window/*.json','cumulative-window/execution/state.json'):
+                 'cumulative-window/*.json','cumulative-window/execution/state.json',
+                 'perception-cycle/*.json','perception-cycle/execution/state.json',
+                 'perception-cycle/execution/*/checkpoints.json',
+                 'learning-flow/*.json','learning-flow/execution/state.json',
+                 'learning-flow/cumulative-window/*.json','learning-flow/cumulative-window/execution/state.json'):
   selected.update(folder.glob(pattern))
 for folder in root.joinpath('launches').iterdir():
  if folder.name<'20260924T030000Z':continue

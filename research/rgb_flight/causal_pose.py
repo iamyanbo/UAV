@@ -34,6 +34,10 @@ class CausalPoseEstimator:
         # pose-only optimization so the next keyframe sees unchanged storage.
         fields = ('timestamp', 'images', 'poses', 'disps', 'intrinsics', 'fmaps')
         saved = {name: getattr(video, name)[count].clone() for name in fields}
+        # FactorGraph.update upsamples its source anchors even with
+        # motion_only=True. The temporary filler must not replace the map's
+        # historical depth images with those temporary correlation weights.
+        anchor_depth = video.disps_up[anchors].clone()
         graph = None
         try:
             video[count] = (index, image[0], video.poses[count - 1].clone(),
@@ -59,6 +63,7 @@ class CausalPoseEstimator:
             with video.get_lock():
                 for name, value in saved.items():
                     getattr(video, name)[count].copy_(value)
+                video.disps_up[anchors] = anchor_depth
                 video.counter.value = count
 
 

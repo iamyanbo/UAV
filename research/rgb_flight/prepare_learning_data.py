@@ -24,8 +24,8 @@ def export_live(episode,output,checkpoint_identity,perception_artifacts=None):
         rows=[]
         for row in torch.load(path,map_location='cpu',weights_only=True)['samples']:
             trace=trace_by_frame[row['frame_id']]
-            rows.append(dict(row['runtime'],**{k:v for k,v in row.items() if k not in ('runtime','proposal','initial_hidden')},
-                tracking_confidence=float(row['runtime']['state'][14]),config=None,
+            rows.append(dict(row['runtime'],**{k:v for k,v in row.items() if k not in ('runtime','proposal','initial_hidden','config')},
+                tracking_confidence=float(row['runtime']['state'][14]),config=row.get('config'),
                 rgb_reference=dict(frame_id=row['frame_id'],sha256=frames[row['frame_id']]['rgb_sha256'])))
         target=output/ref['path'];torch.save(dict(episode_id=traces[0]['episode_id'],samples=rows),target)
         shards.append(dict(path=target.name,sha256=checksum(target)))

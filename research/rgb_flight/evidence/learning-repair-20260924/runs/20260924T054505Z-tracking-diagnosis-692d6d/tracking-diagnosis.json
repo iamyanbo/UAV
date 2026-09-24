@@ -1,0 +1,34 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "purpose": "Offline privileged diagnosis only; no fitted transform may enter runtime",
+  "episode": "/home/iamyanbo/uav-rgb-flight/launches/20260924T054111Z/episode",
+  "gauges": [
+    {
+      "gauge": 0,
+      "paired_frames": 23,
+      "relative_rotation_rmse_degrees": 51.55279808824618,
+      "posthoc_scale_for_diagnosis_only": 56.120279268246755,
+      "posthoc_translation_rmse_m": 1.5390414399444254,
+      "true_motion_radius_m": 1.6517324020211828,
+      "residual_to_motion_radius": 0.9317740803904675
+    },
+    {
+      "gauge": 1,
+      "paired_frames": 5,
+      "relative_rotation_rmse_degrees": 3.646797264507845,
+      "posthoc_scale_for_diagnosis_only": 280.9363125079234,
+      "posthoc_translation_rmse_m": 0.28004475139502577,
+      "true_motion_radius_m": 0.612863588657751,
+      "residual_to_motion_radius": 0.4569446718287821
+    }
+  ],
+  "rejected": {
+    "uninitialized": 30
+  },
+  "source_hashes": {
+    "learned-controller/runtime/reconstruction/tracking.jsonl": "4a49c250c9d2f07d04c36d32c69d27360b42072aa6e3c2497ad50609272bdbc8",
+    "training_labels/frames.jsonl": "5bd387e94836d4a0ef1c0fcf3e7cea96799fcb17eb9160fc2ff1d3be0802e800",
+    "observations/frames.jsonl": "4c8cf974bb9ed9f9d8081f211eb98d5033bdbe2bc14d83e1ae5c1ce15f29fb9c"
+  }
+}

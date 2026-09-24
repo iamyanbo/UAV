@@ -82,7 +82,9 @@ def specification(visual_pack,safety,episode,demonstrations=None,initial_world=N
     policy_data=job('policy-data','policy-data')
     policy=update('policy-update','policy',policy_data,['policy-data'],str(initial_policy) if initial_policy else None);config_data='{round}/configuration-data'
     stage('configuration-data','gpu',['python3','{source}/stage_worker.py','build-configurator-view','--dataset',bundle,
-        '--collection',collection,'--runtime-replay',replay,'--artifact-output',config_data],
+        '--collection',collection,*[argument for index in range(10) for argument in
+            ('--runtime-replay',job('world-data','world-data-replays/'+str(index)))],
+        '--artifact-output',config_data],
         config_data+'/result.json',[config_data+'/configurator.json'],['policy-update'],peak=12)
     stage('qwen-supervised-update','gpu',['python3','{source}/stage_worker.py','train-configurator','--dataset',config_data,
         '--integration-only','--updates','1',*(['--initialize-from',str(initial_qwen)] if initial_qwen else [])],'{job}/configurator/result.json',['{job}/configurator/latest.pt'],

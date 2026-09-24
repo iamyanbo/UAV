@@ -53,14 +53,17 @@ class AsyncMapping:
             if str(error)=='No memory version existed at the requested observation time':return results
             raise
         if snapshot.version<=self.map_version:return results
-        cameras=snapshot.observed_cameras();rays=[];calibration=metadata['calibration']
+        cameras=snapshot.observed_cameras();rays=[];alignment_cameras=[];calibration=metadata['calibration']
         for camera in cameras.values():
             if camera['source']['sim_ns']>metadata['sim_ns']:raise ValueError('Future camera in published map')
+            c2w=camera['w2c'].float().inverse()
+            alignment_cameras.append(dict(observation_ns=camera['source']['sim_ns'],
+                map_position=c2w[:3,3].tolist(),source_frame_id=camera['source']['frame_id']))
             depth=camera['depth'].float();v,u=torch.meshgrid(torch.arange(0,480,8),torch.arange(0,640,8),indexing='ij')
             z=depth[v,u];valid=torch.isfinite(z)&(z>0);z=z[valid];x=u[valid];y=v[valid]
             if not len(z):continue
             points=torch.stack(((x-calibration['cx'])*z/calibration['fx'],(y-calibration['cy'])*z/calibration['fy'],z),-1)
-            c2w=camera['w2c'].float().inverse();points=points@c2w[:3,:3].T+c2w[:3,3]
+            points=points@c2w[:3,:3].T+c2w[:3,3]
             rays.append(dict(points=points,camera_position=c2w[:3,3]))
         eligible=[r for r in self.tracking if r['sim_ns']<=snapshot.state['latest_observation_ns']]
         if not eligible:return results
@@ -69,6 +72,7 @@ class AsyncMapping:
         results.append(('map',dict(episode_id=self.episode_id,version=snapshot.version,
             observation_ns=snapshot.state['latest_observation_ns'],available_monotonic=time.monotonic(),
             observed_rays=rays,optimized_surfaces=snapshot.supported_surfaces(calibration),
+            alignment_cameras=sorted(alignment_cameras,key=lambda c:c['observation_ns']),
             optimizer_updates=snapshot.state['optimizer_updates'],gauge_version=eligible[-1]['gauge_changes'],
             rgb_sha256=cameras[next(reversed(cameras))]['source']['rgb_sha256'])))
         self.map_version=snapshot.version

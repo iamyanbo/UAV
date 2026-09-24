@@ -104,7 +104,11 @@ class Configurator:
     def inputs(self, goal_images, current_image, keyframes, frontier_thumbnails, observed, progress):
         if len(goal_images) != 4 or len(keyframes) > 3 or len(frontier_thumbnails) > 8:
             raise ValueError('Expected four goal views, current RGB, <=3 keyframes and <=8 frontiers')
-        images = [*goal_images,current_image,*keyframes,*frontier_thumbnails]
+        from PIL import Image
+        # Shared online/training preprocessing. The four original goal views
+        # and current RGB remain full resolution; retrieved history is bounded.
+        thumbnails=[im.resize((160,120),Image.Resampling.BILINEAR) for im in [*keyframes,*frontier_thumbnails]]
+        images = [*goal_images,current_image,*thumbnails]
         prompt = ('The first four images are the goal panorama, followed by current RGB, retrieved episode keyframes, '
                   'then frontier thumbnails. Navigate using only this visual evidence. Return one JSON object with target_id, '
                   'grounded_kind (goal_match or observed_frontier), intention (approach, inspect, search, stop), '
@@ -116,6 +120,7 @@ class Configurator:
                   + json.dumps(dict(observed=observed, progress=progress), separators=(',', ':')))
         if self.output_format=='compact/v2':
             prompt=('First four images: exact goal panorama. Fifth: current RGB. Then keyframes and frontiers. '
+                'Observed image_position is the 1-based position of its supporting image in this sequence. '
                 'Select only an observed target ID. Return one compact JSON object with exactly these keys: '
                 't=target ID, i=intention (approach, inspect, search, stop), '
                 'w=[goal weight,time weight,information weight,additional caution], each number 0.25 to 4; '

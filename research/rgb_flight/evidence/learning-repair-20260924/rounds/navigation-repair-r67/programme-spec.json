@@ -1,0 +1,32 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Actual incremental Gaussian mapping pilot; no scale or timing waiver",
+  "stages": [
+    {
+      "id": "pose-isolation-map-pilot",
+      "kind": "flight",
+      "peak_gib": 72,
+      "seconds": 1200,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints/checkpoints.json",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T052517Z-new-perception-pilot-98fa94/collection/flights.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints",
+        "--demonstrate",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T052517Z-new-perception-pilot-98fa94/collection/flights.json"
+      ],
+      "receipt": "{job}/collection/result.json",
+      "outputs": [
+        "{job}/collection/flights.json"
+      ]
+    }
+  ]
+}

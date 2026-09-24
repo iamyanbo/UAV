@@ -1,0 +1,31 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T054902Z-dagger-pack-95a78a/source/package_navigation.py",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints/goal.pt",
+    "--odometry",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints/odometry.pt",
+    "--projection",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints/projection.pt",
+    "--safety",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints/safety.json",
+    "--policy",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T054856Z-dagger-update-2280dd/training/final.pt",
+    "--world",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T054403Z-world-update-7e2811/training/final.pt",
+    "--qwen",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T054458Z-qwen-supervised-update-c4678e/configurator/latest.pt",
+    "--goal-match-threshold",
+    "0.9",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/dagger-pack"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 4.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 1.0109292138367891
+}

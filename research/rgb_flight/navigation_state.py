@@ -4,6 +4,7 @@ This module accepts only observations and versioned runtime model results. It
 has no simulator dependency or privileged-label interface.
 """
 from collections import OrderedDict
+from dataclasses import asdict
 import hashlib
 import json
 import math
@@ -102,9 +103,13 @@ class CausalNavigationState:
         self.latest_map_version=-1;self.gauge_version=0;self.last_rgb=None;self.pending=[]
         self.last_goal_probability=0.;self.closed=False;self.diagnostics=[]
         self.cached_map=None
+        self.supported_maps_received=0;self.optimized_surface_samples_received=0
+        self.first_supported_map_available_ns=None
         self.source_features={}
+        self.source_rgb=OrderedDict();self.keyframe_rgb=OrderedDict()
         self.startup=StartupState()
         self.hazard_version=0
+        self.map_correction_version=0;self.geometry_scale=None
 
     def enqueue(self,component,payload):
         if component not in ('video','tracking','map','configuration'):raise ValueError('Unexpected runtime result')
@@ -137,6 +142,9 @@ class CausalNavigationState:
                 self.memory.append(record,available_ns=ns)
                 self.source_features[row['source_frame_id']]=record
                 self.memory.observe_keyframe(identifier,[identifier],row['observation_ns'],row['rgb_sha256'],historical['goal_probability'])
+                if row['source_frame_id'] in self.source_rgb:
+                    self.keyframe_rgb[row['source_frame_id']]=self.source_rgb[row['source_frame_id']]
+                    while len(self.keyframe_rgb)>256:self.keyframe_rgb.popitem(last=False)
                 if historical['goal_probability']>=self.teacher.threshold:
                     self.memory.associate(identifier,'goal_match',[identifier],row['observation_ns'])
             elif component=='tracking':
@@ -147,20 +155,33 @@ class CausalNavigationState:
                     self.diagnostics.append(dict(component='alignment',observation_ns=row['observation_ns'],
                         available_ns=ns,gauge_version=row['gauge_version'],usable=False,reason='tracking_lost'))
                     continue
-                historical=self.history.get(row['observation_ns'])
-                if historical is None:continue
                 if row['gauge_version']!=self.gauge_version:
                     self.gauge_version=row['gauge_version'];self.latest_map_version=-1
                     self.geometry=ConservativeGeometry((-40.,-40.,-20.),.5,shape=(160,160,80))
                     self.cached_map=None;self._clear_frontiers()
-                self.scale=self.alignment.update(self.episode_id,row['observation_ns'],ns,self.gauge_version,
-                    np.asarray(row['c2w'])[:3,3],historical['camera_position'].cpu().numpy(),
-                    float(historical['camera_covariance'].trace().clamp_min(0).sqrt()),ns)
-                self.diagnostics.append(dict(self.scale,component='alignment',observation_ns=row['observation_ns'],
-                    available_ns=ns))
+                    self.geometry_scale=None
+                    self.scale=None;self.alignment.pairs.clear()
             elif component=='map':
                 if row['version']<=self.latest_map_version or row['gauge_version']!=self.gauge_version:continue
-                if self.cached_map is None or row['version']>self.cached_map['version']:self.cached_map=row
+                if self.cached_map is None or row['version']>self.cached_map['version']:
+                    self.cached_map=row
+                    pairs=[]
+                    for camera in row['alignment_cameras']:
+                        historical=self.history.get(camera['observation_ns'])
+                        if historical is None:continue
+                        pairs.append((camera['observation_ns'],camera['map_position'],
+                            historical['camera_position'].cpu().numpy(),
+                            float(historical['camera_covariance'].trace().clamp_min(0).sqrt())))
+                    self.scale=self.alignment.update_prefix(self.episode_id,row['observation_ns'],ns,
+                        self.gauge_version,pairs,ns)
+                    self.diagnostics.append(dict(self.scale,component='alignment',map_version=row['version'],
+                        observation_ns=row['observation_ns'],available_ns=ns,
+                        published_camera_count=len(row['alignment_cameras'])))
+                    samples=sum(len(c['points']) for c in row.get('optimized_surfaces',[]))
+                    if samples and row.get('optimizer_updates',0)>0:
+                        self.supported_maps_received+=1
+                        self.optimized_surface_samples_received+=samples
+                        if self.first_supported_map_available_ns is None:self.first_supported_map_available_ns=ns
             elif component=='configuration':
                 config=VisualTaskConfig(**row['configuration'])
                 config.validate_grounding(self.episode_id,self.memory.observed_ids,ns/1e9)
@@ -173,6 +194,19 @@ class CausalNavigationState:
                 and row.get('optimizer_updates',0)>0 and any(len(c['points']) for c in row.get('optimized_surfaces',[]))):
             # Only geometrically supported, observed RGB-estimated points.
             rotation=torch.tensor(self.scale['rotation']);translation=torch.tensor(self.scale['translation'])
+            if self.geometry_scale is not None:
+                previous=self.geometry_scale
+                relative=(self.scale['meters_per_map_unit']/previous['meters_per_map_unit'])*rotation@torch.tensor(previous['rotation']).T
+                shift=translation-relative@torch.tensor(previous['translation'])
+                # Bound a similarity correction over the whole navigation
+                # grid, not just at the current pose. Half a voxel is the
+                # material geometry-change threshold for an existing plan.
+                corners=torch.cartesian_prod(*[torch.tensor([0.,float(n)]) for n in self.geometry.shape])
+                corners=self.geometry.origin+corners*self.geometry.resolution
+                correction=float((corners@relative.T+shift-corners).norm(dim=1).max())
+                correction+=abs(self.scale['fit_rmse_m']-previous['fit_rmse_m'])
+                if correction>self.geometry.resolution/2:self.map_correction_version+=1
+            self.geometry_scale=dict(self.scale)
             # Rays belong to their source view; historical surfaces are not
             # assumed visible from the latest camera.
             previous_occupied=self.geometry.occupied.clone()
@@ -210,6 +244,35 @@ class CausalNavigationState:
         self.memory.frontiers.clear()
         if removed:self.memory.version+=1
         if self.configuration and self.configuration.target_id in removed:self.configuration=None
+
+    def grounding_context(self,now_ns,config=None):
+        """Bind retrieved target IDs to real episode RGB for online/SFT parity."""
+        def reference(record):
+            saved=self.keyframe_rgb.get(record.source_frame)
+            if saved is None or saved['observed_ns']>now_ns:return None
+            return dict(frame_id=record.source_frame,observed_ns=saved['observed_ns'],rgb_sha256=saved['rgb_sha256'])
+        target=config.target_id if config else None
+        keys=[]
+        for identifier,entry in self.memory.keyframes.items():
+            record=self.memory.records[entry['record_ids'][0]];ref=reference(record)
+            if ref is not None:keys.append((identifier,entry,ref))
+        keys.sort(key=lambda item:(item[0]!=target,-self.memory.goal_similarity.get(item[0],0.),-item[1]['observed_ns']))
+        keys=keys[:3];keyframes=[row[2] for row in keys];frontiers=[];observed=[]
+        for index,(identifier,entry,ref) in enumerate(keys):
+            association=self.memory.observed_ids.get(identifier)
+            if association and association['kind']=='goal_match':
+                observed.append(dict(id=identifier,kind='goal_match',observed_ns=association['observed_ns'],image_position=6+index))
+        ordered=sorted(self.memory.frontiers.items(),key=lambda item:(item[0]!=target,-item[1]['information_gain'],item[0]))
+        for identifier,entry in ordered:
+            record=self.memory.records[entry['evidence'][0]];ref=reference(record)
+            if ref is None or entry['observed_ns']>now_ns:continue
+            observed.append(dict(id=identifier,kind='observed_frontier',observed_ns=entry['observed_ns'],
+                image_position=6+len(keyframes)+len(frontiers)))
+            frontiers.append(ref)
+            if len(frontiers)==8:break
+        visible={row['id'] for row in observed}
+        return dict(schema='observed-rgb-grounding/v1',keyframes=keyframes,frontiers=frontiers,observed=observed,
+            teacher_configuration=asdict(config) if config and config.target_id in visible else None)
 
     def _frontiers(self,row,now_ns):
         # Frontier cells are observed free cells adjacent to unknown cells.
@@ -251,6 +314,8 @@ class CausalNavigationState:
         if calibration.camera_origin_body_m is None:raise ValueError('Metric camera alignment requires calibrated extrinsics')
         if self.previous_ns is not None and ns<=self.previous_ns:raise ValueError('Nonmonotonic exposure time')
         image=torch.from_numpy(np.frombuffer(rgb,np.uint8).copy().reshape(480,640,3)).permute(2,0,1)[None].to(self.device)
+        self.source_rgb[metadata['frame_id']]=dict(observed_ns=ns,rgb_sha256=hashlib.sha256(rgb).hexdigest(),rgb=bytes(rgb))
+        while len(self.source_rgb)>96:self.source_rgb.popitem(last=False)
         feature=self.odometry.encode(image);history=metadata.get('command_history',[])
         previous_command=torch.tensor(history[-1]['values'] if history else [0.,0.,0.,0.],
             device=self.device,dtype=feature.dtype)[None]
@@ -341,8 +406,9 @@ class CausalNavigationState:
             tracking_confidence=confidence,feature_age_seconds=feature_age,tracking_age_seconds=tracking_age,
             map_status=map_status,initialization_elapsed_seconds=self.startup.elapsed(ns),
             termination_reason=self.startup.reason,hazard_version=self.hazard_version,
+            map_correction_version=self.map_correction_version,
             goal_match_threshold=self.teacher.threshold,
             input_validity=dict(scale=usable,visual=self.visual is not None,tracking=tracking_valid))
 
     def close(self):
-        self.memory.close();self.history.clear();self.pending.clear();self.closed=True
+        self.memory.close();self.history.clear();self.pending.clear();self.source_rgb.clear();self.keyframe_rgb.clear();self.closed=True

@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/home/iamyanbo/uav-rgb-flight/envs/airsim/bin/python",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T054505Z-tracking-diagnosis-692d6d/source/diagnose_recorded_tracking.py",
+    "--episode",
+    "/home/iamyanbo/uav-rgb-flight/launches/20260924T054111Z/episode",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T054505Z-tracking-diagnosis-692d6d/tracking-diagnosis.json"
+  ],
+  "seconds": 120,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 2.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 1.0106143818702549
+}

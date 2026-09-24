@@ -1,0 +1,23 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T054334Z-world-data-167238/source/learning_data_job.py",
+    "--phase",
+    "world",
+    "--bundle",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/trajectories",
+    "--collection",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T052652Z-new-perception-demonstrations-9bb40b/collection/flights.json",
+    "--checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T054334Z-world-data-167238/world-data"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 24.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 28.02625093399547
+}

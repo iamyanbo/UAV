@@ -1,0 +1,7 @@
+{
+  "pid": 2596345,
+  "source": "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r64",
+  "hours": 8,
+  "prior_flow": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62",
+  "target_odometry_updates": 2000
+}

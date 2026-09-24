@@ -49,7 +49,7 @@ def main():
                'fit-projection': ['fit_runtime_projection.py','--bundle','/dataset/manifest.json'],
                'build-world-view': ['build_world_sequences.py','--bundle','/dataset','--checkpoints','/navigation/checkpoints.json'],
                'build-policy-view': ['build_policy_sequences.py','--bundle','/dataset','--checkpoints','/navigation'],
-               'build-configurator-view':['build_configuration_examples.py'],
+               'build-configurator-view':['build_configuration_examples.py','--bundle','/dataset/manifest.json'],
                'build-online-view':['build_online_learning.py','--dataset','/dataset','--navigation-pack','/navigation'],
                'build-preference-view':['build_preference_examples.py'],
                'train-odometry': ['train_odometry_sequences.py'],
@@ -88,15 +88,18 @@ def main():
             if not base.is_relative_to(root.resolve()) or not base.is_dir():raise ValueError('Study-local prior imitation data required')
             extra_mounts+=['-v',str(base)+':/prior-policy:ro'];arguments+=['--base-policy-data','/prior-policy']
     if args.stage=='build-configurator-view':
-        episode=args.episode.resolve() if args.episode else None
-        if episode is None and args.collection:
+        episodes=[args.episode.resolve()] if args.episode else []
+        if not episodes and args.collection:
             collection=args.collection.resolve()
             if not collection.is_relative_to(root.resolve()):raise ValueError('Escaping collection receipt')
             records=json.loads(collection.read_text())
             if not records:raise ValueError('Choose a physical configuration context')
-            episode=Path(records[0]['episode_path']).resolve()
-        if episode is None or not episode.is_relative_to(root.resolve()) or not episode.is_dir():raise ValueError('Study episode required')
-        extra_mounts+=['-v',str(episode)+':/episode:ro'];arguments+=['--episode','/episode']
+            episodes=[Path(row['episode_path']).resolve() for row in records]
+        if len(episodes)!=len(args.runtime_replay):raise ValueError('Every configuration episode needs its causal replay')
+        for index,episode in enumerate(episodes):
+            if not episode.is_relative_to(root.resolve()) or not episode.is_dir():raise ValueError('Study episode required')
+            target='/episodes/'+str(index)
+            extra_mounts+=['-v',str(episode)+':'+target+':ro'];arguments+=['--episode',target]
     if args.stage=='build-preference-view':
         for argument,path,target in [('outcomes',args.preference_outcomes,'/matched/outcomes.json'),
                                      ('supervised-adapter',args.supervised_adapter,'/supervised/adapter.pt')]:

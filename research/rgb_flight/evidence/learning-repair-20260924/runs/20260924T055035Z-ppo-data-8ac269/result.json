@@ -1,0 +1,24 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T055035Z-ppo-data-8ac269/source/stage_worker.py",
+    "build-online-view",
+    "--learning-phase",
+    "ppo",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/online-trajectories",
+    "--navigation-pack",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/dagger-pack",
+    "--collection",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T054904Z-fresh-ppo-flight-b0fb5a/collection/flights.json",
+    "--artifact-output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-data"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 16.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 3.0106233691331
+}

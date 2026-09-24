@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T062906Z-historical-grounding-data-1c557e/source/stage_worker.py",
+    "build-configurator-view",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/trajectories",
+    "--episode",
+    "/home/iamyanbo/uav-rgb-flight/launches/20260924T060959Z/episode",
+    "--runtime-replay",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T062757Z-historical-rgb-replay-518a9b/navigation-replay",
+    "--artifact-output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r70/execution/configuration-data"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 12.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 7.017711825901642
+}

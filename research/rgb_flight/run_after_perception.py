@@ -15,6 +15,8 @@ def main():
     parser.add_argument('--perception-cycle',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--hours',type=float,default=8)
+    parser.add_argument('--recollect-demonstrations',action='store_true',
+        help='Collect a new ten-flight batch when runtime evidence contracts changed')
     args=parser.parse_args()
     if not 0<args.hours<=8:parser.error('At most eight hours including waiting')
     args.output.mkdir(parents=True,exist_ok=True)
@@ -40,8 +42,9 @@ def main():
             if digest(ref['path'])!=ref['sha256']:raise ValueError('Changed dependency: '+ref['path'])
     pack=Path(rows['selected-perception-pack']['artifacts'][0]['path']).parent
     collection=Path(rows['new-perception-demonstrations']['job'])/'collection/flights.json'
-    spec=specification(pack,pack/'safety.json','train-00000',collection)
+    spec=specification(pack,pack/'safety.json','train-00000',None if args.recollect_demonstrations else collection)
     spec['perception_cycle']=str(args.perception_cycle.resolve())
+    spec['recollect_demonstrations']=args.recollect_demonstrations
     path=args.output/'programme-spec.json'
     if path.exists() and json.loads(path.read_text())!=spec:raise ValueError('Changed inputs require a new round')
     if not path.exists():atomic(path,spec)

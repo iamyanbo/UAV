@@ -1,0 +1,1 @@
+{"status": "completed", "accepted": false, "complete_flights": 1, "successes": 0, "all_failures_retained": true, "demonstration_batch": false, "development_batch": false, "any_movement": true, "controller_frozen_during_collection": true, "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T054904Z-fresh-ppo-flight-b0fb5a/collection/flights.json"}

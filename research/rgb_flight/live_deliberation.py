@@ -78,6 +78,7 @@ class LiveDeliberation:
             tensor(value['previous_command'])[None].expand(20,4),delay_seconds=max(0.,time.monotonic()-request['available']))
         result=dict(episode_id=self.core.episode_id,version=request['version'],observation_ns=ns,
             memory_version=value['memory_version'],gauge_version=value['gauge_version'],hazard_version=value['hazard_version'],
+            map_correction_version=value['map_correction_version'],
             available_monotonic=time.monotonic(),processing_seconds=time.monotonic()-started,
             configuration=None,configuration_error=None,qwen_available_monotonic=None,
             qwen_processing_seconds=qwen_finished-started,
@@ -93,12 +94,14 @@ class LiveDeliberation:
     def _configure(self,request):
         value=request['value'];ns=value['sim_ns']
         try:
-            configured=self.qwen.configure(self.goals,request['image'],[],[],request['observed'],
+            keyframes=[Image.frombytes('RGB',(640,480),rgb) for rgb in request['keyframe_rgb']]
+            frontiers=[Image.frombytes('RGB',(640,480),rgb) for rgb in request['frontier_rgb']]
+            configured=self.qwen.configure(self.goals,request['image'],keyframes,frontiers,request['observed'],
                 dict(goal_probability=value['goal_probability']),self.core.episode_id,ns/1e9)
         finally:
             (self.output/f"qwen-{ns}.json").write_text(json.dumps(dict(observation_ns=ns,
                 response=self.qwen.last_response,goal_cache_hits=self.qwen.goal_cache_hits,
-                goal_cache_misses=self.qwen.goal_cache_misses)))
+                goal_cache_misses=self.qwen.goal_cache_misses,grounding_evidence=request['grounding_evidence'])))
         if configured is not None:
             self.configuration_results.put(dict(episode_id=self.core.episode_id,version=request['version'],
                 observation_ns=ns,available_monotonic=time.monotonic(),gauge_version=value['gauge_version'],
@@ -131,8 +134,12 @@ class LiveDeliberation:
         if not self.override and self.qwen_pending is None and ns-self.last_qwen_ns>=3000000000:
             self.last_qwen_ns=ns
             self.qwen_calls+=1
+            evidence=self.core.grounding_context(ns,value['config'])
             self.qwen_pending=self.qwen_executor.submit(self._configure,dict(value=value,
-                image=Image.frombytes('RGB',(640,480),rgb),observed=observed,version=ns))
+                image=Image.frombytes('RGB',(640,480),rgb),observed=evidence['observed'],version=ns,
+                grounding_evidence=evidence,
+                keyframe_rgb=[self.core.keyframe_rgb[ref['frame_id']]['rgb'] for ref in evidence['keyframes']],
+                frontier_rgb=[self.core.keyframe_rgb[ref['frame_id']]['rgb'] for ref in evidence['frontiers']]))
         config=value['config']
         if self.override:
             parsed=dict(self.override);horizon=parsed.pop('validity_horizon_seconds')
@@ -176,6 +183,7 @@ class LiveDeliberation:
         if active['episode_id']!=self.core.episode_id:reasons.append('wrong_episode')
         if active['hazard_version']!=value['hazard_version']:reasons.append('new_observed_hazard')
         if active['gauge_version']!=value['gauge_version']:reasons.append('map_gauge_changed')
+        if active['map_correction_version']!=value['map_correction_version']:reasons.append('metric_map_correction')
         applied=active.get('applied_configuration') or {};current=asdict(config) if config else {}
         if any(applied.get(key)!=current.get(key) for key in
                ('target_id','grounded_kind','intention','goal_weight','time_weight','information_weight','additional_caution')):

@@ -1,0 +1,89 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Actual recorded RGB through shared causal memory, historical-image dataset and finite Qwen update",
+  "stages": [
+    {
+      "id": "historical-rgb-replay",
+      "kind": "gpu",
+      "seconds": 1800,
+      "peak_gib": 24,
+      "depends_on": [],
+      "command": [
+        "python3",
+        "{source}/navigation_process.py",
+        "--observations",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260924T060959Z/episode/observations",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260924T060959Z/episode/goal",
+        "--checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints",
+        "--integration-only",
+        "--video"
+      ],
+      "receipt": "{job}/navigation-replay/result.json",
+      "outputs": [
+        "{job}/navigation-replay/manifest.json"
+      ]
+    },
+    {
+      "id": "historical-grounding-data",
+      "kind": "gpu",
+      "seconds": 1800,
+      "peak_gib": 12,
+      "depends_on": [
+        {
+          "stage": "historical-rgb-replay",
+          "status": "completed"
+        }
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "build-configurator-view",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/trajectories",
+        "--episode",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260924T060959Z/episode",
+        "--runtime-replay",
+        "{stage:historical-rgb-replay:job}/navigation-replay",
+        "--artifact-output",
+        "{round}/configuration-data"
+      ],
+      "receipt": "{round}/configuration-data/result.json",
+      "outputs": [
+        "{round}/configuration-data/configurator.json"
+      ]
+    },
+    {
+      "id": "historical-qwen-update",
+      "kind": "gpu",
+      "seconds": 1800,
+      "peak_gib": 40,
+      "depends_on": [
+        {
+          "stage": "historical-grounding-data",
+          "status": "completed"
+        }
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-configurator",
+        "--dataset",
+        "{round}/configuration-data",
+        "--initialize-from",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T054458Z-qwen-supervised-update-c4678e/configurator/latest.pt",
+        "--integration-only",
+        "--updates",
+        "1"
+      ],
+      "receipt": "{job}/configurator/result.json",
+      "outputs": [
+        "{job}/configurator/latest.pt"
+      ],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T054458Z-qwen-supervised-update-c4678e/configurator/latest.pt"
+      ]
+    }
+  ]
+}

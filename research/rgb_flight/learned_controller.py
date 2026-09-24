@@ -132,7 +132,7 @@ def main():
     parser.add_argument('--demonstrate',action='store_true')
     args=parser.parse_args();output=Path('/output');client=BrokerClient(args.socket,args.episode_id)
     if args.with_deliberation and (args.sample_policy or args.demonstrate):parser.error('PPO and deterministic demonstrations disable slow planning')
-    core=video=mapping=deliberation=None;count=0;error=None;chunks=[];shards=[];latencies=[];interventions=0
+    core=video=mapping=deliberation=None;count=0;error=None;chunks=[];shards=[];latencies=[];interventions=0;last_grounding_ns=-1
     def flush():
         if not chunks:return
         path=output/f'controller-{len(shards):06d}.pt';torch.save(dict(samples=list(chunks)),path)
@@ -202,7 +202,11 @@ def main():
             with (output/'dagger-corrections.jsonl').open('a') as stream:stream.write(json.dumps(correction)+'\n')
             if value['termination_reason']:
                 (output/'termination.json').write_text(json.dumps(dict(reason=value['termination_reason'])))
+            grounding=None
+            if last_grounding_ns<0 or metadata['sim_ns']-last_grounding_ns>=3000000000:
+                grounding=core.grounding_context(metadata['sim_ns'],value['config']);last_grounding_ns=metadata['sim_ns']
             chunks.append(dict(frame_id=last,sim_ns=metadata['sim_ns'],runtime=runtime,initial_hidden=hidden.cpu(),proposal=trace,
+                config=asdict(value['config']) if value['config'] else None,configuration_evidence=grounding,
                 map_status=value['map_status'],initialization_elapsed_seconds=value['initialization_elapsed_seconds'],
                 input_validity=value['input_validity'],goal_probability=value['goal_probability'],
                 goal_match_threshold=value['goal_match_threshold'],target_available=value['target_available'],
@@ -234,6 +238,9 @@ def main():
                     teacher_provenance='observed-exploration/v4' if args.demonstrate else None,
                     final_map_status=core.startup.state if core else None,
                     map_version=core.latest_map_version if core else None,
+                    supported_maps_received=core.supported_maps_received if core else 0,
+                    optimized_surface_samples_received=core.optimized_surface_samples_received if core else 0,
+                    first_supported_map_available_ns=core.first_supported_map_available_ns if core else None,
                     handover_sim_ns=core.startup.handover_ns if core else None,
                     control_safety_p95_seconds=float(np.quantile(latencies,.95)) if latencies else None,
                     control_safety_missed_deadlines=sum(x>.05 for x in latencies),safety_interventions=interventions)

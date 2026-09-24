@@ -67,7 +67,10 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
     shutil.copyfile(pack.paths['goal'],output/'goal.pt')
     end_ns=record['frames'][-1]['sim_ns'];collision=any(r.get('collision_event_observed') for r in labels['frames'])
     windows=[];primitive_values=[]
-    for offset in range(0,len(rows)-39,20):
+    # Include the final complete window: the last stopping/failure observation
+    # must not disappear merely because its index is between stride boundaries.
+    offsets=sorted(set(range(0,len(rows)-39,20)) | ({len(rows)-40} if len(rows)>=40 else set()))
+    for offset in offsets:
         selected=rows[offset:offset+40]
         times=torch.tensor([r['sim_ns'] for r in selected],dtype=torch.int64)
         if not bool(((times.diff()>0)&(times.diff()<=250000000)).all()):continue
@@ -107,6 +110,13 @@ def build(bundle,replay,checkpoints,world_checkpoint,output):
         observation_grid='all original timestamps; no duplication; gaps <=250 ms match live recurrent reset; 75 ms acceptance unchanged',
         scope='Executed observation-conditioned exploration and recovery; deployment remains unqualified',
         training_ready=bool(windows),deployment_accepted=False)
+    audited=[corrections[r['frame_id']] for r in rows if r['frame_id'] in corrections and
+        corrections[r['frame_id']].get('teacher')=='observed-exploration/v4' and
+        corrections[r['frame_id']].get('expert_observation_conditioned')]
+    from collections import Counter
+    result['demonstration_coverage']=dict(unique_audited_observations=len(audited),
+        explicit_stops=sum(bool(t.get('explicit_stop')) for t in audited),
+        reasons=dict(Counter(t.get('reason','unspecified') for t in audited)))
     spec=dict(schema='policy-sequence-views/v1',action_semantics='post-safety-dispatch/50ms-v3',belief_version='masked-map-dispatch-state/v3',teacher_version='observed-exploration/v4',foundation=dict(accepted=False,training_ready=True,visual_goal_runtime=True,
         valid_expert_episodes=source.get('unique_successful_expert_episodes',0)),
         episodes=[dict(episode_id=attempt['episode_id'],split=attempt['split'],goal_region_id=attempt['goal_region_id'],

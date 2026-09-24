@@ -145,10 +145,79 @@
   "round_id": "execution",
   "stages": {
     "incremental-map-pilot": {
-      "status": "ready",
-      "attempts": [],
-      "reason": "Waiting for active flight/exclusive resource lease"
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2593917,
+            "start_ticks": "132760326",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r63/execution/incremental-map-pilot-000.log"
+        }
+      ],
+      "reason": "Worker completed; acceptance not inferred",
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints/checkpoints.json": "abff2d3f36efa8eef959e14c50a4eb356fdd8def7eec7c6669f8c273f99f42ae",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T052517Z-new-perception-pilot-98fa94/collection/flights.json": "01de24c30d34e0475b8f64d79a21979632b81f9647927ff0f39fce07dc5c9764"
+      },
+      "process": {
+        "pid": 2593917,
+        "start_ticks": "132760326",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r63/execution/incremental-map-pilot-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r63/spark_guard.py",
+        "--name",
+        "incremental-map-pilot",
+        "--seconds",
+        "1200",
+        "--kind",
+        "flight",
+        "--peak-gib",
+        "72",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r63/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints",
+        "--demonstrate",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T052517Z-new-perception-pilot-98fa94/collection/flights.json"
+      ],
+      "started_unix": 1790228471.133852,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T054111Z-incremental-map-pilot-7d56cd",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T054111Z-incremental-map-pilot-7d56cd/result.json",
+        "sha256": "2f1e801f49ce6332ac63248cac2273bd3e8cba277e6cb911fdd82d67e07fd860"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T054111Z-incremental-map-pilot-7d56cd/collection/result.json",
+        "sha256": "764c3c1639f574f7b3baf3ed6965787ae01cd9303333e627578b574d8069bf1c"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T054111Z-incremental-map-pilot-7d56cd/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T054111Z-incremental-map-pilot-7d56cd/collection/flights.json",
+          "sha256": "fc8ea338760276d304732a815e66958521e1e2197ab462f5021121be3b04df5f"
+        }
+      ]
     }
   },
-  "updated_unix": 1790228182.8368983
+  "updated_unix": 1790228557.2201223
 }

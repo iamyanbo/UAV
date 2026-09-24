@@ -1,0 +1,20 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T054111Z-incremental-map-pilot-7d56cd/source/collect_learning_round.py",
+    "--episode-id",
+    "train-00000",
+    "--controller-checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints",
+    "--demonstrate",
+    "--goal-collection",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T052517Z-new-perception-pilot-98fa94/collection/flights.json"
+  ],
+  "seconds": 1200,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "flight",
+  "peak_gib": 72.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 85.06273377500474
+}

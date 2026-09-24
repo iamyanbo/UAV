@@ -46,7 +46,7 @@ def main():
         mapping=AsyncMapping(goal.episode_id,args.output/'reconstruction',broker.path)
     replay_start=time.monotonic();original_start=None;publication_lateness=[];video_receipt=None
     count=0;chunks=[];shards=[];timings=[];last_ns=-1;missing_video=missing_geometry=0
-    goal_conditioned_frames=0;alignment_reasons={}
+    goal_conditioned_frames=0;alignment_reasons={};last_grounding_ns=None
     def flush():
         nonlocal chunks
         if not chunks:return
@@ -96,6 +96,9 @@ def main():
             # Keep exact original RGB references alongside all spatial tokens.
             value['current_tokens']=value['current_tokens'][0]
             value['goal_context']=value['goal_context'][0]
+            if last_grounding_ns is None or row['sim_ns']-last_grounding_ns>=3_000_000_000:
+                value['configuration_evidence']=core.grounding_context(row['sim_ns'],value['config'])
+                last_grounding_ns=row['sim_ns']
             value['config']=asdict(value['config']) if value['config'] else None
             value['rgb_reference']=dict(frame_id=row['frame_id'],sha256=row['rgb_sha256'])
             value={k:v.detach().cpu() if torch.is_tensor(v) else v for k,v in value.items()}
