@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-09-24T10:37:27.790224+00:00",
+  "observed_utc": "2026-09-24T10:47:40.595749+00:00",
   "source_root": "/home/iamyanbo/uav-rgb-flight",
   "scope": "Execution receipts and derived summaries; active counters are snapshots; raw RGB and weights remain on Spark",
   "files": [
@@ -6436,7 +6436,7 @@
     {
       "path": "rounds/navigation-repair-r72/cumulative-window/execution/state.json",
       "bytes": 20054,
-      "sha256": "c9beddecfd0a42801ed39d20235c636c84548885f646d50b279b3af584a43382"
+      "sha256": "e8c676f98c01be39709159cac4be18d09dec1ef59ee800ae7cb9d5692d3013c3"
     },
     {
       "path": "rounds/navigation-repair-r72/cumulative-window/programme-spec.json",
@@ -9650,8 +9650,8 @@
     },
     {
       "path": "runs/20260924T090939Z-world-continuation-4e400f/training/metrics.jsonl",
-      "bytes": 516747,
-      "sha256": "ea4d5e0b50aa4e6fe6f92d124bb29a04698b62a16987c01af0fc501ca6ade070"
+      "bytes": 576420,
+      "sha256": "8f0400d342e5b52066a86aa6ccaeab0bd319efeebd02782a1fdcb659edd02689"
     },
     {
       "path": "train-00001-initial-rgb.png",
