@@ -227,3 +227,8 @@ The completed learned development batch moved in all ten flights, but produced e
 I left the cumulative ten-flight job allowance at 1,800 seconds even though ten physical 180-second episodes plus model loading necessarily need longer. It is now 7,200 seconds. Before source migration, cumulative world training was checkpointed at update 53 with all 141 optimizer states and a verified reload. R92 resumes that exact dataset/objective/checkpoint under the original window deadline. No training progress or failure evidence was discarded.
 
 The matched pair tied with zero planning/control exposure, so preference training correctly made no update. The pipeline now processes moving data and performs real learning/reload stages, but it has not delivered successful navigation. Missing successful terminal-stop demonstrations, unqualified goal stopping and absent sustained metric handover are upstream gaps; increasing downstream update counts alone cannot resolve them. The architecture is not deployment accepted, and the full cumulative training budgets remain unfinished.
+
+
+## Weekend continuation
+
+The user requested at least three days of continued training. A remote supervisor is running from September 24 21:22 UTC through September 27 21:22 UTC. It chains guarded windows up to eight hours and carries fresh flight collections into new world, policy, Qwen, DAgger and PPO learning cycles. The r92 world continuation has reached update 2,001; its policy continuation is active. The supervisor records every handoff and will stop if a required learner or flight stage fails. This preserves the existing limits while using the authorized three-day period. Campaign budgets and navigation acceptance remain separate and unfinished.

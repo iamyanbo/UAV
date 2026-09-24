@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-09-24T19:09:45.560754+00:00",
+  "observed_utc": "2026-09-24T21:23:49.515685+00:00",
   "source_root": "/home/iamyanbo/uav-rgb-flight",
   "scope": "Execution receipts and derived summaries; active counters are snapshots; raw RGB and weights remain on Spark",
   "files": [
@@ -1809,14 +1809,94 @@
       "sha256": "305a411397e3234b30d48c5386b662d8e1a18cb6287d01bbee17a0fd4c2e97df"
     },
     {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 10790,
+      "sha256": "908a43b54c20ed12b93bfb27b07ad0383d9804b28fb173404402fb97170d50d1"
+    },
+    {
       "path": "launches/20260924T190850Z/episode/learned-controller/runtime/capacity.json",
-      "bytes": 54,
-      "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+      "bytes": 87,
+      "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/deliberation/events.jsonl",
+      "bytes": 1523,
+      "sha256": "0a9b0110574015d923cdc484a48cd165e2c997b9e082e9f52d04fb25e8b3e5c8"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/deliberation/qwen-1790277047253504000.json",
+      "bytes": 381,
+      "sha256": "33c23b8d3498dc822f8ba544008af274d161363a7b729138b004a8db4006706f"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/deliberation/qwen-1790277070278995200.json",
+      "bytes": 790,
+      "sha256": "c33776459a0286c96a1ad5ab89905246d5fd140324b1a710293e02cb3205ee23"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/deliberation/qwen-1790277090454425600.json",
+      "bytes": 791,
+      "sha256": "5f4a8035f629a1aa02687220d921ab5243199a9676512ea8ef06ae3110baca1a"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/deliberation/qwen-1790277110341849856.json",
+      "bytes": 791,
+      "sha256": "487aed74230b4f87e6f83045bf3ef340a8e5500b96804b89a9aa1f063c4d1a22"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/deliberation/qwen-1790277130226274048.json",
+      "bytes": 792,
+      "sha256": "86cb4b158809f5d10b04a5d3fb2f8a7e77126f0a75611d4499d6d987408edcec"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/deliberation/result.json",
+      "bytes": 619,
+      "sha256": "5844969afcf00765e7d6da510f4143decdf6f96d95c2bbb5806a17eebe562b97"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 13300,
+      "sha256": "34e1c953fa477f2fc71b3203c6d9a704ef5cf441821f0d30b8a3fabfa37c5090"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/reconstruction/result.json",
+      "bytes": 794,
+      "sha256": "e690fc3a8c5b40d6278cdf0e477f85b42ea03d8506451477dcaf6de9763496a3"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/reconstruction.log",
+      "bytes": 6234,
+      "sha256": "977de84c71e14ec2c619a2dc263bd0dd7fb90bbccd6eaf618710cadfb51a8a1b"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/result.json",
+      "bytes": 2391,
+      "sha256": "63ebec125114464a1b9a110ebd665484e1423002f724e2532f8e35c694dc3c7d"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/termination.json",
+      "bytes": 39,
+      "sha256": "dd513f888e7bf1c841c7f5531baf8b2a270524f3d0e4a176d798eb5355763637"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/learned-controller/runtime/video/result.json",
+      "bytes": 246,
+      "sha256": "4b2b2ca4bd3bed867da5c50dfc64bb049117885d4050e7cb5d8ee6f4a13c9777"
     },
     {
       "path": "launches/20260924T190850Z/episode/learned-controller/source_hashes.json",
       "bytes": 2524,
       "sha256": "b9a990ae6235dff79c258779a2675cb0eac1fd08f5561dcda80faaad583de87e"
+    },
+    {
+      "path": "launches/20260924T190850Z/episode/result.json",
+      "bytes": 5176,
+      "sha256": "60d3f86e3204e14baaec6cb70c2d154334bcf30ae81c7b5cb1de2933a867363d"
+    },
+    {
+      "path": "launches/20260924T190850Z/result.json",
+      "bytes": 585,
+      "sha256": "28c57311c4912b2274fd5d6c3c346e40e9e8093291bfb57fdcbd6bf4d91b7578"
     },
     {
       "path": "receipts/before-empty-graph-splat-native-port.json",
@@ -2430,8 +2510,8 @@
     },
     {
       "path": "rounds/metric-vision-r92/execution/state.json",
-      "bytes": 19994,
-      "sha256": "433e2770aa1f14c90a13a705e5b82e4bc0c685ea5c01be3ee752fac5616e8511"
+      "bytes": 29258,
+      "sha256": "d10fa6ab915b62c323b3992c7904949369e4f5ea452281e10502c8e240a1c8a7"
     },
     {
       "path": "rounds/metric-vision-r92/programme-spec.json",
@@ -2842,6 +2922,21 @@
       "path": "rounds/navigation-repair-r73/reprioritization.json",
       "bytes": 565,
       "sha256": "556ff22399dea00eb882c37c0af1ff317009f3f773b6bfebf2bd5c55626af4a3"
+    },
+    {
+      "path": "rounds/weekend-20260924/journal.json",
+      "bytes": 359,
+      "sha256": "b98735da1901c2ee0f18188934b1e7b4cfd2c5c9660b6ec40f32df215d92fc37"
+    },
+    {
+      "path": "rounds/weekend-20260924/supervisor-outer.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "rounds/weekend-20260924/supervisor.log",
+      "bytes": 191,
+      "sha256": "34a2e310ecac58dd66cf95ef19ed0dc1faca0134b4e1be8b0878677d171d74cb"
     },
     {
       "path": "runs/20260924T153025Z-metric-depth-recorded-d6b850/result.json",
@@ -3885,8 +3980,18 @@
     },
     {
       "path": "runs/20260924T190850Z-source-reload-flight-452975/collection/flights.json",
-      "bytes": 2,
-      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      "bytes": 5900,
+      "sha256": "f6924075e6bb133cb35d70020e8890f00093d766ffa9bef7ccf4b6627ab87fa4"
+    },
+    {
+      "path": "runs/20260924T190850Z-source-reload-flight-452975/collection/result.json",
+      "bytes": 377,
+      "sha256": "24383f219f6b3c1dd123c780fb2b74a74d69b345b9247a15540781fff18f39a3"
+    },
+    {
+      "path": "runs/20260924T190850Z-source-reload-flight-452975/result.json",
+      "bytes": 735,
+      "sha256": "a9d8db099f21de1a26add30f3111f80cb6f6b841515a3f2ff500337e1424ec20"
     },
     {
       "path": "runs/20260924T190850Z-source-reload-flight-452975/source_hashes.json",
@@ -3895,8 +4000,48 @@
     },
     {
       "path": "runs/20260924T190850Z-source-reload-flight-452975/stdout.log",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      "bytes": 356,
+      "sha256": "6b48d75a51a89828214872cc4b4c10022c5f63ff2f63ea75a820cd4a04efc03e"
+    },
+    {
+      "path": "runs/20260924T191233Z-world-continuation-400b0f/result.json",
+      "bytes": 677,
+      "sha256": "b34e32a51c0f8b41c6643e821f46c8b38d79d4ac954b92bdf7487e76ac9469a0"
+    },
+    {
+      "path": "runs/20260924T191233Z-world-continuation-400b0f/source_hashes.json",
+      "bytes": 15536,
+      "sha256": "a39d98178823b7bfb32c07feefb153df26707690c6cda4a434ae1f6dc5f312fe"
+    },
+    {
+      "path": "runs/20260924T191233Z-world-continuation-400b0f/stdout.log",
+      "bytes": 3713,
+      "sha256": "1304a3a8a74c447ee829041d2becb8f1d39eabb7da1126ba6b5a7159e7cabf12"
+    },
+    {
+      "path": "runs/20260924T191233Z-world-continuation-400b0f/training/metrics.jsonl",
+      "bytes": 582981,
+      "sha256": "9144dedf94455c84aa07f1ea7cdb077cfc04deeedfbfbd690c84467f69fbf78c"
+    },
+    {
+      "path": "runs/20260924T191233Z-world-continuation-400b0f/training/result.json",
+      "bytes": 2895,
+      "sha256": "866b5a5d9a5fe4697fbe915dddd3b3e6e14fa3fccd2886248e9652d2b6427f53"
+    },
+    {
+      "path": "runs/20260924T205120Z-policy-continuation-e34cdd/source_hashes.json",
+      "bytes": 15536,
+      "sha256": "a39d98178823b7bfb32c07feefb153df26707690c6cda4a434ae1f6dc5f312fe"
+    },
+    {
+      "path": "runs/20260924T205120Z-policy-continuation-e34cdd/stdout.log",
+      "bytes": 1393,
+      "sha256": "7b2d9d5bf1d07ddaeb399e8251fd8167cee77edaf7d7b4b96701d6597e1d378a"
+    },
+    {
+      "path": "runs/20260924T205120Z-policy-continuation-e34cdd/training/metrics.jsonl",
+      "bytes": 341749,
+      "sha256": "408e01157b335c66562ef8b6879e11109d0c7403ec5ff83b8f3e73bd4e27bdbf"
     }
   ]
 }

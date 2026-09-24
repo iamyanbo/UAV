@@ -28,14 +28,18 @@ for folder in root.joinpath('runs').iterdir():
  if folder.name<'20260924T030000Z':continue
  for pattern in run_patterns:selected.update(folder.glob(pattern))
 for folder in root.joinpath('rounds').iterdir():
- if not folder.name.startswith(('learning-repair-','learning-continuation-','navigation-repair-','navigation-mapping-','metric-vision-')):continue
+ if not folder.name.startswith(('learning-repair-','learning-continuation-','navigation-repair-','navigation-mapping-','metric-vision-','weekend-')):continue
  for pattern in ('*.json','execution/state.json','execution/*/result.json','execution/*/checkpoints.json',
                  'cumulative-window/*.json','cumulative-window/execution/state.json',
                  'gaussian-replay/*.json','gaussian-replay/execution/state.json',
                  'perception-cycle/*.json','perception-cycle/execution/state.json',
                  'perception-cycle/execution/*/checkpoints.json',
                  'learning-flow/*.json','learning-flow/execution/state.json',
-                 'learning-flow/cumulative-window/*.json','learning-flow/cumulative-window/execution/state.json'):
+                 'learning-flow/cumulative-window/*.json','learning-flow/cumulative-window/execution/state.json',
+                 'journal.json','supervisor*.log','full-flow-*/continuation.json',
+                 'full-flow-*/programme-spec.json','full-flow-*/execution/state.json',
+                 'full-flow-*/cumulative-window/*.json',
+                 'full-flow-*/cumulative-window/execution/state.json'):
   selected.update(folder.glob(pattern))
 for folder in root.joinpath('launches').iterdir():
  if folder.name<'20260924T030000Z':continue

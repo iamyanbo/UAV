@@ -7,7 +7,6 @@ operator STOP file. It never treats a completed update as navigation success.
 import argparse
 from datetime import datetime, timezone
 import json
-import os
 from pathlib import Path
 import subprocess
 import sys
@@ -115,6 +114,7 @@ class WeekendRun:
 
     def wait_for_existing_scheduler(self, round_path):
         receipt = round_path / 'continuation.json'
+        last_heartbeat = 0.
         while self.remaining_hours() > 0 and not self.stop_requested():
             pid = None
             if receipt.exists():
@@ -130,6 +130,9 @@ class WeekendRun:
                 return True
             if status == 'Z':
                 return True
+            if time.time() - last_heartbeat >= 300:
+                self.record('waiting_for_active_window', scheduler_pid=pid, round=str(round_path))
+                last_heartbeat = time.time()
             time.sleep(15)
         return False
 

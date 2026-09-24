@@ -1,0 +1,79 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 612,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "807f2ad006cb4133015e6c1aa72e1b11bf1b5d37c9b32245d650afd28adfe7c3",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "45d2370b6978e9a3ec0629c6370a37e0c80768a0610e6b3feefabeac9ade5ac2",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "521d6ad3730512f5283bb20fca38c35946df140efad771189575cb45c9774b62",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "71eacb45e751c16437b03f0dc25c7c101d7d8f1c6f2367ed7ddf80c07517cf4e",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "6e4d7b95d159dc43bfd9f2b008950dc2a79016c84c2f87545368f5174ff6bd20",
+      "samples": 64
+    },
+    {
+      "path": "controller-000005.pt",
+      "sha256": "f9b4fffada16d1f9098bf6b31a6c471de5b4801025b49c7e315e1d7a5e2d8abd",
+      "samples": 64
+    },
+    {
+      "path": "controller-000006.pt",
+      "sha256": "4127279e42c437a09295c92f9d009af7542a6d068945cdfc360990be4f989f0e",
+      "samples": 64
+    },
+    {
+      "path": "controller-000007.pt",
+      "sha256": "dd28584397f85b21309c8b084118955ed633ea45621d8e28566b4ca0e2465859",
+      "samples": 64
+    },
+    {
+      "path": "controller-000008.pt",
+      "sha256": "d1f42231889a4a2232799dc1b9f4056d81fc286a7be9559f533c5e13414ad7cd",
+      "samples": 64
+    },
+    {
+      "path": "controller-000009.pt",
+      "sha256": "0c07da62c538806b3a904c5832df0a32697d39bfc3a5d6e630babb97cdfc1d59",
+      "samples": 36
+    }
+  ],
+  "scope": "Mode 1, Qwen and frozen predictive planning",
+  "sampled_policy": false,
+  "slow_planner_enabled": true,
+  "teacher_provenance": null,
+  "final_map_status": "terminated",
+  "map_version": -1,
+  "map_fusion": {
+    "submitted": 0,
+    "results_polled": 0,
+    "pending_result": false,
+    "queue_bound": 1,
+    "availability": "actual CPU geometry completion, then causal publication"
+  },
+  "supported_maps_received": 25,
+  "optimized_surface_samples_received": 33200,
+  "first_supported_map_available_ns": 1790277069789984768,
+  "handover_sim_ns": 1790277057627725312,
+  "metric_handover_sim_ns": null,
+  "control_safety_p95_seconds": 0.2377111685695125,
+  "control_safety_missed_deadlines": 450,
+  "safety_interventions": 599
+}
