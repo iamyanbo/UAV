@@ -1,0 +1,31 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T063318Z-historical-grounding-pack-89e19f/source/package_navigation.py",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/goal.pt",
+    "--odometry",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/odometry.pt",
+    "--projection",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/projection.pt",
+    "--safety",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/safety.json",
+    "--world",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/world.pt",
+    "--policy",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/policy.pt",
+    "--qwen",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T062914Z-historical-qwen-update-d3cf42/configurator/latest.pt",
+    "--goal-match-threshold",
+    "0.9",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r71/execution/historical-grounding-pack"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 4.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 1.0111162569373846
+}

@@ -1,0 +1,15 @@
+{
+  "status": "checkpointed_and_flight_admitted",
+  "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T061132Z-balanced-motion-training-4fd8af",
+  "active_flights": [
+    {
+      "pid": 2618983,
+      "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063514Z-pose-isolation-map-pilot-023693",
+      "kind": "flight",
+      "peak_bytes": 77309411328,
+      "artifact": null
+    }
+  ],
+  "accepted": false
+}

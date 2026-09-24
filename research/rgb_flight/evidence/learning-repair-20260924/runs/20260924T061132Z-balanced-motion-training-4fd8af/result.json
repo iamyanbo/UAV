@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T061132Z-balanced-motion-training-4fd8af/source/stage_worker.py",
+    "train-odometry",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/trajectory-bundle",
+    "--resume",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T051243Z-balanced-motion-training-5b8884/visual-training/latest.pt",
+    "--updates",
+    "2000",
+    "--validation-every",
+    "200"
+  ],
+  "seconds": 7200,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 16.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 1420.9450393740553
+}

@@ -26,3 +26,4 @@ GOVERNING TERMS: The software and materials are governed by the NVIDIA Software 
 and the Product-Specific Terms for NVIDIA AI Products
 (found at https://www.nvidia.com/en-us/agreements/enterprise-software/product-specific-terms-for-ai-products/).
 
+{"status": "completed", "accepted": false, "examples": 8, "observed_target_examples": 0, "historical_rgb_examples": 0, "excluded": [{"episode_id": "train-00010", "reason": "Outside internal training partition"}, {"episode_id": "train-00012", "reason": "Outside internal training partition"}]}

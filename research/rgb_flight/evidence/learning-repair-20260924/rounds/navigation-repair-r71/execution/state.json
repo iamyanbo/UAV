@@ -144,7 +144,7 @@
   "round_id": "execution",
   "stages": {
     "training-only-grounding-batch": {
-      "status": "running",
+      "status": "completed",
       "attempts": [
         {
           "process": {
@@ -205,17 +205,225 @@
         "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r71/execution/legacy-grounding-data"
       ],
       "started_unix": 1790231559.9815223,
-      "reason": "Owned remote guard running",
-      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063240Z-training-only-grounding-batch-45e78e"
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063240Z-training-only-grounding-batch-45e78e",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063240Z-training-only-grounding-batch-45e78e/result.json",
+        "sha256": "3e886c929f6e22e8895416d74bd6d296b674b259bb149278757c7ce5d6358890"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r71/execution/legacy-grounding-data/result.json",
+        "sha256": "d824fb04100429a7d14c532646945c57aaf02f43ee0145822ed5dfe035943311"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "examples": 8,
+        "observed_target_examples": 0,
+        "historical_rgb_examples": 0,
+        "excluded": [
+          {
+            "episode_id": "train-00010",
+            "reason": "Outside internal training partition"
+          },
+          {
+            "episode_id": "train-00012",
+            "reason": "Outside internal training partition"
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r71/execution/legacy-grounding-data/configurator.json",
+          "sha256": "ddbb454509ae9b25be21b31bdc2467e5ba372e5820cf82461f2a4f912397aa4e"
+        }
+      ]
     },
     "historical-grounding-pack": {
-      "status": "ready",
-      "attempts": []
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2618390,
+            "start_ticks": "133073014",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r71/execution/historical-grounding-pack-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2618390,
+        "start_ticks": "133073014",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r71/execution/historical-grounding-pack-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/spark_guard.py",
+        "--name",
+        "historical-grounding-pack",
+        "--seconds",
+        "1800",
+        "--kind",
+        "cpu",
+        "--peak-gib",
+        "4",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/goal.pt",
+        "--odometry",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/odometry.pt",
+        "--projection",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/projection.pt",
+        "--safety",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/safety.json",
+        "--world",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/world.pt",
+        "--policy",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/policy.pt",
+        "--qwen",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T062914Z-historical-qwen-update-d3cf42/configurator/latest.pt",
+        "--goal-match-threshold",
+        "0.9",
+        "--output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r71/execution/historical-grounding-pack"
+      ],
+      "started_unix": 1790231598.017806,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063318Z-historical-grounding-pack-89e19f",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063318Z-historical-grounding-pack-89e19f/result.json",
+        "sha256": "9c9c6b6a600c9f9f61ca34cee0a9672de3718cb26a02a89d7eaae15ce6fb02f2"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r71/execution/historical-grounding-pack/checkpoints.json",
+        "sha256": "1c59d18763b33119f70fa3c5db25b17850bc0d8905d0af2e4e7c9ec0363414e6"
+      },
+      "progress": {
+        "schema": "visual-navigation-checkpoints/v1",
+        "status": "completed",
+        "accepted": false,
+        "artifacts": {
+          "goal": {
+            "path": "goal.pt",
+            "sha256": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/goal.pt"
+          },
+          "odometry": {
+            "path": "odometry.pt",
+            "sha256": "9d9c6a340b908c7e324d3438c7e1761b1b8dd373c845f9636bf07225fed659bc",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/odometry.pt"
+          },
+          "world": {
+            "path": "world.pt",
+            "sha256": "3f3ad896c84e10cc59818c8e4daab98c703d1e12aecae7494248e25f59374dd0",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/world.pt"
+          },
+          "policy": {
+            "path": "policy.pt",
+            "sha256": "8e68059b1fbadd141712f833246df9b124e18ab35f6c5262b26c94cc8bc3d09b",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/policy.pt"
+          },
+          "projection": {
+            "path": "projection.pt",
+            "sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/projection.pt"
+          },
+          "safety": {
+            "path": "safety.json",
+            "sha256": "ad063b81b2ec32d9830e62f53fd75d9092600423003ae619f8159ee051cddf1d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack/safety.json"
+          },
+          "qwen": {
+            "path": "qwen.pt",
+            "sha256": "656f588757bc58f306fc3c2921cb4b0b6dd397f88035125c8384282fff4791d2",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T062914Z-historical-qwen-update-d3cf42/configurator/latest.pt"
+          }
+        },
+        "goal_match_threshold": 0.9,
+        "scope": "Integration snapshot. Packaging does not establish model compatibility or acceptance."
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r71/execution/historical-grounding-pack/checkpoints.json",
+          "sha256": "1c59d18763b33119f70fa3c5db25b17850bc0d8905d0af2e4e7c9ec0363414e6"
+        }
+      ]
     },
     "historical-grounding-flight": {
-      "status": "ready",
-      "attempts": []
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2620220,
+            "start_ticks": "133094038",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r71/execution/historical-grounding-flight-000.log"
+        }
+      ],
+      "reason": "Worker completed; acceptance not inferred",
+      "input_hashes": {},
+      "process": {
+        "pid": 2620220,
+        "start_ticks": "133094038",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r71/execution/historical-grounding-flight-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/spark_guard.py",
+        "--name",
+        "historical-grounding-flight",
+        "--seconds",
+        "1200",
+        "--kind",
+        "flight",
+        "--peak-gib",
+        "72",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r71/execution/historical-grounding-pack",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T052652Z-new-perception-demonstrations-9bb40b/collection/flights.json",
+        "--with-deliberation"
+      ],
+      "started_unix": 1790231808.2573125,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063648Z-historical-grounding-flight-48bd22",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063648Z-historical-grounding-flight-48bd22/result.json",
+        "sha256": "ebb1beea4290cb0bcf65451688a25f48ae90db92b30bcf1331201187903ab830"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063648Z-historical-grounding-flight-48bd22/collection/result.json",
+        "sha256": "3cf68697ccd5494f15483545a60e4322fe9b3e8ef7db1014265583c03583f8b9"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063648Z-historical-grounding-flight-48bd22/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063648Z-historical-grounding-flight-48bd22/collection/flights.json",
+          "sha256": "175443c79a553f4783132858430bf1e8ab4ec3bb6a5cff3437e7850731012d80"
+        }
+      ]
     }
   },
-  "updated_unix": 1790231574.9944344
+  "updated_unix": 1790231932.395705
 }

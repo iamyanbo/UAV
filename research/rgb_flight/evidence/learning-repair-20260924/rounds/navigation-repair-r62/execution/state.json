@@ -2112,9 +2112,50 @@
       ]
     },
     "matched-configuration-flights": {
-      "status": "ready",
-      "attempts": [],
-      "reason": "Waiting for active flight/exclusive resource lease"
+      "status": "running",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2621628,
+            "start_ticks": "133106488",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/matched-configuration-flights-000.log"
+        }
+      ],
+      "reason": "Owned remote guard running",
+      "input_hashes": {},
+      "process": {
+        "pid": 2621628,
+        "start_ticks": "133106488",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/matched-configuration-flights-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r62/spark_guard.py",
+        "--name",
+        "matched-configuration-flights",
+        "--seconds",
+        "7200",
+        "--kind",
+        "flight",
+        "--peak-gib",
+        "72",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r62/collect_configuration_preferences.py",
+        "--checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r62/execution/ppo-pack",
+        "--qwen",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T054458Z-qwen-supervised-update-c4678e/configurator/latest.pt",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T052652Z-new-perception-demonstrations-9bb40b/collection/flights.json",
+        "--episode-id",
+        "train-00000"
+      ],
+      "started_unix": 1790231932.7597756,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063852Z-matched-configuration-flights-5bbfd2"
     },
     "preference-data": {
       "status": "ready",
@@ -2137,5 +2178,5 @@
       "reason": "Waiting for preference-pack=completed"
     }
   },
-  "updated_unix": 1790231575.857729
+  "updated_unix": 1790232130.118977
 }

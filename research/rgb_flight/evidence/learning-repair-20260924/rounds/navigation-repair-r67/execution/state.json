@@ -147,10 +147,79 @@
   "round_id": "execution",
   "stages": {
     "pose-isolation-map-pilot": {
-      "status": "ready",
-      "attempts": [],
-      "reason": "Waiting for active flight/exclusive resource lease"
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2618983,
+            "start_ticks": "133084616",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r67/execution/pose-isolation-map-pilot-000.log"
+        }
+      ],
+      "reason": "Worker completed; acceptance not inferred",
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints/checkpoints.json": "abff2d3f36efa8eef959e14c50a4eb356fdd8def7eec7c6669f8c273f99f42ae",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T052517Z-new-perception-pilot-98fa94/collection/flights.json": "01de24c30d34e0475b8f64d79a21979632b81f9647927ff0f39fce07dc5c9764"
+      },
+      "process": {
+        "pid": 2618983,
+        "start_ticks": "133084616",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r67/execution/pose-isolation-map-pilot-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r66/spark_guard.py",
+        "--name",
+        "pose-isolation-map-pilot",
+        "--seconds",
+        "1200",
+        "--kind",
+        "flight",
+        "--peak-gib",
+        "72",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r66/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r60/execution/perception-checkpoints",
+        "--demonstrate",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T052517Z-new-perception-pilot-98fa94/collection/flights.json"
+      ],
+      "started_unix": 1790231714.0368931,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063514Z-pose-isolation-map-pilot-023693",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063514Z-pose-isolation-map-pilot-023693/result.json",
+        "sha256": "7d3771ae66c8eca6e8fd2e725f5cbd6a804aff5b2b3ee7fa0c74e815e5e01202"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063514Z-pose-isolation-map-pilot-023693/collection/result.json",
+        "sha256": "f08a041a0a972f9a874e206850a5baf3133ab8992644e6efd3f9c30973529d3a"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063514Z-pose-isolation-map-pilot-023693/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T063514Z-pose-isolation-map-pilot-023693/collection/flights.json",
+          "sha256": "ce1d7cf38a55ca1d5fb5db4889ea3a561445da1b77b68d249102e68399095348"
+        }
+      ]
     }
   },
-  "updated_unix": 1790231575.8318229
+  "updated_unix": 1790231809.1349494
 }

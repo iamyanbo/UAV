@@ -1,0 +1,12 @@
+{
+  "observed_utc": "2026-09-24T06:42:16.229668+00:00",
+  "round": "navigation-repair-r72",
+  "continuation": {
+    "status": "waiting_for_perception_and_demonstrations",
+    "accepted": false
+  },
+  "stages": {},
+  "cumulative_stages": {},
+  "deployment_accepted": false,
+  "scope": "Execution snapshot only; optimizer counts do not establish navigation or complete cumulative budgets"
+}
