@@ -10,7 +10,7 @@ from build_world_sequences import build as world_data
 from build_policy_sequences import build as policy_data
 
 
-def export_live(episode,output,checkpoint_identity):
+def export_live(episode,output,checkpoint_identity,perception_artifacts=None):
     runtime=episode/'learned-controller/runtime'
     receipt=json.loads((runtime/'result.json').read_text())
     if receipt['status']!='completed':raise ValueError('Incomplete live inference')
@@ -35,6 +35,7 @@ def export_live(episode,output,checkpoint_identity):
             available_monotonic=row['source_available_monotonic'],
             processing_seconds=row['decision_monotonic']-row['source_available_monotonic']))+'\n')
     manifest=dict(episode_id=traces[0]['episode_id'],checkpoint_set_sha256=checkpoint_identity,
+        perception_artifacts_sha256=perception_artifacts,
         shards=shards,source_rgb_sha256=verified_rgb_storage(episode/'observations')['stream_sha256'],
         goal_tokens=dict(path='goal-tokens.pt',sha256=checksum(output/'goal-tokens.pt')),
         slow_feature_mode='actual online publication at physical learner-visited states')
@@ -45,7 +46,12 @@ def main():
     parser=argparse.ArgumentParser()
     for key in ('collection','bundle','checkpoints','output'):parser.add_argument('--'+key,type=Path,required=True)
     parser.add_argument('--world',type=Path);parser.add_argument('--phase',choices=('world','policy'),required=True)
+    parser.add_argument('--additional-collection',type=Path);parser.add_argument('--additional-checkpoints',type=Path)
     args=parser.parse_args();torch.set_num_threads(4)
+    if bool(args.additional_collection)!=bool(args.additional_checkpoints):raise ValueError('Additional collection requires its actual checkpoint pack')
+    if args.additional_collection and args.phase!='world':raise ValueError('Additional learner data requires audited policy corrections before imitation')
+    pack_spec=json.loads((args.checkpoints/'checkpoints.json').read_text())
+    perception={k:pack_spec['artifacts'][k]['sha256'] for k in ('goal','odometry','projection')}
     rows=json.loads(args.collection.read_text());identity=checksum(args.checkpoints/'checkpoints.json')
     collection_receipt=json.loads((args.collection.parent/'result.json').read_text())
     if collection_receipt.get('status')!='completed' or len(rows)!=10 or len({r['result']['episode_id'] for r in rows})!=10:
@@ -56,7 +62,20 @@ def main():
     replays=[]
     for index,row in enumerate(rows):
         episode=Path(row['episode_path']);replay=replay_root/str(index)
-        export_live(episode,replay,identity);replays.append(replay)
+        export_live(episode,replay,identity,perception);replays.append(replay)
+    if args.additional_collection:
+        additional_identity=checksum(args.additional_checkpoints/'checkpoints.json')
+        additional_spec=json.loads((args.additional_checkpoints/'checkpoints.json').read_text())
+        actual_perception={k:additional_spec['artifacts'][k]['sha256'] for k in perception}
+        if perception!=actual_perception:raise ValueError('New perception requires new causal replay and a separate data round')
+        extra=json.loads(args.additional_collection.read_text())
+        if json.loads((args.additional_collection.parent/'result.json').read_text())['status']!='completed':
+            raise ValueError('Additional collection must complete before dataset preparation')
+        for index,row in enumerate(extra):
+            if row['result'].get('controller_checkpoint_sha256')!=additional_identity:
+                raise ValueError('Additional learner checkpoint identity differs')
+            replay=replay_root/('learner-'+str(index))
+            export_live(Path(row['episode_path']),replay,additional_identity,actual_perception);replays.append(replay)
     if args.phase=='world':result=world_data(args.bundle,args.checkpoints/'checkpoints.json',replays,args.output)
     else:
         args.output.mkdir();(args.output/'windows').mkdir();merged=None;scales=[];train_ids=[]

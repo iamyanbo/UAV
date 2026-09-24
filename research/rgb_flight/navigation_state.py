@@ -76,9 +76,9 @@ class CausalNavigationState:
         if saved['module']!='goal':raise ValueError('Wrong goal checkpoint role')
         self.goal.load_state_dict(saved['model'])
         saved=torch.load(checkpoints.paths['odometry'],map_location='cpu',weights_only=True)
-        if saved.get('objective_version') not in ('metric-sequence-nll-se3/v1','metric-long-sequence-fixed-bn/v2','metric-long-sequence-motion-rate/v3'):
+        if saved.get('objective_version') not in ('metric-sequence-nll-se3/v1','metric-long-sequence-fixed-bn/v2','metric-long-sequence-motion-rate/v3','metric-motion-rate-balanced-regimes/v4'):
             raise ValueError('Metric sequence odometry required')
-        mode='rate' if saved['objective_version']=='metric-long-sequence-motion-rate/v3' else 'increment'
+        mode='rate' if saved['objective_version'] in ('metric-long-sequence-motion-rate/v3','metric-motion-rate-balanced-regimes/v4') else 'increment'
         if saved.get('motion_parameterization',mode)!=mode:raise ValueError('Inconsistent odometry objective/parameterization')
         self.odometry=FastVisualOdometry(backbone,motion_parameterization=mode).to(device).eval().requires_grad_(False)
         self.odometry.load_state_dict(saved['model'])
@@ -279,7 +279,7 @@ class CausalNavigationState:
         self.previous_command=previous_command
         current_tokens=self.goal.encoder(image);match=self.goal.matcher(current_tokens,self.goal_tokens)
         self.source_features[metadata['frame_id']]=SpatialRecord('source-'+str(metadata['frame_id']),
-            self.episode_id,ns,metadata['frame_id'],self.position, self.covariance[:3,:3],
+            self.episode_id,ns,metadata['frame_id'],self.position.clone(), self.covariance[:3,:3].clone(),
             current_tokens[0].mean(0),1,1.)
         while len(self.source_features)>2048:del self.source_features[next(iter(self.source_features))]
         probability=float(match['match_logit'].sigmoid());self.last_goal_probability=probability

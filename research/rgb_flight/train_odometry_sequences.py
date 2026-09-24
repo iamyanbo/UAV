@@ -16,7 +16,7 @@ from learning_models import FastVisualOdometry, rotation_increment
 from train_visual_components import recorded_rgb
 from trajectory_bundle import digest
 
-OBJECTIVE='metric-long-sequence-motion-rate/v3'
+OBJECTIVE='metric-motion-rate-balanced-regimes/v4'
 WARMUP=32
 STEPS=160
 
@@ -120,13 +120,24 @@ def main():
     root=args.dataset.resolve();manifest=json.loads((root/'manifest.json').read_text());sha=digest(root/'manifest.json')
     if manifest['schema']!='visual-trajectory-bundle/v1':raise ValueError('Versioned trajectories required')
     records=windows(root,manifest)
+    # Balance actual stationary, slow exploration and cruising motion. The
+    # regime is training-only supervision; no true speed enters inference.
+    regimes={name:[] for name in ('stationary','slow','cruise')}
+    for item,start in records['train']:
+        runtime,labels=episode(str(root),item['runtime']['path'],item['runtime']['sha256'],
+                              item['training_labels']['path'],item['training_labels']['sha256'])
+        rows=runtime['frames'][start:start+STEPS+1]
+        positions=np.asarray([labels[row['frame_id']]['true_position_ned_m'] for row in rows])
+        speed=float(np.linalg.norm(np.diff(positions,axis=0),axis=1).sum()/((rows[-1]['sim_ns']-rows[0]['sim_ns'])/1e9))
+        regimes['stationary' if speed<.05 else 'slow' if speed<=1 else 'cruise'].append((item,start))
+    choices=[name for name,rows in regimes.items() if rows]
     torch.set_num_threads(4);torch.manual_seed(args.seed);rng=np.random.default_rng(args.seed)
     model=FastVisualOdometry(args.backbone,motion_parameterization='rate').cuda();optimizer=torch.optim.AdamW(model.parameters(),lr=1e-4)
     update=0;best=float('inf');best_state=None;initialization=None;resume_evidence=None
     if args.initialize_from:
         saved=torch.load(args.initialize_from,map_location='cpu',weights_only=True)
         if saved.get('module')!='odometry':raise ValueError('Odometry initialization checkpoint required')
-        if saved.get('objective_version') in (OBJECTIVE,'metric-sequence-nll-se3/v1','metric-long-sequence-fixed-bn/v2'):
+        if saved.get('objective_version') in (OBJECTIVE,'metric-long-sequence-motion-rate/v3','metric-sequence-nll-se3/v1','metric-long-sequence-fixed-bn/v2'):
             model.load_state_dict(saved['model']);discarded=[]
         else:
             source={k:v for k,v in saved['model'].items() if not k.startswith('log_scale.')}
@@ -134,7 +145,7 @@ def main():
             if set(missing)!={'motion_uncertainty.weight','motion_uncertainty.bias'} or unexpected:
                 raise ValueError('Unexpected legacy odometry initialization mismatch')
             discarded=['log_scale']
-        if saved.get('objective_version')!=OBJECTIVE:
+        if saved.get('motion_parameterization')!='rate' and saved.get('objective_version') not in (OBJECTIVE,'metric-long-sequence-motion-rate/v3'):
             # Preserve nominal 50 ms mean predictions as initialization only.
             # The nonlinear uncertainty head gets an explicit new broad prior.
             with torch.no_grad():
@@ -145,7 +156,7 @@ def main():
             discarded.append('increment_uncertainty')
         initialization=dict(path=args.initialize_from,sha256=digest(args.initialize_from),source_update=saved['update'],
                             optimizer_reset=True,discarded_heads=discarded,
-                            nominal_increment_to_rate_seconds=.05 if saved.get('objective_version')!=OBJECTIVE else None)
+                            nominal_increment_to_rate_seconds=.05 if 'increment_uncertainty' in discarded else None)
     if args.resume:
         saved=torch.load(args.resume,map_location='cpu',weights_only=True)
         if saved['manifest_sha256']!=sha or saved['objective_version']!=OBJECTIVE:raise ValueError('New data/objective requires new round')
@@ -177,7 +188,8 @@ def main():
         model.train();optimizer.zero_grad(set_to_none=True)
         for layer in model.modules():
             if isinstance(layer,torch.nn.modules.batchnorm._BatchNorm):layer.eval()
-        item,start=records['train'][int(rng.integers(len(records['train'])))]
+        regime=choices[int(rng.integers(len(choices)))];pool=regimes[regime]
+        item,start=pool[int(rng.integers(len(pool)))]
         before={n:p.detach().clone() for n,p in model.named_parameters()} if gradient_evidence is None else None
         loss,metrics=objective(model,sequence(root,item,start,'cuda'))
         if not torch.isfinite(loss):raise RuntimeError('Nonfinite recurrent odometry objective')
@@ -209,14 +221,14 @@ def main():
             if selection<best:best=selection;checkpoint('best')
         if update%50==0:checkpoint('latest')
         with (args.output/'metrics.jsonl').open('a') as stream:
-            stream.write(json.dumps(dict(update=update,loss=float(loss.detach()),validation=validation,**metrics))+'\n')
+            stream.write(json.dumps(dict(update=update,loss=float(loss.detach()),validation=validation,sampling_regime=regime,**metrics))+'\n')
     checkpoint('latest')
     result=dict(status='completed' if update==args.updates else 'checkpointed',accepted=False,updates=update,
         resumed_from_update=resume_counter,objective_version=OBJECTIVE,manifest_sha256=sha,
         resume_evidence=resume_evidence,
         gradient_evidence=gradient_evidence,train_windows=len(records['train']),development_windows=len(records['validation']),
         elapsed_seconds=time.monotonic()-started,reason='Full held-out trajectory drift and uncertainty qualification still required')
-    result.update(sequence_steps=STEPS,warmup_steps=WARMUP,normalization='fixed inference BatchNorm statistics',
+    result.update(sampling_regimes={k:len(v) for k,v in regimes.items()},sequence_steps=STEPS,warmup_steps=WARMUP,normalization='fixed inference BatchNorm statistics',
                   activation_checkpointing=True,motion_parameterization='rate',
                   checkpoint_selection='development normalized motion-rate error plus normalized accumulated drift')
     (args.output/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result))

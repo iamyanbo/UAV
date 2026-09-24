@@ -1,0 +1,1369 @@
+{
+  "schema": "policy-sequence-views/v1",
+  "action_semantics": "post-safety-dispatch/50ms-v3",
+  "belief_version": "masked-map-dispatch-state/v3",
+  "teacher_version": "observed-exploration/v3",
+  "foundation": {
+    "accepted": false,
+    "training_ready": true,
+    "visual_goal_runtime": true,
+    "valid_expert_episodes": 250
+  },
+  "episodes": [
+    {
+      "episode_id": "train-00000",
+      "split": "train",
+      "goal_region_id": "20:-17:0",
+      "start_goal_pair_id": "train-00000",
+      "simulated_seconds": 58.018237696
+    },
+    {
+      "episode_id": "train-00001",
+      "split": "train",
+      "goal_region_id": "-6:-9:0",
+      "start_goal_pair_id": "train-00001",
+      "simulated_seconds": 56.314201344
+    },
+    {
+      "episode_id": "train-00002",
+      "split": "train",
+      "goal_region_id": "-21:0:-1",
+      "start_goal_pair_id": "train-00002",
+      "simulated_seconds": 55.783190016
+    },
+    {
+      "episode_id": "train-00003",
+      "split": "train",
+      "goal_region_id": "13:-20:0",
+      "start_goal_pair_id": "train-00003",
+      "simulated_seconds": 56.254200064
+    },
+    {
+      "episode_id": "train-00004",
+      "split": "train",
+      "goal_region_id": "-21:-24:0",
+      "start_goal_pair_id": "train-00004",
+      "simulated_seconds": 56.119197184
+    },
+    {
+      "episode_id": "train-00005",
+      "split": "train",
+      "goal_region_id": "-16:9:-1",
+      "start_goal_pair_id": "train-00005",
+      "simulated_seconds": 56.128197376
+    },
+    {
+      "episode_id": "train-00006",
+      "split": "train",
+      "goal_region_id": "25:-4:0",
+      "start_goal_pair_id": "train-00006",
+      "simulated_seconds": 56.059195904
+    },
+    {
+      "episode_id": "train-00007",
+      "split": "train",
+      "goal_region_id": "-7:-25:-1",
+      "start_goal_pair_id": "train-00007",
+      "simulated_seconds": 56.158198016
+    },
+    {
+      "episode_id": "train-00010",
+      "split": "validation",
+      "goal_region_id": "9:-12:0",
+      "start_goal_pair_id": "train-00010",
+      "simulated_seconds": 56.14619776
+    },
+    {
+      "episode_id": "train-00012",
+      "split": "validation",
+      "goal_region_id": "3:-16:0",
+      "start_goal_pair_id": "train-00012",
+      "simulated_seconds": 56.365202432
+    }
+  ],
+  "attempts": [
+    {
+      "attempt_id": "20260924T031144Z-train-00000",
+      "split": "train",
+      "simulated_seconds": 58.018237696
+    },
+    {
+      "attempt_id": "20260924T031318Z-train-00001",
+      "split": "train",
+      "simulated_seconds": 56.314201344
+    },
+    {
+      "attempt_id": "20260924T031455Z-train-00002",
+      "split": "train",
+      "simulated_seconds": 55.783190016
+    },
+    {
+      "attempt_id": "20260924T031628Z-train-00003",
+      "split": "train",
+      "simulated_seconds": 56.254200064
+    },
+    {
+      "attempt_id": "20260924T032938Z-train-00004",
+      "split": "train",
+      "simulated_seconds": 56.119197184
+    },
+    {
+      "attempt_id": "20260924T033105Z-train-00005",
+      "split": "train",
+      "simulated_seconds": 56.128197376
+    },
+    {
+      "attempt_id": "20260924T033238Z-train-00006",
+      "split": "train",
+      "simulated_seconds": 56.059195904
+    },
+    {
+      "attempt_id": "20260924T033412Z-train-00007",
+      "split": "train",
+      "simulated_seconds": 56.158198016
+    },
+    {
+      "attempt_id": "20260924T034035Z-train-00010",
+      "split": "validation",
+      "simulated_seconds": 56.14619776
+    },
+    {
+      "attempt_id": "20260924T034210Z-train-00012",
+      "split": "validation",
+      "simulated_seconds": 56.365202432
+    }
+  ],
+  "windows": [
+    {
+      "module": "policy",
+      "episode_id": "train-00000",
+      "attempt_id": "20260924T031144Z-train-00000",
+      "path": "windows/0-policy-000000.pt",
+      "sha256": "660565bc0360774fe4e969a98b504ec796d2b71ca36b1d9c07bee57b2e0f9ef3",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00000",
+      "attempt_id": "20260924T031144Z-train-00000",
+      "path": "windows/0-policy-000001.pt",
+      "sha256": "023725e9bf1ce7086f60f0d1029b32975d679875a32ac744de0c9287bf271d78",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00000",
+      "attempt_id": "20260924T031144Z-train-00000",
+      "path": "windows/0-policy-000002.pt",
+      "sha256": "de4e9cd1d9603e65d306d5d32f0221d3eaaf326e4ae100dda99c89ecc7f11e40",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00000",
+      "attempt_id": "20260924T031144Z-train-00000",
+      "path": "windows/0-policy-000003.pt",
+      "sha256": "b14f4d9892939b59e80050aee9d69f02177048e6b826e6e8c2f699ccca9da4ea",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00000",
+      "attempt_id": "20260924T031144Z-train-00000",
+      "path": "windows/0-policy-000004.pt",
+      "sha256": "243a8bfbd7b82a6fdebbca1638d8d4509853818c579ae4d00bfa44f49e3b0102",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00000",
+      "attempt_id": "20260924T031144Z-train-00000",
+      "path": "windows/0-policy-000005.pt",
+      "sha256": "21ee1c8b1d47b4b6983bdb254e063b13019f6c5672c1ef70cf908adb96918d15",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00000",
+      "attempt_id": "20260924T031144Z-train-00000",
+      "path": "windows/0-policy-000006.pt",
+      "sha256": "30293e4e82931b4522d491f1db05df6540b5c8eae96bdd1850ef0cb73e81464b",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00000",
+      "attempt_id": "20260924T031144Z-train-00000",
+      "path": "windows/0-policy-000007.pt",
+      "sha256": "14c05681965429cd3406da9ae3bc2a34cf693e5f135bda9401b8bf5e9b4429bf",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00000",
+      "attempt_id": "20260924T031144Z-train-00000",
+      "path": "windows/0-policy-000008.pt",
+      "sha256": "33cf141a150adcf31135ae3bb981574be60ec7cf1ec0575272b6c337004cdd1b",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00000",
+      "attempt_id": "20260924T031144Z-train-00000",
+      "path": "windows/0-policy-000009.pt",
+      "sha256": "abfac8d44ac5a31755a13a79e0046314767971d784228e533b3cdad47304af18",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00000",
+      "attempt_id": "20260924T031144Z-train-00000",
+      "path": "windows/0-policy-000010.pt",
+      "sha256": "bc33eb504ac71aae505bb8c07365da269b0134ac9d81fd7ea22a56afb4707edb",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000000.pt",
+      "sha256": "1b1802c814d91a27dc1b1170e0c435e12509293ccbcf4c1f47726a798d921bbb",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000001.pt",
+      "sha256": "f30c6d4e25bf0b636323c8e127520837f9ee112eb0170f76e93e2625f86cbcfe",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000002.pt",
+      "sha256": "5884f5a1832568d668346794cb4849b8c86278929f62b833ed1da5af79a2d15c",
+      "timing_qualified": true
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000003.pt",
+      "sha256": "8c0b3724c5f81b8c11a9e64003fd70cd63895737a006f298ffdd312c49ce0780",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000004.pt",
+      "sha256": "0e4a82a08483585de3598ae061ea9b004441665c63997d48d77a06e4780a4c19",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000005.pt",
+      "sha256": "9aeeb4bb64b2989eb939973558ce70f28692bfd93f54d7f6317e8c3d87a62ec7",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000006.pt",
+      "sha256": "389164d0c9f315540aea96f8c41989edce6ab0df43ba2aff3b2439b29e9d76b0",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000007.pt",
+      "sha256": "204c7b9bbc279057adcb4c00f90244f974396566e92a17a05f65e99f9ce1f116",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000008.pt",
+      "sha256": "1184dd353516eda4eaadaab3dccea2a76610d59da060a15b844d181e7b7e8422",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000009.pt",
+      "sha256": "326aa613004df02ee7bf36b6758d926f3214555d32a4d53abf31f1e6f57b8b2e",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000010.pt",
+      "sha256": "fffbbea294b4a32ea31b387a5df0c646453d696bfe3e8bf86a8ab6a17d94b487",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000011.pt",
+      "sha256": "c4d17812b5e22c1d4ce3c20b76cbf1ddfcbb1a8c0fe785f2caf0e8c491662551",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000012.pt",
+      "sha256": "1bb45c59e35fbda3622eae74415d121fff16ed167ca96358367c39977c075e55",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000013.pt",
+      "sha256": "6f84966361417d3debcb62175f8d4704baef41d4e9c501bb1ff548e92f09620d",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000014.pt",
+      "sha256": "195ac45f0724e78a40e3c609d481b2079956aac921f5a5bdd65a6707991c8cdb",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000015.pt",
+      "sha256": "40b70f0c923b88b0df3ef950d9c21d989ed37897d02b7d15479cca8673b80e63",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00001",
+      "attempt_id": "20260924T031318Z-train-00001",
+      "path": "windows/1-policy-000016.pt",
+      "sha256": "8e517807577bda19b932d7c831034707ceb7a5ee49f22b0ed3519b24564100e3",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000000.pt",
+      "sha256": "6f39e7d3725574bb474fde6a74247be5b754bc6f0c982acd6e0ff514215dca88",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000001.pt",
+      "sha256": "454754b2869e7a1b12eed1884bc6e7309e2deb0ee96d66c68089c3a879910781",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000002.pt",
+      "sha256": "e77a67b59f87a57e0102d553d0fafd211bdd287ffc9a404ca87703bc1e947195",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000003.pt",
+      "sha256": "5a6eb47d9f20a60ad2c8563e0f4811b9e6bff6e3ecd082585db4840ba80b19ab",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000004.pt",
+      "sha256": "197258c859bd24954f6b12a170f07e0e3e8b4a107386bef5717056e71b091477",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000005.pt",
+      "sha256": "eea55d8b5b49763ea729de31082a62ac4f92d04867e70b63e4f3c115cd3a0fbe",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000006.pt",
+      "sha256": "b15b114c1f8dc3537449c9c7a8395a1bcf2a7ed399c65302d6cd79a344a8081d",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000007.pt",
+      "sha256": "c2639615ee06e455b8af763f05dabfebe03c76a8ea7da4a68264302680fe75a9",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000008.pt",
+      "sha256": "3f8f7940506f4a859d1028aae3305bb29f21a20f4fe130c06643d35c577f6e5d",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000009.pt",
+      "sha256": "627d8d8af250eb8c055527d2b3fe52d7a2d8ee9740882e7325bd2dcd08fab93d",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000010.pt",
+      "sha256": "cb8f5df911531779bf8ab5086aeac8a314ba6b0f5adfb822e117e317cca5d395",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000011.pt",
+      "sha256": "418f5a35645f9a265096b26d74ea50fe6a3349163719de5d5ca86182d3327278",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000012.pt",
+      "sha256": "ae58ff3e9a90a26fdcaea7603cecfce7bbacfb2ac7410ee9ec6a7daa9477fc39",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000013.pt",
+      "sha256": "4fa8ba7bd8592694d60e59cfaee14d6b3a87827e39b2b163f6c72392aaa53e62",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000014.pt",
+      "sha256": "b52ca136c84d6edf5e27e599f957fda522c04598a8279b903326323327a99974",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000015.pt",
+      "sha256": "0e52c4058c2572bc0709013b109374ba67c09dad24c7a84cc764d6e016c69a1e",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000016.pt",
+      "sha256": "bb9be2ea4fbc2bc958c6fd637e928093edd87403a90fa37ce3e133b7d1299e87",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00002",
+      "attempt_id": "20260924T031455Z-train-00002",
+      "path": "windows/2-policy-000017.pt",
+      "sha256": "cc8b9c1a87864cf913bff432dd4c8f9ea06cdec6c58148976cf4dd05d4aaa494",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000000.pt",
+      "sha256": "81b2ce60a337be3505a9361e69cff5eec32f81d3417676248315fda97b5cc636",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000001.pt",
+      "sha256": "b9fee74840e18be9884a37229a81b9aa51ed2f693fe55e619e7f50ea7abe8022",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000002.pt",
+      "sha256": "133d6b8d070b4de4536dac4af90574bf6b151638f3845f7e49ee7f79e0e67e47",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000003.pt",
+      "sha256": "2b8755fc070b51f82b53c9e6069cbf5be7794f6c66fb83b3e275e5796f73d93c",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000004.pt",
+      "sha256": "d6738c65c123e2bc8917d5dbf71ceae3ed18cd62f5352d564e0150e76db64ab7",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000005.pt",
+      "sha256": "8b6290abaf28b0c04c6a2a51296c542f5e37c931bebd03f5ec50334ae7d18409",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000006.pt",
+      "sha256": "c5f0abf8ded9e2a8bca776fdf6cd72cec21d701968f591c3f2915bf904ad3b1c",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000007.pt",
+      "sha256": "356111a6416a4b333e5d175c3baab92a50f7d5eddd7e31cfdd603e437f0faa09",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000008.pt",
+      "sha256": "f3dcc60046fb0337431a0890dae8630cfb037af532138d3a8559adf3fadff3f1",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000009.pt",
+      "sha256": "9c4bdbc3cb027ff09da356c4a00d8e4c75361be073e6e93f28d2759ce81d232d",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000010.pt",
+      "sha256": "15e2b651a127980d465d68e61000cf4a64222771d97d667c294ffbe07acc81ad",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000011.pt",
+      "sha256": "d331e3c67194220ffdff8abc0eefc025fb54d893b592df839dc190c61b45ad5d",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000012.pt",
+      "sha256": "d414c6aeba3f02e97bcb8249eb35af6f95b3278c3fab4bb3e70910133827f7f7",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000013.pt",
+      "sha256": "082ebb150334598e1363729983d7337fba2eacea9a12a6d937efa0039dc9f410",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000014.pt",
+      "sha256": "340c3e8c572651975466396605b8d64f17d6dcaa360e7498f207d9b9224eb8cf",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00003",
+      "attempt_id": "20260924T031628Z-train-00003",
+      "path": "windows/3-policy-000015.pt",
+      "sha256": "2f06263b0dffcd0ecac43c89c55a657fbe97cd1e06ad3dab9f834b7980f8cf3c",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00004",
+      "attempt_id": "20260924T032938Z-train-00004",
+      "path": "windows/4-policy-000000.pt",
+      "sha256": "f9b181c90a8b1a1a9d62a9a566a8f3ba5536bb2bfe1222da91a0d0b6d4bdc2c7",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00004",
+      "attempt_id": "20260924T032938Z-train-00004",
+      "path": "windows/4-policy-000001.pt",
+      "sha256": "3b8fd8351c68908d1a1210fa01680ad3a0c0941b42fee2ce4d764489f8c9a02b",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00004",
+      "attempt_id": "20260924T032938Z-train-00004",
+      "path": "windows/4-policy-000002.pt",
+      "sha256": "99cd212cd6d7f129fa9c06cb0fdc3580d26eed58d7a1e88dfe557685d64f5814",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00004",
+      "attempt_id": "20260924T032938Z-train-00004",
+      "path": "windows/4-policy-000003.pt",
+      "sha256": "595b004741238b8fcc3849fd55aaa1e2229f8e19f1cfb01a9e7ccc5510fad864",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00004",
+      "attempt_id": "20260924T032938Z-train-00004",
+      "path": "windows/4-policy-000004.pt",
+      "sha256": "e0b685970bb8b1fb6c26d647357bb24167f52dd6b19805dab0bef3faca49ca57",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00004",
+      "attempt_id": "20260924T032938Z-train-00004",
+      "path": "windows/4-policy-000005.pt",
+      "sha256": "710ed11ee5ad50fa865d02060cbc61bc785f94c6e131f87a413ae261af15e349",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00004",
+      "attempt_id": "20260924T032938Z-train-00004",
+      "path": "windows/4-policy-000006.pt",
+      "sha256": "7ef31253827c360469f9b2c0247a21f5e9a44607ade68396d61d3a65bc8a2881",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00004",
+      "attempt_id": "20260924T032938Z-train-00004",
+      "path": "windows/4-policy-000007.pt",
+      "sha256": "077f52d44141417e6666ed3b50f9ca305ecad9679692b45ed76120f96c4c6442",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00004",
+      "attempt_id": "20260924T032938Z-train-00004",
+      "path": "windows/4-policy-000008.pt",
+      "sha256": "29848565ffd25d1806b4b7b890152dbbaabe6303f18e6342c33703c4134b3231",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00004",
+      "attempt_id": "20260924T032938Z-train-00004",
+      "path": "windows/4-policy-000009.pt",
+      "sha256": "18d927dc9f6e272f3e65107850ebf78fc16acf23587ee75dd43c47c0d22b6747",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00004",
+      "attempt_id": "20260924T032938Z-train-00004",
+      "path": "windows/4-policy-000010.pt",
+      "sha256": "63c18de2511091c95427136af3cc92a0f16fa2fc8f51f35ca4a3eec0f9c2ccfd",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00004",
+      "attempt_id": "20260924T032938Z-train-00004",
+      "path": "windows/4-policy-000011.pt",
+      "sha256": "8d26ff8423cd355a5056e892e47bbc7e1ec0a73fbd41f83e5b13d142b3af7350",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00004",
+      "attempt_id": "20260924T032938Z-train-00004",
+      "path": "windows/4-policy-000012.pt",
+      "sha256": "44a4361330ee31aef7f312043a44bd6790768ddd8ddda9263d92cb5b44939ec5",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000000.pt",
+      "sha256": "a2b809c40e5303f96881753c04d17b5fb3357f039206bfa67325a94503d17f85",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000001.pt",
+      "sha256": "56a9464119e1f3d0e9c444a903edcdc5c947d2dc9c67c04215dc2e1fc32a931f",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000002.pt",
+      "sha256": "1b3a1363fab9439b4d0e413ad47dd1aa57dfa09a86335ea176ac6072a1f7c338",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000003.pt",
+      "sha256": "1b8f6fcbfe495b30fa54e0ab97bbc6d4fb80c184114320e5d648809e7c9ae92f",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000004.pt",
+      "sha256": "00f772c6ec6c2303f4bf28a147d340b5b49397ae2e92b194d878d2e835af4d00",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000005.pt",
+      "sha256": "014c9b956cf47b94b15d02a01e753ad0a3a25b38e1cdb07c90066ea47a09fd6c",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000006.pt",
+      "sha256": "596a196dc0e43a855c682d1107aa0d0a99c485062c424fc9ab08dfc056c82712",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000007.pt",
+      "sha256": "b38cfa63b526a2abd3fe6761c5565fdcc2a0e11608f9e0f02242314058a09bd0",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000008.pt",
+      "sha256": "a1b2083702169fd1e67acfc28a5f4300c16000a717b32bf451d770022e51f5ce",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000009.pt",
+      "sha256": "ce9ddb962a8d061e28c55dd26916810a1730b40fb50faaac268afbbeb57dc40d",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000010.pt",
+      "sha256": "3866eaf10c7fe7b97bd9693ea5539a8ee23a5b46099438b4b20ba3182e1cc54e",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000011.pt",
+      "sha256": "d4fce6e8e58ddda193d55857c83125d18d77ad1abdcbcdb1f18811b3a819db4e",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000012.pt",
+      "sha256": "76b4d38f60e15db696255c2b4eecdc8720cf4f8dab6e12ebd176f76792a8d0d8",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000013.pt",
+      "sha256": "ec57edf81217cc8d30f38ab46f9847c1e702b8dfb58755099674022bd2aa2972",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000014.pt",
+      "sha256": "811ae1a9baa36d6a07c125b456fd8bc5566833164385dca2ebdf558a6e90fd73",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00005",
+      "attempt_id": "20260924T033105Z-train-00005",
+      "path": "windows/5-policy-000015.pt",
+      "sha256": "4f6b6db40d5d60d5859b98194007df6b09e7fff42980f76586e3fca158c2ee99",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00006",
+      "attempt_id": "20260924T033238Z-train-00006",
+      "path": "windows/6-policy-000000.pt",
+      "sha256": "bd2b3b7eeb3766e86d65dedcbc00649c880c196e0da7ab434aba4844e406398d",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00006",
+      "attempt_id": "20260924T033238Z-train-00006",
+      "path": "windows/6-policy-000001.pt",
+      "sha256": "a146c88cf775fc1d58c2b88720abeb38e94adbaaae23b0161ea8ff7817ed01e8",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00006",
+      "attempt_id": "20260924T033238Z-train-00006",
+      "path": "windows/6-policy-000002.pt",
+      "sha256": "2f99978cbcea0b809ac7a5baec001d6aacae216ae7ea5a88808f9c11c9410610",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00006",
+      "attempt_id": "20260924T033238Z-train-00006",
+      "path": "windows/6-policy-000003.pt",
+      "sha256": "b27ab575cd29d462be759c30d56786f51081d8c5516350ff6a04393088b7dd5a",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00006",
+      "attempt_id": "20260924T033238Z-train-00006",
+      "path": "windows/6-policy-000004.pt",
+      "sha256": "2bbb834115982a71b8392a616fe1f3c23ab0f063e6876ab6162a28ffb1121a88",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00006",
+      "attempt_id": "20260924T033238Z-train-00006",
+      "path": "windows/6-policy-000005.pt",
+      "sha256": "0714d817ca5dd3a72a6a6288f6c2aac8741c2cf4b9ef7ded16eb4494f935deb4",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00006",
+      "attempt_id": "20260924T033238Z-train-00006",
+      "path": "windows/6-policy-000006.pt",
+      "sha256": "eb5d3b08007a53159ce9d598fb112c9ad116661c6fa90ecfda8706cdd9fad8d9",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00006",
+      "attempt_id": "20260924T033238Z-train-00006",
+      "path": "windows/6-policy-000007.pt",
+      "sha256": "e2576cb210cf3784aa6e44febb5315be8de0f07d816a31f5ee630c4e635556b7",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00006",
+      "attempt_id": "20260924T033238Z-train-00006",
+      "path": "windows/6-policy-000008.pt",
+      "sha256": "34969c478b689012a41f824238553d59fe1b4a84adbcc12031d09c5dd3addec4",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00006",
+      "attempt_id": "20260924T033238Z-train-00006",
+      "path": "windows/6-policy-000009.pt",
+      "sha256": "75eed97044bacde42cb803d040a2a822d845e5b58b5318649bc0a874f0f7b7fd",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00006",
+      "attempt_id": "20260924T033238Z-train-00006",
+      "path": "windows/6-policy-000010.pt",
+      "sha256": "5b1b9cd19c938029d66fce15afec526c68ec39a8690f029e6db6787cf421b3c1",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000000.pt",
+      "sha256": "493641d842d6f54ee84f7fb37ce7c519a6e8c15fe445fed88801f288dc82ddf7",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000001.pt",
+      "sha256": "4869c448c68b9b7bd567e08ebe46282fb4f3358b52a2572bc8b44aa044b408cd",
+      "timing_qualified": true
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000002.pt",
+      "sha256": "2fc18e0207960a0cb6a0cc94ff51154c2190c5b3403da4e399cd8bb039ca86e9",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000003.pt",
+      "sha256": "85cf3bea6aa08b4983de4c8718fbc64abe2ea777c1784acbfb72c6e6f846181e",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000004.pt",
+      "sha256": "40c3766c8a48916fdd988be850c22e809de7bf911f67a0f536588ae7e4146078",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000005.pt",
+      "sha256": "1b568f3eaa13dea44c5808d2a64bea2ecf7aa258dcd70cdd783ff3efa4d985e4",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000006.pt",
+      "sha256": "45ea5e033297d460a914502ace59298e9e24bd36ae836588a6b799ea15969b69",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000007.pt",
+      "sha256": "8e095831b85be0ad13c252279a00ebc3c37a1e16fc4c331e7cc2b56f8e1e8148",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000008.pt",
+      "sha256": "8d738b8df1af31d1f159627672243e327d3a1f4a917e5a72788246f46507de25",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000009.pt",
+      "sha256": "9ae1cbfe4576729f77d0d14d0b04618d5a7c4117a7f609ae1f3fac254caa5d29",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000010.pt",
+      "sha256": "072abcf61b7d19474e6c06954f1974173fa365e5c22b56e853e3fcdd17203035",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000011.pt",
+      "sha256": "29576049ff62f28ce598fe0dbb68db5d2f89cf59aee449df7b2819995f0e136e",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000012.pt",
+      "sha256": "c3f268e3ce6c7b751cc958cd49692cdea86a55e07eb29a868cd3d8a1ed46ab02",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000013.pt",
+      "sha256": "d6e9aaf9b8c72facf2e44d98f19319ce0589f0d29ed56aafcd439aa2b3d23a33",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00007",
+      "attempt_id": "20260924T033412Z-train-00007",
+      "path": "windows/7-policy-000014.pt",
+      "sha256": "894a48f81ee52b0ef4d77cdfbc17fac4bd820c4d85384e0e73bc476f23aea81b",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000000.pt",
+      "sha256": "0e49eb59eebddace02ffd20c4665689f6e424fd1ec80c2f5f41219471dc0c1ba",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000001.pt",
+      "sha256": "b19558a518ac269f9497d386634f063c5d25c7a1740f3bec5fbf08009cabc66f",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000002.pt",
+      "sha256": "dfe6541634b485af243183db792a210823694fe2b717c8c87bcb169f40d2ccb8",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000003.pt",
+      "sha256": "799286bdd6f4132a45dd168be9e52a2df9eb6cf83b93d0b3b88dfa0476135c31",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000004.pt",
+      "sha256": "7f0efd3090bc5211547f852278f5dceb1d8fa93b4b235598645d687b5cba082e",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000005.pt",
+      "sha256": "2e8bf44bb9604c98f142cb54dbe176ae88b813627907b4a3b781ca7836707f52",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000006.pt",
+      "sha256": "76027175cf76abdd78b394a81eee1adce5805eebc5d751f712eb597f150e41a0",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000007.pt",
+      "sha256": "b619eaed73afa1069fb4a004a0de847aba1e955aa3af22750fd1f448139d7e4c",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000008.pt",
+      "sha256": "9265992824081ee95b7bcbfaa14f11e147475c07da59367b38d04e0f96cff509",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000009.pt",
+      "sha256": "dc0f1c3885b2e0caa6555483017b77e0c0c38c8c1cdc352b89fbd672b064fdf2",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000010.pt",
+      "sha256": "422599a27c57f33509aa35b069ad8adb9467da63a119f0de55769ee762b30756",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000011.pt",
+      "sha256": "2927b0d489add2e9277431ce7a606c1861aac5ef625dedeea7bc458c4de2918b",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000012.pt",
+      "sha256": "090ba8dffa5fb1808d9b985c7920930f13001f2abe826287f4011b3356685f4f",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000013.pt",
+      "sha256": "743d15a8f8f1dc4afffc73b12409749a0759004af47d1b4b9f2a823a0e0da325",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000014.pt",
+      "sha256": "8728895b84ed4f52604c78e7e3ae3f851925f11082f21206e000f04c39ea8ab2",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000015.pt",
+      "sha256": "39abd1a168d568451e580aabe6d71e5354f0b5345e606e159c0f8138f43ba5d5",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00010",
+      "attempt_id": "20260924T034035Z-train-00010",
+      "path": "windows/8-policy-000016.pt",
+      "sha256": "98af645bd744049819760a37b5c371245a83ecc5c638f9b7f13397b44c3ae095",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000000.pt",
+      "sha256": "abb94ec2cb911816e3cff7519627970dbc2a55fafec9ce2693f25bebdd97a706",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000001.pt",
+      "sha256": "faeddd9110646bd1330eff7a6c630cc32190f710454a93c5cf3d571788e9b155",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000002.pt",
+      "sha256": "4c413407d75e3bd6f4efe275307420ed36132b77a913c19c86ebcfd95a6280a6",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000003.pt",
+      "sha256": "54c9c01a9155d5c245e631be3a71011f77fa73140bdbe75180c78b5f69340b69",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000004.pt",
+      "sha256": "9bd22281a3318d0e47796f72699a78f4ba2de8166c4ea99593670d9e2b1a30ab",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000005.pt",
+      "sha256": "ae58cc86cada481b49c78aea0fee5db9a0ed02ee346d164544dc42bc5be13454",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000006.pt",
+      "sha256": "b446b4d6621b9bddff5ee50458f85484449105a78bd21c67159f9c247dcf6baf",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000007.pt",
+      "sha256": "b6ea56e6e869f21c14725fe1655326a8d73888cf6414b6a08727aa36eda289f3",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000008.pt",
+      "sha256": "b6f7422a4e5f64ec6c495d60bc33dc1257c9c71e88af0f092cd5640d43c0e84f",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000009.pt",
+      "sha256": "faa113677e42e95a314609ede892aed8ede4b452644afc0dd06fd5edb6e3d707",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000010.pt",
+      "sha256": "bc0548554a15f5398a2f84b00fc6f1a45f8c4be92de1aae56aa1a98c5161b137",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000011.pt",
+      "sha256": "f430c205e9cb98818d5786be410da40ee1e970922739b8c45b1e6793243b92c7",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000012.pt",
+      "sha256": "8f33e610b6dbc5655de2d97d910f8242bb8da8754cb336531694c917aaacfed2",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000013.pt",
+      "sha256": "d7430167fe6abbc08d7a493f6c474a7f29c3eade7fd34cec1a4c05b8701b0f8e",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000014.pt",
+      "sha256": "fff374030adeeb9bad0b0bce4de98ecba5f4c3a81b1ff5af221c11c1cb098b58",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000015.pt",
+      "sha256": "636159c948e5794e40070b64f38f34f2ce847915ae3a0376cd320fb12a264326",
+      "timing_qualified": false
+    },
+    {
+      "module": "policy",
+      "episode_id": "train-00012",
+      "attempt_id": "20260924T034210Z-train-00012",
+      "path": "windows/9-policy-000016.pt",
+      "sha256": "c920c1ab1ce162cfb1dfd238f24462f9f941036d319b1a66131ff86e30e1408a",
+      "timing_qualified": false
+    }
+  ],
+  "normalization": {
+    "path": "normalization.pt",
+    "sha256": "de7d62503d72981880c12c92e1024baee68b01a552cdba251e276c9a0d8bdcd1"
+  },
+  "perception_artifacts_sha256": {
+    "goal": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+    "odometry": "05ece968b12db87b41137425d110067e9e3a71d0dba7f4c64174ae7f924a5434",
+    "projection": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d"
+  },
+  "goal_encoder_checkpoint_sha256": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+  "projection_sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+  "world_checkpoint_sha256": "d699f793df296897fa7c9da43993f3650bafbccf75692ec36dadf4ed9c4df4dc",
+  "navigation_checkpoint_set_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+  "source_bundle_sha256": "dc9c8b05a3b19a21ba929a3c6cd7f3b13fa77a9f1e27ecb627845763bbf81683",
+  "source_replay_sha256": "e989b292b090d74a4198a6379b9671c9a68fdbabbf64b9ee237c5efd0b5f0d09",
+  "readiness": {
+    "status": "completed",
+    "training_ready": true,
+    "deployment_accepted": false,
+    "accepted": false,
+    "windows": 151,
+    "episodes": 10
+  }
+}

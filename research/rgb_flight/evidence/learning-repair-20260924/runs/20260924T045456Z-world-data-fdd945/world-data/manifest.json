@@ -1,0 +1,1057 @@
+{
+  "schema": "world-sequence-views/v2",
+  "action_semantics": "post-safety-dispatch/50ms-v3",
+  "belief_version": "masked-map-dispatch-state/v3",
+  "foundation": {
+    "accepted": false,
+    "training_ready": true,
+    "valid_expert_episodes": 250,
+    "visual_goal_runtime": true
+  },
+  "perception_artifacts_sha256": {
+    "goal": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+    "odometry": "05ece968b12db87b41137425d110067e9e3a71d0dba7f4c64174ae7f924a5434",
+    "projection": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d"
+  },
+  "goal_encoder_checkpoint_sha256": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+  "projection_sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+  "navigation_checkpoint_set_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+  "source_bundle_sha256": "dc9c8b05a3b19a21ba929a3c6cd7f3b13fa77a9f1e27ecb627845763bbf81683",
+  "episodes": [
+    {
+      "episode_id": "train-00000",
+      "split": "train",
+      "goal_region_id": "20:-17:0",
+      "start_goal_pair_id": "train-00000",
+      "simulated_seconds": 30.051641088
+    },
+    {
+      "episode_id": "train-00001",
+      "split": "train",
+      "goal_region_id": "-6:-9:0",
+      "start_goal_pair_id": "train-00001",
+      "simulated_seconds": 30.057641216
+    },
+    {
+      "episode_id": "train-00002",
+      "split": "train",
+      "goal_region_id": "-21:0:-1",
+      "start_goal_pair_id": "train-00002",
+      "simulated_seconds": 30.051641088
+    },
+    {
+      "episode_id": "train-00003",
+      "split": "train",
+      "goal_region_id": "13:-20:0",
+      "start_goal_pair_id": "train-00003",
+      "simulated_seconds": 30.021640448
+    },
+    {
+      "episode_id": "train-00004",
+      "split": "train",
+      "goal_region_id": "-21:-24:0",
+      "start_goal_pair_id": "train-00004",
+      "simulated_seconds": 30.04564096
+    },
+    {
+      "episode_id": "train-00005",
+      "split": "train",
+      "goal_region_id": "-16:9:-1",
+      "start_goal_pair_id": "train-00005",
+      "simulated_seconds": 30.087641856
+    },
+    {
+      "episode_id": "train-00006",
+      "split": "train",
+      "goal_region_id": "25:-4:0",
+      "start_goal_pair_id": "train-00006",
+      "simulated_seconds": 30.04564096
+    },
+    {
+      "episode_id": "train-00007",
+      "split": "train",
+      "goal_region_id": "-7:-25:-1",
+      "start_goal_pair_id": "train-00007",
+      "simulated_seconds": 30.006640128
+    },
+    {
+      "episode_id": "train-00010",
+      "split": "validation",
+      "goal_region_id": "9:-12:0",
+      "start_goal_pair_id": "train-00010",
+      "simulated_seconds": 30.048641024
+    },
+    {
+      "episode_id": "train-00012",
+      "split": "validation",
+      "goal_region_id": "3:-16:0",
+      "start_goal_pair_id": "train-00012",
+      "simulated_seconds": 30.03064064
+    }
+  ],
+  "windows": [
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000000.pt",
+      "sha256": "d2fd366e35d7fb88ff6f157ed897e8d4ffb1dd3be0d2aebd06fa7b38168fa9dd",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000001.pt",
+      "sha256": "1e77c347fcdf2955b3067462af9f1d7ec97373a870c4c6f478ea61bd5a23e3d1",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000002.pt",
+      "sha256": "099b230328fafc7bba3522eaf6d93683c220666eab603ca81eb7e0fafbe0f489",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000003.pt",
+      "sha256": "a9f80c9d4c5ff694bf9fd1b7678bf37317a7dee0b33b2ee4f0a75362916bc039",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000004.pt",
+      "sha256": "0bab1df5a9b53ddde5e9044d502995f93d2f1db64930fe35aa28379b7faecd87",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000005.pt",
+      "sha256": "801ae7fa501f030907ddbccc2e28bfde7df285b89632b736ff88f5ae0a73c467",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000006.pt",
+      "sha256": "db104b7cc92b18d3e40c0126220368eb0ef4cf76df64fb0f68bde35b1c5e67bd",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000007.pt",
+      "sha256": "12a68f37c0bdfed316cb78dca6133f303bdecf8797ce7b413e88c9b3f933c06e",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000008.pt",
+      "sha256": "c0dfe8403a01fb2bf65ef48a3a0722f1425023d7a4ba4811ccb304f987080c5b",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000009.pt",
+      "sha256": "45ca8d368caf7f9d607955ef72a25ba4d141935de8ae47829fd43c70a33cedab",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000010.pt",
+      "sha256": "077d262bfa93dacce428fecade2c712f8e1c7ad520679246f4cc87ea5da1cf69",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00001",
+      "path": "windows/world-000011.pt",
+      "sha256": "68ed24ee1d857301839e8ccd4b81cf1b3ef2eb1d4a839eb717f5f46c13dae7c2",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00001",
+      "path": "windows/world-000012.pt",
+      "sha256": "6733c4a2559a3d09e918edcd28fb741c5026ff001a2aa338c4ed489f8681decc",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00001",
+      "path": "windows/world-000013.pt",
+      "sha256": "a591443865d4d7002e5dc067f41056025d8dbaaad977ab5cd26429c5cc6f6924",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00001",
+      "path": "windows/world-000014.pt",
+      "sha256": "bd675ced1ef7616ec28b2844d5ad3574dd68705b30a900aed0008b1dab642472",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00001",
+      "path": "windows/world-000015.pt",
+      "sha256": "5a44021250e6a1f88f8d00f0a053286883db39e96ddbe3c201c9d7ed8f4137a5",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00001",
+      "path": "windows/world-000016.pt",
+      "sha256": "009e20375ec07cc46baa340eabb2f1406c51d0a9dd3668fd4d53126e78432ba2",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00001",
+      "path": "windows/world-000017.pt",
+      "sha256": "0055aa0222d9bce18f3f47c48ba8ea3f69616bf9edf13221edaa9f125cd7c16d",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00001",
+      "path": "windows/world-000018.pt",
+      "sha256": "52b4bf2185f2e3fa55c3d8907dc5ce1799f98b8545fdfe1062a581b877247ca7",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00001",
+      "path": "windows/world-000019.pt",
+      "sha256": "9b6ef1cdb2830b5f81487bbba322c8c90340ddd5aa3caacd089969741ec39511",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00001",
+      "path": "windows/world-000020.pt",
+      "sha256": "6162d63cd3448adffa09dd63c2e97fdf856895640ba6e4f584cba33d76bea9b7",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00001",
+      "path": "windows/world-000021.pt",
+      "sha256": "f70f69f226683ce8613416344894f1b6e9e06baec6285c57ed5a1f971dff11ed",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00001",
+      "path": "windows/world-000022.pt",
+      "sha256": "1ef56705965d0e9a88990ef30ef1bd3428f8272fc3f5a7f4895f55bcd759c006",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00002",
+      "path": "windows/world-000023.pt",
+      "sha256": "2d7064a878ccca9bc202b0eae0ed970a3e2d53142535219bb663f38b8c3cc50a",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00002",
+      "path": "windows/world-000024.pt",
+      "sha256": "14cafec7817aba2c086431b87781138476ec3d1d8567542321d189c5f2fc6f58",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00002",
+      "path": "windows/world-000025.pt",
+      "sha256": "caee5ffb4abf7556d4fbdc695f2cff9e064925960cb942dbc28f08f3a8b04d83",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00002",
+      "path": "windows/world-000026.pt",
+      "sha256": "3366ed6e12b470669a4032fb9f196b76be391c2cfefb70ff16d90582210ce97a",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00002",
+      "path": "windows/world-000027.pt",
+      "sha256": "1ac87f9f1ef7ab388c61278962d025f27f0d60004e84273ab03c2a6ed543641d",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00002",
+      "path": "windows/world-000028.pt",
+      "sha256": "1595cc8f086c864e260f772d27d09d24f1ef9c284773d6c62c0d7f560c1cbde2",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00002",
+      "path": "windows/world-000029.pt",
+      "sha256": "c50d7e84221d5996f9e08ebab43a9fe4d4c3579f79a1f1137ae728d007510007",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00002",
+      "path": "windows/world-000030.pt",
+      "sha256": "7f79e5dac246133646e1bc7b67989dba42bb5a210245cf1de2d51cf9b2accc41",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00002",
+      "path": "windows/world-000031.pt",
+      "sha256": "b713c97c782fab7e19e56bf63a312665103e051a5058abab159a3d6a37515b35",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00002",
+      "path": "windows/world-000032.pt",
+      "sha256": "101e4d00b62022f2ee50e3481df48746ffe6a1487aaa522d297a8c58709cc78d",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00002",
+      "path": "windows/world-000033.pt",
+      "sha256": "b8091feeb84eb1501da2e92b91e9c425296ec73c6f98bd1e476f0ad6f3b5f724",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00003",
+      "path": "windows/world-000034.pt",
+      "sha256": "59a9ddc4af4165f94b1e4c68e9f734fa8bf195338724e0b7d46d4e4b828e10eb",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00003",
+      "path": "windows/world-000035.pt",
+      "sha256": "71a3d6c225a72a3876e5c7736915b461add0cad63de0699eada0925ce0bef521",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00003",
+      "path": "windows/world-000036.pt",
+      "sha256": "a68cd36e062cb1c221ff7cca63c8faef987617872038279faf789393d781e99d",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00003",
+      "path": "windows/world-000037.pt",
+      "sha256": "a8a5687f7833db068dc00d38dde2fea6740c57147af031e12c9b93d662d8325f",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00003",
+      "path": "windows/world-000038.pt",
+      "sha256": "34aeac77164db5ef436b3078a6a90b19a830b5da0e5959f1e612f909321f2387",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00003",
+      "path": "windows/world-000039.pt",
+      "sha256": "8ae4ccb2b1854e2b6f34a2685764efc630b07cab506dacd0b8d671e7026dfb9a",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00003",
+      "path": "windows/world-000040.pt",
+      "sha256": "295fd185cd74f9b024f2fe1839131d28b5e165f985990900f2712a5ae92af65b",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00003",
+      "path": "windows/world-000041.pt",
+      "sha256": "aa88fa493e38c2f083eaed91a4e7ab4a6ddf9320a8b96b015de71770f2ded826",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00003",
+      "path": "windows/world-000042.pt",
+      "sha256": "9fd5bfa2a8d36ee07c3bbe468e19a540972f0905155111364cdf53d063b63688",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00003",
+      "path": "windows/world-000043.pt",
+      "sha256": "c9c8cedf7ddcad47fc447a9d2fa6bc0f95ffe983b2118bc994a6e09ba269270b",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00003",
+      "path": "windows/world-000044.pt",
+      "sha256": "76995c6879bdecc43b8495e74e05a82efb0c0ccebc557c80f894efc806d732cd",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00003",
+      "path": "windows/world-000045.pt",
+      "sha256": "64f88337b22a9377e0f17b5226af1ae87b78ba2fdbe0de779027812831c5ff8c",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00004",
+      "path": "windows/world-000046.pt",
+      "sha256": "fd72879585bd89272971464f068e5318b7eecb730d4ef700227d2a4ec06c6898",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00004",
+      "path": "windows/world-000047.pt",
+      "sha256": "ee6c59cb26b4c7800048f1f35ffaf8f928c4d4bda4aed00622a1758232850a13",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00004",
+      "path": "windows/world-000048.pt",
+      "sha256": "90052f87a46052e36498416ab8b5a83b1fe713699274e9e294469cfcd52cdebf",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00004",
+      "path": "windows/world-000049.pt",
+      "sha256": "6f78972437071c4ae3a1a398b3f4115a1f9700a7809c1e0b4c93811fead4ccbb",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00004",
+      "path": "windows/world-000050.pt",
+      "sha256": "7e19d0e71bbeb99734b3eb6533b6f80a995308c3b5c0b3ef355ffa54f700c857",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00004",
+      "path": "windows/world-000051.pt",
+      "sha256": "93af6489652be89c9f19d854f21dbbbb133c270d35027ad4879f6a579aea127e",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00004",
+      "path": "windows/world-000052.pt",
+      "sha256": "e3db311474e8ad06e78e45abaeefa8d2da9d1627a0267682d7a5d3cbadddfd0c",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00004",
+      "path": "windows/world-000053.pt",
+      "sha256": "61ef3d46511529ec4bbb27cbe3b03a839d0d0e0d2f77d19014c175894058e83f",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00004",
+      "path": "windows/world-000054.pt",
+      "sha256": "f20f5e029a1be3d476e82507af52f8860159d6f6271a69c9739575c600a5d9b8",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00004",
+      "path": "windows/world-000055.pt",
+      "sha256": "fd6fabaf9a526e36d15fa3cdcb55ffb6c466c7066005db934f08d7e6988c19fe",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00004",
+      "path": "windows/world-000056.pt",
+      "sha256": "ae70fc13ee63b22d5d1c917a986265146a49d7559f418d5e649a8c4974a1ee65",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00005",
+      "path": "windows/world-000057.pt",
+      "sha256": "f6c7c7e2b60fe69ea7e6952feaba7d26e48b2b53cbeddcf84c29b199692deb3e",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00005",
+      "path": "windows/world-000058.pt",
+      "sha256": "57999f4bc77be67a0094821adb72267e5f36c0acf959eb70968fefb58c50729d",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00005",
+      "path": "windows/world-000059.pt",
+      "sha256": "782d57e524ac4326e5a76688ead1c69dc8c45b60beeb8342845e63f4234c143a",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00005",
+      "path": "windows/world-000060.pt",
+      "sha256": "fa08dd21edb7c88a5a8b0fff7870be8cc81591865d817e805c96bc2b8dabfea6",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00005",
+      "path": "windows/world-000061.pt",
+      "sha256": "36dd602887f40e7e4fae17e9322441cc7cc1548687a1044ec8a36aea90e4dd7f",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00005",
+      "path": "windows/world-000062.pt",
+      "sha256": "c3adf2117a48e333dbe3e85568256e6858e5e418012fd3e084f6983b2c930bb7",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00005",
+      "path": "windows/world-000063.pt",
+      "sha256": "da633a16e13fe053d7929eca58d136981f9153ecf248c87b9ac16d615017b0e7",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00005",
+      "path": "windows/world-000064.pt",
+      "sha256": "ed41ba382dca703b34775945303e0398411a81ab157b21f8bb32379355e0c1fa",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00005",
+      "path": "windows/world-000065.pt",
+      "sha256": "c5ffc472f2bbaa0a85fac7730d3d7aa0c6f8515cf0036a77cf7f84c08ad8ab06",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00005",
+      "path": "windows/world-000066.pt",
+      "sha256": "05e53801a6f7bc6e88c74742f22946065fea907642a02ff063cdc6968f55e515",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00005",
+      "path": "windows/world-000067.pt",
+      "sha256": "de181349e6fe08c06c0d027f631a750aed21879c86fcaa2639c6006930e0e14a",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00005",
+      "path": "windows/world-000068.pt",
+      "sha256": "e69ab1b855ac0cd3e757a4979fc87d4291286ff432c27453f1e222a53eceb938",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00006",
+      "path": "windows/world-000069.pt",
+      "sha256": "0840082bd4bf57b655f723aa544cd118f04f01b43012fe62ffa1540a773b5857",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00006",
+      "path": "windows/world-000070.pt",
+      "sha256": "7f0f9861f2403c0fe2d4bde23eb185f72e3f36c456d5f57c590c7435b9de663c",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00006",
+      "path": "windows/world-000071.pt",
+      "sha256": "6cf9533a4149fcb7195a9162438a84a992a8bc81491de69f8e05cb428dea943b",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00006",
+      "path": "windows/world-000072.pt",
+      "sha256": "c10917edfa4860503ccd544c3bcd2d30ffc33865bd0889d4b39d61d144b9128a",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00006",
+      "path": "windows/world-000073.pt",
+      "sha256": "a71ddd0277324240eb34632435b722daf283cd4451d8b763d69af31c628e73e3",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00006",
+      "path": "windows/world-000074.pt",
+      "sha256": "c227d78c41387f874522849c60e7c9d5a91f9bc16ad7794fd88f07dc155b1ae3",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00006",
+      "path": "windows/world-000075.pt",
+      "sha256": "56f8a860911537a104ba2e168c80586b571e26b190c482e9e0132a039a57b5de",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00006",
+      "path": "windows/world-000076.pt",
+      "sha256": "c35a8f5a390fc5f4631831bc6d435d410f9c18c3a932b6387bccc6d3c3b00789",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00006",
+      "path": "windows/world-000077.pt",
+      "sha256": "b33815fada7e6bcd68d0ba5c6852521a956ae5c9915f9ab22e7e115001732d20",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00006",
+      "path": "windows/world-000078.pt",
+      "sha256": "c3a3b862eae22c688ccad7598316d800154d58cd9a611c4bfa59dc6548537827",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00006",
+      "path": "windows/world-000079.pt",
+      "sha256": "0f52213d47815c8b1802616b1ec073c541985a3787f5e9ace89bf74571b0176b",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00007",
+      "path": "windows/world-000080.pt",
+      "sha256": "dc39bf3772574e85fef85c8fe3718ae6776bb5c65e0db083394817fce1c41abe",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00007",
+      "path": "windows/world-000081.pt",
+      "sha256": "78c1c023421ade783fedc6856e7059cd479240673c409746991129d2ec046c97",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00007",
+      "path": "windows/world-000082.pt",
+      "sha256": "a9070a51fe576ec792705e8f97bb65794be66fec2da907b691816d94caf22777",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00007",
+      "path": "windows/world-000083.pt",
+      "sha256": "f2dea3f2c11e1c1a2cb127a2f72127c99975a5e1364ddbe2df1b93769411abe3",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00007",
+      "path": "windows/world-000084.pt",
+      "sha256": "2a61acad90880875ed1b6942b6acc63e651800ddaf5accb82679eba757d37b19",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00007",
+      "path": "windows/world-000085.pt",
+      "sha256": "1283744e228f960b8b66cdbb16b1f13983450f6fc2bfab33e7ea133bc9cc2c19",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00007",
+      "path": "windows/world-000086.pt",
+      "sha256": "31f2d21e9f87b3039e31e76b2cf05dfd44ecad89ba0a84c05897451f2b8c618e",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00007",
+      "path": "windows/world-000087.pt",
+      "sha256": "98858ca283f7c81f50c1e32269b1175afab414a6de771508434d5ea28d7558b1",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00007",
+      "path": "windows/world-000088.pt",
+      "sha256": "3c0009f9cae904eb13252263cdc7a6f18f472867d0dc57bab70b9592cb47de2b",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00007",
+      "path": "windows/world-000089.pt",
+      "sha256": "84e546550f3b8cb088c129215f895c317d865c643269d3636443ebe51786a263",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00007",
+      "path": "windows/world-000090.pt",
+      "sha256": "94256d9aaaac8135b130917822b364b5d79e1ecbb8ce0fbb80c907607ddabbdf",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00007",
+      "path": "windows/world-000091.pt",
+      "sha256": "de9a7bf34546618467f3727b0c2a001f8db32284572d9809ab4881fedf200889",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00010",
+      "path": "windows/world-000092.pt",
+      "sha256": "2b7ddd26936052fac0738d316d9ac606716a5037f3ea82dda0b58b7e61b7ee68",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00010",
+      "path": "windows/world-000093.pt",
+      "sha256": "775f5340008b891e3c7f37ecfa7a0c5360444cdb970975ab1e1c3bc4505515a2",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00010",
+      "path": "windows/world-000094.pt",
+      "sha256": "a9849a828170cb350731f863ad1da993a8999ec18630b2f0613bf927dab2ebfe",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00010",
+      "path": "windows/world-000095.pt",
+      "sha256": "c867461e277614dcdae6326f3cf71dfb53b53ed29c6a53b4d091859beee58f3a",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00010",
+      "path": "windows/world-000096.pt",
+      "sha256": "6c2eb219b28f34f1b1fbeb90683ad30e199356c1f30f5ccc2334f2ab46ec7398",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00010",
+      "path": "windows/world-000097.pt",
+      "sha256": "fbfe6c0b130dde40599cd48b263dc5c6e0af712bf267f5da7eeaf7df1649e911",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00010",
+      "path": "windows/world-000098.pt",
+      "sha256": "114736b5d18494a1c4eb3c8d39c3d2b3bb44d85dc919e34fa493cc16a4d11d51",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00010",
+      "path": "windows/world-000099.pt",
+      "sha256": "2ff9e2602bee5ada931e8399aad7a4ee252a6d3c82ece9cfe0600468a09515c6",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00010",
+      "path": "windows/world-000100.pt",
+      "sha256": "72e434f5b0b69d8f26208e22a60b2d87d574225c89b7435e7b8b57d1da2338dd",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00010",
+      "path": "windows/world-000101.pt",
+      "sha256": "d640f35017af3ff1d94f75d3e0cad7b87edd14a99b50e70c6a9e93efffa6365d",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00010",
+      "path": "windows/world-000102.pt",
+      "sha256": "a116db8a084d53fa998530ec5ff6bf0b772758a269007abbc69a3f4598959f11",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00012",
+      "path": "windows/world-000103.pt",
+      "sha256": "289171d4a5cfa336d76cd7c778ba6d7aebb228a86892bc8e94674169c34264e4",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00012",
+      "path": "windows/world-000104.pt",
+      "sha256": "a1ab6b224b28dab2b10dfb380b1f341468e59ba22113637807b34a5c3a697447",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00012",
+      "path": "windows/world-000105.pt",
+      "sha256": "58b1c77e8228f4e26c320f60f9d545e8f16d574a635fe620c5a56c08264bbf7b",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00012",
+      "path": "windows/world-000106.pt",
+      "sha256": "905d9eae4f4f108ecccc8ea33513bde8b163480fe7e2662e39a0eb4e1679190e",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00012",
+      "path": "windows/world-000107.pt",
+      "sha256": "18f9eba3c40714532ef8b8318ebbd64db36e61d865d052823375c9ee44dacf4d",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00012",
+      "path": "windows/world-000108.pt",
+      "sha256": "11e4734bf291ccbe5b32d92412481fff528cb45fb851fa108b269a15c00fe762",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00012",
+      "path": "windows/world-000109.pt",
+      "sha256": "5b79d8382b6e22c090e109d9d68068eff6d46076d67ba72d3ccd3319480e89c8",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00012",
+      "path": "windows/world-000110.pt",
+      "sha256": "69c4dbe36ffc364731794a5f23111d54975410339d61b79c94303f6ea606dd5f",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00012",
+      "path": "windows/world-000111.pt",
+      "sha256": "d0a28cf8274cb8800fd7a0b3a1c955917390718872e60f3f0705661c28500f6a",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00012",
+      "path": "windows/world-000112.pt",
+      "sha256": "317fb088a4a15f672b26d60c98cb1fec2778dcfd1fea27f1f31652cceb49c550",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00012",
+      "path": "windows/world-000113.pt",
+      "sha256": "b25b2b7822f70ee49a1943e7d2cb764535fae62fd40aaaeec93ea5dcfeb00918",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000114.pt",
+      "sha256": "b4694ee03def35d0438c7d1e10beba5c2bde9598bfc9a6540b27d4da2e29ee70",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000115.pt",
+      "sha256": "f4f0edc8d927d100164ff596f072a4613d728de619423916426b8f418142992f",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000116.pt",
+      "sha256": "171dbcf1acb6684133be0eacc568e31f1fb78eb548f670caad7e04b24c5b8e33",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000117.pt",
+      "sha256": "391da5787b5451d3c7b988e4f2f82c7e918ea3fd3d1853bd117da166549089a8",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000118.pt",
+      "sha256": "ea006542595d457b73ea59a09b5557e009664c0098b3dc588325962a5dffbee8",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000119.pt",
+      "sha256": "c662ee0cd17f11d4818bcb4431046e19833e394de6b2f9bc1a901600d9344cd2",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000120.pt",
+      "sha256": "52ba113e04e39674db34c6aee567b6c1462be5905676692ecfd43144d1711163",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000121.pt",
+      "sha256": "593c800186ace7ef3fcef200cbd0488cfe9d1fdc0cc474e35e7aedf5d262aac9",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000122.pt",
+      "sha256": "89f5f654673a5519c56d41c496944729b790b8e38b746797b0f1b8f750bd97cc",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000123.pt",
+      "sha256": "658ea4ea97c68eae01d1784ba4c7c8d85fa56db39a25995f95c68acb268ba3af",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000124.pt",
+      "sha256": "5d9c8886b65b66db8e12d274fce976f5a7e7cbfe3bd07f7b11ebb136d8d8e31d",
+      "action_timing_valid": true
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000125.pt",
+      "sha256": "324084ff44776960e80681865c985b8afd74160f03e69570bde507b24280bb22",
+      "action_timing_valid": true
+    }
+  ],
+  "normalization": {
+    "path": "normalization.pt",
+    "sha256": "8a07682bca9a7e6da3c67ee16a219acc34043a01df0caa4b36798d11939bc1bb"
+  },
+  "provenance": [
+    {
+      "attempt_id": "20260924T031144Z-train-00000",
+      "source_checkpoint_set_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+      "replay_manifest_sha256": "e989b292b090d74a4198a6379b9671c9a68fdbabbf64b9ee237c5efd0b5f0d09",
+      "result_sha256": "a658df3f2bbe5d8b17f8698d59b87353966fd7ce9ba1a349f27875942638ca95"
+    },
+    {
+      "attempt_id": "20260924T031318Z-train-00001",
+      "source_checkpoint_set_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+      "replay_manifest_sha256": "eb26e1d4745b8b3599bdfc8cc2444eed282bb5217a900129237dad0e4b396c30",
+      "result_sha256": "b0dbe0865795fe9b64384523bb1587c6b1aaa5efe0cbe1369d34e84aae9b8832"
+    },
+    {
+      "attempt_id": "20260924T031455Z-train-00002",
+      "source_checkpoint_set_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+      "replay_manifest_sha256": "56dd0a2a2a5df4208f36ad4012be909067a2d1bbaa20fa8adf6a418b627710cd",
+      "result_sha256": "528ab595a396cc167b0007565ce30dd5baa521510f526fd849b787886b6d6a77"
+    },
+    {
+      "attempt_id": "20260924T031628Z-train-00003",
+      "source_checkpoint_set_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+      "replay_manifest_sha256": "48a5c3156724c69feaed10339640e386a638a9e381725f224514ebf7a6c358d1",
+      "result_sha256": "9908ae7d2c6a1c9515937059a50c0d90cb269f94f3ef53034a8dc8410120be2d"
+    },
+    {
+      "attempt_id": "20260924T032938Z-train-00004",
+      "source_checkpoint_set_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+      "replay_manifest_sha256": "49f4be42c8a12f9975d9464b9936bb1fabb90a52f0348de7bb213554f69f3082",
+      "result_sha256": "951592e6d756e88a8a6ee908afe2707f46c5bfd20e10133f82f49973d99b1294"
+    },
+    {
+      "attempt_id": "20260924T033105Z-train-00005",
+      "source_checkpoint_set_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+      "replay_manifest_sha256": "8bb9ea4223d9aeda1334d60e7a5177c29445a5f572ee790438e57156150cc6d8",
+      "result_sha256": "bf61396155c9b670373dfa81887c2b909d21e5fde6fda50808683c3038e381eb"
+    },
+    {
+      "attempt_id": "20260924T033238Z-train-00006",
+      "source_checkpoint_set_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+      "replay_manifest_sha256": "b2f0651b3920103f1ccb089215aa232250f9a976d9c49cc153cc4249d8c8db44",
+      "result_sha256": "bf40de47b3b04a974ec4ce837ab7f2485ad044984297367b4cf3e89136287e82"
+    },
+    {
+      "attempt_id": "20260924T033412Z-train-00007",
+      "source_checkpoint_set_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+      "replay_manifest_sha256": "c9916c5b3075736b5a1e063da26e87859da3fa01590e318b952ca9ab0bedcf3e",
+      "result_sha256": "06bc0b13a1c8dc3567625cf4de7f1babc0ae69413de4d316c62eaabf557b39d8"
+    },
+    {
+      "attempt_id": "20260924T034035Z-train-00010",
+      "source_checkpoint_set_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+      "replay_manifest_sha256": "02944395197a573fd169bdfde2e94a15bd49aa806dd227ed88e54bd33d563111",
+      "result_sha256": "85bb1a38e787fc0d6f5fbad159a225938e2b471265f52646627dd6f27b23e19c"
+    },
+    {
+      "attempt_id": "20260924T034210Z-train-00012",
+      "source_checkpoint_set_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+      "replay_manifest_sha256": "35484a5f46ef05b9f17b79aedcefa09966a60887da995dfe235d8811eeb8807a",
+      "result_sha256": "1e5c6d7892ad0f39b7a455f632d9d69051ffa6a1b51636540ccf3c34f13eb1df"
+    },
+    {
+      "attempt_id": "20260924T034708Z-train-00000",
+      "source_checkpoint_set_sha256": "cf3c7d414006a28a0d63f3878e4ba9208d7c424641e639051d3d075f96176945",
+      "replay_manifest_sha256": "449d29a4c84a4abfe5122f18809d3a8de1b0bd7311787c83f6609f42a62d30cd",
+      "result_sha256": "bd842ac39cc18697186a95b235c7efe66ca16db106be0d34366215dfc4f3cd40"
+    }
+  ],
+  "readiness": {
+    "status": "completed",
+    "accepted": false,
+    "candidate_windows": 126,
+    "timing_valid_windows": 126,
+    "training_ready": true,
+    "blocking_reasons": []
+  },
+  "clock_alignment": "ClockSpeed 1 paced-replay wall intervals anchored at first RGB availability; no original-flight feature availability claimed"
+}

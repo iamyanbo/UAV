@@ -1,0 +1,9 @@
+{
+  "status": "window_ended",
+  "return_codes": [
+    2,
+    2
+  ],
+  "accepted": false,
+  "reason": "Inspect stage receipts; an ended window is not navigation acceptance"
+}

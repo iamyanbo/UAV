@@ -1,0 +1,28 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 99,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "9a29aea80ad1115c75741ff28db90a2f77f51f9d3e63c877bfad60b125f3b9ea",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "94e21e737630cf526f1eed3e42bd0dad8478f5a049c42e89ad0530ab98622588",
+      "samples": 35
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": null,
+  "final_map_status": "initializing",
+  "map_version": -1,
+  "handover_sim_ns": null,
+  "control_safety_p95_seconds": 0.07825268218293785,
+  "control_safety_missed_deadlines": 35,
+  "safety_interventions": 96
+}

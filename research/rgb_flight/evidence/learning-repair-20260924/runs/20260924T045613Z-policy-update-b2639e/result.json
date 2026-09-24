@@ -1,0 +1,23 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T045613Z-policy-update-b2639e/source/stage_worker.py",
+    "train-policy",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T045540Z-policy-data-53a0b1/policy-data",
+    "--integration-only",
+    "--updates",
+    "1",
+    "--goal-checkpoint",
+    "goal.pt",
+    "--initialize-from",
+    "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r53/execution/v4-checkpoints/policy.pt"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 36.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 5.013273918069899
+}

@@ -1,0 +1,110 @@
+{
+  "status": "learned_flight_finished",
+  "episode_id": "train-00000",
+  "split": "train",
+  "phase": 1,
+  "runtime_goal_sha256": "c3a21e3f1ddf5373110da085c0d2ba821e23dd0e4b52ae0c3d589803255b2aa5",
+  "pose_setting_calls_before_recording": 1,
+  "pre_episode_goal_pose_setting_calls": 0,
+  "pose_setting_calls_after_recording": 0,
+  "clock_speed": 1.0,
+  "maximum_speed_mps": 3.0,
+  "controller_kind": "learned_mode_1",
+  "runtime_isolation": {
+    "status": "live_inference_boundary_passed",
+    "episode_id": "train-00000",
+    "rgb_bytes": 921600,
+    "first_sim_ns": 1790223719493673216,
+    "last_sim_ns": 1790223719814680064,
+    "goal_views": 4,
+    "denied_operations": 5,
+    "simulator_rpc_inaccessible": true,
+    "privileged_files_inaccessible": true
+  },
+  "controller_checkpoint_sha256": "00013999fba26a881fde63cd5dfc1c596b6d750bcaf84d5e12ff274a0ea62867",
+  "termination": "initialization_timeout",
+  "success": false,
+  "elapsed_sim_seconds": 30.12664270401001,
+  "learned_controller": {
+    "status": "completed",
+    "accepted": false,
+    "frames": 292,
+    "error": null,
+    "shards": [
+      {
+        "path": "controller-000000.pt",
+        "sha256": "8b5817ecab069f7ef41a1f823a1939139c55307feb00dc312993ed794dfafe1c",
+        "samples": 64
+      },
+      {
+        "path": "controller-000001.pt",
+        "sha256": "7dca2dd93e24942c915fd26f8420bafcd067501a009d7e862437a043823a1ca6",
+        "samples": 64
+      },
+      {
+        "path": "controller-000002.pt",
+        "sha256": "978b8cd9ba7765e6153f210aef35693723128c2c44dfec663bb1606e7f803cf9",
+        "samples": 64
+      },
+      {
+        "path": "controller-000003.pt",
+        "sha256": "77a9f41dc95c54f1e4ee6518098a22bfe52ed4603a806945377b90af30f58514",
+        "samples": 64
+      },
+      {
+        "path": "controller-000004.pt",
+        "sha256": "67ba4597db667896bf2955ce380b348bf7dde3a649821c8168f50f05b584e1ae",
+        "samples": 36
+      }
+    ],
+    "scope": "Mode 1, Qwen and frozen predictive planning",
+    "sampled_policy": false,
+    "slow_planner_enabled": true,
+    "teacher_provenance": null,
+    "final_map_status": "terminated",
+    "map_version": -1,
+    "handover_sim_ns": null,
+    "control_safety_p95_seconds": 0.1333163902978413,
+    "control_safety_missed_deadlines": 236,
+    "safety_interventions": 177
+  },
+  "broker_errors": [],
+  "commands": 2144,
+  "control_latency_p95_seconds": 0.258005504,
+  "capture_interval_p95_sim_seconds": 0.129002752,
+  "fresh_rgb_hz": 14.287180485437768,
+  "control_work_p95_seconds": 0.0011908249696716666,
+  "control_missed_deadlines": 0,
+  "control_interval_p95_seconds": 0.045356166921555995,
+  "control_interval_max_seconds": 0.04947585612535477,
+  "control_schedule_missed_deadlines": 0,
+  "timing_gate": {
+    "accepted": false,
+    "capture_control_passed": false,
+    "requirements": {
+      "fresh_rgb_hz_min": 19,
+      "rgb_interval_p95_max": 0.075,
+      "control_p95_max": 0.05
+    },
+    "reason": "RGB/control acceptance is measured; application delay belongs to dispatched-command dynamics",
+    "application_timestamps_available": false
+  },
+  "depth_label_index": "training_labels/depth/index.jsonl",
+  "depth_label_samples": 0,
+  "storage": {
+    "frames": 1384,
+    "stream_sha256": "247bd2398d420111f78cd2175194034819adf7eb3f3af9f3229901b5cb531f54",
+    "complete": true,
+    "codec": "per-frame zlib level 1, lossless RGB24",
+    "timestamps": "original AirSim image nanoseconds",
+    "pixel_format": "RGB24",
+    "color_calibration_sha256": "4fff895766184ebf82d93119458b5347da9c5832749ac2bc15cb9eaa63f275d4"
+  },
+  "training_label_frames": 601,
+  "teacher_provenance": null,
+  "actual_displacement_m": 7.222657146020155,
+  "actual_path_length_m": 13.20551094572221,
+  "mean_actual_velocity_mps": 0.43800029462230716,
+  "maximum_actual_velocity_mps": 0.5378754911775411,
+  "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+}

@@ -1,0 +1,8 @@
+{
+  "status": "completed",
+  "training_ready": true,
+  "deployment_accepted": false,
+  "accepted": false,
+  "windows": 151,
+  "episodes": 10
+}

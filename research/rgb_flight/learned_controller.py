@@ -30,20 +30,23 @@ from wire import BrokerClient
 class Mode1Actor:
     def __init__(self,core,maximum_speed,stochastic=False,demonstrate=False):
         pack=core.checkpoints
-        if not {'policy','safety','projection'}<=pack.paths.keys():
-            raise ValueError('Live navigation requires trained policy, projection and measured safety artifacts')
-        saved=torch.load(pack.paths['policy'],map_location='cpu',weights_only=True)
-        if saved.get('module')!='policy' or saved.get('update',0)<1:
-            raise ValueError('A trained Mode 1 checkpoint is required')
-        required={role:pack.spec['artifacts'][role]['sha256'] for role in ('goal','odometry','projection')}
-        if saved.get('perception_artifacts_sha256')!=required:
-            raise ValueError('Policy perception provenance differs from the live checkpoint set')
-        self.policy_state_dim=18 if demonstrate and saved.get('objective_version')!='masked-dispatched-sequences/v3' else 32
-        self.policy=RecurrentPolicy(pack.paths['goal'],state_dim=self.policy_state_dim).to(core.device).eval().requires_grad_(False)
-        self.policy.load_state_dict(saved['model'])
-        for key,value in core.goal.state_dict().items():
-            if not torch.equal(value,self.policy.goal_pipeline.state_dict()[key]):
-                raise ValueError('Policy contains a different frozen goal encoder/matcher')
+        if not {'safety','projection'}<=pack.paths.keys():
+            raise ValueError('Live navigation requires projection and measured safety artifacts')
+        self.policy=None;self.policy_state_dim=32
+        if stochastic and demonstrate:raise ValueError('Demonstrations are not stochastic PPO rollouts')
+        if not demonstrate:
+            if 'policy' not in pack.paths:raise ValueError('Learned navigation requires a trained Mode 1 policy')
+            saved=torch.load(pack.paths['policy'],map_location='cpu',weights_only=True)
+            if saved.get('module')!='policy' or saved.get('update',0)<1:
+                raise ValueError('A trained Mode 1 checkpoint is required')
+            required={role:pack.spec['artifacts'][role]['sha256'] for role in ('goal','odometry','projection')}
+            if saved.get('perception_artifacts_sha256')!=required:
+                raise ValueError('Policy perception provenance differs from the live checkpoint set')
+            self.policy=RecurrentPolicy(pack.paths['goal'],state_dim=32).to(core.device).eval().requires_grad_(False)
+            self.policy.load_state_dict(saved['model'])
+            for key,value in core.goal.state_dict().items():
+                if not torch.equal(value,self.policy.goal_pipeline.state_dict()[key]):
+                    raise ValueError('Policy contains a different frozen goal encoder/matcher')
         profile=json.loads(pack.paths['safety'].read_text())
         if (profile.get('schema')!='measured-navigation-safety/v1' or
                 profile.get('maximum_speed_mps')!=maximum_speed or
@@ -53,7 +56,7 @@ class Mode1Actor:
         if not math.isfinite(self.radius) or self.radius<=0:raise ValueError('Invalid vehicle radius')
         self.radius=max(1.,self.radius)  # Campaign 0.75 m vehicle + 0.25 m margin.
         self.safety=HardSafetyFilter(maximum_speed,float(profile['braking_acceleration_mps2']))
-        self.hidden=self.policy.gru.weight_hh.new_zeros(1,256)
+        self.hidden=torch.zeros(1,256,device=core.device)
         self.core=core;self.maximum_speed=maximum_speed;self.stochastic=stochastic;self.last_ns=None
         self.demonstrate=demonstrate
 
@@ -61,19 +64,23 @@ class Mode1Actor:
     def propose(self,metadata,value,planned_command=None):
         if self.last_ns is not None and metadata['sim_ns']-self.last_ns>250000000:self.hidden.zero_()
         self.last_ns=metadata['sim_ns'];initial_hidden=self.hidden.clone()
-        mask=value['memory_valid'][:,None]
-        context=(value['memory'][:,:256]*mask).sum(0)/mask.sum().clamp_min(1)
-        distribution,reward_value,self.hidden=self.policy.forward_features(value['current_tokens'],value['goal_context'],
-            value['state'][None,:self.policy_state_dim],context[None],value['task'][None],value['previous_command'][None],
-            self.hidden,value['target_context'][None])
-        stop_distribution=self.policy.stop_distribution(self.hidden)
-        latent=distribution.sample() if self.stochastic else distribution.mean
-        sampled_stop=stop_distribution.sample() if self.stochastic else (stop_distribution.probs>=.5).float()
-        logprob=distribution.log_prob(latent).sum(-1)+stop_distribution.log_prob(sampled_stop)
-        proposal=self.policy.command(latent,self.maximum_speed)[0]
         teacher_command,teacher_stop,teacher_reason=demonstration(value)
         if self.demonstrate:
-            proposal=proposal.new_tensor(teacher_command);sampled_stop=sampled_stop.new_tensor([teacher_stop])
+            proposal=value['state'].new_tensor(teacher_command)
+            sampled_stop=proposal.new_tensor([teacher_stop])
+            latent=logprob=reward_value=collision_value=None
+        else:
+            mask=value['memory_valid'][:,None]
+            context=(value['memory'][:,:256]*mask).sum(0)/mask.sum().clamp_min(1)
+            distribution,reward_value,self.hidden=self.policy.forward_features(value['current_tokens'],value['goal_context'],
+                value['state'][None,:self.policy_state_dim],context[None],value['task'][None],value['previous_command'][None],
+                self.hidden,value['target_context'][None])
+            stop_distribution=self.policy.stop_distribution(self.hidden)
+            latent=distribution.sample() if self.stochastic else distribution.mean
+            sampled_stop=stop_distribution.sample() if self.stochastic else (stop_distribution.probs>=.5).float()
+            logprob=distribution.log_prob(latent).sum(-1)+stop_distribution.log_prob(sampled_stop)
+            proposal=self.policy.command(latent,self.maximum_speed)[0]
+            collision_value=float(self.policy.collision_value(self.hidden)[0,0])
         command=Command(*(planned_command if planned_command is not None else proposal.tolist()))
         speed=float(value['state'][3:6].norm())
         geometry_ready=value['metric_geometry_available']
@@ -104,10 +111,10 @@ class Mode1Actor:
             teacher_reason=teacher_reason if self.demonstrate else None,
             teacher_provenance='observed-exploration/v3' if self.demonstrate else None,
             episode_id=self.core.episode_id,frame_id=metadata['frame_id'],sim_ns=metadata['sim_ns'],
-            behavior_policy_sha256=self.core.checkpoints.spec['artifacts']['policy']['sha256'],
-            stochastic=self.stochastic,latent_action=latent[0].tolist(),sampled_stop=bool(sampled_stop.item()),
-            proposal=proposal.tolist(),proposal_log_probability=float(logprob[0]),
-            reward_value=float(reward_value[0]),collision_cost_value=float(self.policy.collision_value(self.hidden)[0,0]),
+            behavior_policy_sha256=None if self.demonstrate else self.core.checkpoints.spec['artifacts']['policy']['sha256'],
+            stochastic=self.stochastic,latent_action=None if latent is None else latent[0].tolist(),sampled_stop=bool(sampled_stop.item()),
+            proposal=proposal.tolist(),proposal_log_probability=None if logprob is None else float(logprob[0]),
+            reward_value=None if reward_value is None else float(reward_value[0]),collision_cost_value=collision_value,
             submitted_after_safety=list(asdict(filtered).values()),submitted_stop=stop,safety=safety,
             source_available_monotonic=metadata['received_monotonic'],decision_monotonic=time.monotonic(),
             safety_vehicle_radius_m=self.radius,
@@ -149,19 +156,36 @@ def main():
         if args.with_deliberation:
             from live_deliberation import LiveDeliberation
             deliberation=LiveDeliberation(core,views,output/'deliberation')
+        # Separate the fast GPU queue from Qwen/planner work. CPU affinity
+        # alone cannot prevent default-stream ordering from stalling control.
+        torch.cuda.current_stream().synchronize()
+        fast_stream=torch.cuda.Stream(priority=-1)
+        torch.cuda.set_stream(fast_stream)
+        capacity['fast_cuda_stream_priority']=fast_stream.priority
+        (output/'capacity.json').write_text(json.dumps(capacity))
+        # Loading the large models can outlive the broker's idle socket
+        # timeout. Goal retrieval has completed; open fresh channels for
+        # control rather than retrying an ambiguously dispatched command.
+        client.close()
         (output/'CONTROLLER_READY').touch();last=-1
         while not (output/'CONTROLLER_STOP').exists() and not (output/'CHECKPOINT_REQUEST').exists():
             metadata,rgb=client.observe(last);last=metadata['frame_id'];started=time.monotonic()
             metadata=dict(metadata,rgb_sha256=hashlib.sha256(rgb).hexdigest())
+            profile={}
             mapping.poll(core,metadata);features=video.poll()
             if features is not None:core.enqueue('video',features)
-            video.observe(metadata,rgb);value=core.observe(metadata,rgb)
+            video.observe(metadata,rgb);profile['slow_publication']=time.monotonic()-started
+            phase=time.monotonic();value=core.observe(metadata,rgb);profile['perception_belief']=time.monotonic()-phase
+            phase=time.monotonic()
             planned=deliberation.update(metadata,rgb,value) if deliberation else None
+            profile['deliberation_poll_submit']=time.monotonic()-phase;phase=time.monotonic()
             command,stop,trace,hidden=actor.propose(metadata,value,planned)
+            profile['policy_safety']=time.monotonic()-phase;phase=time.monotonic()
             try:trace['broker_acceptance']=client.command(last,list(asdict(command).values()),stop=stop)
             except (ValueError,RuntimeError) as failure:
                 if str(failure) not in ('Stale RGB; braking','Stale or future command frame'):raise
                 trace['broker_acceptance']=dict(accepted=False,reason=str(failure))
+            profile['broker_command']=time.monotonic()-phase;trace['profile_seconds']=profile
             trace['processing_seconds']=time.monotonic()-started;trace['deadline_missed']=trace['processing_seconds']>.05
             latencies.append(trace['processing_seconds']);interventions+=int(trace['safety']['overridden'])
             with (output/'proposals.jsonl').open('a') as stream:stream.write(json.dumps(trace)+'\n')

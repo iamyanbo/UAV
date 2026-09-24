@@ -1,0 +1,20 @@
+{
+  "status": "failed",
+  "accepted": false,
+  "frames": 0,
+  "error": {
+    "type": "BrokenPipeError",
+    "message": "[Errno 32] Broken pipe"
+  },
+  "shards": [],
+  "scope": "Mode 1, Qwen and frozen predictive planning",
+  "sampled_policy": false,
+  "slow_planner_enabled": true,
+  "teacher_provenance": null,
+  "final_map_status": "initializing",
+  "map_version": -1,
+  "handover_sim_ns": null,
+  "control_safety_p95_seconds": null,
+  "control_safety_missed_deadlines": 0,
+  "safety_interventions": 0
+}

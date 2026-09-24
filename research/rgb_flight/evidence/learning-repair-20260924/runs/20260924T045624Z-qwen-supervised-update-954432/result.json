@@ -1,0 +1,21 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T045624Z-qwen-supervised-update-954432/source/stage_worker.py",
+    "train-configurator",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r56/execution/configuration-data",
+    "--integration-only",
+    "--updates",
+    "1",
+    "--initialize-from",
+    "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r46/execution/ppo-pack/qwen.pt"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 40.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 81.05461302609183
+}

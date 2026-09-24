@@ -1,0 +1,9 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "matched_pairs": 1,
+  "strict_preferences": 0,
+  "ties": 1,
+  "preference_update_ready": false,
+  "reason": "Matched timeouts tie; no preference winner exists; retain SFT adapter"
+}

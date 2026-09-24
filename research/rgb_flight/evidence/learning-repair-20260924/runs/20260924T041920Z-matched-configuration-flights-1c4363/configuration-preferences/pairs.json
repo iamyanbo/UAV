@@ -1,0 +1,70 @@
+[
+  {
+    "status": "completed",
+    "accepted": false,
+    "control_exposure_blocked": true,
+    "matched_conditions": {
+      "episode_id": "train-00000",
+      "goal_panorama_sha256": "c3a21e3f1ddf5373110da085c0d2ba821e23dd0e4b52ae0c3d589803255b2aa5",
+      "clock_speed": 1.0,
+      "maximum_speed_mps": 3.0,
+      "rollout_seed": 0,
+      "scene": "env_airsim_16",
+      "controller_sha256": "be46c670393513eb064ab536a846bb7ee15bb2a14225a8ac576faf3e4ae29425",
+      "target_rule": "same deterministic causal frontier teacher, refreshed against currently observed IDs; compare bounded scoring multipliers"
+    },
+    "matched_conditions_sha256": "9e1ec3eddac0b0247523c7488e1222cfe4dcebf6f306e4bfa992b3d1561cf7cc",
+    "controller_sha256": "be46c670393513eb064ab536a846bb7ee15bb2a14225a8ac576faf3e4ae29425",
+    "outcomes": [
+      {
+        "applied_predictive_commands": 0,
+        "complete_flight": true,
+        "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T041921Z/episode",
+        "result_sha256": "57787dda620776c7b6de6a9f5a10be610dc1739aef995563bbdbdc01bab673e1",
+        "configuration": {
+          "target_id": null,
+          "grounded_kind": "none",
+          "intention": "search",
+          "goal_weight": 1.0,
+          "time_weight": 1.0,
+          "information_weight": 1.0,
+          "additional_caution": 1.0,
+          "confidence": 0.0,
+          "validity_horizon_seconds": 4.0,
+          "deliberate_immediately": true
+        },
+        "collision": false,
+        "success": false,
+        "elapsed_sim_seconds": 30.018640279769897,
+        "termination": "initialization_timeout"
+      },
+      {
+        "applied_predictive_commands": 0,
+        "complete_flight": true,
+        "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T042139Z/episode",
+        "result_sha256": "1350db344f1417ff8bfbf8f5996994f95a1f3c07d0977dced9b5023b2fb13bf6",
+        "configuration": {
+          "target_id": null,
+          "grounded_kind": "none",
+          "intention": "search",
+          "goal_weight": 1.0,
+          "time_weight": 1.0,
+          "information_weight": 1.0,
+          "additional_caution": 2.0,
+          "confidence": 0.0,
+          "validity_horizon_seconds": 4.0,
+          "deliberate_immediately": true
+        },
+        "collision": false,
+        "success": false,
+        "elapsed_sim_seconds": 30.12664270401001,
+        "termination": "initialization_timeout"
+      }
+    ],
+    "winner": null,
+    "ambiguous": true,
+    "ranking": "collision avoidance, then success, then completion time among successes; <=1 s is a timing tie",
+    "preference_update_ready": false,
+    "reason": "Neither configuration affected dispatched controls; preference learning blocked"
+  }
+]

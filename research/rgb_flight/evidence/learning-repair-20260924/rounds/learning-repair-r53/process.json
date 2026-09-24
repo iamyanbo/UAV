@@ -1,0 +1,13 @@
+{
+  "pid": 2561075,
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/submissions/learning-repair-r52/program_scheduler.py",
+    "--spec",
+    "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r53/programme-spec.json",
+    "--round",
+    "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r53/execution",
+    "--hours",
+    "8"
+  ]
+}

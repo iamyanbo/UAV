@@ -1,0 +1,115 @@
+{
+  "status": "checkpointed",
+  "updates": 115,
+  "accepted": false,
+  "objective_version": "masked-dispatched-state-fields/v4",
+  "integration_only": false,
+  "gradient_evidence": {
+    "model.spatial": {
+      "parameters": 1,
+      "trainable": 1,
+      "gradient_tensors": 1,
+      "nonzero_gradient_tensors": 1,
+      "changed_tensors": 1,
+      "frozen_changed": 0
+    },
+    "model.visual": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    },
+    "model.goal_visual": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    },
+    "model.goal_attention": {
+      "parameters": 4,
+      "trainable": 4,
+      "gradient_tensors": 4,
+      "nonzero_gradient_tensors": 4,
+      "changed_tensors": 4,
+      "frozen_changed": 0
+    },
+    "model.goal_score": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    },
+    "model.memory": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    },
+    "model.context": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    },
+    "model.transformer": {
+      "parameters": 72,
+      "trainable": 72,
+      "gradient_tensors": 72,
+      "nonzero_gradient_tensors": 72,
+      "changed_tensors": 72,
+      "frozen_changed": 0
+    },
+    "model.norm": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    },
+    "model.belief": {
+      "parameters": 4,
+      "trainable": 4,
+      "gradient_tensors": 4,
+      "nonzero_gradient_tensors": 4,
+      "changed_tensors": 4,
+      "frozen_changed": 0
+    },
+    "model.heads": {
+      "parameters": 48,
+      "trainable": 48,
+      "gradient_tensors": 48,
+      "nonzero_gradient_tensors": 30,
+      "changed_tensors": 48,
+      "frozen_changed": 0
+    }
+  },
+  "resumed_from_update": 97,
+  "optimizer_states": 141,
+  "foundation_source": {
+    "accepted": false,
+    "training_ready": true,
+    "valid_expert_episodes": 250,
+    "visual_goal_runtime": true
+  },
+  "dataset_manifest_sha256": "0f7227bcd5376f855c8a5bbfca568e474465280c8e2bfb2ea5d82f4a5354fa74",
+  "scope": "world training",
+  "checkpoint_reload_verified": true,
+  "optimizer_reload_states": 141,
+  "initialization": null,
+  "gradient_gate_passed": true,
+  "candidate_action_gradient": {
+    "finite": true,
+    "norm": 0.00068265525624156
+  }
+}

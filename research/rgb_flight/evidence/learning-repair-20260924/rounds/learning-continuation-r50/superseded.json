@@ -1,0 +1,4 @@
+{
+  "reason": "World field masks require a new v4 objective and optimizer round",
+  "replacement": "/home/iamyanbo/uav-rgb-flight/rounds/learning-continuation-r51"
+}

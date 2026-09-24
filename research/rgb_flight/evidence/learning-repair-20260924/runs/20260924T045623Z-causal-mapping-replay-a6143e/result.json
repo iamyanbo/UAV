@@ -1,0 +1,24 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T045623Z-causal-mapping-replay-a6143e/source/navigation_process.py",
+    "--observations",
+    "/home/iamyanbo/uav-rgb-flight/launches/20260924T031144Z/episode/observations",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/launches/20260924T031144Z/episode/goal",
+    "--checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-mapping-r57/perception-checkpoints",
+    "--frames",
+    "0",
+    "--integration-only",
+    "--video",
+    "--mapping"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 48.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 78.0571992949117
+}

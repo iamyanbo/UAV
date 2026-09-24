@@ -137,15 +137,17 @@ def main():
         arguments+=['--validation-every',str(args.validation_every)]
     if args.stage=='train-configurator':
         arguments+=['--phase',args.configurator_phase]
-        if args.initialize_from:
-            initial=Path(args.initialize_from)
-            if initial.is_absolute() or '..' in initial.parts or not (data/initial).is_file():
-                raise ValueError('Configurator initialization must be dataset-local')
-            arguments+=['--initialize-from','/dataset/'+str(initial)]
-    if args.stage in ('train-world','train-policy') and args.initialize_from:
+    if args.stage in ('train-world','train-policy','train-configurator') and args.initialize_from:
         initial=Path(args.initialize_from)
-        if initial.is_absolute() or '..' in initial.parts or not (data/initial).is_file():raise ValueError('New-round initialization must be dataset-local')
-        arguments+=['--initialize-from','/dataset/'+str(initial)]
+        if '..' in initial.parts:raise ValueError('Escaping new-round initialization')
+        if initial.is_absolute():
+            if not initial.resolve().is_relative_to(root.resolve()) or not initial.is_file():
+                raise ValueError('Initialization must be a retained study checkpoint')
+            extra_mounts+=['-v',str(initial.resolve())+':/initialization/checkpoint.pt:ro']
+            arguments+=['--initialize-from','/initialization/checkpoint.pt']
+        else:
+            if not (data/initial).is_file():raise ValueError('Missing dataset-local initialization')
+            arguments+=['--initialize-from','/dataset/'+str(initial)]
     if args.stage=='train-odometry':
         manifest=json.loads((data/'manifest.json').read_text())
         collection=Path(manifest['collection_root']).resolve()

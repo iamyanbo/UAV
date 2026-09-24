@@ -1,0 +1,20 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T044412Z-final-reload-flight-8c4002/source/collect_learning_round.py",
+    "--episode-id",
+    "train-00000",
+    "--controller-checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r53/execution/v4-checkpoints",
+    "--goal-collection",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T034035Z-exploration-demonstrations-0ec7d6/collection/flights.json",
+    "--with-deliberation"
+  ],
+  "seconds": 1200,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "flight",
+  "peak_gib": 72.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 133.074279331835
+}

@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T042617Z-motion-rate-training-1b019e/source/stage_worker.py",
+    "train-odometry",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/hover-correction-r36/trajectory-bundle",
+    "--resume",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T023623Z-motion-rate-training-e01e5e/visual-training/latest.pt",
+    "--updates",
+    "1000",
+    "--validation-every",
+    "100"
+  ],
+  "seconds": 18000,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 16.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 209.15234885294922
+}

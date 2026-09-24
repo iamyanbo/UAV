@@ -41,8 +41,8 @@ class MemorySnapshot:
         """Optimized centers with source-depth support; opacity proves no free space.
 
         Gaussian covariance describes reconstruction extent, not estimator error.
-        Archived deformations remain available through historical_points; only
-        current optimized active surfaces enter this publication contract.
+        Current active surfaces and supported archived deformations enter
+        this publication contract with their original observation provenance.
         """
         g=self.state['gaussians']; chunks=[]
         for key,camera in self.state['cameras'].items():

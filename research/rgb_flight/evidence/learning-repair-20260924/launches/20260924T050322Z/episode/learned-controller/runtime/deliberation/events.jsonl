@@ -1,0 +1,5 @@
+{"component": "configuration", "status": "failed", "reason": "Abstention contradicts observed targets or search confidence"}
+{"component": "configuration", "status": "failed", "reason": "Abstention contradicts observed targets or search confidence"}
+{"component": "configuration", "status": "failed", "reason": "Abstention contradicts observed targets or search confidence"}
+{"component": "configuration", "status": "rejected_stale_or_ungrounded"}
+{"component": "planner", "status": "discarded_episode_ended", "processing_seconds": 27.71057342994027, "version": 1}

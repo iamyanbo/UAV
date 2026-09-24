@@ -1,4 +1,4 @@
-> Active RGB-only study: [learning-loop postmortem](research/rgb_flight/POSTMORTEM_LEARNING_LOOP_2026-09-24.md), [current status](research/rgb_flight/CURRENT_STATUS.md), and [literature-review documents](docs/literature/README.md). Simulator movement and finite updates are tracked separately from navigation acceptance.
+> Active RGB-only study: [implementation and measured results](research/rgb_flight/LEARNING_REPAIR_2026-09-24.md), [failure postmortem](research/rgb_flight/POSTMORTEM_LEARNING_LOOP_2026-09-24.md), [current status](research/rgb_flight/CURRENT_STATUS.md), and [literature-review documents](docs/literature/README.md). Simulator movement and finite updates are tracked separately from navigation acceptance. Earlier programs and operator modes are preserved below as history.
 
 # CURI-UAV
 

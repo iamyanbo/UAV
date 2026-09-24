@@ -10,7 +10,8 @@ from pathlib import Path
 from program_scheduler import run
 
 
-def specification(visual_pack,safety,episode,demonstrations=None):
+def specification(visual_pack,safety,episode,demonstrations=None,initial_world=None,initial_policy=None,initial_qwen=None,world_collection=None,world_collection_checkpoints=None):
+    if bool(world_collection)!=bool(world_collection_checkpoints):raise ValueError('Supplemental world data requires its checkpoint pack')
     root=Path.home()/'uav-rgb-flight';stages=[]
     visual=json.loads((visual_pack/'checkpoints.json').read_text())
     def artifact(role):return str(visual_pack/visual['artifacts'][role]['path'])
@@ -26,6 +27,9 @@ def specification(visual_pack,safety,episode,demonstrations=None):
             if '--initialize-from' in resume:
                 offset=resume.index('--initialize-from');del resume[offset:offset+2]
             item['resume_command']=resume+['--resume','{checkpoint}']
+        elif any(x.endswith('/collect_learning_round.py') for x in command):
+            item['checkpoint']='{job}/collection/flights.json'
+            item['resume_command']=list(command)+['--import-collection','{checkpoint}']
         stages.append(item)
     def pack(name,policy,world,qwen,depends):
         destination='{round}/'+name;command=['python3','{source}/package_navigation.py']
@@ -53,7 +57,7 @@ def specification(visual_pack,safety,episode,demonstrations=None):
         if module=='policy':command+=['--goal-checkpoint','goal.pt']
         if initialize:command+=['--initialize-from',initialize]
         stage(name,'gpu',command,'{job}/training/result.json',['{job}/training/final.pt'],depends,peak=36,
-              inputs=[dataset+'/manifest.json'])
+              inputs=[dataset+'/manifest.json',*([str(initialize)] if initialize and Path(initialize).is_absolute() else [])])
         return job(name,'training/final.pt')
     if demonstrations:
         collection=str(demonstrations)
@@ -67,21 +71,22 @@ def specification(visual_pack,safety,episode,demonstrations=None):
         collection=job('bootstrap-flight','collection/flights.json');bootstrap_dependencies=['bootstrap-flight']
     bundle=trajectories('trajectories',bootstrap_dependencies)
     stage('world-data','gpu',['python3','{source}/learning_data_job.py','--phase','world',
-        '--bundle',bundle,'--collection',collection,'--checkpoints',str(visual_pack),'--output','{job}/world-data'],
-        '{job}/world-data/result.json',['{job}/world-data/manifest.json'],['trajectories'])
+        '--bundle',bundle,'--collection',collection,'--checkpoints',str(visual_pack),'--output','{job}/world-data',
+        *(['--additional-collection',str(world_collection),'--additional-checkpoints',str(world_collection_checkpoints)] if world_collection else [])],
+        '{job}/world-data/result.json',['{job}/world-data/manifest.json'],['trajectories'],inputs=[str(world_collection),str(world_collection_checkpoints/'checkpoints.json')] if world_collection else [])
     world_data=job('world-data','world-data');replay=job('world-data','world-data-replays/0')
-    world=update('world-update','world',world_data,['world-data'])
+    world=update('world-update','world',world_data,['world-data'],str(initial_world) if initial_world else None)
     stage('policy-data','gpu',['python3','{source}/learning_data_job.py','--phase','policy',
         '--bundle',bundle,'--collection',collection,'--checkpoints',str(visual_pack),'--world',world,'--output','{job}/policy-data'],
         '{job}/policy-data/result.json',['{job}/policy-data/manifest.json'],['world-update'])
     policy_data=job('policy-data','policy-data')
-    policy=update('policy-update','policy',policy_data,['policy-data']);config_data='{round}/configuration-data'
+    policy=update('policy-update','policy',policy_data,['policy-data'],str(initial_policy) if initial_policy else None);config_data='{round}/configuration-data'
     stage('configuration-data','gpu',['python3','{source}/stage_worker.py','build-configurator-view','--dataset',bundle,
         '--collection',collection,'--runtime-replay',replay,'--artifact-output',config_data],
         config_data+'/result.json',[config_data+'/configurator.json'],['policy-update'],peak=12)
     stage('qwen-supervised-update','gpu',['python3','{source}/stage_worker.py','train-configurator','--dataset',config_data,
-        '--integration-only','--updates','1'],'{job}/configurator/result.json',['{job}/configurator/latest.pt'],
-        ['configuration-data'],peak=40)
+        '--integration-only','--updates','1',*(['--initialize-from',str(initial_qwen)] if initial_qwen else [])],'{job}/configurator/result.json',['{job}/configurator/latest.pt'],
+        ['configuration-data'],peak=40,inputs=[str(initial_qwen)] if initial_qwen else [])
     qwen=job('qwen-supervised-update','configurator/latest.pt')
     trained=pack('trained-pack',policy,world,qwen,['qwen-supervised-update'])
     flight('dagger-flight',trained,['trained-pack']);online=trajectories('online-trajectories',['dagger-flight'])
@@ -128,9 +133,11 @@ if __name__=='__main__':
     parser.add_argument('--visual-pack',type=Path,required=True);parser.add_argument('--safety-profile',type=Path,required=True)
     parser.add_argument('--episode-id',default='train-00000');parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--demonstrations',type=Path)
+    parser.add_argument('--initial-world',type=Path);parser.add_argument('--initial-policy',type=Path)
+    parser.add_argument('--initial-qwen',type=Path)
     parser.add_argument('--hours',type=float,default=8);args=parser.parse_args()
     if not 0<args.hours<=8:parser.error('At most eight-hour resumable windows')
-    spec=specification(args.visual_pack.resolve(),args.safety_profile.resolve(),args.episode_id,args.demonstrations)
+    spec=specification(args.visual_pack.resolve(),args.safety_profile.resolve(),args.episode_id,args.demonstrations,args.initial_world,args.initial_policy,args.initial_qwen)
     args.output.mkdir(parents=True,exist_ok=True);path=args.output/'programme-spec.json'
     if path.exists() and json.loads(path.read_text())!=spec:raise ValueError('Changed cycle inputs require a new output round')
     if not path.exists():path.write_text(json.dumps(spec,indent=2))

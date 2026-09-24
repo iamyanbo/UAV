@@ -272,8 +272,21 @@ def bootstrapped_world_loss(prediction, target, bootstrap_mask, feature_scale=1.
         elif name=='z':loss=((value-truth)/feature_scale).square().mean((-1,-2))
         elif name in ('motion','state'):
             scale=motion_scale if name=='motion' else state_scale
-            if name=='state':value=value[...,:18];truth=truth[...,:18];scale=scale[:18]
-            loss=F.smooth_l1_loss(value/scale,truth/scale,reduction='none').mean(-1)
+            if name=='state':
+                # A valid odometry row does not make absent scale, visual-age
+                # or map-tracking estimates into observed zero targets.
+                fields=torch.ones_like(truth[...,:18],dtype=torch.bool)
+                odometry=truth[...,26]>.5
+                fields[...,:12]=odometry[...,None]
+                fields[...,12:14]=(truth[...,22]>.5)[...,None]
+                fields[...,14]=odometry
+                fields[...,15]=truth[...,23]>.5
+                fields[...,16]=odometry
+                fields[...,17]=truth[...,24]>.5
+                value=value[...,:18];truth=truth[...,:18];scale=scale[:18]
+                errors=F.smooth_l1_loss(value/scale,truth/scale,reduction='none')
+                loss=(errors*fields).sum(-1)/fields.sum(-1).clamp_min(1)
+            else:loss=F.smooth_l1_loss(value/scale,truth/scale,reduction='none').mean(-1)
         else:
             loss=F.smooth_l1_loss(value,truth,reduction='none')
             if name=='time_to_goal':

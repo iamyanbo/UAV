@@ -1,0 +1,4 @@
+{"component": "configuration", "status": "failed", "reason": "Configuration requires an observed visual match or frontier ID"}
+{"component": "configuration", "status": "failed", "reason": "Configuration requires an observed visual match or frontier ID"}
+{"component": "configuration", "status": "failed", "reason": "Configuration requires an observed visual match or frontier ID"}
+{"component": "planner", "status": "discarded_episode_ended", "processing_seconds": 19.52850300190039, "version": 1}

@@ -35,6 +35,7 @@ class LiveDeliberation:
         self.planner=PredictivePlanner(world,critic,scales,3.)
         self.qwen=Configurator(adapter=pack.paths['qwen'])
         self.qwen.model.requires_grad_(False)
+        self.qwen.enable_goal_cache()
         self.goals=[Image.fromarray(view) for view in goal_views]
         self.override=json.loads(pack.paths['configuration'].read_text()) if 'configuration' in pack.paths else None
         self.executor=ThreadPoolExecutor(max_workers=1,thread_name_prefix='planner',initializer=slow_worker)
@@ -44,12 +45,14 @@ class LiveDeliberation:
         self.last_history_ns=-1;self.completed=0;self.errors=[]
         self.configuration_results=queue.SimpleQueue()
         self.rejections=Counter();self.selected_actions=0;self.published_configurations=0
+        self.configuration_rejections=Counter();self.qwen_calls=0
         self.log=(self.output/'events.jsonl').open('x')
 
     def _event(self,event):
         self.log.write(json.dumps(event)+'\n');self.log.flush()
 
     def _work(self,request):
+        torch.cuda.current_stream().wait_event(request['inputs_ready'])
         started=time.monotonic();value=request['value'];ns=value['sim_ns']
         # Clone outside inference_mode so candidate gradients can pass through
         # frozen world/critic computations without inference-tensor errors.
@@ -89,8 +92,13 @@ class LiveDeliberation:
 
     def _configure(self,request):
         value=request['value'];ns=value['sim_ns']
-        configured=self.qwen.configure(self.goals,request['image'],[],[],request['observed'],
-            dict(goal_probability=value['goal_probability']),self.core.episode_id,ns/1e9)
+        try:
+            configured=self.qwen.configure(self.goals,request['image'],[],[],request['observed'],
+                dict(goal_probability=value['goal_probability']),self.core.episode_id,ns/1e9)
+        finally:
+            (self.output/f"qwen-{ns}.json").write_text(json.dumps(dict(observation_ns=ns,
+                response=self.qwen.last_response,goal_cache_hits=self.qwen.goal_cache_hits,
+                goal_cache_misses=self.qwen.goal_cache_misses)))
         if configured is not None:
             self.configuration_results.put(dict(episode_id=self.core.episode_id,version=request['version'],
                 observation_ns=ns,available_monotonic=time.monotonic(),gauge_version=value['gauge_version'],
@@ -111,13 +119,18 @@ class LiveDeliberation:
                 self.published_configurations+=1
                 self._event(dict(component='configuration',status='published',
                     version=delivered['version'],observation_ns=delivered['observation_ns']))
-            except ValueError:self._event(dict(component='configuration',status='rejected_stale_or_ungrounded'))
+            except ValueError:
+                self.configuration_rejections['stale_or_ungrounded']+=1
+                self._event(dict(component='configuration',status='rejected_stale_or_ungrounded'))
         if self.qwen_pending is not None and self.qwen_pending.done():
             try:self.qwen_pending.result()
-            except Exception as error:self._event(dict(component='configuration',status='failed',reason=str(error)))
+            except Exception as error:
+                self.configuration_rejections['invalid_output_or_execution_error']+=1
+                self._event(dict(component='configuration',status='failed',reason=str(error)))
             self.qwen_pending=None
         if not self.override and self.qwen_pending is None and ns-self.last_qwen_ns>=3000000000:
             self.last_qwen_ns=ns
+            self.qwen_calls+=1
             self.qwen_pending=self.qwen_executor.submit(self._configure,dict(value=value,
                 image=Image.frombytes('RGB',(640,480),rgb),observed=observed,version=ns))
         config=value['config']
@@ -152,6 +165,8 @@ class LiveDeliberation:
             image=Image.frombytes('RGB',(640,480),rgb)
             request=dict(value=value,observed=observed,image=image,config=config,version=self.version,
                 geometry=copy.deepcopy(self.core.geometry),history=[dict(row) for row in self.history],available=metadata['received_monotonic'])
+            request['inputs_ready']=torch.cuda.Event()
+            request['inputs_ready'].record(torch.cuda.current_stream())
             self.pending=self.executor.submit(self._work,request)
         active=self.active
         if active is None:return None
@@ -182,12 +197,26 @@ class LiveDeliberation:
         self.qwen_executor.shutdown(wait=True,cancel_futures=False)
         self.executor.shutdown(wait=True,cancel_futures=False)
         if self.pending:
-            try:self.pending.result();self.completed+=1
+            try:
+                result=self.pending.result();self.completed+=1
+                self.rejections['episode_ended_before_publication']+=1
+                self._event(dict(component='planner',status='discarded_episode_ended',
+                    processing_seconds=result['processing_seconds'],version=result['version']))
             except Exception as error:self.errors.append(type(error).__name__+': '+str(error))
+        if self.qwen_pending:
+            try:self.qwen_pending.result()
+            except Exception as error:
+                self.configuration_rejections['invalid_output_or_execution_error']+=1
+                self._event(dict(component='configuration',status='failed',reason=str(error)))
+        while not self.configuration_results.empty():
+            self.configuration_results.get_nowait()
+            self.configuration_rejections['episode_ended_before_publication']+=1
         self.log.close()
         result=dict(status='failed' if self.errors else 'completed',accepted=False,
             actual_planner_calls=self.completed,errors=self.errors,
             selected_planner_actions=self.selected_actions,published_qwen_configurations=self.published_configurations,
+            actual_qwen_calls=self.qwen_calls,configuration_rejections=dict(self.configuration_rejections),
+            goal_vision_cache_hits=self.qwen.goal_cache_hits,goal_vision_cache_misses=self.qwen.goal_cache_misses,
             plan_rejections=dict(self.rejections),
             scope='Real Qwen and 12-step candidate optimization; unqualified cost scales and command-time estimates')
         (self.output/'result.json').write_text(json.dumps(result,indent=2));return result

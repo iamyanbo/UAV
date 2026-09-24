@@ -140,12 +140,12 @@ class RGBBroker:
                     raise ValueError('Stale or future command frame')
                 if time.monotonic() - frame['received_monotonic'] > .25:
                     raise RuntimeError('Stale RGB; braking')
-                self.last_command_wall = time.monotonic()
                 source = next((x for x in self.recent_frames if x['frame_id']==request['frame_id']), None)
                 if source is None:
                     raise ValueError('Command source frame is no longer retained')
                 if time.monotonic() - source['received_monotonic'] > .25:
                     raise RuntimeError('Stale RGB; braking')
+                self.last_command_wall = time.monotonic()
                 self.pending = command
                 self.pending_source = source
                 self.stop_requested |= request['stop']

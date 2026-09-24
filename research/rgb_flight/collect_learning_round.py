@@ -50,10 +50,19 @@ def main():
                 raise ValueError('Imported demonstration checkpoint differs')
             flights.append(item)
         (output/'imported-failures.json').write_text(json.dumps(retained_failures,indent=2))
+    (output/'flights.json').write_text(json.dumps(flights,indent=2))
+    def checkpoint_requested():
+        marker=os.environ.get('RGB_CHECKPOINT_REQUEST')
+        if marker and Path(marker).exists():
+            (output/'result.json').write_text(json.dumps(dict(status='checkpointed',accepted=False,
+                complete_flights=len(flights),all_failures_retained=True),indent=2))
+            return True
+        return False
     if args.goal and args.goal_collection:raise ValueError('Choose one exact goal source')
     goal_flights=json.loads(args.goal_collection.read_text()) if args.goal_collection else None
     for identifier in args.episode_id:
         if any(r['result']['episode_id']==identifier for r in flights):continue
+        if checkpoint_requested():return
         command=[sys.executable,str(Path(__file__).with_name('spark_launch.py')),
             '--probe','visual-goal-flight','--evaluator-labels',str(labels),
             '--episode-id',identifier,'--obstacle-field',str(root/'launches/20260922T002848Z/obstacle-field.npz'),
@@ -70,6 +79,7 @@ def main():
             goal=Path(matches[0]['episode_path'])/'goal'
         if goal:command+=['--goal',str(goal)]
         for attempt in range(2):
+            if checkpoint_requested():return
             process=subprocess.run(command,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
             (output/f'{identifier}-attempt-{attempt}.log').write_text(process.stdout)
             launches=[]

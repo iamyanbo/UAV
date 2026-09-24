@@ -1,0 +1,51 @@
+{
+  "status": "failed",
+  "accepted": false,
+  "frames": 383,
+  "error": {
+    "type": "RuntimeError",
+    "message": "RGB mapper did not finish cleanly; retained reconstruction log"
+  },
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "e35fd786c7fdedd3fd8d1262c73665559c483388ed6f440209351b4359593d1e",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "53afa7a21dedcf6b3954dde150d2ed9f2ad38b512f865e10879f0caed2330b70",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "d9f565125bf6e5535c63ed23e2aa192fc6cdf24016d24a213be15c078788b05a",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "007b949ee5970d2e572e47bcb166f87ad3b2b74de97547f5335e74a4ccbacddd",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "ae12e72678d87b0517d4b3e51bf2bc5b06c0ae8f7022c32156ee3a4f5b65c9f9",
+      "samples": 64
+    },
+    {
+      "path": "controller-000005.pt",
+      "sha256": "2ccd7e0fad978ef49b27a6a63a46fc5a3e86f77b5c1bb735eb03ae57189944b2",
+      "samples": 63
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": null,
+  "final_map_status": "terminated",
+  "map_version": -1,
+  "handover_sim_ns": null,
+  "control_safety_p95_seconds": 0.07753725873772052,
+  "control_safety_missed_deadlines": 138,
+  "safety_interventions": 315
+}

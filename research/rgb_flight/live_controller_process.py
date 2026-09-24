@@ -14,8 +14,8 @@ class LiveControllerProcess:
         if not checkpoints.is_relative_to(root.resolve()) or not socket_path.is_relative_to(root.resolve()):
             raise ValueError('Controller inputs must remain in the study workspace')
         manifest=checkpoints/'checkpoints.json';pack=json.loads(manifest.read_text())
-        if not {'goal','odometry','projection','policy','safety'}<=pack['artifacts'].keys():
-            raise ValueError('Complete trained Mode 1 checkpoint and safety artifacts required before flight')
+        if not {'goal','odometry','projection','safety',*(() if demonstrate else ('policy',))}<=pack['artifacts'].keys():
+            raise ValueError('Perception/safety required; learned flight additionally requires a trained policy')
         allowed={'checkpoints.json',*(item['path'] for item in pack['artifacts'].values())}
         if {p.name for p in checkpoints.iterdir()}!=allowed or any(p.is_symlink() or not p.is_file() for p in checkpoints.iterdir()):
             raise ValueError('Checkpoint namespace contains undeclared or nonregular files')

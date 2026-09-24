@@ -1,0 +1,71 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "integration_only": true,
+  "gradient_evidence": {
+    "policy.log_std": {
+      "parameters": 1,
+      "trainable": 1,
+      "gradient_tensors": 1,
+      "nonzero_gradient_tensors": 1,
+      "changed_tensors": 1,
+      "frozen_changed": 0
+    },
+    "policy.goal_pipeline": {
+      "parameters": 186,
+      "trainable": 0,
+      "gradient_tensors": 0,
+      "nonzero_gradient_tensors": 0,
+      "changed_tensors": 0,
+      "frozen_changed": 0
+    },
+    "policy.gru": {
+      "parameters": 4,
+      "trainable": 4,
+      "gradient_tensors": 4,
+      "nonzero_gradient_tensors": 4,
+      "changed_tensors": 4,
+      "frozen_changed": 0
+    },
+    "policy.mean": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    },
+    "policy.value": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    },
+    "policy.collision_value": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    },
+    "policy.stop_head": {
+      "parameters": 2,
+      "trainable": 2,
+      "gradient_tensors": 2,
+      "nonzero_gradient_tensors": 2,
+      "changed_tensors": 2,
+      "frozen_changed": 0
+    }
+  },
+  "unique_physics_transitions": 360,
+  "optimizer_exposures": 40,
+  "updates": 1,
+  "max_epochs": 4,
+  "kl_early_stop": false,
+  "requires_fresh_physical_rollouts": true,
+  "completed_episode_collision_rate": 0.0,
+  "constrained_collision_cost": true
+}

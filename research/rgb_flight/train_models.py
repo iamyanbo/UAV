@@ -20,6 +20,10 @@ from torch.nn import functional as F
 from learning_models import WorldModel, RecurrentPolicy, PrimitiveCritic, bootstrapped_world_loss
 
 
+def objective_version(module):
+    return 'masked-dispatched-state-fields/v4' if module=='world' else 'masked-dispatched-sequences/v3'
+
+
 class TrajectoryBundle:
     def __init__(self, root, module, integration_only=False):
         self.integration_only=integration_only
@@ -189,7 +193,7 @@ def save_checkpoint(path, model, critic, optimizer, scheduler, update, best, rng
                  sample_rng=rng.bit_generator.state, python_rng=random.getstate(), manifest_sha256=bundle.digest)
     state['exposed_train_window_indices'] = sorted(bundle.exposed_windows)
     state['exposed_train_episode_ids'] = sorted(bundle.exposed_episodes)
-    state.update(module=bundle.module,objective_version='masked-dispatched-sequences/v3',
+    state.update(module=bundle.module,objective_version=objective_version(bundle.module),
         action_semantics='post-safety-dispatch/50ms-v3',belief_version='masked-map-dispatch-state/v3',teacher_version='observed-exploration/v3',
         goal_encoder_checkpoint_sha256=bundle.goal_encoder_sha256,
         world_checkpoint_sha256=bundle.manifest.get('world_checkpoint_sha256'),
@@ -267,7 +271,7 @@ def main():
                 getattr(model if is_world else critic,name).copy_(normalization[name])
     if args.resume:
         saved = torch.load(args.resume, map_location='cpu', weights_only=True)
-        if saved['manifest_sha256'] != bundle.digest or saved.get('objective_version')!='masked-dispatched-sequences/v3':
+        if saved['manifest_sha256'] != bundle.digest or saved.get('objective_version')!=objective_version(args.module):
             raise ValueError('Resume dataset changed; create an explicit new training round')
         model.load_state_dict(saved['model'], strict=True)
         if critic:
@@ -335,6 +339,7 @@ def main():
                                          elapsed_seconds=time.monotonic() - started)) + '\n')
     save_checkpoint(output / ('final.pt' if update >= target else 'latest.pt'), model, critic, optimizer, scheduler, update, best, rng, bundle)
     result = dict(status='completed' if update >= target else 'checkpointed', updates=update,accepted=False,
+                  objective_version=objective_version(args.module),
                   integration_only=args.integration_only,gradient_evidence=evidence.finish(require_update=update>resumed_update),
                   resumed_from_update=resumed_update,optimizer_states=len(optimizer.state),
                   foundation_source=bundle.manifest['foundation'], dataset_manifest_sha256=bundle.digest,

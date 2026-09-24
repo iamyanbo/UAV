@@ -1,0 +1,110 @@
+{
+  "status": "learned_flight_finished",
+  "episode_id": "train-00001",
+  "split": "train",
+  "phase": 2,
+  "runtime_goal_sha256": "15b2f1df4e18a5789783f5891d26f0fbd89893cc0a48fc0b522ddea8669e436a",
+  "pose_setting_calls_before_recording": 1,
+  "pre_episode_goal_pose_setting_calls": 0,
+  "pose_setting_calls_after_recording": 0,
+  "clock_speed": 1.0,
+  "maximum_speed_mps": 3.0,
+  "controller_kind": "learned_mode_1",
+  "runtime_isolation": {
+    "status": "live_inference_boundary_passed",
+    "episode_id": "train-00001",
+    "rgb_bytes": 921600,
+    "first_sim_ns": 1790226159783558912,
+    "last_sim_ns": 1790226160095565568,
+    "goal_views": 4,
+    "denied_operations": 5,
+    "simulator_rpc_inaccessible": true,
+    "privileged_files_inaccessible": true
+  },
+  "controller_checkpoint_sha256": "384672c83625608abf332f3ef63390823d68265dce471bae5bf16b01a1d63f6a",
+  "termination": "geometry_collision",
+  "success": false,
+  "elapsed_sim_seconds": 8.547182321548462,
+  "traveled_distance_m": 3.1486136027649008,
+  "final_navigation_error_m": 98.84104927053623,
+  "final_horizontal_error_m": 97.9839051687777,
+  "final_vertical_error_m": 12.988739306666744,
+  "path_efficiency": 0.0,
+  "fixed_outcome_reward": -100.47484346230824,
+  "stop_requested": false,
+  "stopped_speed_mps": 0.4919875979804106,
+  "airsim_collision": false,
+  "geometry_collision": true,
+  "learned_controller": {
+    "status": "completed",
+    "accepted": false,
+    "frames": 164,
+    "error": null,
+    "shards": [
+      {
+        "path": "controller-000000.pt",
+        "sha256": "e775b89e8d9a59c05552a260a5c467e1415c48247a44004af52ac78007c3d6e4",
+        "samples": 64
+      },
+      {
+        "path": "controller-000001.pt",
+        "sha256": "97a4c40f2ea0b4dd846a3034139c9a8defa17121de4981aadd1076b94da4122b",
+        "samples": 64
+      },
+      {
+        "path": "controller-000002.pt",
+        "sha256": "ba69c961f9646e7caecdf1f629c56f1d6e1755cc646d83c7ce3a900cecc2fb16",
+        "samples": 36
+      }
+    ],
+    "scope": "Live Mode 1 only; no planner or Qwen configuration",
+    "sampled_policy": false,
+    "slow_planner_enabled": false,
+    "teacher_provenance": null,
+    "final_map_status": "initializing",
+    "map_version": -1,
+    "handover_sim_ns": null,
+    "control_safety_p95_seconds": 0.03973426125012337,
+    "control_safety_missed_deadlines": 5,
+    "safety_interventions": 70
+  },
+  "broker_errors": [],
+  "commands": 773,
+  "control_latency_p95_seconds": 0.12930275839999988,
+  "capture_interval_p95_sim_seconds": 0.051001088,
+  "fresh_rgb_hz": 30.42195064383717,
+  "control_work_p95_seconds": 0.0011036413721740245,
+  "control_missed_deadlines": 0,
+  "control_interval_p95_seconds": 0.046457696554716675,
+  "control_interval_max_seconds": 0.05199707509018481,
+  "control_schedule_missed_deadlines": 1,
+  "timing_gate": {
+    "accepted": false,
+    "capture_control_passed": true,
+    "requirements": {
+      "fresh_rgb_hz_min": 19,
+      "rgb_interval_p95_max": 0.075,
+      "control_p95_max": 0.05
+    },
+    "reason": "RGB/control acceptance is measured; application delay belongs to dispatched-command dynamics",
+    "application_timestamps_available": false
+  },
+  "depth_label_index": "training_labels/depth/index.jsonl",
+  "depth_label_samples": 0,
+  "storage": {
+    "frames": 1065,
+    "stream_sha256": "8b44a268218d9b6f346549066f3c867d3c12f2c01a12ad1ffa3c557b9de32fc2",
+    "complete": true,
+    "codec": "per-frame zlib level 1, lossless RGB24",
+    "timestamps": "original AirSim image nanoseconds",
+    "pixel_format": "RGB24",
+    "color_calibration_sha256": "ab61cf230a69b6cbc998ed3b607101f72f75e7404d5b964dc34f84db43990c06"
+  },
+  "training_label_frames": 171,
+  "teacher_provenance": null,
+  "actual_displacement_m": 2.4368231395644733,
+  "actual_path_length_m": 3.148613602764902,
+  "mean_actual_velocity_mps": 0.36771343748031377,
+  "maximum_actual_velocity_mps": 0.5204125201051265,
+  "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+}

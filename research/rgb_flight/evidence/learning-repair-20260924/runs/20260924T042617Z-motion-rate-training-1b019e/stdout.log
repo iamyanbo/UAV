@@ -1,0 +1,29 @@
+
+=============
+== PyTorch ==
+=============
+
+NVIDIA Release 25.11 (build 231036168)
+PyTorch Version 2.10.0a0+b558c98
+Container image Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+Copyright (c) 2014-2024 Facebook Inc.
+Copyright (c) 2011-2014 Idiap Research Institute (Ronan Collobert)
+Copyright (c) 2012-2014 Deepmind Technologies    (Koray Kavukcuoglu)
+Copyright (c) 2011-2012 NEC Laboratories America (Koray Kavukcuoglu)
+Copyright (c) 2011-2013 NYU                      (Clement Farabet)
+Copyright (c) 2006-2010 NEC Laboratories America (Ronan Collobert, Leon Bottou, Iain Melvin, Jason Weston)
+Copyright (c) 2006      Idiap Research Institute (Samy Bengio)
+Copyright (c) 2001-2004 Idiap Research Institute (Ronan Collobert, Samy Bengio, Johnny Mariethoz)
+Copyright (c) 2015      Google Inc.
+Copyright (c) 2015      Yangqing Jia
+Copyright (c) 2013-2016 The Caffe contributors
+All rights reserved.
+
+Various files include modifications (c) NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+
+GOVERNING TERMS: The software and materials are governed by the NVIDIA Software License Agreement
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-software-license-agreement/)
+and the Product-Specific Terms for NVIDIA AI Products
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/product-specific-terms-for-ai-products/).
+
+{"status": "checkpointed", "accepted": false, "updates": 589, "resumed_from_update": 542, "objective_version": "metric-long-sequence-motion-rate/v3", "manifest_sha256": "2b04bf3cbf67b1f5eb576034e4f016a50e5e54688d589e4cb2fcc9f5bd081842", "resume_evidence": {"checkpoint_sha256": "ccf1b7e07547da6827a0906831eca95a517470ed282c7d88440c7f1c5acf0b79", "restored_update": 542, "optimizer_states": 178, "optimizer_step_min": 542.0, "optimizer_step_max": 542.0}, "gradient_evidence": {"encoder": {"finite_gradients": true, "changed": true}, "temporal": {"finite_gradients": true, "changed": true}, "motion": {"finite_gradients": true, "changed": true}, "motion_uncertainty": {"finite_gradients": true, "changed": true}}, "train_windows": 255, "development_windows": 33, "elapsed_seconds": 189.202596510062, "reason": "Full held-out trajectory drift and uncertainty qualification still required", "sequence_steps": 160, "warmup_steps": 32, "normalization": "fixed inference BatchNorm statistics", "activation_checkpointing": true, "motion_parameterization": "rate", "checkpoint_selection": "development normalized motion-rate error plus normalized accumulated drift"}

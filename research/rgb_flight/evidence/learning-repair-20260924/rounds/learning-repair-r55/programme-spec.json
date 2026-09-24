@@ -1,0 +1,241 @@
+{
+  "schema": "training-dependencies/v1",
+  "continuation_of": "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r54",
+  "reused_artifacts": [],
+  "source_migration": "New immutable source; optimizer resumes only inside matching dataset/objective",
+  "stages": [
+    {
+      "id": "final-reload-flight",
+      "kind": "flight",
+      "peak_gib": 72,
+      "seconds": 1200,
+      "command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r53/execution/v4-checkpoints",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T034035Z-exploration-demonstrations-0ec7d6/collection/flights.json",
+        "--with-deliberation"
+      ],
+      "receipt": "{job}/collection/result.json",
+      "outputs": [
+        "{job}/collection/flights.json"
+      ],
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r53/execution/v4-checkpoints/checkpoints.json"
+      ]
+    },
+    {
+      "id": "world-continuation",
+      "kind": "gpu",
+      "peak_gib": 36,
+      "seconds": 7200,
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-world",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T034430Z-world-data-856a26/world-data",
+        "--updates",
+        "2000",
+        "--resume",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T044625Z-world-continuation-65d2f3/training/latest.pt"
+      ],
+      "receipt": "{job}/training/result.json",
+      "outputs": [
+        "{job}/training/final.pt"
+      ],
+      "depends_on": [
+        {
+          "stage": "final-reload-flight",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T034430Z-world-data-856a26/world-data/manifest.json",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T044625Z-world-continuation-65d2f3/training/latest.pt"
+      ],
+      "checkpoint": "{job}/training/latest.pt",
+      "resume_command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-world",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T034430Z-world-data-856a26/world-data",
+        "--updates",
+        "2000",
+        "--resume",
+        "{checkpoint}"
+      ]
+    },
+    {
+      "id": "policy-continuation",
+      "kind": "gpu",
+      "peak_gib": 36,
+      "seconds": 7200,
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-policy",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r53/execution/v4-dagger-data/dataset",
+        "--updates",
+        "2000",
+        "--resume",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T043329Z-v4-policy-update-f10dc2/training/final.pt",
+        "--goal-checkpoint",
+        "goal.pt"
+      ],
+      "receipt": "{job}/training/result.json",
+      "outputs": [
+        "{job}/training/final.pt"
+      ],
+      "depends_on": [
+        {
+          "stage": "final-reload-flight",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r53/execution/v4-dagger-data/dataset/manifest.json",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T043329Z-v4-policy-update-f10dc2/training/final.pt"
+      ],
+      "checkpoint": "{job}/training/latest.pt",
+      "resume_command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-policy",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r53/execution/v4-dagger-data/dataset",
+        "--updates",
+        "2000",
+        "--resume",
+        "{checkpoint}",
+        "--goal-checkpoint",
+        "goal.pt"
+      ]
+    },
+    {
+      "id": "continued-policy-pack",
+      "kind": "cpu",
+      "peak_gib": 4,
+      "seconds": 1800,
+      "command": [
+        "python3",
+        "{source}/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r46/execution/ppo-pack/goal.pt",
+        "--odometry",
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r46/execution/ppo-pack/odometry.pt",
+        "--projection",
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r46/execution/ppo-pack/projection.pt",
+        "--safety",
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r46/execution/ppo-pack/safety.json",
+        "--qwen",
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r46/execution/ppo-pack/qwen.pt",
+        "--world",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T042614Z-world-objective-migration-511283/training/final.pt",
+        "--policy",
+        "{stage:policy-continuation:job}/training/final.pt",
+        "--goal-match-threshold",
+        "0.9",
+        "--output",
+        "{round}/continued-policy-pack"
+      ],
+      "receipt": "{round}/continued-policy-pack/checkpoints.json",
+      "outputs": [
+        "{round}/continued-policy-pack/checkpoints.json"
+      ],
+      "depends_on": [
+        {
+          "stage": "policy-continuation",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T042614Z-world-objective-migration-511283/training/final.pt",
+        "{stage:policy-continuation:job}/training/final.pt",
+        "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r46/execution/ppo-pack/checkpoints.json"
+      ]
+    },
+    {
+      "id": "next-training-collection",
+      "kind": "flight",
+      "peak_gib": 72,
+      "seconds": 1800,
+      "depends_on": [
+        {
+          "stage": "continued-policy-pack",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/continued-policy-pack/checkpoints.json",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260922T002848Z/manifests/evaluator_labels/train.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--controller-checkpoints",
+        "{round}/continued-policy-pack",
+        "--episode-id",
+        "train-00300",
+        "--episode-id",
+        "train-00301",
+        "--episode-id",
+        "train-00302",
+        "--episode-id",
+        "train-00303",
+        "--episode-id",
+        "train-00305",
+        "--episode-id",
+        "train-00306",
+        "--episode-id",
+        "train-00307",
+        "--episode-id",
+        "train-00308",
+        "--episode-id",
+        "train-00309",
+        "--episode-id",
+        "train-00311"
+      ],
+      "checkpoint": "{job}/collection/flights.json",
+      "resume_command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--controller-checkpoints",
+        "{round}/continued-policy-pack",
+        "--episode-id",
+        "train-00300",
+        "--episode-id",
+        "train-00301",
+        "--episode-id",
+        "train-00302",
+        "--episode-id",
+        "train-00303",
+        "--episode-id",
+        "train-00305",
+        "--episode-id",
+        "train-00306",
+        "--episode-id",
+        "train-00307",
+        "--episode-id",
+        "train-00308",
+        "--episode-id",
+        "train-00309",
+        "--episode-id",
+        "train-00311",
+        "--import-collection",
+        "{checkpoint}"
+      ],
+      "receipt": "{job}/collection/result.json",
+      "outputs": [
+        "{job}/collection/flights.json"
+      ]
+    }
+  ]
+}

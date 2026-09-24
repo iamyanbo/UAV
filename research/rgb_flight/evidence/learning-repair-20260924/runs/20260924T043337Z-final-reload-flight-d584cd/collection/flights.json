@@ -1,0 +1,106 @@
+[
+  {
+    "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T043337Z/episode",
+    "result": {
+      "status": "learned_flight_finished",
+      "episode_id": "train-00000",
+      "split": "train",
+      "phase": 1,
+      "runtime_goal_sha256": "c3a21e3f1ddf5373110da085c0d2ba821e23dd0e4b52ae0c3d589803255b2aa5",
+      "pose_setting_calls_before_recording": 1,
+      "pre_episode_goal_pose_setting_calls": 0,
+      "pose_setting_calls_after_recording": 0,
+      "clock_speed": 1.0,
+      "maximum_speed_mps": 3.0,
+      "controller_kind": "learned_mode_1",
+      "runtime_isolation": {
+        "status": "live_inference_boundary_passed",
+        "episode_id": "train-00000",
+        "rgb_bytes": 921600,
+        "first_sim_ns": 1790224446430041088,
+        "last_sim_ns": 1790224446754048000,
+        "goal_views": 4,
+        "denied_operations": 5,
+        "simulator_rpc_inaccessible": true,
+        "privileged_files_inaccessible": true
+      },
+      "controller_checkpoint_sha256": "16d6889fce5cee6d2845977becc73c513d7062301229d53c44f6447918398f94",
+      "termination": "initialization_timeout",
+      "success": false,
+      "elapsed_sim_seconds": 30.603652715682983,
+      "learned_controller": {
+        "status": "completed",
+        "accepted": false,
+        "frames": 133,
+        "error": null,
+        "shards": [
+          {
+            "path": "controller-000000.pt",
+            "sha256": "b4710e2a496798851ba8a0153abbe145207f706983094356723f80e82ffc45a6",
+            "samples": 64
+          },
+          {
+            "path": "controller-000001.pt",
+            "sha256": "d1f9575485854705c2e9e97699e84c603d83b2879c87ed7baf1298823b90dbef",
+            "samples": 64
+          },
+          {
+            "path": "controller-000002.pt",
+            "sha256": "bd9309a4803a6f47e5d82a099c18b43d40976b57aea3dcbf0112228cea351f7a",
+            "samples": 5
+          }
+        ],
+        "scope": "Mode 1, Qwen and frozen predictive planning",
+        "sampled_policy": false,
+        "slow_planner_enabled": true,
+        "teacher_provenance": null,
+        "final_map_status": "terminated",
+        "map_version": -1,
+        "handover_sim_ns": null,
+        "control_safety_p95_seconds": 0.4410136692225933,
+        "control_safety_missed_deadlines": 121,
+        "safety_interventions": 129
+      },
+      "broker_errors": [],
+      "commands": 1693,
+      "control_latency_p95_seconds": 1.059022592,
+      "capture_interval_p95_sim_seconds": 0.1500032,
+      "fresh_rgb_hz": 12.927321827685564,
+      "control_work_p95_seconds": 0.0011385864112526175,
+      "control_missed_deadlines": 0,
+      "control_interval_p95_seconds": 0.04540006442693993,
+      "control_interval_max_seconds": 0.054861782817170024,
+      "control_schedule_missed_deadlines": 1,
+      "timing_gate": {
+        "accepted": false,
+        "capture_control_passed": false,
+        "requirements": {
+          "fresh_rgb_hz_min": 19,
+          "rgb_interval_p95_max": 0.075,
+          "control_p95_max": 0.05
+        },
+        "reason": "RGB/control acceptance is measured; application delay belongs to dispatched-command dynamics",
+        "application_timestamps_available": false
+      },
+      "depth_label_index": "training_labels/depth/index.jsonl",
+      "depth_label_samples": 0,
+      "storage": {
+        "frames": 990,
+        "stream_sha256": "24fb975d3dd0c987255482b1a3b37b01d69ab23146f254bc146e9db7cda6a61a",
+        "complete": true,
+        "codec": "per-frame zlib level 1, lossless RGB24",
+        "timestamps": "original AirSim image nanoseconds",
+        "pixel_format": "RGB24",
+        "color_calibration_sha256": "ed4ab3ecb587474b53a80eef7d5c20cd6d908e2e25ade4918e6297d367f29c65"
+      },
+      "training_label_frames": 611,
+      "teacher_provenance": null,
+      "actual_displacement_m": 4.733309589547216,
+      "actual_path_length_m": 11.228275188403979,
+      "mean_actual_velocity_mps": 0.3668217407728734,
+      "maximum_actual_velocity_mps": 0.5322372276435798,
+      "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+    },
+    "launcher_return_code": 2
+  }
+]

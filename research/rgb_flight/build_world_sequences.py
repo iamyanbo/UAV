@@ -32,7 +32,10 @@ def build(bundle,checkpoints,replays,output):
     windows=[];episodes={};normalization=[];motion_samples=[];features=[];provenance=[]
     for directory in replays:
         replay=json.loads((directory/'manifest.json').read_text())
-        if replay['checkpoint_set_sha256']!=pack.identity:raise ValueError('Mixed replay checkpoints require separate training rounds')
+        if replay['checkpoint_set_sha256']!=pack.identity:
+            perception={k:pack.spec['artifacts'][k]['sha256'] for k in ('goal','odometry','projection')}
+            if replay.get('perception_artifacts_sha256')!=perception:
+                raise ValueError('Mixed perception checkpoints require separate causal data rounds')
         if not (replay['slow_feature_mode'].startswith('measured paced replay') or replay['slow_feature_mode']=='actual online publication at physical learner-visited states'):
             raise ValueError('World inputs require measured asynchronous publication, not retrospective instant features')
         matches=[]
@@ -73,7 +76,7 @@ def build(bundle,checkpoints,replays,output):
         episodes[identifier]=dict(episode_id=identifier,split=attempt['split'],goal_region_id=attempt['goal_region_id'],
             start_goal_pair_id=evaluator.get('start_goal_pair_id',identifier),
             simulated_seconds=(end-samples[0]['sim_ns'])/1e9)
-        provenance.append(dict(attempt_id=attempt['attempt_id'],replay_manifest_sha256=checksum(directory/'manifest.json'),
+        provenance.append(dict(attempt_id=attempt['attempt_id'],source_checkpoint_set_sha256=replay['checkpoint_set_sha256'],replay_manifest_sha256=checksum(directory/'manifest.json'),
                                result_sha256=attempt['result_sha256']))
         for start in range(0,max(0,len(ticks)-30),10):
             indices=selected[start:start+31]

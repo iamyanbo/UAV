@@ -2,6 +2,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 import json
+import hashlib
 import math
 import torch
 from torch import nn
@@ -68,7 +69,37 @@ class Configurator:
                         raise ValueError('Unexpected adapter tensor')
                     parameters[name].copy_(tensor)
         self.model.eval()
+        self.goal_feature_cache=None
+        self.goal_cache_hits=0;self.goal_cache_misses=0
         if self.output_format not in ('verbose/v1','compact/v2'):raise ValueError('Unknown configuration encoding')
+
+    def enable_goal_cache(self):
+        """Cache only immutable goal vision features in the frozen runtime model.
+
+        Each image has independent vision attention in Qwen's encoder. Keep
+        its released tokenization and multimodal rotary positions unchanged;
+        only reuse the first four image embeddings after byte/grid identity.
+        Training never enables this cache.
+        """
+        if any(p.requires_grad for p in self.model.parameters()):
+            raise ValueError('Goal feature caching requires a fully frozen model')
+        owner=self.model.model
+        original=owner.get_image_features
+        self._goal_identity=None
+        def image_features(pixel_values,image_grid_thw=None):
+            if self._goal_identity is None or image_grid_thw is None or len(image_grid_thw)<5:
+                raise ValueError('Cached visual generation requires four goals and current RGB')
+            grid=tuple(tuple(row) for row in image_grid_thw[:4].tolist())
+            key=(self._goal_identity,grid,str(pixel_values.device),str(pixel_values.dtype))
+            patches=sum(t*h*w for t,h,w in grid)
+            if self.goal_feature_cache is None or self.goal_feature_cache[0]!=key:
+                features=original(pixel_values[:patches],image_grid_thw[:4])
+                self.goal_feature_cache=(key,tuple(x.detach() for x in features))
+                self.goal_cache_misses+=1
+            else:self.goal_cache_hits+=1
+            current=original(pixel_values[patches:],image_grid_thw[4:])
+            return (*self.goal_feature_cache[1],*current)
+        owner.get_image_features=image_features
 
     def inputs(self, goal_images, current_image, keyframes, frontier_thumbnails, observed, progress):
         if len(goal_images) != 4 or len(keyframes) > 3 or len(frontier_thumbnails) > 8:
@@ -101,6 +132,7 @@ class Configurator:
     @torch.inference_mode()
     def configure(self, goal_images, current_image, keyframes, frontier_thumbnails, observed, progress, episode_id, now_seconds):
         self.last_response=None
+        self._goal_identity=tuple(hashlib.sha256(image.tobytes()).hexdigest() for image in goal_images)
         inputs = self.inputs(goal_images,current_image,keyframes,frontier_thumbnails,observed,progress)
         output = self.model.generate(**inputs, max_new_tokens=96 if self.output_format=='compact/v2' else 256, do_sample=False)
         response = self.processor.batch_decode(output[:, inputs.input_ids.shape[1]:], skip_special_tokens=True)[0]
@@ -120,6 +152,14 @@ class Configurator:
             if set(parsed)!=set(('t','i','w','c','h','d')) or not isinstance(parsed['w'],list) or len(parsed['w'])!=4:
                 raise ValueError('Compact configuration requires t,i,w[4],c,h,d')
             if parsed['t'] is not None and parsed['t'] not in ids:raise ValueError('Unobserved compact target')
+            if parsed['t'] is None:
+                if observed or parsed['i']!='search' or parsed['c']!=0:
+                    raise ValueError('Abstention contradicts observed targets or search confidence')
+                if (not all(isinstance(x,(int,float)) and math.isfinite(x) and .25<=x<=4 for x in parsed['w'])
+                    or not isinstance(parsed['h'],(int,float)) or not 3<=parsed['h']<=5
+                    or not isinstance(parsed['d'],bool)):
+                    raise ValueError('Invalid compact abstention bounds')
+                return None
             parsed=dict(target_id=parsed['t'],grounded_kind=ids[parsed['t']]['kind'] if parsed['t'] is not None else 'none',
                 intention=parsed['i'],goal_weight=parsed['w'][0],time_weight=parsed['w'][1],
                 information_weight=parsed['w'][2],additional_caution=parsed['w'][3],confidence=parsed['c'],

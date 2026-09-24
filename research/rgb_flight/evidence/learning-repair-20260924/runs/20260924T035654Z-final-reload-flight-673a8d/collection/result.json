@@ -1,0 +1,7 @@
+{
+  "status": "failed",
+  "accepted": false,
+  "reason": "Two infrastructure attempts failed; all receipts retained",
+  "episode_id": "train-00000",
+  "complete_flights": 0
+}
