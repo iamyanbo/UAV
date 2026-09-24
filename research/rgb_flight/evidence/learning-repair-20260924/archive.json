@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-09-24T13:16:46.051291+00:00",
+  "observed_utc": "2026-09-24T13:22:40.826630+00:00",
   "source_root": "/home/iamyanbo/uav-rgb-flight",
   "scope": "Execution receipts and derived summaries; active counters are snapshots; raw RGB and weights remain on Spark",
   "files": [
@@ -6284,14 +6284,79 @@
       "sha256": "f60a5531b5efa0f7807a69577f3e9faff7d7908d0bc608c0c1f7d2ee60d23005"
     },
     {
+      "path": "launches/20260924T131547Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 108752,
+      "sha256": "4f4755a74f946f40144311323b9909134d76e52c682a2e87f958a441b6282c3a"
+    },
+    {
       "path": "launches/20260924T131547Z/episode/learned-controller/runtime/capacity.json",
-      "bytes": 54,
-      "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+      "bytes": 87,
+      "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T131547Z/episode/learned-controller/runtime/deliberation/events.jsonl",
+      "bytes": 367,
+      "sha256": "b0ab92015b69d7fdf68c806f16870b6f282f111d9725c660358b9690ec1cf3bc"
+    },
+    {
+      "path": "launches/20260924T131547Z/episode/learned-controller/runtime/deliberation/qwen-1790255838772180480.json",
+      "bytes": 381,
+      "sha256": "77c4f7581e74fd83b67496438f015e2fe9d2c417a760a44f4617490f755cdf67"
+    },
+    {
+      "path": "launches/20260924T131547Z/episode/learned-controller/runtime/deliberation/qwen-1790255844367299840.json",
+      "bytes": 381,
+      "sha256": "050982c9a851cd97e4e40c70b84e2bd800b7a423ef77ebce21a7b7f24945743f"
+    },
+    {
+      "path": "launches/20260924T131547Z/episode/learned-controller/runtime/deliberation/qwen-1790255855461536512.json",
+      "bytes": 951,
+      "sha256": "ccebdd2ee9eecc03306cdf0628a0911c59479445620784bc2ee96703b722c097"
+    },
+    {
+      "path": "launches/20260924T131547Z/episode/learned-controller/runtime/deliberation/result.json",
+      "bytes": 558,
+      "sha256": "7065eb8e09686b4919fa4d56f5e3283d5a614cd8d09faddc5c89d4ad40e2ab7f"
+    },
+    {
+      "path": "launches/20260924T131547Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 6195,
+      "sha256": "0b718ca364e00818ee681ff527a8ce80252cf79693739a0ee83094ca8aeb88a7"
+    },
+    {
+      "path": "launches/20260924T131547Z/episode/learned-controller/runtime/reconstruction/result.json",
+      "bytes": 680,
+      "sha256": "82bed1947c7c63e6d79a886c099f45b73638ff16b1377eb1f2a80db3fda077de"
+    },
+    {
+      "path": "launches/20260924T131547Z/episode/learned-controller/runtime/result.json",
+      "bytes": 1216,
+      "sha256": "870576d8b999114b5e5cfc99138624192429b6f4756fcc25053785f9f07c0cde"
+    },
+    {
+      "path": "launches/20260924T131547Z/episode/learned-controller/runtime/termination.json",
+      "bytes": 36,
+      "sha256": "bd41a9e416bb70ee36946fc10ccd1eb393c173dfad3dd70e274c4ad9003f7401"
+    },
+    {
+      "path": "launches/20260924T131547Z/episode/learned-controller/runtime/video/result.json",
+      "bytes": 245,
+      "sha256": "19567a0772f62b3c8d61f6b280dfe8d7f53340ebd548a10c39e3b11b3c2c75b5"
     },
     {
       "path": "launches/20260924T131547Z/episode/learned-controller/source_hashes.json",
       "bytes": 2250,
       "sha256": "df62429c8062508025316110daec23c1813b0f036ddb791a69f124b6914ec04c"
+    },
+    {
+      "path": "launches/20260924T131547Z/episode/result.json",
+      "bytes": 3920,
+      "sha256": "0cb67c7edee0e0b15f807a5c66b436012effbc67333bacc731de510c05dfd2e7"
+    },
+    {
+      "path": "launches/20260924T131547Z/result.json",
+      "bytes": 585,
+      "sha256": "4bee44d8614df53b86861180447351c5c2c5a5b5be607189c893e8e56b1d7484"
     },
     {
       "path": "recorded-image-sources.json",
@@ -7009,19 +7074,34 @@
       "sha256": "6523be30212700c23ba62395e37dcf20da597847cd61a7e5ed2184e4107b4aa7"
     },
     {
+      "path": "rounds/navigation-repair-r73/continuation.json",
+      "bytes": 298,
+      "sha256": "6efc6fef69c37a6e0be71b6e28e70b149f1a84a6902047fca4a4f33cf00aa33d"
+    },
+    {
+      "path": "rounds/navigation-repair-r73/diagnosis-selection.json",
+      "bytes": 262,
+      "sha256": "010f75a2ed6aa3993df1ad7b106203a73d9fe9cf43ad9135c1d0a5d8750937fa"
+    },
+    {
       "path": "rounds/navigation-repair-r73/driver.json",
       "bytes": 370,
       "sha256": "9132188afe3b5bd3d4117ebdf7a70462cb701221527402e7afb9e93a1a9e4885"
     },
     {
       "path": "rounds/navigation-repair-r73/execution/state.json",
-      "bytes": 16948,
-      "sha256": "a761ef56f485f9f74201b6329ddcf2f860ad0ab61471d47bca249347e0e3f95f"
+      "bytes": 24366,
+      "sha256": "9200734097de1b030a631f7f515a73a08aea918efda0a7a22b212af8225d681d"
     },
     {
       "path": "rounds/navigation-repair-r73/programme-spec.json",
       "bytes": 8034,
       "sha256": "2a837e29f21b2d277f40b98a472c25e038b3dfe2c4735c2f340043cb64e20169"
+    },
+    {
+      "path": "rounds/navigation-repair-r73/reprioritization.json",
+      "bytes": 565,
+      "sha256": "556ff22399dea00eb882c37c0af1ff317009f3f773b6bfebf2bd5c55626af4a3"
     },
     {
       "path": "runs/20260924T030919Z-exploration-pilot-aa761f/collection/flights.json",
@@ -10250,8 +10330,18 @@
     },
     {
       "path": "runs/20260924T131547Z-source-reload-flight-458a2c/collection/flights.json",
-      "bytes": 2,
-      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      "bytes": 4492,
+      "sha256": "acdfa9808449f19a1b0cb683ada838fe6b820beda1f503953706ebe4577fc9c2"
+    },
+    {
+      "path": "runs/20260924T131547Z-source-reload-flight-458a2c/collection/result.json",
+      "bytes": 377,
+      "sha256": "4f01e0b0cd7ab6a4b694a55fd86495288cea36e706ce3f77faa55612e8b01194"
+    },
+    {
+      "path": "runs/20260924T131547Z-source-reload-flight-458a2c/result.json",
+      "bytes": 739,
+      "sha256": "1f87d01d05dd735c552bc3792d6ce311131f3a794b17248f4d044e4a55f491c0"
     },
     {
       "path": "runs/20260924T131547Z-source-reload-flight-458a2c/source_hashes.json",
@@ -10260,8 +10350,53 @@
     },
     {
       "path": "runs/20260924T131547Z-source-reload-flight-458a2c/stdout.log",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      "bytes": 356,
+      "sha256": "ce88915fdf74f670433f6d63da3c95b8bb4ddfa92aa85fcbce12343ab90a3e60"
+    },
+    {
+      "path": "runs/20260924T131758Z-world-continuation-691fdd/result.json",
+      "bytes": 677,
+      "sha256": "6b60e418807fd6124726e2942ba0cec75c032b793f4b808502b629380d85ebb7"
+    },
+    {
+      "path": "runs/20260924T131758Z-world-continuation-691fdd/source_hashes.json",
+      "bytes": 12570,
+      "sha256": "5a12a2cf0022ec559bed8c9e40ffab736a90689c75243ca7c8547252393cd618"
+    },
+    {
+      "path": "runs/20260924T131758Z-world-continuation-691fdd/stdout.log",
+      "bytes": 3721,
+      "sha256": "337f9329ccfb58581736681bb8270d4a742527efd3e9652154734a463744bd2f"
+    },
+    {
+      "path": "runs/20260924T131758Z-world-continuation-691fdd/training/metrics.jsonl",
+      "bytes": 12250,
+      "sha256": "dc958942592a5a88676f8d4af4d35e8f77bf0e31659cfa6bff011a6d4d82453a"
+    },
+    {
+      "path": "runs/20260924T131758Z-world-continuation-691fdd/training/result.json",
+      "bytes": 2903,
+      "sha256": "2262804789e0e9363955b5ec68eac7c26176b4faf30706ce0b97ae966ec898f9"
+    },
+    {
+      "path": "runs/20260924T132121Z-metric-handover-diagnosis-ecdb8e/result.json",
+      "bytes": 688,
+      "sha256": "9c3d8df32fb49ba5c6daa20937b8e26532e80f47ca09f5434fe756e4c6fc99e5"
+    },
+    {
+      "path": "runs/20260924T132121Z-metric-handover-diagnosis-ecdb8e/source_hashes.json",
+      "bytes": 12570,
+      "sha256": "5a12a2cf0022ec559bed8c9e40ffab736a90689c75243ca7c8547252393cd618"
+    },
+    {
+      "path": "runs/20260924T132121Z-metric-handover-diagnosis-ecdb8e/stdout.log",
+      "bytes": 886,
+      "sha256": "7a949f834438d397a7e6146921a61dce255d3e2694053ee142dcbedfba7272f2"
+    },
+    {
+      "path": "runs/20260924T132121Z-metric-handover-diagnosis-ecdb8e/tracking-diagnosis.json",
+      "bytes": 981,
+      "sha256": "7ea5f6ce7cbce16797cf720a0c2fd9a566e9ac8aeb2ebd141ced5a12ff34e5ff"
     },
     {
       "path": "train-00001-initial-rgb.png",

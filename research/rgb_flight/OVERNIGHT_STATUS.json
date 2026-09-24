@@ -1,19 +1,151 @@
 {
-  "observed_utc": "2026-09-24T13:16:46.070580+00:00",
+  "observed_utc": "2026-09-24T13:22:40.837899+00:00",
   "round": "navigation-repair-r73",
-  "continuation": null,
+  "continuation": {
+    "status": "window_ended",
+    "accepted": false,
+    "reason": "Assistant checkpointed downstream continuation to prioritize causal VO/SLAM/metric-alignment diagnosis after user questioned the training strategy",
+    "world_status": "checkpointed",
+    "world_updates": 2042,
+    "policy_updates": 2001
+  },
   "stages": {
     "source-reload-flight": {
-      "status": "running",
-      "reason": "Owned remote guard running",
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
       "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131547Z-source-reload-flight-458a2c",
-      "progress": null
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131547Z-source-reload-flight-458a2c/collection/flights.json"
+      }
     },
     "world-continuation": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "checkpointed",
+      "reason": "Resume from verified checkpoint in a new guarded attempt",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131758Z-world-continuation-691fdd",
+      "progress": {
+        "status": "checkpointed",
+        "updates": 2042,
+        "accepted": false,
+        "objective_version": "masked-dispatched-state-fields/v4",
+        "integration_only": false,
+        "gradient_evidence": {
+          "model.spatial": {
+            "parameters": 1,
+            "trainable": 1,
+            "gradient_tensors": 1,
+            "nonzero_gradient_tensors": 1,
+            "changed_tensors": 1,
+            "frozen_changed": 0
+          },
+          "model.visual": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.goal_visual": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.goal_attention": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "model.goal_score": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.memory": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.context": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.transformer": {
+            "parameters": 72,
+            "trainable": 72,
+            "gradient_tensors": 72,
+            "nonzero_gradient_tensors": 72,
+            "changed_tensors": 72,
+            "frozen_changed": 0
+          },
+          "model.norm": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.belief": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "model.heads": {
+            "parameters": 48,
+            "trainable": 48,
+            "gradient_tensors": 48,
+            "nonzero_gradient_tensors": 30,
+            "changed_tensors": 48,
+            "frozen_changed": 0
+          }
+        },
+        "resumed_from_update": 2001,
+        "optimizer_states": 141,
+        "foundation_source": {
+          "accepted": false,
+          "training_ready": true,
+          "valid_expert_episodes": 250,
+          "visual_goal_runtime": true
+        },
+        "dataset_manifest_sha256": "9a101051f7c1ac0a1428b9332f64f3e853da30b334f77dec42fc02c8a6fb83a6",
+        "scope": "world training",
+        "checkpoint_reload_verified": true,
+        "optimizer_reload_states": 141,
+        "initialization": null,
+        "gradient_gate_passed": true,
+        "candidate_action_gradient": {
+          "finite": true,
+          "norm": 0.3054793179035187
+        }
+      }
     },
     "policy-continuation": {
       "status": "ready",

@@ -1,0 +1,14 @@
+{
+  "status": "checkpoint_requested",
+  "reason": "Checkpoint cumulative world/policy training to diagnose the upstream metric-map failure; these stages keep odometry fixed and cannot directly repair its alignment.",
+  "running_jobs": {
+    "world-continuation": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131758Z-world-continuation-691fdd"
+  },
+  "prior_training_preserved": true,
+  "requested_utc": "2026-09-24T13:20:05Z",
+  "evidence": {
+    "development_handovers": 0,
+    "rejected_causal_fits": 11,
+    "odometry_four_second_rmse_m": 5.266637135353169
+  }
+}

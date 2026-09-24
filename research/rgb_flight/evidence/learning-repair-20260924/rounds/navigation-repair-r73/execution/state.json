@@ -152,7 +152,7 @@
   "round_id": "execution",
   "stages": {
     "source-reload-flight": {
-      "status": "running",
+      "status": "completed",
       "attempts": [
         {
           "process": {
@@ -196,12 +196,210 @@
         "--with-deliberation"
       ],
       "started_unix": 1790255747.4552014,
-      "reason": "Owned remote guard running",
-      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131547Z-source-reload-flight-458a2c"
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131547Z-source-reload-flight-458a2c",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131547Z-source-reload-flight-458a2c/result.json",
+        "sha256": "1f87d01d05dd735c552bc3792d6ce311131f3a794b17248f4d044e4a55f491c0"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131547Z-source-reload-flight-458a2c/collection/result.json",
+        "sha256": "4f01e0b0cd7ab6a4b694a55fd86495288cea36e706ce3f77faa55612e8b01194"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131547Z-source-reload-flight-458a2c/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131547Z-source-reload-flight-458a2c/collection/flights.json",
+          "sha256": "acdfa9808449f19a1b0cb683ada838fe6b820beda1f503953706ebe4577fc9c2"
+        }
+      ]
     },
     "world-continuation": {
-      "status": "ready",
-      "attempts": []
+      "status": "checkpointed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2671407,
+            "start_ticks": "135501088",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r73/execution/world-continuation-000.log"
+        }
+      ],
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T083429Z-world-data-e45906/world-data/manifest.json": "9a101051f7c1ac0a1428b9332f64f3e853da30b334f77dec42fc02c8a6fb83a6",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T090939Z-world-continuation-4e400f/training/final.pt": "f49f126f93e1031950fdeae08aa9087444a4b6cde77fae6d3075afc072fbad6c"
+      },
+      "process": {
+        "pid": 2671407,
+        "start_ticks": "135501088",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r73/execution/world-continuation-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/spark_guard.py",
+        "--name",
+        "world-continuation",
+        "--seconds",
+        "7200",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "36",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/stage_worker.py",
+        "train-world",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T083429Z-world-data-e45906/world-data",
+        "--updates",
+        "4001",
+        "--resume",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T090939Z-world-continuation-4e400f/training/final.pt"
+      ],
+      "started_unix": 1790255878.762,
+      "reason": "Resume from verified checkpoint in a new guarded attempt",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131758Z-world-continuation-691fdd",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131758Z-world-continuation-691fdd/result.json",
+        "sha256": "6b60e418807fd6124726e2942ba0cec75c032b793f4b808502b629380d85ebb7"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131758Z-world-continuation-691fdd/training/result.json",
+        "sha256": "2262804789e0e9363955b5ec68eac7c26176b4faf30706ce0b97ae966ec898f9"
+      },
+      "progress": {
+        "status": "checkpointed",
+        "updates": 2042,
+        "accepted": false,
+        "objective_version": "masked-dispatched-state-fields/v4",
+        "integration_only": false,
+        "gradient_evidence": {
+          "model.spatial": {
+            "parameters": 1,
+            "trainable": 1,
+            "gradient_tensors": 1,
+            "nonzero_gradient_tensors": 1,
+            "changed_tensors": 1,
+            "frozen_changed": 0
+          },
+          "model.visual": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.goal_visual": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.goal_attention": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "model.goal_score": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.memory": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.context": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.transformer": {
+            "parameters": 72,
+            "trainable": 72,
+            "gradient_tensors": 72,
+            "nonzero_gradient_tensors": 72,
+            "changed_tensors": 72,
+            "frozen_changed": 0
+          },
+          "model.norm": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.belief": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "model.heads": {
+            "parameters": 48,
+            "trainable": 48,
+            "gradient_tensors": 48,
+            "nonzero_gradient_tensors": 30,
+            "changed_tensors": 48,
+            "frozen_changed": 0
+          }
+        },
+        "resumed_from_update": 2001,
+        "optimizer_states": 141,
+        "foundation_source": {
+          "accepted": false,
+          "training_ready": true,
+          "valid_expert_episodes": 250,
+          "visual_goal_runtime": true
+        },
+        "dataset_manifest_sha256": "9a101051f7c1ac0a1428b9332f64f3e853da30b334f77dec42fc02c8a6fb83a6",
+        "scope": "world training",
+        "checkpoint_reload_verified": true,
+        "optimizer_reload_states": 141,
+        "initialization": null,
+        "gradient_gate_passed": true,
+        "candidate_action_gradient": {
+          "finite": true,
+          "norm": 0.3054793179035187
+        }
+      },
+      "artifacts": [],
+      "checkpoint": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T131758Z-world-continuation-691fdd/training/latest.pt",
+        "sha256": "9d86369882a55a8e41501f46b6a5b3b53b8d7783e4e318007be05e8c29beacde"
+      }
     },
     "policy-continuation": {
       "status": "ready",
@@ -216,5 +414,5 @@
       "attempts": []
     }
   },
-  "updated_unix": 1790255794.4967136
+  "updated_unix": 1790256081.1458933
 }

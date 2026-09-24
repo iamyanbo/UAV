@@ -1,0 +1,1 @@
+{"observation_ns": 1790255838772180480, "response": "```json\n{\n  \"t\": null,\n  \"i\": \"search\",\n  \"w\": [0.25, 0.25, 0.25, 0.25],\n  \"c\": 0.5,\n  \"h\": 3,\n  \"d\": false\n}\n```", "goal_cache_hits": 0, "goal_cache_misses": 1, "grounding_evidence": {"schema": "observed-rgb-grounding/v1", "keyframes": [], "frontiers": [], "observed": [], "teacher_configuration": null}}
