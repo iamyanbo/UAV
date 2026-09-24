@@ -17,7 +17,7 @@ def connected_state(cycle):
     return state
 
 
-def continuation(cycle,start):
+def continuation(cycle,start,import_collection=None):
     spec=json.loads((cycle/'programme-spec.json').read_text())
     state=connected_state(cycle);stages=spec['stages']
     offset=[s['id'] for s in stages].index(start)
@@ -46,6 +46,15 @@ def continuation(cycle,start):
     remaining=copy.deepcopy(stages[offset:])
     for stage in remaining:
         stage['depends_on']=[d for d in stage.get('depends_on',[]) if d['stage'] not in prefix]
+    if import_collection is not None:
+        first=remaining[0]
+        if not any(x.endswith('/collect_learning_round.py') for x in first['command']):
+            raise ValueError('Partial physical collections require a collection stage')
+        path=str(import_collection.resolve())
+        if '--import-collection' in first['command']:
+            index=first['command'].index('--import-collection');del first['command'][index:index+2]
+        first['command']+=['--import-collection',path]
+        first.setdefault('inputs',[]).append(path)
     return dict(schema='training-dependencies/v1',continuation_of=str(cycle),
         reused_artifacts=refs,source_migration='New immutable source; optimizer resumes only inside matching dataset/objective',
         stages=render(remaining))
@@ -54,8 +63,9 @@ def continuation(cycle,start):
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--cycle',type=Path,required=True)
     parser.add_argument('--start-at',required=True);parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--import-collection',type=Path)
     parser.add_argument('--hours',type=float,default=8);args=parser.parse_args()
     if not 0<args.hours<=8:parser.error('At most eight-hour windows')
     args.output.mkdir(parents=True,exist_ok=True);path=args.output/'programme-spec.json'
-    if not path.exists():path.write_text(json.dumps(continuation(args.cycle.resolve(),args.start_at),indent=2))
+    if not path.exists():path.write_text(json.dumps(continuation(args.cycle.resolve(),args.start_at,args.import_collection),indent=2))
     raise SystemExit(run(path,args.output/'execution',args.hours))

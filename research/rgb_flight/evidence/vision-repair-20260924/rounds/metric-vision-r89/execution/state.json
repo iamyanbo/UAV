@@ -253,7 +253,7 @@
       ]
     },
     "development-flights": {
-      "status": "running",
+      "status": "checkpointed",
       "attempts": [
         {
           "process": {
@@ -290,8 +290,32 @@
         "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r88/execution/ppo-pack"
       ],
       "started_unix": 1790273365.1203256,
-      "reason": "Owned remote guard running",
-      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T180925Z-development-flights-5a1b13"
+      "reason": "Resume from verified checkpoint in a new guarded attempt",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T180925Z-development-flights-5a1b13",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T180925Z-development-flights-5a1b13/result.json",
+        "sha256": "eeeafda3d248ff8bbaa98c853639fbc492f2a4621ab04a809537d93aff8d0dd2"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T180925Z-development-flights-5a1b13/collection/result.json",
+        "sha256": "5cc0d7ca625758c63f5eb449119c289b07fadcd3d7fd37a82b7187d677cb5746"
+      },
+      "progress": {
+        "status": "checkpointed",
+        "accepted": false,
+        "complete_flights": 8,
+        "all_failures_retained": true
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T180925Z-development-flights-5a1b13/collection/flights.json",
+          "sha256": "55f8ad5aa37ac090b9d3985b3851ee97235989b8e457d4df0a8bcaec3061acfd"
+        }
+      ],
+      "checkpoint": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T180925Z-development-flights-5a1b13/collection/flights.json",
+        "sha256": "55f8ad5aa37ac090b9d3985b3851ee97235989b8e457d4df0a8bcaec3061acfd"
+      }
     },
     "matched-configuration-flights": {
       "status": "ready",
@@ -314,5 +338,5 @@
       "attempts": []
     }
   },
-  "updated_unix": 1790274046.034035
+  "updated_unix": 1790275374.9528768
 }

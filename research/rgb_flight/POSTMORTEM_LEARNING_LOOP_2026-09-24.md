@@ -207,3 +207,14 @@ Review found that, after entering local-depth navigation, `StartupState` switche
 ## Demonstrations still lack successful terminal stopping
 
 An audit of all ten policy-preparation receipts found zero positive explicit-stop examples. The batch covers motion probes, deliberate braking, obstacle turns, observed-target movement and tracking-recovery scans, but none reached the destination and the corrected goal matcher never provided a qualified stop. Brake probes are zero velocity with `explicit_stop=False`; they cannot substitute for terminal stopping supervision. Training remains valid for the available masked targets, but the planned demonstration coverage is incomplete and more updates on this batch alone cannot teach successful goal stopping. The source-bound coverage audit is `rounds/metric-vision-r86/demonstration-coverage.json`.
+
+
+## Gaussian initialization did not validate its actual point support
+
+Development attempt `launches/20260924T183632Z` failed in the asynchronous mapper with CUDA `invalid argument`; the reported optimizer extension was empty. CUDA reports can be asynchronous, so the final clone call is not proof that cloning caused the error. Inspection found a missing native-kernel precondition: the adapter counted tracker-valid depth pixels before Open3D truncated depths at 100 arbitrary map units and randomly downsampled them. The released initializer then calls three-neighbor KNN even if this leaves fewer than four points, including zero.
+
+R91 checks finite positive depths below the same truncation before inserting a camera/window and requires enough pixels for at least four points under either configured downsampling factor. Unsupported views are explicitly logged and skipped; geometry is not invented, and native optimization still handles supported views. The failed attempt and its automatic retry are preserved. Eight complete development flights are imported through the existing checkpoint identity checks, and the remaining two use the repair. Original failed RGB is scheduled for recorded reconstruction with the repaired source.
+
+## Integration flight reachability is limited by the exploration cap
+
+Post-flight labels show that four of the first six development goals start farther than 90 horizontal meters away. The integration controller remains capped at 0.5 m/s for a 180-second episode, so those goals are unreachable even on a straight unobstructed path. These flights can assess the learning loop, movement, collisions and recovery, but their zero success rate is not a fair navigation benchmark at the later protocol speeds. The two nearer goals also failed. Final speed progression and sealed evaluation remain deferred; neither update completion nor this limited batch establishes navigation acceptance.

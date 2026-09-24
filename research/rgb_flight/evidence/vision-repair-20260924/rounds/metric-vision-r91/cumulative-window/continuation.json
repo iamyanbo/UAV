@@ -1,0 +1,10 @@
+{
+  "status": "waiting_for_integration",
+  "cycle": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r91",
+  "physical": {
+    "updated-policy-flight": "completed",
+    "final-reload-flight": "completed",
+    "development-flights": "completed"
+  },
+  "preference_status": "ready"
+}

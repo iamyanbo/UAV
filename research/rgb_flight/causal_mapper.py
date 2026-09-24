@@ -60,10 +60,14 @@ class BoundedGaussians(GaussianModel):
         # at zero. Upstream's all-pixel median then becomes zero, producing
         # log(0) Gaussian scales. Size points from supported depths only.
         values = np.asarray(depth)
-        valid = values[np.isfinite(values) & (values > 0)]
-        if not len(valid):
-            raise RuntimeError('No supported RGB depth for Gaussian initialization')
+        # Open3D discards depths >=100 before random downsampling. The
+        # released KNN initializer needs three neighbors plus the point
+        # itself; counting untruncated tracker-valid pixels is insufficient.
+        valid = values[np.isfinite(values) & (values > 0) & (values < 100)]
         settings = self.config['mapping']
+        downsample=settings['pcd_downsample_init' if init else 'pcd_downsample']
+        if len(valid)<4*downsample:
+            raise RuntimeError('Insufficient supported points after Gaussian depth truncation/downsampling')
         adaptive, point_size = settings.get('adaptive_pointsize', False), settings['point_size']
         try:
             if adaptive:
@@ -242,7 +246,13 @@ class CausalMapper(Mapper):
             # Corrections above belong to this newer observed prefix even
             # when no new keyframe is inserted. Publish their real timestamp.
             return self.refine() if self.refinement_pending else self.publish_current()
-        if valid.sum().item() < 100:
+        supported=valid & torch.isfinite(depth) & (depth>0) & (depth<100)
+        minimum=4*max(self.config['mapping']['pcd_downsample_init'],self.config['mapping']['pcd_downsample'])
+        if supported.sum().item() < max(100,minimum):
+            self.unsupported_gaussian_views=getattr(self,'unsupported_gaussian_views',0)+1
+            print(json.dumps(dict(status='mapping_view_skipped',keyframe=keyframe,
+                reason='insufficient_points_after_depth_truncation_and_downsampling',
+                supported_pixels=int(supported.sum()),required_pixels=max(100,minimum))),flush=True)
             return None
         if len(self.current_window) == 8:
             old = self.current_window.pop()
@@ -313,6 +323,7 @@ class CausalMapper(Mapper):
                      gaussians=self.tensors(), cameras=cameras, history=list(self.history),
                      historical_anchors=self.historical_anchors,
                      unsupported_depth_corrections=getattr(self, 'rejected_depth_corrections', 0),
+                     unsupported_gaussian_views=getattr(self,'unsupported_gaussian_views',0),
                      capacity_limited_densification_candidates=getattr(self.gaussians, 'capacity_limited_candidates', 0),
                      optimizer_updates=self.iteration_count,
                      optimizer_schedule='incremental-observed-multiview/v1',

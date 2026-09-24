@@ -1,0 +1,10 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "episode_id": "train-00056",
+  "outputs": 26,
+  "unavailable_windows": 1314,
+  "busy_requests": 45,
+  "frozen_encoder": true,
+  "publication_clock": "actual completion in this replay/live process"
+}

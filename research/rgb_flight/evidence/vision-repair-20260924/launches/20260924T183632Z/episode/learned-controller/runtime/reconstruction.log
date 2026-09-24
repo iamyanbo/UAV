@@ -1,0 +1,134 @@
+/upstream/splat/thirdparty/glorie_slam/motion_filter.py:48: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/motion_filter.py:54: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/motion_filter.py:59: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:109: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:159: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:187: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:226: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=True)
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:273: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @torch.cuda.amp.autocast(enabled=False)
+/usr/local/lib/python3.12/dist-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/usr/local/lib/python3.12/dist-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+xFormers not available
+xFormers not available
+xFormers not available
+xFormers not available
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:145: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:232: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:246: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+{"status": "mapping_snapshot_queued", "keyframe": 69, "latest_observation_ns": 1790275068445494784, "completed_memory_version": 0, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 82, "latest_observation_ns": 1790275071394557696, "completed_memory_version": 0, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 85, "latest_observation_ns": 1790275073719607296, "completed_memory_version": 2, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 86, "latest_observation_ns": 1790275076821673472, "completed_memory_version": 5, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 87, "latest_observation_ns": 1790275080472751360, "completed_memory_version": 6, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 88, "latest_observation_ns": 1790275088827929600, "completed_memory_version": 10, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 89, "latest_observation_ns": 1790275095410070016, "completed_memory_version": 13, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 94, "latest_observation_ns": 1790275099547158272, "completed_memory_version": 15, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 97, "latest_observation_ns": 1790275103999253248, "completed_memory_version": 16, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 99, "latest_observation_ns": 1790275108778355200, "completed_memory_version": 18, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 101, "latest_observation_ns": 1790275111529413888, "completed_memory_version": 19, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 103, "latest_observation_ns": 1790275115912507392, "completed_memory_version": 20, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 105, "latest_observation_ns": 1790275118177555712, "completed_memory_version": 21, "superseded_requests": 0}
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:285: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+/upstream/splat/thirdparty/glorie_slam/factor_graph.py:300: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=True):
+{"status": "mapping_snapshot_queued", "keyframe": 107, "latest_observation_ns": 1790275120391602944, "completed_memory_version": 22, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 108, "latest_observation_ns": 1790275124288686080, "completed_memory_version": 23, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 109, "latest_observation_ns": 1790275128980786176, "completed_memory_version": 25, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 110, "latest_observation_ns": 1790275131464839168, "completed_memory_version": 26, "superseded_requests": 0}
+{"status": "mapping_snapshot_queued", "keyframe": 115, "latest_observation_ns": 1790275145937147904, "completed_memory_version": 30, "superseded_requests": 0}
+Process SpawnProcess-1:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/source/mapping_worker.py", line 28, in _worker
+    result = mapper.update(key, source, image, depth.cuda(), valid.cuda(), pose.cuda(), calibration, now, corrections)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/source/causal_mapper.py", line 271, in update
+    self.add_next_kf(keyframe, camera, init=first, depth_map=filtered.cpu().numpy())
+  File "/upstream/splat/src/mapper.py", line 138, in add_next_kf
+    self.gaussians.extend_from_pcd_seq(
+  File "/upstream/splat/thirdparty/gaussian_splatting/scene/gaussian_model.py", line 260, in extend_from_pcd_seq
+    self.extend_from_pcd(
+  File "/upstream/splat/thirdparty/gaussian_splatting/scene/gaussian_model.py", line 243, in extend_from_pcd
+    self.densification_postfix(
+  File "/upstream/splat/thirdparty/gaussian_splatting/scene/gaussian_model.py", line 619, in densification_postfix
+    optimizable_tensors = self.cat_tensors_to_optimizer(d)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/source/causal_mapper.py", line 51, in cat_tensors_to_optimizer
+    state[key]=concatenate(state[key],extension)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/source/causal_mapper.py", line 39, in concatenate
+    if len(b)==0:return a.detach().clone()
+                        ^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: invalid argument
+Search for `cudaErrorInvalidValue' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+Traceback (most recent call last):
+  File "/source/reconstruct.py", line 191, in main
+    published = mapper.update(source_index, sources[source_index], source_image, depth, valid,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/source/mapping_worker.py", line 71, in update
+    self.poll()
+  File "/source/mapping_worker.py", line 59, in poll
+    raise RuntimeError('Asynchronous mapper failed:\n' + message['error'])
+RuntimeError: Asynchronous mapper failed:
+Traceback (most recent call last):
+  File "/source/mapping_worker.py", line 28, in _worker
+    result = mapper.update(key, source, image, depth.cuda(), valid.cuda(), pose.cuda(), calibration, now, corrections)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/source/causal_mapper.py", line 271, in update
+    self.add_next_kf(keyframe, camera, init=first, depth_map=filtered.cpu().numpy())
+  File "/upstream/splat/src/mapper.py", line 138, in add_next_kf
+    self.gaussians.extend_from_pcd_seq(
+  File "/upstream/splat/thirdparty/gaussian_splatting/scene/gaussian_model.py", line 260, in extend_from_pcd_seq
+    self.extend_from_pcd(
+  File "/upstream/splat/thirdparty/gaussian_splatting/scene/gaussian_model.py", line 243, in extend_from_pcd
+    self.densification_postfix(
+  File "/upstream/splat/thirdparty/gaussian_splatting/scene/gaussian_model.py", line 619, in densification_postfix
+    optimizable_tensors = self.cat_tensors_to_optimizer(d)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/source/causal_mapper.py", line 51, in cat_tensors_to_optimizer
+    state[key]=concatenate(state[key],extension)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/source/causal_mapper.py", line 39, in concatenate
+    if len(b)==0:return a.detach().clone()
+                        ^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: invalid argument
+Search for `cudaErrorInvalidValue' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/source/reconstruct.py", line 251, in <module>
+    main()
+  File "/source/reconstruct.py", line 231, in main
+    mapper.close()
+  File "/source/mapping_worker.py", line 106, in close
+    self.poll()
+  File "/source/mapping_worker.py", line 67, in poll
+    raise RuntimeError('Mapping process exited with code ' + str(self.process.exitcode))
+RuntimeError: Mapping process exited with code 1

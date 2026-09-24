@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T180925Z-development-flights-5a1b13/source/collect_learning_round.py",
+    "--development-batch",
+    "--controller-checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r88/execution/ppo-pack"
+  ],
+  "seconds": 7200,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "flight",
+  "peak_gib": 72.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 2033.4390037511475
+}
