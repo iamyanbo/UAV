@@ -1,0 +1,122 @@
+{
+  "status": "failed",
+  "episode_id": "train-00012",
+  "split": "train",
+  "phase": 1,
+  "runtime_goal_sha256": "47d7670842c13f0812f7d7ec45fc8473b1901ed8825a13f9aa587431ae60224d",
+  "pose_setting_calls_before_recording": 1,
+  "pre_episode_goal_pose_setting_calls": 4,
+  "pose_setting_calls_after_recording": 0,
+  "clock_speed": 1.0,
+  "maximum_speed_mps": 3.0,
+  "controller_kind": "learned_mode_1",
+  "runtime_isolation": {
+    "status": "live_inference_boundary_passed",
+    "episode_id": "train-00012",
+    "rgb_bytes": 921600,
+    "first_sim_ns": 1790238643999821056,
+    "last_sim_ns": 1790238644302827520,
+    "goal_views": 4,
+    "denied_operations": 5,
+    "simulator_rpc_inaccessible": true,
+    "privileged_files_inaccessible": true
+  },
+  "controller_checkpoint_sha256": "3330eb6f7c582baf4349cd6071bdd1c4aa77fbbb621445f86795da350b289014",
+  "error_type": "RuntimeError",
+  "error": "Live controller exited; inspect preserved inference receipt/log",
+  "learned_controller": {
+    "status": "failed",
+    "accepted": false,
+    "frames": 359,
+    "error": {
+      "type": "RuntimeError",
+      "message": "Broker unavailable"
+    },
+    "shards": [
+      {
+        "path": "controller-000000.pt",
+        "sha256": "c7cb8040783f9100a4192e7d4c6f5c88f0ca2b3d4517e85c17e5aa0d00526ed7",
+        "samples": 64
+      },
+      {
+        "path": "controller-000001.pt",
+        "sha256": "2b12f970c781d61ae0f7578a3374b9230aed73faae7dbbe9f3af667004fa7048",
+        "samples": 64
+      },
+      {
+        "path": "controller-000002.pt",
+        "sha256": "243b3e3ab7909a2049cc0bcee480cf35947aa94a9731e20e645cfe9cb06c4a50",
+        "samples": 64
+      },
+      {
+        "path": "controller-000003.pt",
+        "sha256": "61a06137f1892129104b9a11b4cce2f0a5109adfc929d44aa43bdb3680b01eb4",
+        "samples": 64
+      },
+      {
+        "path": "controller-000004.pt",
+        "sha256": "0e8f9f327d60e98274f7e212e86c2d35bd587500abc5070a4bf9b850dbe306d2",
+        "samples": 64
+      },
+      {
+        "path": "controller-000005.pt",
+        "sha256": "86136b524813fcb90ca734a6c57bdf8d2751caf901320b67d4aeb1ed604a4ab5",
+        "samples": 39
+      }
+    ],
+    "scope": "Live Mode 1 only; no planner or Qwen configuration",
+    "sampled_policy": false,
+    "slow_planner_enabled": false,
+    "teacher_provenance": "observed-exploration/v4",
+    "final_map_status": "initializing",
+    "map_version": -1,
+    "supported_maps_received": 15,
+    "optimized_surface_samples_received": 68492,
+    "first_supported_map_available_ns": 1790238676271509504,
+    "handover_sim_ns": null,
+    "control_safety_p95_seconds": 0.0703491460299119,
+    "control_safety_missed_deadlines": 133,
+    "safety_interventions": 0
+  },
+  "broker_errors": [
+    "capture: RuntimeError: Invalid RGB payload: {\"received_monotonic\": 1337830.309790509, \"request_started_monotonic\": 1337830.309237867, \"width\": 0, \"height\": 0, \"payload_bytes\": 0, \"sim_ns\": 0}"
+  ],
+  "commands": 1274,
+  "control_latency_p95_seconds": 0.18000384,
+  "capture_interval_p95_sim_seconds": 0.114002432,
+  "fresh_rgb_hz": 24.416321379391807,
+  "control_work_p95_seconds": 0.0013519347761757662,
+  "control_missed_deadlines": 0,
+  "control_interval_p95_seconds": 0.045975699555128806,
+  "control_interval_max_seconds": 0.049480649176985025,
+  "control_schedule_missed_deadlines": 0,
+  "timing_gate": {
+    "accepted": false,
+    "capture_control_passed": false,
+    "requirements": {
+      "fresh_rgb_hz_min": 19,
+      "rgb_interval_p95_max": 0.075,
+      "control_p95_max": 0.05
+    },
+    "reason": "RGB/control acceptance is measured; application delay belongs to dispatched-command dynamics",
+    "application_timestamps_available": false
+  },
+  "depth_label_index": "training_labels/depth/index.jsonl",
+  "depth_label_samples": 0,
+  "storage": {
+    "frames": 1322,
+    "stream_sha256": "e8729ca8cb0375df79f2ac592525bcbfbf6ac9c59e6fdb0febdd91f6f9ceddee",
+    "complete": false,
+    "codec": "per-frame zlib level 1, lossless RGB24",
+    "timestamps": "original AirSim image nanoseconds",
+    "pixel_format": "RGB24",
+    "color_calibration_sha256": "20b99b62b592bc35d286c09fc3df798b6e8a60f0dd553e3e85c9752e9b1db854"
+  },
+  "training_label_frames": 649,
+  "teacher_provenance": "observed-exploration/v4",
+  "actual_displacement_m": 0.5777374065420244,
+  "actual_path_length_m": 12.171147117032163,
+  "mean_actual_velocity_mps": 0.3733622586384434,
+  "maximum_actual_velocity_mps": 0.5139997680991267,
+  "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+}

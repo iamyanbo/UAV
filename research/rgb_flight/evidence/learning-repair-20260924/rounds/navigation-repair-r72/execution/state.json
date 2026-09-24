@@ -147,7 +147,7 @@
   "round_id": "execution",
   "stages": {
     "bootstrap-flight": {
-      "status": "running",
+      "status": "completed",
       "attempts": [
         {
           "process": {
@@ -184,16 +184,147 @@
         "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints"
       ],
       "started_unix": 1790237826.7854266,
-      "reason": "Owned remote guard running",
-      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T081706Z-bootstrap-flight-5f0773"
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T081706Z-bootstrap-flight-5f0773",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T081706Z-bootstrap-flight-5f0773/result.json",
+        "sha256": "9dcf8f7e546a19ef41a6ff1c182c898d54ad2a1974d99b1843b8bae38929c20f"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T081706Z-bootstrap-flight-5f0773/collection/result.json",
+        "sha256": "4428defd1238635d27ae96bf3e6e14eb8b1681b489dc2a60826b7304190db449"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 10,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": true,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T081706Z-bootstrap-flight-5f0773/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T081706Z-bootstrap-flight-5f0773/collection/flights.json",
+          "sha256": "23df2ab5e312244ec8411890b3fa15476b611c8b3982225a458ee68847017b77"
+        }
+      ]
     },
     "trajectories": {
-      "status": "ready",
-      "attempts": []
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2641266,
+            "start_ticks": "133793003",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/trajectories-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2641266,
+        "start_ticks": "133793003",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/trajectories-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/spark_guard.py",
+        "--name",
+        "trajectories",
+        "--seconds",
+        "1800",
+        "--kind",
+        "cpu",
+        "--peak-gib",
+        "8",
+        "--",
+        "/home/iamyanbo/uav-rgb-flight/envs/airsim/bin/python",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/trajectory_bundle.py",
+        "--collection-root",
+        "/home/iamyanbo/uav-rgb-flight/launches",
+        "--output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/trajectories"
+      ],
+      "started_unix": 1790238797.9084413,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083317Z-trajectories-19167d",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083317Z-trajectories-19167d/result.json",
+        "sha256": "61c44710ec8e0f89d118b99e91e85f137c8325f29e196832051a79f71a29f9ca"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/trajectories/result.json",
+        "sha256": "1fc5d5ce998a7bf4d8809f1d5e32b0067ae63b567d03c8b5e6cfebc0d4a9e3dd"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "attempts": 437,
+        "excluded": 0,
+        "unique_successful_episodes": 250,
+        "timing_passed_attempts": 11,
+        "manifest_sha256": "a5cb9059bce537575e4d8640d3af93b604277004ee5e5287736795b701559880"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/trajectories/manifest.json",
+          "sha256": "a5cb9059bce537575e4d8640d3af93b604277004ee5e5287736795b701559880"
+        }
+      ]
     },
     "world-data": {
-      "status": "ready",
-      "attempts": []
+      "status": "running",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2641318,
+            "start_ticks": "133800116",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/world-data-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2641318,
+        "start_ticks": "133800116",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/world-data-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/spark_guard.py",
+        "--name",
+        "world-data",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "24",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/learning_data_job.py",
+        "--phase",
+        "world",
+        "--bundle",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/trajectories",
+        "--collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T081706Z-bootstrap-flight-5f0773/collection/flights.json",
+        "--checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints",
+        "--output",
+        "{job}/world-data"
+      ],
+      "started_unix": 1790238869.0351324,
+      "reason": "Owned remote guard running",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083429Z-world-data-e45906"
     },
     "world-update": {
       "status": "ready",
@@ -288,5 +419,5 @@
       "attempts": []
     }
   },
-  "updated_unix": 1790238273.257931
+  "updated_unix": 1790238885.0578487
 }

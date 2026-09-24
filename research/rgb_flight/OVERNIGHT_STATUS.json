@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-09-24T08:24:40.333031+00:00",
+  "observed_utc": "2026-09-24T08:34:52.023046+00:00",
   "round": "navigation-repair-r72",
   "continuation": {
     "status": "full_flow_running",
@@ -7,21 +7,40 @@
   },
   "stages": {
     "bootstrap-flight": {
-      "status": "running",
-      "reason": "Owned remote guard running",
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
       "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T081706Z-bootstrap-flight-5f0773",
-      "progress": null
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 10,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": true,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T081706Z-bootstrap-flight-5f0773/collection/flights.json"
+      }
     },
     "trajectories": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083317Z-trajectories-19167d",
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "attempts": 437,
+        "excluded": 0,
+        "unique_successful_episodes": 250,
+        "timing_passed_attempts": 11,
+        "manifest_sha256": "a5cb9059bce537575e4d8640d3af93b604277004ee5e5287736795b701559880"
+      }
     },
     "world-data": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
+      "status": "running",
+      "reason": "Owned remote guard running",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T083429Z-world-data-e45906",
       "progress": null
     },
     "world-update": {

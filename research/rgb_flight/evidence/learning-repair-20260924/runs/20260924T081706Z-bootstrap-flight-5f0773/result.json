@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T081706Z-bootstrap-flight-5f0773/source/collect_learning_round.py",
+    "--demonstration-batch",
+    "--controller-checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "flight",
+  "peak_gib": 72.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 970.5684813810512
+}
