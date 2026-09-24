@@ -1,0 +1,41 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 208,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "7f769f3748f1bf9c10b6bc0de9b71045ee771f7ddbec64e087e29e098d237a83",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "852bfc849b589272d9b495d5e88d942c2e56dea3929e60e3b359a080cdf37aea",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "98cc9d9275c53e07bd5f0b7905c7701f611720f6d711c5e7dbb400ed2a1781dd",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "7ed03d18a41d5e0bbc56b0127c3e51cf2ebb859fc3d345d2b63aadcf47f094da",
+      "samples": 16
+    }
+  ],
+  "scope": "Mode 1, Qwen and frozen predictive planning",
+  "sampled_policy": false,
+  "slow_planner_enabled": true,
+  "teacher_provenance": null,
+  "final_map_status": "terminated",
+  "map_version": -1,
+  "supported_maps_received": 7,
+  "optimized_surface_samples_received": 93237,
+  "first_supported_map_available_ns": 1790239560289806336,
+  "handover_sim_ns": null,
+  "control_safety_p95_seconds": 0.15207240683957926,
+  "control_safety_missed_deadlines": 89,
+  "safety_interventions": 205
+}

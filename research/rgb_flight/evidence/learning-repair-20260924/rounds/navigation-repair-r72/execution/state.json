@@ -2011,7 +2011,7 @@
       ]
     },
     "final-reload-flight": {
-      "status": "running",
+      "status": "completed",
       "attempts": [
         {
           "process": {
@@ -2054,12 +2054,75 @@
         "--with-deliberation"
       ],
       "started_unix": 1790239453.6014466,
-      "reason": "Owned remote guard running",
-      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084413Z-final-reload-flight-a4f83c"
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084413Z-final-reload-flight-a4f83c",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084413Z-final-reload-flight-a4f83c/result.json",
+        "sha256": "2d3d8460d02198db09f747bccc6cba5ebfdfeedc5d3f1384bae54c63fc8267cc"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084413Z-final-reload-flight-a4f83c/collection/result.json",
+        "sha256": "8481c51b12b16359b882e78ef10fb513984a814740cf6f3174da9a9828fc8293"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084413Z-final-reload-flight-a4f83c/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084413Z-final-reload-flight-a4f83c/collection/flights.json",
+          "sha256": "857523b51117fa5739da131306322d2d731ba28d34b54c13e9699e74cc3b826e"
+        }
+      ]
     },
     "development-flights": {
-      "status": "ready",
-      "attempts": []
+      "status": "running",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2647426,
+            "start_ticks": "133871802",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/development-flights-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2647426,
+        "start_ticks": "133871802",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/development-flights-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/spark_guard.py",
+        "--name",
+        "development-flights",
+        "--seconds",
+        "1800",
+        "--kind",
+        "flight",
+        "--peak-gib",
+        "72",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/collect_learning_round.py",
+        "--development-batch",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/ppo-pack"
+      ],
+      "started_unix": 1790239585.8989217,
+      "reason": "Owned remote guard running",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T084625Z-development-flights-903d46"
     },
     "matched-configuration-flights": {
       "status": "ready",
@@ -2082,5 +2145,5 @@
       "attempts": []
     }
   },
-  "updated_unix": 1790239496.695813
+  "updated_unix": 1790240109.118103
 }
