@@ -1,0 +1,74 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 517,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "9928ad44c50afc17bf4a10d501bb97cdacdf7fe2a19765ab9e73ad1a810193e6",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "c9b56884c69b57eade2caa67575a1da891c9ae84fee88c079899f35b4f2c6c29",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "fd881985dcca8479773280f969174aa37fa6f0c96a61d330678b03899d307218",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "af4f6249842663b6c1c3552ec02edd4026a7e489e05cac547b272a1b5b262de3",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "cfb1d20003b31414a7e94a3251d14c2bcfa7ca3e49cc146168320f65eaa1bbfb",
+      "samples": 64
+    },
+    {
+      "path": "controller-000005.pt",
+      "sha256": "7ab213c413a6bd68da384bf96797c975fe920fd68a5d4ce5101d1b620c3f3672",
+      "samples": 64
+    },
+    {
+      "path": "controller-000006.pt",
+      "sha256": "97add4d52c6dd6c2ab562ce4137ce4a843b4f78e5ed4393911435126047005c7",
+      "samples": 64
+    },
+    {
+      "path": "controller-000007.pt",
+      "sha256": "07ffacbb079cc20ef40182fddd56d5c04604b967ffeef729a63de98ca1f53d75",
+      "samples": 64
+    },
+    {
+      "path": "controller-000008.pt",
+      "sha256": "1cc5c7852c228846166ad29868ca7399f0e5dc12c5629e7ef3fa7a119e59e41a",
+      "samples": 5
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": null,
+  "final_map_status": "local_navigation",
+  "map_version": 13,
+  "map_fusion": {
+    "submitted": 12,
+    "results_polled": 12,
+    "pending_result": false,
+    "queue_bound": 1,
+    "availability": "actual CPU geometry completion, then causal publication"
+  },
+  "supported_maps_received": 12,
+  "optimized_surface_samples_received": 136440,
+  "first_supported_map_available_ns": 1790274015621395712,
+  "handover_sim_ns": 1790273916358278144,
+  "metric_handover_sim_ns": null,
+  "control_safety_p95_seconds": 0.13812016737647353,
+  "control_safety_missed_deadlines": 442,
+  "safety_interventions": 456
+}

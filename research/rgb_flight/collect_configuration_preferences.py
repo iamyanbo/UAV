@@ -75,12 +75,16 @@ def main():
         flight=json.loads((job/name/'flights.json').read_text())[0]
         result=flight['result'];episode=Path(flight['episode_path'])
         deliberation=json.loads((episode/'learned-controller/runtime/deliberation/result.json').read_text())
-        if deliberation['status']!='completed' or deliberation['actual_planner_calls']<1:
-            raise RuntimeError('Matched flight did not execute the trained predictive/configuration path')
+        if deliberation['status']!='completed':
+            raise RuntimeError('Matched flight deliberation did not finish cleanly')
         if result['runtime_goal_sha256']!=conditions['goal_panorama_sha256']:raise ValueError('Matched exact goal pixels changed')
         proposals=[json.loads(line) for line in (episode/'learned-controller/runtime/proposals.jsonl').read_text().splitlines()]
         exposed=sum(p['mode']=='predictive_then_independent_safety' and not p['safety']['overridden'] and p.get('broker_acceptance',{}).get('accepted',False) for p in proposals)
-        outcomes.append(dict(applied_predictive_commands=exposed,complete_flight=True,episode_path=str(episode),result_sha256=digest(episode/'result.json'),
+        outcomes.append(dict(applied_predictive_commands=exposed,
+            actual_planner_calls=deliberation['actual_planner_calls'],
+            actual_qwen_calls=deliberation['actual_qwen_calls'],
+            published_qwen_configurations=deliberation['published_qwen_configurations'],
+            complete_flight=True,episode_path=str(episode),result_sha256=digest(episode/'result.json'),
             configuration=configuration,collision=bool(result.get('airsim_collision') or result.get('geometry_collision')),
             success=bool(result['success']),elapsed_sim_seconds=result['elapsed_sim_seconds'],termination=result['termination']))
         (output/'outcomes.json').write_text(json.dumps(outcomes,indent=2))

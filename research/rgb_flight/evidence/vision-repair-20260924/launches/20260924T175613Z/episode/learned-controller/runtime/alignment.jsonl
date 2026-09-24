@@ -44,3 +44,33 @@
 {"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 12, "observation_ns": 1790272660534482432, "available_ns": 1790272667761636608, "published_camera_count": 8}
 {"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 13, "observation_ns": 1790272663300541440, "available_ns": 1790272672021727488, "published_camera_count": 9}
 {"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 14, "observation_ns": 1790272669033663744, "available_ns": 1790272676194816512, "published_camera_count": 10}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 16, "observation_ns": 1790272674541781248, "available_ns": 1790272685231009280, "published_camera_count": 12}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 17, "observation_ns": 1790272679782893056, "available_ns": 1790272689635103232, "published_camera_count": 13}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 18, "observation_ns": 1790272682542951936, "available_ns": 1790272693910194432, "published_camera_count": 14}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 19, "observation_ns": 1790272687868065536, "available_ns": 1790272697861278720, "published_camera_count": 15}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 20, "observation_ns": 1790272692956174080, "available_ns": 1790272701743361536, "published_camera_count": 16}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 21, "observation_ns": 1790272695218222336, "available_ns": 1790272705271436800, "published_camera_count": 17}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 22, "observation_ns": 1790272700096326400, "available_ns": 1790272709522527488, "published_camera_count": 18}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 23, "observation_ns": 1790272705124433664, "available_ns": 1790272712516591360, "published_camera_count": 19}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 24, "observation_ns": 1790272707803490816, "available_ns": 1790272716293671936, "published_camera_count": 20}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 25, "observation_ns": 1790272712339587584, "available_ns": 1790272719794746624, "published_camera_count": 21}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 26, "observation_ns": 1790272716731681280, "available_ns": 1790272722749809664, "published_camera_count": 22}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 27, "observation_ns": 1790272718795725312, "available_ns": 1790272726943899136, "published_camera_count": 23}
+{"component": "alignment", "observation_ns": 1790272722581806080, "available_ns": 1790272727732915968, "gauge_version": 1, "usable": false, "reason": "tracking_lost"}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 28, "observation_ns": 1790272720637764608, "available_ns": 1790272731708000768, "published_camera_count": 24}
+{"component": "alignment", "observation_ns": 1790272727294906624, "available_ns": 1790272733415037184, "gauge_version": 1, "usable": false, "reason": "tracking_lost"}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 29, "observation_ns": 1790272720637764608, "available_ns": 1790272735164074496, "published_camera_count": 24}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 30, "observation_ns": 1790272720637764608, "available_ns": 1790272739550168064, "published_camera_count": 24}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 31, "observation_ns": 1790272733043029248, "available_ns": 1790272744644276736, "published_camera_count": 25}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 32, "observation_ns": 1790272733043029248, "available_ns": 1790272748559360256, "published_camera_count": 25}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 33, "observation_ns": 1790272738689149696, "available_ns": 1790272752879452416, "published_camera_count": 26}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 34, "observation_ns": 1790272744557274880, "available_ns": 1790272758207566080, "published_camera_count": 27}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 35, "observation_ns": 1790272750545402624, "available_ns": 1790272762335654144, "published_camera_count": 28}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 36, "observation_ns": 1790272750545402624, "available_ns": 1790272766943752448, "published_camera_count": 28}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 38, "observation_ns": 1790272758942581760, "available_ns": 1790272775193928448, "published_camera_count": 29}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 39, "observation_ns": 1790272768581787392, "available_ns": 1790272780186034944, "published_camera_count": 30}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 40, "observation_ns": 1790272773591894272, "available_ns": 1790272785241142784, "published_camera_count": 31}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 41, "observation_ns": 1790272773591894272, "available_ns": 1790272788250206976, "published_camera_count": 31}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 42, "observation_ns": 1790272779505020416, "available_ns": 1790272793623321600, "published_camera_count": 32}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 43, "observation_ns": 1790272785697152512, "available_ns": 1790272798507425792, "published_camera_count": 33}
+{"usable": false, "reason": "metric_depth_pending", "component": "alignment", "map_version": 44, "observation_ns": 1790272791868284160, "available_ns": 1790272802605513216, "published_camera_count": 34}

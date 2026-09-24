@@ -1,0 +1,143 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 1454,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "deca82554b1cad1cd622d65cee17ba947a1be75901693bb31bd3ecf8c95f139c",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "6299d943c889010c3cce00d459bfe7c79fa4efdc42d29dc737d833d6dd1ac87b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "0d6b4bdaa4474e8b53928b85c096c30c2d713eeae5650bed7e9c055276f8cd0b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "31dd8c2ab2588871841edb52671666a11f45120f0dab05674ea7319340964636",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "6f1b842b5192ebd2fb88485b5a694e96ba32717f3839a2655a93ab29bb5ab60d",
+      "samples": 64
+    },
+    {
+      "path": "controller-000005.pt",
+      "sha256": "6b9d7eaa80504ceb20ddd1c72e5adf3042b36ae6d3e2583f9ab46bed13dad032",
+      "samples": 64
+    },
+    {
+      "path": "controller-000006.pt",
+      "sha256": "30d3ab5e876081fd199416478ef0b91fcf2ad7020cba7aff32b70b2fed831aa3",
+      "samples": 64
+    },
+    {
+      "path": "controller-000007.pt",
+      "sha256": "ce644171772e5401fcc7f8372ed672a96ddf98b2fbb83633a04b6472e5335343",
+      "samples": 64
+    },
+    {
+      "path": "controller-000008.pt",
+      "sha256": "703bf2036cb40ce7598de8adac2db0fdb3ae222b6a0211410f56b637ea8975be",
+      "samples": 64
+    },
+    {
+      "path": "controller-000009.pt",
+      "sha256": "a4ee22cf04c045d992716931143eb8214c048b07546bdb7c8b881f7a933aa00b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000010.pt",
+      "sha256": "a4ec6d6ddb34443cf0163c4cf71db6fd97b59e0ee519ff326c8c22eaec384977",
+      "samples": 64
+    },
+    {
+      "path": "controller-000011.pt",
+      "sha256": "9410dee8be61a61f4f68074c6708f31e5129584acc78cda93f51836363421187",
+      "samples": 64
+    },
+    {
+      "path": "controller-000012.pt",
+      "sha256": "559e4c03e9c3924d613e9c548e0b38885589fb83f2b391a141f7ad40fa7e4cc3",
+      "samples": 64
+    },
+    {
+      "path": "controller-000013.pt",
+      "sha256": "ae1baadf8e1756d0ab65d5eec3d3307f3bdbc9923b2842d8b5fcf10dd2fee302",
+      "samples": 64
+    },
+    {
+      "path": "controller-000014.pt",
+      "sha256": "d491e837564a9a3514d2d1c8b2ca3abdd9cc630ee851a20785a9ab21ad4e0710",
+      "samples": 64
+    },
+    {
+      "path": "controller-000015.pt",
+      "sha256": "385f35dfdaaae8e3218708d0fcaa2f0d73c84985cb9ef5ca24b3de48fb80ddbb",
+      "samples": 64
+    },
+    {
+      "path": "controller-000016.pt",
+      "sha256": "8b046da71eb06def5c77e904b4e2f35743a2ac9de5b1ea5e140c92e9212d0601",
+      "samples": 64
+    },
+    {
+      "path": "controller-000017.pt",
+      "sha256": "4074413626a41dd7536a036e01070f48830009bc5250609d1fa22baa39568337",
+      "samples": 64
+    },
+    {
+      "path": "controller-000018.pt",
+      "sha256": "d60c56358c301ef711044a5256e6e2da4391385de3637c9a87c7c62196880a05",
+      "samples": 64
+    },
+    {
+      "path": "controller-000019.pt",
+      "sha256": "e528124e14e1ae6e010fe6384afba2549fac4c92de4f2dba3f2ca6c911639dc4",
+      "samples": 64
+    },
+    {
+      "path": "controller-000020.pt",
+      "sha256": "3b3f96e35fad50a9debbe2e9c0891e0d6659c63cbbf43fd3757f475ecee189f9",
+      "samples": 64
+    },
+    {
+      "path": "controller-000021.pt",
+      "sha256": "db43ef345197a9c0c2e8fa047fbb78e8e3d56ddbfe09e9a113992149ec5d054b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000022.pt",
+      "sha256": "ed499ce83cef2023b3338189d739fb67d749bdda05766fcb535bf74c377b8a90",
+      "samples": 46
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": null,
+  "final_map_status": "local_navigation",
+  "map_version": -1,
+  "map_fusion": {
+    "submitted": 0,
+    "results_polled": 0,
+    "pending_result": false,
+    "queue_bound": 1,
+    "availability": "actual CPU geometry completion, then causal publication"
+  },
+  "supported_maps_received": 51,
+  "optimized_surface_samples_received": 266922,
+  "first_supported_map_available_ns": 1790272982964561920,
+  "handover_sim_ns": 1790272964760173568,
+  "control_safety_p95_seconds": 0.11325351062696423,
+  "control_safety_missed_deadlines": 932,
+  "safety_interventions": 970
+}

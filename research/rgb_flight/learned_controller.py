@@ -263,6 +263,7 @@ def main():
                     optimized_surface_samples_received=core.optimized_surface_samples_received if core else 0,
                     first_supported_map_available_ns=core.first_supported_map_available_ns if core else None,
                     handover_sim_ns=core.startup.handover_ns if core else None,
+                    metric_handover_sim_ns=core.startup.metric_handover_ns if core else None,
                     control_safety_p95_seconds=float(np.quantile(latencies,.95)) if latencies else None,
                     control_safety_missed_deadlines=sum(x>.05 for x in latencies),safety_interventions=interventions)
         (output/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result))

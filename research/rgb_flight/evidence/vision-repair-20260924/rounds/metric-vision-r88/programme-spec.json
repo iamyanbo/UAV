@@ -1,0 +1,452 @@
+{
+  "schema": "training-dependencies/v1",
+  "continuation_of": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87",
+  "reused_artifacts": [
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/dagger-data/result.json",
+      "sha256": "2124c5eb70cecd78bcecf5cd5ae3cadc7d7a8819160c45da3ed25882f7a8b987"
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/dagger-data/dataset/manifest.json",
+      "sha256": "fe790c70de5d75cc8a781b61617702920d16b25994da0bd1001002b451ebbd6d"
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T175602Z-dagger-update-186cde/training/result.json",
+      "sha256": "5cf9359a6020f66484af887c66af11aa952dd67407b15f02b3e8ae62dc04fc87"
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T175602Z-dagger-update-186cde/training/final.pt",
+      "sha256": "344a8024cae76345e7ad06951ef8336df93852b4389986a0dd57189961150041"
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/dagger-pack/checkpoints.json",
+      "sha256": "ea1e881cb43bc627b9ac0ce767cdd7bcc9688b2787513a54ba6efc5992af3980"
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/dagger-pack/checkpoints.json",
+      "sha256": "ea1e881cb43bc627b9ac0ce767cdd7bcc9688b2787513a54ba6efc5992af3980"
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T175613Z-fresh-ppo-flight-831a01/collection/result.json",
+      "sha256": "a79faa018457638d8cdc8b48c8c07b2f795a8a9df010fa9578e127128440c317"
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T175613Z-fresh-ppo-flight-831a01/collection/flights.json",
+      "sha256": "15a57c394e9dbe6ec0437f30f992aeb2b97c1d5cf079a2448c466571b7bac437"
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-data/result.json",
+      "sha256": "b2a3b23d365755608eb8882e250ef44bd84ab276c0f43f0993c5f8e514dae510"
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-data/ppo.json",
+      "sha256": "1dd92911f2f8481eb2cd9b188ae1e3e40e06a6f6bcaca1d07bf68475a34703ba"
+    }
+  ],
+  "source_migration": "New immutable source; optimizer resumes only inside matching dataset/objective",
+  "stages": [
+    {
+      "id": "ppo-update",
+      "kind": "gpu",
+      "peak_gib": 24,
+      "seconds": 1800,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-data/ppo.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "ppo",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-data",
+        "--goal-checkpoint",
+        "goal.pt",
+        "--integration-only",
+        "--updates",
+        "1"
+      ],
+      "receipt": "{job}/ppo/result.json",
+      "outputs": [
+        "{job}/ppo/final.pt"
+      ],
+      "checkpoint": "{job}/ppo/latest.pt",
+      "resume_command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "ppo",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-data",
+        "--goal-checkpoint",
+        "goal.pt",
+        "--integration-only",
+        "--updates",
+        "1",
+        "--resume",
+        "{checkpoint}"
+      ]
+    },
+    {
+      "id": "ppo-pack",
+      "kind": "cpu",
+      "peak_gib": 4,
+      "seconds": 1800,
+      "depends_on": [
+        {
+          "stage": "ppo-update",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{stage:ppo-update:job}/ppo/final.pt",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T174000Z-qwen-supervised-update-840051/configurator/latest.pt",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/safety.json",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/goal.pt",
+        "--odometry",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/odometry.pt",
+        "--projection",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/projection.pt",
+        "--vision",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/vision.json",
+        "--safety",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/safety.json",
+        "--policy",
+        "{stage:ppo-update:job}/ppo/final.pt",
+        "--world",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt",
+        "--qwen",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T174000Z-qwen-supervised-update-840051/configurator/latest.pt",
+        "--goal-match-threshold",
+        "0.9",
+        "--output",
+        "{round}/ppo-pack"
+      ],
+      "receipt": "{round}/ppo-pack/checkpoints.json",
+      "outputs": [
+        "{round}/ppo-pack/checkpoints.json"
+      ]
+    },
+    {
+      "id": "updated-policy-flight",
+      "kind": "flight",
+      "peak_gib": 72,
+      "seconds": 1200,
+      "depends_on": [
+        {
+          "stage": "ppo-pack",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/ppo-pack/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "{round}/ppo-pack",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T172417Z-bootstrap-flight-eb4f56/collection/flights.json"
+      ],
+      "receipt": "{job}/collection/result.json",
+      "outputs": [
+        "{job}/collection/flights.json"
+      ],
+      "checkpoint": "{job}/collection/flights.json",
+      "resume_command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "{round}/ppo-pack",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T172417Z-bootstrap-flight-eb4f56/collection/flights.json",
+        "--import-collection",
+        "{checkpoint}"
+      ]
+    },
+    {
+      "id": "final-reload-flight",
+      "kind": "flight",
+      "peak_gib": 72,
+      "seconds": 1200,
+      "depends_on": [
+        {
+          "stage": "updated-policy-flight",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/ppo-pack/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "{round}/ppo-pack",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T172417Z-bootstrap-flight-eb4f56/collection/flights.json",
+        "--with-deliberation"
+      ],
+      "receipt": "{job}/collection/result.json",
+      "outputs": [
+        "{job}/collection/flights.json"
+      ],
+      "checkpoint": "{job}/collection/flights.json",
+      "resume_command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "{round}/ppo-pack",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T172417Z-bootstrap-flight-eb4f56/collection/flights.json",
+        "--with-deliberation",
+        "--import-collection",
+        "{checkpoint}"
+      ]
+    },
+    {
+      "id": "development-flights",
+      "kind": "flight",
+      "peak_gib": 72,
+      "seconds": 7200,
+      "depends_on": [
+        {
+          "stage": "final-reload-flight",
+          "status": "completed"
+        }
+      ],
+      "inputs": [],
+      "command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--development-batch",
+        "--controller-checkpoints",
+        "{round}/ppo-pack"
+      ],
+      "receipt": "{job}/collection/result.json",
+      "outputs": [
+        "{job}/collection/flights.json"
+      ],
+      "checkpoint": "{job}/collection/flights.json",
+      "resume_command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--development-batch",
+        "--controller-checkpoints",
+        "{round}/ppo-pack",
+        "--import-collection",
+        "{checkpoint}"
+      ]
+    },
+    {
+      "id": "matched-configuration-flights",
+      "kind": "flight",
+      "peak_gib": 72,
+      "seconds": 7200,
+      "depends_on": [
+        {
+          "stage": "development-flights",
+          "status": "completed"
+        }
+      ],
+      "inputs": [],
+      "command": [
+        "python3",
+        "{source}/collect_configuration_preferences.py",
+        "--checkpoints",
+        "{round}/ppo-pack",
+        "--qwen",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T174000Z-qwen-supervised-update-840051/configurator/latest.pt",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T172417Z-bootstrap-flight-eb4f56/collection/flights.json",
+        "--episode-id",
+        "train-00000"
+      ],
+      "receipt": "{job}/configuration-preferences/result.json",
+      "outputs": [
+        "{job}/configuration-preferences/outcomes.json"
+      ]
+    },
+    {
+      "id": "preference-data",
+      "kind": "gpu",
+      "peak_gib": 12,
+      "seconds": 1800,
+      "depends_on": [
+        {
+          "stage": "matched-configuration-flights",
+          "status": "completed"
+        }
+      ],
+      "inputs": [],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "build-preference-view",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/online-trajectories",
+        "--preference-outcomes",
+        "{stage:matched-configuration-flights:job}/configuration-preferences/result.json",
+        "--supervised-adapter",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T174000Z-qwen-supervised-update-840051/configurator/latest.pt",
+        "--artifact-output",
+        "{round}/preference-data"
+      ],
+      "receipt": "{round}/preference-data/result.json",
+      "outputs": [
+        "{round}/preference-data/configurator.json",
+        "{round}/preference-data/matched-pairs.jsonl"
+      ]
+    },
+    {
+      "id": "qwen-preference-update",
+      "kind": "gpu",
+      "peak_gib": 40,
+      "seconds": 1800,
+      "depends_on": [
+        {
+          "stage": "preference-data",
+          "status": "completed"
+        }
+      ],
+      "inputs": [],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-configurator",
+        "--dataset",
+        "{round}/preference-data",
+        "--configurator-phase",
+        "preference",
+        "--initialize-from",
+        "supervised.pt",
+        "--integration-only",
+        "--updates",
+        "1"
+      ],
+      "receipt": "{job}/configurator/result.json",
+      "outputs": [],
+      "checkpoint": "{job}/configurator/latest.pt",
+      "resume_command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-configurator",
+        "--dataset",
+        "{round}/preference-data",
+        "--configurator-phase",
+        "preference",
+        "--integration-only",
+        "--updates",
+        "1",
+        "--resume",
+        "{checkpoint}"
+      ]
+    },
+    {
+      "id": "preference-pack",
+      "kind": "cpu",
+      "peak_gib": 4,
+      "seconds": 1800,
+      "depends_on": [
+        {
+          "stage": "qwen-preference-update",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{stage:ppo-update:job}/ppo/final.pt",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt",
+        "{stage:qwen-preference-update:job}/configurator/latest.pt",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/safety.json",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/goal.pt",
+        "--odometry",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/odometry.pt",
+        "--projection",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/projection.pt",
+        "--vision",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/vision.json",
+        "--safety",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/safety.json",
+        "--policy",
+        "{stage:ppo-update:job}/ppo/final.pt",
+        "--world",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt",
+        "--qwen",
+        "{stage:qwen-preference-update:job}/configurator/latest.pt",
+        "--goal-match-threshold",
+        "0.9",
+        "--output",
+        "{round}/preference-pack"
+      ],
+      "receipt": "{round}/preference-pack/checkpoints.json",
+      "outputs": [
+        "{round}/preference-pack/checkpoints.json"
+      ]
+    },
+    {
+      "id": "preference-updated-flight",
+      "kind": "flight",
+      "peak_gib": 72,
+      "seconds": 1200,
+      "depends_on": [
+        {
+          "stage": "preference-pack",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/preference-pack/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "{round}/preference-pack",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T172417Z-bootstrap-flight-eb4f56/collection/flights.json",
+        "--with-deliberation"
+      ],
+      "receipt": "{job}/collection/result.json",
+      "outputs": [
+        "{job}/collection/flights.json"
+      ],
+      "checkpoint": "{job}/collection/flights.json",
+      "resume_command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "{round}/preference-pack",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T172417Z-bootstrap-flight-eb4f56/collection/flights.json",
+        "--with-deliberation",
+        "--import-collection",
+        "{checkpoint}"
+      ]
+    }
+  ]
+}

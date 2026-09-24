@@ -190,3 +190,20 @@ With all study containers stopped, exact immutable duplicates under `rounds` and
 
 
 Deduplication completed in 247.68 seconds: 10,063 byte-identical artifact copies now share storage, recovering 145,547,699,434 bytes (135.55 GiB) and leaving 215.59 GiB free. The per-path SHA-256 receipt is `receipts/dedup-20260924.jsonl`. R87 restarted at DAgger preparation through the existing verified-stage continuation; no completed optimizer update or flight was rerun.
+
+
+## PPO input allowlist missed the new depth observation
+
+The first fresh PPO flight completed (34.33 m path, 1.97 m displacement, timeout), but its trainer rejected `depth_tokens` with the generic privileged-input error. The rollout builder and policy forward path already carried the RGB-derived depth correctly; I had missed the separate trainer allowlist. No privileged observation was found. R88 adds only the declared depth field and verifies its recorded batch/time/300-by-2 shape and finite values against the behavior policy contract. It reuses the unchanged fresh rollout, which had not received any PPO update before the rejection.
+
+The corrected real update completed: 920 unique physical transitions, 40 optimizer exposures for the integration update, 17 changed parameter tensors, zero changed frozen tensors, and approximate behavior KL 5.96e-9. The updated policy was packaged and launched. These receipts close this interface failure; they do not demonstrate navigation success.
+
+
+## Local readiness bypassed the sustained metric handover
+
+Review found that, after entering local-depth navigation, `StartupState` switched immediately to mapped state on one valid map/pose decision. The one-second readiness timer had only protected initial/local startup. R89 maintains a separate continuous metric-support timer and records `metric_handover_sim_ns` separately from first local readiness. The existing scale-fit and freshness gates remain unchanged. Earlier mapped-state counts describe the earlier rule and are not evidence of passing the corrected one-second metric handover.
+
+
+## Demonstrations still lack successful terminal stopping
+
+An audit of all ten policy-preparation receipts found zero positive explicit-stop examples. The batch covers motion probes, deliberate braking, obstacle turns, observed-target movement and tracking-recovery scans, but none reached the destination and the corrected goal matcher never provided a qualified stop. Brake probes are zero velocity with `explicit_stop=False`; they cannot substitute for terminal stopping supervision. Training remains valid for the available masked targets, but the planned demonstration coverage is incomplete and more updates on this batch alone cannot teach successful goal stopping. The source-bound coverage audit is `rounds/metric-vision-r86/demonstration-coverage.json`.

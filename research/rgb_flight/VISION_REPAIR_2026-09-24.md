@@ -71,3 +71,9 @@ Qwen supervised preparation produced 401 training examples, including 293 with h
 
 
 After the disk-reserve interruption and lossless duplicate sharing described in the postmortem, r87 reused verified r86 stages and reran DAgger preparation. The 610-window dataset reproduced the original manifest hash. DAgger retraining completed with finite changed policy/depth/critic parameters, unchanged frozen goal parameters and a verified reload. It initialized from the first policy update and correctly reset optimizer state for the changed aggregate dataset. Fresh PPO collection follows.
+
+
+R88 corrected the PPO trainer allowlist to accept the already-recorded RGB depth tokens with shape/finiteness validation. The preserved fresh rollout supported one real PPO update over 40 sampled transitions from 920 unique transitions, with approximate behavior KL 5.96e-9, 17 changed tensors and no changed frozen parameters. The post-PPO flight is running.
+
+
+The post-PPO flight (`launches/20260924T180145Z`) completed without a controller error: 33.83 m path, 17.01 m displacement, timeout, no goal success. R89 continues at the combined Qwen/planning reload and uses a separate one-second metric-support timer, fixing immediate global handover after local readiness. Earlier mapped-state counts do not establish the corrected timing requirement.

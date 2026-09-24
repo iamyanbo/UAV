@@ -10,21 +10,26 @@ class StartupState:
         self.state = 'initializing'
         self.started_ns = self.ready_since_ns = self.recovery_ns = None
         self.handover_ns = None
+        self.metric_ready_since_ns = self.metric_handover_ns = None
         self.reason = None
 
     def update(self, now_ns, supported_map, tracking_valid, local_ready=False):
         if self.started_ns is None: self.started_ns = now_ns
         if self.state == 'terminated': return self.state
-        mapped = supported_map and tracking_valid
+        raw_mapped = supported_map and tracking_valid
+        if raw_mapped:
+            if self.metric_ready_since_ns is None:self.metric_ready_since_ns=now_ns
+        else:self.metric_ready_since_ns=None
+        mapped = raw_mapped and now_ns-self.metric_ready_since_ns>=1_000_000_000
         ready = mapped or local_ready
         if self.state in ('mapped','local_navigation') and not ready:
             self.state = 'recovering'; self.recovery_ns = now_ns; self.ready_since_ns = None
         if self.state in ('mapped','local_navigation') and ready:
             self.state='mapped' if mapped else 'local_navigation'
         if self.state in ('initializing', 'recovering'):
-            if ready:
+            if raw_mapped or local_ready:
                 if self.ready_since_ns is None: self.ready_since_ns = now_ns
-                if now_ns - self.ready_since_ns >= 1_000_000_000:
+                if ready and now_ns - self.ready_since_ns >= 1_000_000_000:
                     self.state = 'mapped' if mapped else 'local_navigation'; self.handover_ns = self.handover_ns or now_ns
             else: self.ready_since_ns = None
             origin = self.started_ns if self.state == 'initializing' else self.recovery_ns
@@ -32,6 +37,7 @@ class StartupState:
             if self.state not in ('mapped','local_navigation') and now_ns - origin >= limit * 1_000_000_000:
                 self.reason = 'initialization_timeout' if self.state == 'initializing' else 'tracking_recovery_timeout'
                 self.state = 'terminated'
+        if self.state=='mapped' and self.metric_handover_ns is None:self.metric_handover_ns=now_ns
         return self.state
 
     def elapsed(self, now_ns):

@@ -552,7 +552,7 @@
       ]
     },
     "fresh-ppo-flight": {
-      "status": "running",
+      "status": "completed",
       "attempts": [
         {
           "process": {
@@ -595,53 +595,202 @@
         "--sample-policy"
       ],
       "started_unix": 1790272573.408012,
-      "reason": "Owned remote guard running",
-      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T175613Z-fresh-ppo-flight-831a01"
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T175613Z-fresh-ppo-flight-831a01",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T175613Z-fresh-ppo-flight-831a01/result.json",
+        "sha256": "7c2285b9ed4b596db65f8ea405852b9749c6a3b893e6f1a57e1028c41802964c"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T175613Z-fresh-ppo-flight-831a01/collection/result.json",
+        "sha256": "a79faa018457638d8cdc8b48c8c07b2f795a8a9df010fa9578e127128440c317"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T175613Z-fresh-ppo-flight-831a01/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T175613Z-fresh-ppo-flight-831a01/collection/flights.json",
+          "sha256": "15a57c394e9dbe6ec0437f30f992aeb2b97c1d5cf079a2448c466571b7bac437"
+        }
+      ]
     },
     "ppo-data": {
-      "status": "ready",
-      "attempts": []
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2732874,
+            "start_ticks": "137194895",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-data-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2732874,
+        "start_ticks": "137194895",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-data-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r87/spark_guard.py",
+        "--name",
+        "ppo-data",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "16",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r87/stage_worker.py",
+        "build-online-view",
+        "--learning-phase",
+        "ppo",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/online-trajectories",
+        "--navigation-pack",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/dagger-pack",
+        "--collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T175613Z-fresh-ppo-flight-831a01/collection/flights.json",
+        "--artifact-output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-data"
+      ],
+      "started_unix": 1790272816.8261204,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T180016Z-ppo-data-7c8df1",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T180016Z-ppo-data-7c8df1/result.json",
+        "sha256": "592e9e7bd9d59def006a15f403a6b3dab10035439ac38dfefd1c20c0d2114870"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-data/result.json",
+        "sha256": "b2a3b23d365755608eb8882e250ef44bd84ab276c0f43f0993c5f8e514dae510"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "unique_physics_transitions": 920,
+        "shards": 23,
+        "collected_proposals": 1331
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-data/ppo.json",
+          "sha256": "1dd92911f2f8481eb2cd9b188ae1e3e40e06a6f6bcaca1d07bf68475a34703ba"
+        }
+      ]
     },
     "ppo-update": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2733176,
+            "start_ticks": "137195496",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-update-000.log"
+        }
+      ],
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-data/ppo.json": "1dd92911f2f8481eb2cd9b188ae1e3e40e06a6f6bcaca1d07bf68475a34703ba"
+      },
+      "process": {
+        "pid": 2733176,
+        "start_ticks": "137195496",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-update-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r87/spark_guard.py",
+        "--name",
+        "ppo-update",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "24",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r87/stage_worker.py",
+        "ppo",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/ppo-data",
+        "--goal-checkpoint",
+        "goal.pt",
+        "--integration-only",
+        "--updates",
+        "1"
+      ],
+      "started_unix": 1790272822.8360174,
+      "reason": "Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T180022Z-ppo-update-99d386/stdout.log",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T180022Z-ppo-update-99d386",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T180022Z-ppo-update-99d386/result.json",
+        "sha256": "70ebd629a4986e54f2b1a8660773a0f96f46abf047145636740c7917710e366d"
+      }
     },
     "ppo-pack": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: ppo-update: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T180022Z-ppo-update-99d386/stdout.log"
     },
     "updated-policy-flight": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: ppo-pack: Dependency failed: ppo-update: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T180022Z-ppo-update-99d386/stdout.log"
     },
     "final-reload-flight": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T180022Z-ppo-update-99d386/stdout.log"
     },
     "development-flights": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: final-reload-flight: Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T180022Z-ppo-update-99d386/stdout.log"
     },
     "matched-configuration-flights": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: development-flights: Dependency failed: final-reload-flight: Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T180022Z-ppo-update-99d386/stdout.log"
     },
     "preference-data": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: matched-configuration-flights: Dependency failed: development-flights: Dependency failed: final-reload-flight: Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T180022Z-ppo-update-99d386/stdout.log"
     },
     "qwen-preference-update": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: preference-data: Dependency failed: matched-configuration-flights: Dependency failed: development-flights: Dependency failed: final-reload-flight: Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T180022Z-ppo-update-99d386/stdout.log"
     },
     "preference-pack": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: qwen-preference-update: Dependency failed: preference-data: Dependency failed: matched-configuration-flights: Dependency failed: development-flights: Dependency failed: final-reload-flight: Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T180022Z-ppo-update-99d386/stdout.log"
     },
     "preference-updated-flight": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: preference-pack: Dependency failed: qwen-preference-update: Dependency failed: preference-data: Dependency failed: matched-configuration-flights: Dependency failed: development-flights: Dependency failed: final-reload-flight: Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T180022Z-ppo-update-99d386/stdout.log"
     }
   },
-  "updated_unix": 1790272679.5720408
+  "updated_unix": 1790272827.84412
 }

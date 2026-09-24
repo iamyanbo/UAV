@@ -94,8 +94,13 @@ def main():
     evidence=ParameterEvidence(dict(policy=policy))
     while updates<len(schedule) and not early_stop and not Path('/output/CHECKPOINT_REQUEST').exists():
         batch=torch.load(paths[schedule[updates]],map_location='cuda',weights_only=True)
-        if set(batch['runtime']) - {'image','current_tokens','goal_context','state','memory_context','task','previous_command','goal_tokens','target_context'}:
+        if set(batch['runtime']) - {'image','current_tokens','goal_context','depth_tokens','state','memory_context','task','previous_command','goal_tokens','target_context'}:
             raise ValueError('Privileged label leaked into PPO observation tensors')
+        if policy.depth_input:
+            depth=batch['runtime'].get('depth_tokens')
+            expected=(*batch['runtime']['state'].shape[:2],300,2)
+            if depth is None or depth.shape!=expected or not torch.isfinite(depth).all():
+                raise ValueError('PPO requires the recorded spatial-depth input of its behavior policy')
         adv,returns=advantages(batch['reward'],batch['value'],batch['next_value'],batch['terminated'],batch['truncated'],dt=batch['delta_seconds'],valid=batch['valid'])
         cost_adv,cost_returns=advantages(batch['collision_cost'],batch['cost_value'],batch['next_cost_value'],batch['terminated'],batch['truncated'],dt=batch['delta_seconds'],valid=batch['valid'])
         batch.update({'advantage':adv,'return':returns,'collision_cost_advantage':cost_adv,

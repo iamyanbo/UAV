@@ -45,3 +45,30 @@ xFormers not available
   with torch.cuda.amp.autocast(enabled=False):
 /upstream/splat/thirdparty/glorie_slam/factor_graph.py:300: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
   with torch.cuda.amp.autocast(enabled=True):
+{"status": "mapping_snapshot_queued", "keyframe": 43, "latest_observation_ns": 1790272674541781248, "completed_memory_version": 14, "superseded_requests": 2}
+{"status": "mapping_snapshot_queued", "keyframe": 44, "latest_observation_ns": 1790272679782893056, "completed_memory_version": 15, "superseded_requests": 2}
+{"status": "mapping_snapshot_queued", "keyframe": 45, "latest_observation_ns": 1790272682542951936, "completed_memory_version": 16, "superseded_requests": 2}
+{"status": "mapping_snapshot_queued", "keyframe": 46, "latest_observation_ns": 1790272687868065536, "completed_memory_version": 17, "superseded_requests": 2}
+{"status": "mapping_snapshot_queued", "keyframe": 47, "latest_observation_ns": 1790272692956174080, "completed_memory_version": 18, "superseded_requests": 2}
+{"status": "mapping_snapshot_queued", "keyframe": 49, "latest_observation_ns": 1790272695218222336, "completed_memory_version": 19, "superseded_requests": 2}
+{"status": "mapping_snapshot_queued", "keyframe": 51, "latest_observation_ns": 1790272700096326400, "completed_memory_version": 20, "superseded_requests": 2}
+{"status": "mapping_snapshot_queued", "keyframe": 52, "latest_observation_ns": 1790272702346374400, "completed_memory_version": 21, "superseded_requests": 2}
+{"status": "mapping_snapshot_queued", "keyframe": 54, "latest_observation_ns": 1790272705124433664, "completed_memory_version": 21, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 55, "latest_observation_ns": 1790272707803490816, "completed_memory_version": 22, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 56, "latest_observation_ns": 1790272712339587584, "completed_memory_version": 23, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 57, "latest_observation_ns": 1790272716731681280, "completed_memory_version": 24, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 60, "latest_observation_ns": 1790272718795725312, "completed_memory_version": 25, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 62, "latest_observation_ns": 1790272720637764608, "completed_memory_version": 26, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 65, "latest_observation_ns": 1790272733043029248, "completed_memory_version": 29, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 66, "latest_observation_ns": 1790272738689149696, "completed_memory_version": 31, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 67, "latest_observation_ns": 1790272744557274880, "completed_memory_version": 32, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 68, "latest_observation_ns": 1790272750545402624, "completed_memory_version": 33, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 69, "latest_observation_ns": 1790272758942581760, "completed_memory_version": 36, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 70, "latest_observation_ns": 1790272768581787392, "completed_memory_version": 37, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 72, "latest_observation_ns": 1790272773591894272, "completed_memory_version": 38, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 73, "latest_observation_ns": 1790272779505020416, "completed_memory_version": 40, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 74, "latest_observation_ns": 1790272785697152512, "completed_memory_version": 41, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 75, "latest_observation_ns": 1790272791868284160, "completed_memory_version": 42, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 76, "latest_observation_ns": 1790272797931413504, "completed_memory_version": 44, "superseded_requests": 3}
+{"status": "mapping_snapshot_queued", "keyframe": 77, "latest_observation_ns": 1790272803733537280, "completed_memory_version": 45, "superseded_requests": 3}
+{"status": "live_observed_stream_reconstructed", "frames": 80, "memory_versions": 47, "elapsed_wall_seconds": 184.1605353220366, "peak_allocated_bytes": 8754930176, "peak_reserved_bytes": 12140412928, "metric_scale_established": false, "metric_scale_usable_frames": 0, "metric_uncertainty_calibrated": false, "live_async_execution": true, "foundation_passed": false, "tracking_initialized_frames": 46, "sampling_skipped_frames": 0, "current_pose_method": "past_anchor_pose_only", "coordinate_gauge": "causal_common_camera_similarity; arbitrary_scale", "gauge_changes": 2, "tracking_optimizer": "DSPO", "gauge_rejected_frames": 2, "empty_active_graph_frames": 0, "mapping_execution": "asynchronous_bounded_worker", "mapping_requests_superseded": 3}

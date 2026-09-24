@@ -1,0 +1,189 @@
+{
+  "status": "audited",
+  "training_ready": true,
+  "deployment_accepted": false,
+  "explicit_stop_examples": 0,
+  "sources": [
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data-replays/policy-0/result.json",
+      "sha256": "4efa8f718b1b3815d8d2fddaf9b3ebb253fb6db454f24a51ca6f32bfe3d056b9",
+      "coverage": {
+        "unique_audited_observations": 1521,
+        "rejected_false_or_unverifiable_stops": 0,
+        "explicit_stops": 0,
+        "reasons": {
+          "stale_rgb": 1,
+          "exploration_motion_probe": 117,
+          "local_path_unknown": 3,
+          "observed_obstacle_turn": 124,
+          "exploration_brake": 37,
+          "observed_free_translation": 1227,
+          "tracking_recovery_scan": 12
+        }
+      }
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data-replays/policy-1/result.json",
+      "sha256": "caed04571b052d38e67b6818d751a9ec1b5c74532818d592264c3f61ff56c0b1",
+      "coverage": {
+        "unique_audited_observations": 208,
+        "rejected_false_or_unverifiable_stops": 0,
+        "explicit_stops": 0,
+        "reasons": {
+          "stale_rgb": 9,
+          "exploration_motion_probe": 114,
+          "local_path_obstacle": 48,
+          "exploration_brake": 15,
+          "observed_free_translation": 15,
+          "tracking_recovery_scan": 7
+        }
+      }
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data-replays/policy-2/result.json",
+      "sha256": "26a7233d4fdebc597add288249e64099a545b22f292af49c30e5dd38084b8d80",
+      "coverage": {
+        "unique_audited_observations": 947,
+        "rejected_false_or_unverifiable_stops": 0,
+        "explicit_stops": 0,
+        "reasons": {
+          "stale_rgb": 1,
+          "exploration_motion_probe": 75,
+          "observed_obstacle_turn": 127,
+          "local_path_unknown": 1,
+          "exploration_brake": 17,
+          "observed_free_translation": 704,
+          "tracking_recovery_scan": 22
+        }
+      }
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data-replays/policy-3/result.json",
+      "sha256": "a0ae792090d9ba4a4fb0cca94ce9289271ed4881ab4d2a1aa38034bcbf4fe423",
+      "coverage": {
+        "unique_audited_observations": 1621,
+        "rejected_false_or_unverifiable_stops": 0,
+        "explicit_stops": 0,
+        "reasons": {
+          "stale_rgb": 1,
+          "exploration_motion_probe": 141,
+          "local_path_unknown": 1,
+          "exploration_brake": 23,
+          "observed_free_translation": 1438,
+          "tracking_recovery_scan": 11,
+          "observed_obstacle_turn": 6
+        }
+      }
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data-replays/policy-4/result.json",
+      "sha256": "c2aa4756fe4d181089bd3ac5cbd3b9bd6a39e79fd88ff4b28376e6770489cdba",
+      "coverage": {
+        "unique_audited_observations": 1460,
+        "rejected_false_or_unverifiable_stops": 0,
+        "explicit_stops": 0,
+        "reasons": {
+          "stale_rgb": 1,
+          "exploration_motion_probe": 104,
+          "observed_obstacle_turn": 135,
+          "local_path_unknown": 1,
+          "exploration_brake": 17,
+          "observed_free_translation": 1168,
+          "tracking_recovery_scan": 34
+        }
+      }
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data-replays/policy-5/result.json",
+      "sha256": "ab169863c57d53375d814daa717dd8cb2875d60d9fb66ac595337092c1b329ad",
+      "coverage": {
+        "unique_audited_observations": 1091,
+        "rejected_false_or_unverifiable_stops": 0,
+        "explicit_stops": 0,
+        "reasons": {
+          "stale_rgb": 1,
+          "exploration_motion_probe": 132,
+          "local_path_unknown": 1,
+          "exploration_brake": 26,
+          "observed_free_translation": 923,
+          "tracking_recovery_scan": 8
+        }
+      }
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data-replays/policy-6/result.json",
+      "sha256": "e31165054772284fce992ffb70c453830eb63b6fbee3e2e2b9a6cbe0f67899e6",
+      "coverage": {
+        "unique_audited_observations": 1573,
+        "rejected_false_or_unverifiable_stops": 0,
+        "explicit_stops": 0,
+        "reasons": {
+          "stale_rgb": 2,
+          "exploration_motion_probe": 130,
+          "observed_obstacle_turn": 94,
+          "local_path_unknown": 8,
+          "exploration_brake": 35,
+          "observed_free_translation": 188,
+          "local_path_obstacle": 1020,
+          "stale_local_geometry": 1,
+          "observed_target_motion": 95
+        }
+      }
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data-replays/policy-7/result.json",
+      "sha256": "17a99e36e329c9363fd2ae50a5488e25d3e79f3a446dc8a8ed71dadce8c5a205",
+      "coverage": {
+        "unique_audited_observations": 1369,
+        "rejected_false_or_unverifiable_stops": 0,
+        "explicit_stops": 0,
+        "reasons": {
+          "stale_rgb": 1,
+          "exploration_motion_probe": 112,
+          "exploration_brake": 23,
+          "observed_obstacle_turn": 32,
+          "observed_free_translation": 1201
+        }
+      }
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data-replays/policy-8/result.json",
+      "sha256": "9d61781cf6a0ebabd993fd43fd9d2d61c379a8f6bc63a5d309774adb7fa833cf",
+      "coverage": {
+        "unique_audited_observations": 1065,
+        "rejected_false_or_unverifiable_stops": 0,
+        "explicit_stops": 0,
+        "reasons": {
+          "stale_rgb": 1,
+          "exploration_motion_probe": 113,
+          "observed_obstacle_turn": 67,
+          "exploration_brake": 24,
+          "observed_free_translation": 839,
+          "tracking_recovery_scan": 21
+        }
+      }
+    },
+    {
+      "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data-replays/policy-9/result.json",
+      "sha256": "51e64867a2693c3936f5173dee8eecc675d50473f5bed5ede6b888e06c49efe8",
+      "coverage": {
+        "unique_audited_observations": 1584,
+        "rejected_false_or_unverifiable_stops": 0,
+        "explicit_stops": 0,
+        "reasons": {
+          "stale_rgb": 1,
+          "exploration_motion_probe": 129,
+          "observed_obstacle_turn": 31,
+          "exploration_brake": 25,
+          "observed_free_translation": 1377,
+          "tracking_recovery_scan": 21
+        }
+      }
+    }
+  ],
+  "coverage_complete": false,
+  "missing": [
+    "verified positive explicit-stop demonstrations"
+  ],
+  "reason": "Brake probes are zero-velocity actions, not terminal stop labels"
+}
