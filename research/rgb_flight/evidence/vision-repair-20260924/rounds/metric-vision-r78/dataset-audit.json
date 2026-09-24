@@ -1,0 +1,12 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "manifest_sha256": "c0eab34c715f4b6269247bed18a18a03b49d2ce1c83d0168db586a496633fe2f",
+  "unique_tasks": 310,
+  "goal_captures": 327,
+  "original_full_resolution_views_verified": 1308,
+  "disjoint_task_and_goal_region_splits": true,
+  "attempt_goal_bindings_verified": 17045,
+  "sealed_campaign_episodes_used": 0,
+  "scope": "Actual recorded goal pixels and manifest integrity; not recognition or navigation acceptance"
+}

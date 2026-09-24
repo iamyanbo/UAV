@@ -1,0 +1,5 @@
+{
+  "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T160306Z-goal-corrective-training-553e5e",
+  "last_observed_update": 1961,
+  "reason": "Verify real optimizer continuation on unchanged objective and dataset; scheduler resumes automatically"
+}

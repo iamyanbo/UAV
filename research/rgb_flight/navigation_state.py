@@ -157,7 +157,9 @@ class CausalNavigationState:
                 if row['source_frame_id'] in self.source_rgb:
                     self.keyframe_rgb[row['source_frame_id']]=self.source_rgb[row['source_frame_id']]
                     while len(self.keyframe_rgb)>256:self.keyframe_rgb.popitem(last=False)
-                if historical['goal_probability']>=self.teacher.threshold:
+                # Appearance memory remains useful before metric tracking.
+                # Its masked placeholder position cannot become a waypoint.
+                if historical['confidence']>0 and historical['goal_probability']>=self.teacher.threshold:
                     self.memory.associate(identifier,'goal_match',[identifier],row['observation_ns'])
             elif component=='tracking':
                 if self.tracking and row['observation_ns']<=self.tracking['observation_ns']:continue
@@ -313,7 +315,8 @@ class CausalNavigationState:
             # A free-space target gets observed keyframe context, not invented
             # surface appearance at an empty voxel. Its timestamp includes
             # both the geometric evidence and that feature's source image.
-            keyframe_records=[self.memory.records[k] for item in self.memory.keyframes.values() for k in item['record_ids']]
+            keyframe_records=[self.memory.records[k] for item in self.memory.keyframes.values() for k in item['record_ids']
+                              if self.memory.records[k].confidence>0]
             if not keyframe_records:continue
             record=min(keyframe_records,key=lambda r:float((r.position-position).norm()))
             r=SpatialRecord(identifier,self.episode_id,max(row['observation_ns'],record.observed_ns),
@@ -371,6 +374,9 @@ class CausalNavigationState:
         while len(self.source_features)>2048:del self.source_features[next(iter(self.source_features))]
         probability=float(match['match_logit'].sigmoid());self.last_goal_probability=probability
         confidence=float(torch.exp(-self.variance[:3].sum().sqrt())) if self.warmup>=self.required_warmup else 0.
+        if self.metric_vision is not None and not (self.scale and self.scale.get('usable') and
+                self.tracking and self.tracking['initialized'] and 0<=ns-self.tracking['observation_ns']<=1_000_000_000):
+            confidence=0.
         lever=self.rotation@feature.new_tensor(calibration.camera_origin_body_m)
         camera_position=self.position+lever
         x,y,z=lever;zero=x.new_zeros(())

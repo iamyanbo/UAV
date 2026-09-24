@@ -1,0 +1,26 @@
+{
+  "status": "checkpointed",
+  "accepted": false,
+  "module": "goal",
+  "updates": 1962,
+  "manifest_sha256": "c0eab34c715f4b6269247bed18a18a03b49d2ce1c83d0168db586a496633fe2f",
+  "objective_version": "goal-recognition-fixed-bn-prevalence/v4",
+  "gradient_evidence": {
+    "encoder": {
+      "finite_gradients": true,
+      "changed": true
+    },
+    "matcher": {
+      "finite_gradients": true,
+      "changed": true
+    }
+  },
+  "training_prevalence": 0.1634181868627315,
+  "checkpoint_selection": "development recognition Brier score",
+  "initialization": {
+    "sha256": "a5b445a05fb01e18771a48d10eedd67bb325d14b2c15ab0ca62574c107278709",
+    "update": 2000,
+    "optimizer_reset": true
+  },
+  "resume_evidence": null
+}

@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-09-24T16:00:57.958282+00:00",
+  "observed_utc": "2026-09-24T16:17:01.969385+00:00",
   "source_root": "/home/iamyanbo/uav-rgb-flight",
   "scope": "Execution receipts and derived summaries; active counters are snapshots; raw RGB and weights remain on Spark",
   "files": [
@@ -464,9 +464,34 @@
       "sha256": "0af76507cd66e55ec7fcbc18eac8a6c223a8062965df51ede0f1a3f9879b23d1"
     },
     {
+      "path": "rounds/metric-vision-r78/continuation-audit-request.json",
+      "bytes": 248,
+      "sha256": "8bc5ea48ff76f9486de33c2fe530279105008d8f97011e4fdf02ccb5d91966c3"
+    },
+    {
+      "path": "rounds/metric-vision-r78/dataset-audit.json",
+      "bytes": 471,
+      "sha256": "2a3865e81bc0510a6644b92acb5879e05bffea1f35bd32809e1511a267c41dc5"
+    },
+    {
       "path": "rounds/metric-vision-r78/state.json",
-      "bytes": 21434,
-      "sha256": "0ef01a583224c8f5825246fc9fd0c890598e24872e3bf9e826fd1595cbea3d88"
+      "bytes": 29394,
+      "sha256": "ebb26c15e22def6a3624460fe9d2265769ac5c449efae0007317310bfc0d7447"
+    },
+    {
+      "path": "rounds/metric-vision-r79/continuation.json",
+      "bytes": 55,
+      "sha256": "7c8e612e92d46429fee42f8be8ec7a248e56823f0490d55aa139b9fc2db91b8b"
+    },
+    {
+      "path": "rounds/metric-vision-r80/continuation.json",
+      "bytes": 55,
+      "sha256": "7c8e612e92d46429fee42f8be8ec7a248e56823f0490d55aa139b9fc2db91b8b"
+    },
+    {
+      "path": "rounds/metric-vision-r81/continuation.json",
+      "bytes": 80,
+      "sha256": "c437a3b04121f21c82f7977aa9890a585286cd0845139d8cd0c1520b785fd219"
     },
     {
       "path": "rounds/navigation-mapping-r57/execution/state.json",
@@ -1077,6 +1102,66 @@
       "path": "runs/20260924T160039Z-aligned-goal-supervision-99b293/stdout.log",
       "bytes": 341,
       "sha256": "96dc3701dac60c72e8a379d94c8cff7cde995061981f59628e4ed9530ad86998"
+    },
+    {
+      "path": "runs/20260924T160056Z-visual-negative-mining-db4bed/result.json",
+      "bytes": 618,
+      "sha256": "8373ffb0babd45adbc23a889cf7cef8e9ea7da060a330d75e828ec05ebb85d00"
+    },
+    {
+      "path": "runs/20260924T160056Z-visual-negative-mining-db4bed/source_hashes.json",
+      "bytes": 15347,
+      "sha256": "80d65914ce13fa25c4845be96c50d5c5d18da2c465b1f962ab4fa03d1ee2aef0"
+    },
+    {
+      "path": "runs/20260924T160056Z-visual-negative-mining-db4bed/stdout.log",
+      "bytes": 1601,
+      "sha256": "7953f24315c0ac74fe136d2911f32ac51cf8813eceb0cc754c3d3d1f7a4e0f7c"
+    },
+    {
+      "path": "runs/20260924T160306Z-goal-corrective-training-553e5e/result.json",
+      "bytes": 634,
+      "sha256": "b7884f4e4bad5dcfde1adaa696d01d099d6433cf757fa6a158ea6279291b0336"
+    },
+    {
+      "path": "runs/20260924T160306Z-goal-corrective-training-553e5e/source_hashes.json",
+      "bytes": 15347,
+      "sha256": "80d65914ce13fa25c4845be96c50d5c5d18da2c465b1f962ab4fa03d1ee2aef0"
+    },
+    {
+      "path": "runs/20260924T160306Z-goal-corrective-training-553e5e/stdout.log",
+      "bytes": 2030,
+      "sha256": "a282b0a320f61ec06561c1d31b5441ca616a1350e5213290017a6a5703bfc12f"
+    },
+    {
+      "path": "runs/20260924T160306Z-goal-corrective-training-553e5e/visual-training/metrics.jsonl",
+      "bytes": 224899,
+      "sha256": "a7e5de6799d84bf38304024db97a9a5bee373418338ced4c39924a21e5b85caf"
+    },
+    {
+      "path": "runs/20260924T160306Z-goal-corrective-training-553e5e/visual-training/result.json",
+      "bytes": 724,
+      "sha256": "48f5660c3b28dfc0f19e76ccc55f4c5e49c510ae1d0a1bb4730d95c985b9e755"
+    },
+    {
+      "path": "runs/20260924T161453Z-goal-corrective-training-f8c5b8/source_hashes.json",
+      "bytes": 15347,
+      "sha256": "80d65914ce13fa25c4845be96c50d5c5d18da2c465b1f962ab4fa03d1ee2aef0"
+    },
+    {
+      "path": "runs/20260924T161453Z-goal-corrective-training-f8c5b8/stdout.log",
+      "bytes": 1393,
+      "sha256": "7b2d9d5bf1d07ddaeb399e8251fd8167cee77edaf7d7b4b96701d6597e1d378a"
+    },
+    {
+      "path": "runs/20260924T161453Z-goal-corrective-training-f8c5b8/visual-training/metrics.jsonl",
+      "bytes": 29612,
+      "sha256": "43b3dcec796a1c136d1bf3817555bb506ef5f7283f3e0fef74a22ae3dc30e224"
+    },
+    {
+      "path": "runs/20260924T161453Z-goal-corrective-training-f8c5b8/visual-training/resume.json",
+      "bytes": 211,
+      "sha256": "7fa9eccdc1a3728a84be8b9e37c28508a7e0699790db61950e835f991e794d95"
     }
   ]
 }

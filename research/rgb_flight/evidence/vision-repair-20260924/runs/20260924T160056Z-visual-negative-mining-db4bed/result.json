@@ -1,0 +1,18 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T160056Z-visual-negative-mining-db4bed/source/stage_worker.py",
+    "mine-goal",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r78/goal-candidates",
+    "--artifact-output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r78/goal-data"
+  ],
+  "seconds": 3600,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 16.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 129.10331703606062
+}

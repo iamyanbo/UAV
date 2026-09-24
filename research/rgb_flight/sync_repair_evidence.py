@@ -15,7 +15,7 @@ from pathlib import Path
 root=Path('/home/iamyanbo/uav-rgb-flight');selected=set()
 run_patterns=('result.json','source_hashes.json','inference-source-hashes.json','stdout.log','tracking-diagnosis.json',
  'collection/*.json','training/result.json','training/metrics.jsonl',
- 'visual-training/result.json','visual-training/metrics.jsonl','ppo/result.json','ppo/metrics.jsonl',
+ 'visual-training/result.json','visual-training/metrics.jsonl','visual-training/resume.json','ppo/result.json','ppo/metrics.jsonl',
  'configurator/result.json','configurator/metrics.jsonl','configuration-preferences/*.json',
  'world-data/manifest.json','world-data/result.json','policy-data/manifest.json','policy-data/result.json',
  'navigation-replay/result.json','navigation-replay/manifest.json','navigation-replay/alignment.jsonl',

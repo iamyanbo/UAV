@@ -38,8 +38,12 @@ Uncertainty bounds remain explicitly uncalibrated engineering assumptions. Reser
 
 Round `metric-vision-r78` built 24,431 goal examples from 327 attempts covering 310 training-manifest tasks; 27 tasks remain internal development. The corrective optimizer starts fresh from the selected prior goal checkpoint. At update 500, development Brier score changed from 0.1971 to 0.1080 and false-positive rate at the diagnostic 0.5 threshold from 24.91% to 8.60%. Stopping acceptance is not inferred from that threshold.
 
-Round `metric-vision-r81` uses the existing `run_after_perception.py --goal-cycle ... --base-pack ...` continuation, bounded to eight hours including waiting. It verifies qualification/checkpoint identity, packages the selected goal model with the vision artifact, then runs the existing ten-demonstration and connected learner flow. Matched configuration packs also carry the vision artifact, avoiding an incompatible policy reload. Earlier waiting continuations r79/r80 were superseded before collecting data.
+Round `metric-vision-r83` uses the existing `run_after_perception.py --goal-cycle ... --base-pack ...` continuation, bounded to eight hours including waiting. It verifies qualification/checkpoint identity, packages the selected goal model with the vision artifact, then runs the existing ten-demonstration and connected learner flow. Matched configuration packs also carry the vision artifact, avoiding an incompatible policy reload. Earlier waiting continuations r79?r82 were superseded before collecting data.
 
 Policy preparation now masks false or unverifiable stop demonstrations using separate, timestamp-aligned post-flight labels. It does not invent replacement movement directions. The changed imitation objective is `spatial-depth-audited-stops/v5`; incompatible optimizer state cannot resume silently.
 
+Actual-record integrity audit verified 1,308 original goal views and 17,045 mined-example bindings with disjoint task/goal-region splits. A deliberate checkpoint request exercised the existing scheduler's continuation: the new guarded attempt restored update 1,962 and all 186 optimizer states with matching step counters, then resumed finite updates. These receipts remain separate from stopping precision and flight results.
+
 Completion requires real finite learner updates, verified frozen parameters, action-dependent predictions, reloads and successful goal-reaching flights. Movement and completed software stages alone cannot pass navigation acceptance.
+
+Local exploration now removes its initialization yaw bias after handover when the forward sector is clear. Pre-metric image records remain available as appearance memory with zero geometry confidence; they cannot become geometric goal waypoints or anchor frontiers.

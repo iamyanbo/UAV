@@ -66,7 +66,10 @@ def demonstration(value):
             yaw=-15. if clearance[0]>clearance[2] else 15.
             return [0.,0.,0.,yaw],False,'observed_obstacle_turn'
         if state=='initializing' or not value['target_available']:
-            yaw=-8. if clearance[0]>clearance[2] else 8.
+            # Translating turns bootstrap parallax. Once local vision is
+            # ready, an open forward sector permits straight exploration;
+            # a permanent yaw bias would make the teacher circle in place.
+            yaw=(-8. if clearance[0]>clearance[2] else 8.) if state=='initializing' else 0.
             return [.4,0.,0.,yaw],False,'observed_free_translation'
     if state == 'initializing':
         # A full translating panorama scan exposes nearby structure when the
