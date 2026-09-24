@@ -1,0 +1,12 @@
+{
+  "schema": "measured-navigation-safety/v1",
+  "status": "completed",
+  "accepted": false,
+  "maximum_speed_mps": 3.0,
+  "vehicle_radius_m": 0.5,
+  "vehicle_radius_source": "conservative configured envelope; geometry calibration remains unqualified",
+  "braking_acceleration_mps2": 0.7016562739762384,
+  "measurement_sha256": "f3f873479150be6d1ee2063e7dcab8ac3478e776ab7b61cfd92099eb064b043e",
+  "measured_command": "body velocity [0,0,0,0] refreshed every 40 ms",
+  "scope": "One real braking trial with 2x distance and 0.5 m margins; integration only"
+}

@@ -1,0 +1,92 @@
+{
+  "exported_unix": 1790212316.5501683,
+  "files": {
+    "rounds/long-context-r15/state.json": {
+      "sha256": "d99dcbaab9c319eb0dbbe8c10eacc35f6a636b5939c5b3eac58a9d2e7bbd0c43"
+    },
+    "jobs/20260924T002434Z-long-context-trajectories-29c622/source_hashes.json": {
+      "sha256": "a718725ec7fd4bd38e95d353ef716f6adccb643a4e7be43b1bc0775df04ffba7"
+    },
+    "jobs/20260924T002434Z-long-context-trajectories-29c622/result.json": {
+      "sha256": "ab9c1ac03d763c16b9f6dc45c1ea4822a6ec372e807611f84ea898f1cbd1f402"
+    },
+    "jobs/20260924T002507Z-long-context-pilot-15922d/source_hashes.json": {
+      "sha256": "a718725ec7fd4bd38e95d353ef716f6adccb643a4e7be43b1bc0775df04ffba7"
+    },
+    "jobs/20260924T002507Z-long-context-pilot-15922d/result.json": {
+      "sha256": "ea1af8ecccaf951b75b927d95acf9c2843718658169ba6616ad6208a18cd13b6"
+    },
+    "jobs/20260924T002507Z-long-context-pilot-15922d/visual-training/result.json": {
+      "sha256": "db2ff8173fdc105eb5dda4a4bdc88f907c618da5a0e6ba4a89e063f5b54d90c7"
+    },
+    "jobs/20260924T002507Z-long-context-pilot-15922d/visual-training/metrics.jsonl": {
+      "sha256": "8fa3b609ea87f21a5e0b29cb8ce30b045ddf39fdcd89e72644655dd9c5a33a39"
+    },
+    "jobs/20260924T002553Z-long-context-training-e5f7af/source_hashes.json": {
+      "sha256": "a718725ec7fd4bd38e95d353ef716f6adccb643a4e7be43b1bc0775df04ffba7"
+    },
+    "jobs/20260924T002553Z-long-context-training-e5f7af/visual-training/metrics.jsonl": {
+      "sha256": "47352656f316ff7f0a6222096c5e87048666a577de2f8298047cca4bbe359dfd"
+    },
+    "rounds/motion-rate-r20/state.json": {
+      "sha256": "769ddab57df11fbfb1acad53e7600149e05b2a616226bb67795041343420a20e"
+    },
+    "jobs/20260924T005320Z-motion-rate-pilot-cd75c6/source_hashes.json": {
+      "sha256": "9b20681905372303082c760285679f765db0aad3d45d9be1389364baf1dff8ec"
+    },
+    "jobs/20260924T005320Z-motion-rate-pilot-cd75c6/result.json": {
+      "sha256": "c9013f6e4fa74a61e8101f9c8c758407df4b85c487073f90277eeb5b4fd6fd4c"
+    },
+    "jobs/20260924T005320Z-motion-rate-pilot-cd75c6/visual-training/result.json": {
+      "sha256": "32c5efa1767cec11315ff4312091ab562a9025ccafffad0f894d79be5ea83ff4"
+    },
+    "jobs/20260924T005320Z-motion-rate-pilot-cd75c6/visual-training/metrics.jsonl": {
+      "sha256": "028294a7cf87552a1f2840b4755e944d86283b8b711e112445c0129543459cfe"
+    },
+    "jobs/20260924T005426Z-motion-rate-training-d6d010/source_hashes.json": {
+      "sha256": "9b20681905372303082c760285679f765db0aad3d45d9be1389364baf1dff8ec"
+    },
+    "jobs/20260924T005426Z-motion-rate-training-d6d010/visual-training/metrics.jsonl": {
+      "sha256": "c1dd31b04e7d4dd5f1988a011b8119566a0cb9c63dbc7dc11c630d7f0062b26f"
+    },
+    "rounds/goal-continuation-r21/state.json": {
+      "sha256": "95941fe373e64492e76142f28a165bf088e87b65e730565c8c54c2dd01374cd9"
+    },
+    "rounds/fresh-motion-r22/state.json": {
+      "sha256": "1373c0b88a5a1f5b7bb22ae47176a9b812d0df0e79f280d0df24cbe0fa8ff5b5"
+    },
+    "rounds/fresh-motion-r22/superseded.json": {
+      "sha256": "e7d0d643ffc65d3008bb48a537fd207ea12d664e1c6429f6bddfa4ba88d6438b"
+    },
+    "rounds/fresh-motion-r23/state.json": {
+      "sha256": "4630fb34ce850f77775fb627a7dc4e1992d54d0ddeac218f5cd41fe75c0d5e08"
+    },
+    "rounds/causal-memory-r19/state.json": {
+      "sha256": "f6919f93d94e3a7b6556e4721b9cabd51e314ff20839ce7f0db68aefa83210e2"
+    },
+    "jobs/20260924T005055Z-mapping-causal-replay-2ee772/source_hashes.json": {
+      "sha256": "8f1a77efa9b4f94e76f575ffe4f0c4a0684e628d2c7d75a666032be73b1e5359"
+    },
+    "jobs/20260924T005055Z-mapping-causal-replay-2ee772/result.json": {
+      "sha256": "a2a1fa9578678c03e62c0b20d1a7216cf60aaaec774156cc2c4f99cbfbcd2f33"
+    },
+    "jobs/20260924T005055Z-mapping-causal-replay-2ee772/inference-source-hashes.json": {
+      "sha256": "a5fba8216b0fda0af691c6ad2e8d0d4bed46bb1e5ecb9883f0d8607c0dd161b3"
+    },
+    "jobs/20260924T005055Z-mapping-causal-replay-2ee772/navigation-replay/alignment.jsonl": {
+      "sha256": "f17868093215f76c2751eb3cf4de01917777d214539c86f7b1d0971c50218134"
+    },
+    "jobs/20260924T005055Z-mapping-causal-replay-2ee772/navigation-replay/manifest.json": {
+      "sha256": "9c4169a585fe5aa0c59720dd2b53408bb7edc54112904aa6330160e1886800b3"
+    },
+    "jobs/20260924T005055Z-mapping-causal-replay-2ee772/navigation-replay/result.json": {
+      "sha256": "feeda4223274d76bc08f246fd68bdfa89ee6f3f5c13d388e9676d9d45293a5aa"
+    },
+    "jobs/20260924T005055Z-mapping-causal-replay-2ee772/navigation-replay/video/result.json": {
+      "sha256": "b752e9e3812cac01bba479fb459dfe95985a17849d594b693e876101b02e5604"
+    },
+    "jobs/20260924T005055Z-mapping-causal-replay-2ee772/navigation-replay/reconstruction/result.json": {
+      "sha256": "76718d55c324575e035ae47d56d9308186bfdf4394b955b3279cfbaa7f45429d"
+    }
+  }
+}

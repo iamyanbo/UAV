@@ -1,0 +1,15 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T004623Z-physical-field-coverage-3f137e/source/audit_obstacle_coverage.py",
+    "--bundle",
+    "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/trajectory-bundle/manifest.json",
+    "--output",
+    "/field-coverage"
+  ],
+  "seconds": 600,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 2.0,
+  "status": "running"
+}

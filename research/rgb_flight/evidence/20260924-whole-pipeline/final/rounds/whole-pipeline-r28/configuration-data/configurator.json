@@ -1,0 +1,7 @@
+{
+  "audited_observation_conditioned_configurations": true,
+  "grounding": "grounding.jsonl",
+  "grounding_sha256": "8721dc09b6733b23a22b05a90dd450f2ae10658b6848621c8c9c77109cc0d4f5",
+  "source_replay_sha256": "ee09dd78f5fe7e54f3f21e6d2764232928f574f0210059670aaadebfb0f84de4",
+  "scope": "Bootstrap abstention only; no directional search quality claimed"
+}

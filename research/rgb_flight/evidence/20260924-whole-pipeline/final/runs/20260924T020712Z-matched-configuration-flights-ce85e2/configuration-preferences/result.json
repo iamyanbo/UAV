@@ -1,0 +1,65 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "matched_conditions": {
+    "episode_id": "train-00000",
+    "goal_panorama_sha256": "a767a6b80a4e61525991ac9f8a7940f576a20d856288cd4810b429301c6c509b",
+    "clock_speed": 1.0,
+    "maximum_speed_mps": 3.0,
+    "rollout_seed": 0,
+    "scene": "env_airsim_16",
+    "controller_sha256": "ce5d576ae7340578c6698f059f5b02028022978ffa37a9a4fc55faaecb320c5d",
+    "target_rule": "same deterministic causal frontier teacher, refreshed against currently observed IDs; compare bounded scoring multipliers"
+  },
+  "matched_conditions_sha256": "efacf17cc2a89a4f1f287d7265d6be69067f141e9b1cfbe6bbef81950ced038d",
+  "controller_sha256": "ce5d576ae7340578c6698f059f5b02028022978ffa37a9a4fc55faaecb320c5d",
+  "outcomes": [
+    {
+      "complete_flight": true,
+      "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T020713Z/episode",
+      "result_sha256": "eb853640e0c195f1fe7a7677d7b8b6897bb5e3728eb68427a2e1ad83a6f009e3",
+      "configuration": {
+        "target_id": null,
+        "grounded_kind": "none",
+        "intention": "search",
+        "goal_weight": 1.0,
+        "time_weight": 1.0,
+        "information_weight": 1.0,
+        "additional_caution": 1.0,
+        "confidence": 0.0,
+        "validity_horizon_seconds": 4.0,
+        "deliberate_immediately": true
+      },
+      "collision": false,
+      "success": false,
+      "elapsed_sim_seconds": 180.00984025001526,
+      "termination": "timeout"
+    },
+    {
+      "complete_flight": true,
+      "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T021142Z/episode",
+      "result_sha256": "5f082c35220f7eada669fab0c8e2cdd1a70c0d8be85f8134818a0582b132137c",
+      "configuration": {
+        "target_id": null,
+        "grounded_kind": "none",
+        "intention": "search",
+        "goal_weight": 1.0,
+        "time_weight": 1.0,
+        "information_weight": 1.0,
+        "additional_caution": 2.0,
+        "confidence": 0.0,
+        "validity_horizon_seconds": 4.0,
+        "deliberate_immediately": true
+      },
+      "collision": false,
+      "success": false,
+      "elapsed_sim_seconds": 180.01584029197693,
+      "termination": "timeout"
+    }
+  ],
+  "winner": null,
+  "ambiguous": true,
+  "ranking": "collision avoidance, then success, then completion time among successes; <=1 s is a timing tie",
+  "preference_update_ready": false,
+  "reason": "Matched outcome tie; no preferred configuration label exists"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Offline native Splat-SLAM publication/recovery integration; concurrent training means latency is not a flight acceptance measurement",
+  "stages": [
+    {
+      "id": "mapping-causal-replay",
+      "kind": "gpu",
+      "peak_gib": 40,
+      "seconds": 1200,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/checkpoints/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/navigation_process.py",
+        "--observations",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/observations",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/goal",
+        "--checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/checkpoints",
+        "--integration-only",
+        "--video",
+        "--mapping",
+        "--frames",
+        "400"
+      ],
+      "receipt": "{job}/navigation-replay/result.json",
+      "outputs": [
+        "{job}/navigation-replay/manifest.json"
+      ]
+    }
+  ]
+}

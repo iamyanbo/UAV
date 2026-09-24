@@ -87,8 +87,13 @@ climbing from the runtime's own records.
 A refusal is written back as runtime feedback and appears in the orchestrator's
 next context, so a refused move is corrected rather than silently repeated.
 
-There are no pipeline-wide experiment-duration, GPU, or VRAM limits. Human
-direction constraints and the task-specific Markdown plan govern resources.
+Local worker-launched Python processes use a hard PyTorch allocation ceiling of
+60% of the visible CUDA device memory by default, with local numerical
+concurrency kept at one. This leaves headroom for the desktop and the CURI
+worker. The remote Spark model host has its own unified-memory capacity and is
+not represented by the local RTX limit. Task-specific Markdown still controls
+the scientific resource budget, but an experiment may not raise the local
+Python CUDA ceiling above 60%.
 The orchestrator delegates the minimum complete study that can answer the
 current question, sized by the evidence the question requires rather than by a
 rule to start small. It stages an investigation when an earlier result would

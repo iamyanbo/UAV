@@ -1,0 +1,11 @@
+{
+  "scope": "development-only threshold exploration; not a stopping acceptance threshold",
+  "best_recall_at_fpr_le_1pct": {
+    "threshold": 0.9968814849853516,
+    "precision": 0.959349593495935,
+    "recall": 0.44696969696969696,
+    "false_positive_rate": 0.00946969696969697,
+    "tp": 118,
+    "fp": 5
+  }
+}

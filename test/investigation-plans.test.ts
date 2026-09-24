@@ -8,6 +8,7 @@ import { recordInvestigation } from "../src/research/investigations.js";
 import { applyOrchestratorActions } from "../src/research/orchestrator.js";
 import { dispatchInvestigation, investigationPlanContext, planInvestigation, researchPauseBlockers, runtimeTimeContext } from "../src/research/investigation-plans.js";
 import { statePath } from "../src/research/paths.js";
+import { frameInvestigation } from "../src/research/lifecycle.js";
 
 function fixture() {
   const root = mkdtempSync(join(tmpdir(), "curi-investigation-plans-"));
@@ -57,6 +58,22 @@ test("active case dispatches a real task once; returned work requires interpreta
     assert.match(tasks[0]!.brief_md, /source excerpts, URLs/);
     assert.equal(f.store.context("d").outcomes.length, 0);
     assert.equal(f.store.context("d").shadowCandidates.length, 0);
+  } finally { f.close(); }
+});
+
+test("a framed method retains its method-development contract when dispatched", () => {
+  const f = fixture();
+  try {
+    frameInvestigation(f.store, "d", "DESIGN AND IMPLEMENT METHOD: test timestamped visual corrections", {
+      investigationId: f.id, lane: "validation",
+    });
+    planInvestigation(f.store, "d", "METHOD_DEVELOPMENT_REQUIRED: implement a visual controller", {
+      investigationId: f.id, state: "active",
+    });
+    const taskId = dispatchInvestigation(f.store, "d");
+    assert.ok(taskId);
+    const row = f.store.db.prepare("SELECT task_kind FROM tasks WHERE task_id=?").get(taskId) as { task_kind: string };
+    assert.equal(row.task_kind, "method-development");
   } finally { f.close(); }
 });
 

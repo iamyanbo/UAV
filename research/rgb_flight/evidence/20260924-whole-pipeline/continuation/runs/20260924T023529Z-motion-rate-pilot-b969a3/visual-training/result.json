@@ -1,0 +1,37 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "updates": 2,
+  "resumed_from_update": 0,
+  "objective_version": "metric-long-sequence-motion-rate/v3",
+  "manifest_sha256": "2b04bf3cbf67b1f5eb576034e4f016a50e5e54688d589e4cb2fcc9f5bd081842",
+  "resume_evidence": null,
+  "gradient_evidence": {
+    "encoder": {
+      "finite_gradients": true,
+      "changed": true
+    },
+    "temporal": {
+      "finite_gradients": true,
+      "changed": true
+    },
+    "motion": {
+      "finite_gradients": true,
+      "changed": true
+    },
+    "motion_uncertainty": {
+      "finite_gradients": true,
+      "changed": true
+    }
+  },
+  "train_windows": 255,
+  "development_windows": 33,
+  "elapsed_seconds": 34.38734708307311,
+  "reason": "Full held-out trajectory drift and uncertainty qualification still required",
+  "sequence_steps": 160,
+  "warmup_steps": 32,
+  "normalization": "fixed inference BatchNorm statistics",
+  "activation_checkpointing": true,
+  "motion_parameterization": "rate",
+  "checkpoint_selection": "development normalized motion-rate error plus normalized accumulated drift"
+}

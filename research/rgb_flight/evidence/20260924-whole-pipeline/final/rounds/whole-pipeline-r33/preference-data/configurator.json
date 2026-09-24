@@ -1,0 +1,14 @@
+{
+  "audited_observation_conditioned_configurations": true,
+  "controller": {
+    "meaningful_complete_flights": true,
+    "sha256": "ce5d576ae7340578c6698f059f5b02028022978ffa37a9a4fc55faaecb320c5d"
+  },
+  "preferences": "preferences.jsonl",
+  "preferences_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "all_matched_pairs": "matched-pairs.jsonl",
+  "all_matched_pairs_sha256": "3926f785cd337c41ec60fd9019450991bac57df6b988326ead75116724cb14a0",
+  "source_outcomes_sha256": "4109047b94eaea0cbe1bc3501a356c48cedc2ceac3ffdf3a1b94cbe5c8d2dbc1",
+  "preference_supervision_available": false,
+  "blocking_reason": "Matched timeouts tie; no preference winner exists; retain SFT adapter"
+}

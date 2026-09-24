@@ -1,0 +1,7 @@
+{
+  "status": "failed",
+  "accepted": false,
+  "updates": 0,
+  "phase": "preference",
+  "reason": "Matched timeouts tie; no preference winner exists; retain SFT adapter"
+}

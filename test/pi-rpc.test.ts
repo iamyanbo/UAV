@@ -2,7 +2,16 @@ import assert from "node:assert/strict";
 import { join } from "node:path";
 import test from "node:test";
 import { RpcClient } from "../src/worker/pi-rpc.js";
-import { terminalModelFailure } from "../src/worker/pi-worker.js";
+import { selectedPiModel, selectedPiThinkingLevel, terminalModelFailure } from "../src/worker/pi-worker.js";
+
+test("Pi selects the installed Codex subscription provider without a Spark model registry", () => {
+  assert.equal(selectedPiModel("openai-codex", undefined, {}), "gpt-5.6-sol");
+  assert.equal(selectedPiModel("openai-codex", undefined, { AR_PI_MODEL: "gpt-5.4" }), "gpt-5.4");
+  assert.equal(selectedPiModel("openai-codex", "gpt-5.5", { AR_PI_MODEL: "gpt-5.4" }), "gpt-5.5");
+  assert.equal(selectedPiThinkingLevel("openai-codex", "gpt-5.6-sol", {}), "xhigh");
+  assert.equal(selectedPiThinkingLevel("openai-codex", "gpt-5.6-sol", { AR_PI_THINKING_LEVEL: "high" }), "high");
+  assert.equal(selectedPiThinkingLevel("dgx-spark", "spark", {}), "medium");
+});
 
 function client(env: Record<string, string> = {}) {
   return new RpcClient({ cliPath: join(process.cwd(), "test/fixtures/pi-rpc.mjs"), cwd: process.cwd(),

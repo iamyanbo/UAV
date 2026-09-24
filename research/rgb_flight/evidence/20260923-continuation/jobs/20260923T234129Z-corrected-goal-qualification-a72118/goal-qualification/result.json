@@ -1,0 +1,99 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "checkpoint_sha256": "25ef04b31dea0b448f8f7ab3cf383508fd9dd880cbf7a918ead38ce0b9be2925",
+  "checkpoint_update": 500,
+  "manifest_sha256": "948fad84c41a00a473f9cb6ba1e6c1744df5d3710f140784016d0b5700e701c9",
+  "development_examples": 2000,
+  "development_episodes": 27,
+  "threshold": 0.5,
+  "precision": 0.21217547000895254,
+  "recall": 0.9753086419753086,
+  "false_positive_rate": 0.5008537279453614,
+  "confusion": {
+    "tp": 237,
+    "fp": 880,
+    "fn": 6,
+    "tn": 877
+  },
+  "brier_score": 0.4332049833711873,
+  "calibration_bins": [
+    {
+      "lower": 0.0,
+      "upper": 0.1,
+      "count": 836,
+      "confidence": 0.00465950660636224,
+      "accuracy": 0.007177033492822967
+    },
+    {
+      "lower": 0.1,
+      "upper": 0.2,
+      "count": 22,
+      "confidence": 0.1343710334463553,
+      "accuracy": 0.0
+    },
+    {
+      "lower": 0.2,
+      "upper": 0.3,
+      "count": 9,
+      "confidence": 0.2547547635104921,
+      "accuracy": 0.0
+    },
+    {
+      "lower": 0.3,
+      "upper": 0.4,
+      "count": 5,
+      "confidence": 0.3589363157749176,
+      "accuracy": 0.0
+    },
+    {
+      "lower": 0.4,
+      "upper": 0.5,
+      "count": 11,
+      "confidence": 0.4521818459033966,
+      "accuracy": 0.0
+    },
+    {
+      "lower": 0.5,
+      "upper": 0.6,
+      "count": 4,
+      "confidence": 0.5530001074075699,
+      "accuracy": 0.0
+    },
+    {
+      "lower": 0.6,
+      "upper": 0.7,
+      "count": 7,
+      "confidence": 0.6358725343431745,
+      "accuracy": 0.0
+    },
+    {
+      "lower": 0.7,
+      "upper": 0.8,
+      "count": 15,
+      "confidence": 0.7535205125808716,
+      "accuracy": 0.0
+    },
+    {
+      "lower": 0.8,
+      "upper": 0.9,
+      "count": 18,
+      "confidence": 0.8497071663538615,
+      "accuracy": 0.0
+    },
+    {
+      "lower": 0.9,
+      "upper": 1.0,
+      "count": 1073,
+      "confidence": 0.9974386499845749,
+      "accuracy": 0.22087604846225536
+    }
+  ],
+  "expected_calibration_error": 0.4403173031274356,
+  "time_mae_seconds": 20.203415497527438,
+  "time_supervision": "remaining time on successful demonstration; not optimal time-to-goal",
+  "limitations": [
+    "Development includes aligned boundary negatives; visually similar negative mining is separate",
+    "Operational stopping precision and complete-flight acceptance not established"
+  ]
+}

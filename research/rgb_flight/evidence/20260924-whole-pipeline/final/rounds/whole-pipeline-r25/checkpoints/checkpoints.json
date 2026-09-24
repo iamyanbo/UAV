@@ -1,0 +1,24 @@
+{
+  "schema": "visual-navigation-checkpoints/v1",
+  "status": "completed",
+  "accepted": false,
+  "artifacts": {
+    "goal": {
+      "path": "goal.pt",
+      "sha256": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235816Z-goal-corrective-training-03d6f1/visual-training/best.pt"
+    },
+    "odometry": {
+      "path": "odometry.pt",
+      "sha256": "05ece968b12db87b41137425d110067e9e3a71d0dba7f4c64174ae7f924a5434",
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T005426Z-motion-rate-training-d6d010/visual-training/best.pt"
+    },
+    "projection": {
+      "path": "projection.pt",
+      "sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/checkpoints/projection.pt"
+    }
+  },
+  "goal_match_threshold": 0.9,
+  "scope": "Integration snapshot. Packaging does not establish model compatibility or acceptance."
+}

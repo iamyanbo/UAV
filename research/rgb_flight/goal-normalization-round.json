@@ -1,0 +1,77 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Measured correction: fixed inference BatchNorm, sampling-prior weighting, initial-checkpoint selection",
+  "stages": [
+    {
+      "id": "goal-corrective-training",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 18000,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/goal-data/visual-training.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-goal",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/goal-data",
+        "--initialize-from",
+        "initialization.pt",
+        "--updates",
+        "500",
+        "--validation-every",
+        "250"
+      ],
+      "resume_command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-goal",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/goal-data",
+        "--resume",
+        "{checkpoint}",
+        "--updates",
+        "500",
+        "--validation-every",
+        "250"
+      ],
+      "receipt": "{job}/visual-training/result.json",
+      "checkpoint": "{job}/visual-training/latest.pt",
+      "outputs": [
+        "{job}/visual-training/best.pt",
+        "{job}/visual-training/final.pt"
+      ]
+    },
+    {
+      "id": "corrected-goal-qualification",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 3600,
+      "depends_on": [
+        {
+          "stage": "goal-corrective-training",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/goal-data/visual-training.json",
+        "{stage:goal-corrective-training:job}/visual-training/best.pt"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "qualify-goal",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/goal-data",
+        "--goal-checkpoint",
+        "{stage:goal-corrective-training:job}/visual-training/best.pt"
+      ],
+      "receipt": "{job}/goal-qualification/result.json",
+      "outputs": [
+        "{job}/goal-qualification/predictions.jsonl"
+      ]
+    }
+  ]
+}

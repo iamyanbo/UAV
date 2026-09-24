@@ -1,0 +1,323 @@
+<title>UAV Research Bets Deep Dive</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#0a0f1a;
+    --panel:#121b2c;
+    --panel-2:#0e1524;
+    --line:#243149;
+    --line-soft:#1a2438;
+    --fg:#e9eefb;
+    --muted:#8fa0bd;
+    --muted-2:#5f7194;
+    --amber:#ffb454;
+    --cyan:#5ce1e6;
+    --green:#7ee787;
+    --red:#ff7b7b;
+    --grid: rgba(140,170,220,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{background:var(--ink);}
+  body{
+    margin:0; color:var(--fg); font-family:'IBM Plex Sans',system-ui,sans-serif;
+    background:
+      radial-gradient(1100px 600px at 90% -10%, rgba(126,231,135,0.08), transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, rgba(92,225,230,0.07), transparent 55%),
+      repeating-linear-gradient(0deg, var(--grid) 0px, var(--grid) 1px, transparent 1px, transparent 42px),
+      repeating-linear-gradient(90deg, var(--grid) 0px, var(--grid) 1px, transparent 1px, transparent 42px),
+      var(--ink);
+    padding-inline:16px;
+  }
+  .wrap{max-width:920px; margin:0 auto;}
+  h1,h2,h3,h4{font-family:'Chakra Petch',system-ui,sans-serif; text-wrap:balance; margin:0;}
+  .mono, code, .stat-num, .badge, .tag{font-family:'IBM Plex Mono',monospace;}
+  a{color:var(--cyan);}
+  p{color:var(--muted); line-height:1.6; margin:0;}
+
+  header.hero{padding-block:32px 20px;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace;
+    font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--cyan); margin-bottom:10px;
+  }
+  .eyebrow::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan);}
+  h1{font-size:clamp(28px,5.5vw,40px); line-height:1.1;}
+  .lede{max-width:64ch; margin-top:12px; font-size:15px;}
+
+  .legend{display:flex; gap:8px; flex-wrap:wrap; margin-top:20px;}
+  .badge{
+    font-size:10px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+    padding:4px 10px; border-radius:999px; border:1px solid transparent;
+  }
+  .b-ok{color:var(--green); background:rgba(126,231,135,.1); border-color:rgba(126,231,135,.35);}
+  .b-warn{color:var(--amber); background:rgba(255,180,84,.1); border-color:rgba(255,180,84,.35);}
+  .b-off{color:var(--red); background:rgba(255,123,123,.1); border-color:rgba(255,123,123,.35);}
+
+  /* ranking strip */
+  .rankstrip{display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin:26px 0 8px;}
+  @media (max-width:700px){ .rankstrip{grid-template-columns:repeat(2,1fr);} }
+  .rchip{
+    border:1px solid var(--line); border-radius:10px; padding:10px; text-align:center;
+    background:var(--panel); font-size:11px; color:var(--muted);
+  }
+  .rchip .p{font-family:'Chakra Petch'; font-size:20px; color:var(--fg); display:block;}
+  .rchip.top{border-color:rgba(126,231,135,.5); background:rgba(126,231,135,.06);}
+  .rchip.top .p{color:var(--green);}
+  .rchip.excl{opacity:.6;}
+
+  /* idea sections */
+  .idea{
+    border:1px solid var(--line); border-radius:16px; padding:22px; margin-top:22px;
+    background:var(--panel);
+  }
+  .idea.top{border-color:rgba(126,231,135,.5); background:linear-gradient(180deg, rgba(126,231,135,.06), var(--panel) 45%);}
+  .idea.excluded{opacity:.85;}
+  .idea-head{display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap; justify-content:space-between;}
+  .idea-title{display:flex; align-items:center; gap:12px;}
+  .idea-pos{
+    font-family:'Chakra Petch'; font-weight:700; font-size:18px; color:var(--ink);
+    background:var(--muted); width:32px; height:32px; border-radius:50%; flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .idea.top .idea-pos{background:var(--green);}
+  .idea.excluded .idea-pos{background:var(--red); color:#2a0d0d;}
+  .idea h2{font-size:19px;}
+  .idea .summary{margin-top:12px; font-size:14px;}
+
+  details{
+    margin-top:12px; border:1px solid var(--line-soft); border-radius:10px;
+    background:var(--panel-2); overflow:hidden;
+  }
+  summary{
+    cursor:pointer; list-style:none; padding:11px 14px; font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted);
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+  }
+  summary::-webkit-details-marker{display:none;}
+  summary::after{content:"+"; font-family:'Chakra Petch'; font-size:15px; color:var(--muted-2);}
+  details[open] summary::after{content:"\2212";}
+  details[open] summary{border-bottom:1px solid var(--line-soft); color:var(--fg);}
+  .dbody{padding:14px 16px 16px;}
+  .dbody ul{margin:0; padding-left:18px; color:var(--muted); font-size:13.5px; line-height:1.65;}
+  .dbody ul li{margin-bottom:5px;}
+  .dbody ul li strong{color:var(--fg);}
+
+  .risk-row{display:flex; gap:10px; align-items:flex-start; margin-bottom:8px; font-size:13.5px; color:var(--muted);}
+  .risk-row .icon{color:var(--amber); flex:0 0 auto; margin-top:1px;}
+
+  .sketch-steps{counter-reset:step; list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px;}
+  .sketch-steps li{
+    counter-increment:step; position:relative; padding-left:30px; font-size:13.5px; color:var(--muted); line-height:1.55;
+  }
+  .sketch-steps li strong{color:var(--fg);}
+  .sketch-steps li::before{
+    content:counter(step); position:absolute; left:0; top:0; width:20px; height:20px; border-radius:6px;
+    background:var(--line); color:var(--fg); font-family:'IBM Plex Mono'; font-size:11px;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .fusion{
+    margin-top:32px; border:1px dashed rgba(126,231,135,.5); border-radius:16px; padding:26px;
+    background:rgba(126,231,135,0.05);
+  }
+  .fusion-row{display:flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:14px;}
+  .fpill{font-family:'Chakra Petch'; font-size:14px; padding:10px 16px; border-radius:10px; border:1px solid var(--line); background:var(--panel-2);}
+  .fplus,.feq{font-family:'Chakra Petch'; font-size:20px; color:var(--muted-2);}
+  .feq{color:var(--green);}
+  .fresult{
+    font-family:'Chakra Petch'; font-size:16px; color:var(--green); text-align:center; margin-top:16px;
+    border:1px solid rgba(126,231,135,.5); border-radius:10px; padding:14px 18px; background:rgba(126,231,135,0.08);
+  }
+
+  footer{padding:30px 0 50px; color:var(--muted-2); font-size:12px; line-height:1.7;}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Feasibility check &middot; Sept 2026</div>
+    <h1>Four UAV Research Bets, Ranked</h1>
+    <p class="lede">Each proposed direction &mdash; JEV, JEPA world models, Matryoshka VLM/VLA unification, and Gaussian-native policies &mdash;
+      checked against real prior art. Tap any section to expand the detail: prior art, technical risk, and a scoped project sketch.</p>
+    <div class="legend">
+      <span class="badge b-ok">genuinely open gap</span>
+      <span class="badge b-warn">open but risky</span>
+      <span class="badge b-off">not viable / already crowded</span>
+    </div>
+  </header>
+
+  <div class="rankstrip">
+    <div class="rchip top"><span class="p">#1</span>JEPA over Gaussians</div>
+    <div class="rchip"><span class="p">#2</span>Language-JEPA UAV</div>
+    <div class="rchip"><span class="p">#3</span>Gaussian-native policy</div>
+    <div class="rchip"><span class="p">#4</span>Matryoshka VLM/VLA</div>
+    <div class="rchip excl"><span class="p">&times;</span>JEV</div>
+  </div>
+
+  <!-- ============ IDEA 2 ============ -->
+  <div class="idea">
+    <div class="idea-head">
+      <div class="idea-title"><div class="idea-pos">2</div><h2>Language-conditioned JEPA world models for drones</h2></div>
+      <span class="badge b-ok">genuinely open gap</span>
+    </div>
+    <p class="summary">JEPA predicts <em>future latent representations</em> instead of reconstructing pixels &mdash; cheaper and faster than the flow-matching/diffusion approach WorldFly uses. The three adjacent pieces already exist separately; the combination doesn't.</p>
+
+    <details open>
+      <summary>Prior art &amp; closest existing work</summary>
+      <div class="dbody">
+        <ul>
+          <li><strong>SkyJEPA</strong> (arXiv:2606.23444, incl. LeCun) &mdash; state-history JEPA for quadrotors, zero-shot sim-to-real via MPPI. <strong>No language input at all.</strong></li>
+          <li><strong>V-JEPA 2 / V-JEPA 2-AC</strong> (arXiv:2506.09985, Meta) &mdash; 1.2B params, plans in ~16s/action (16&times; faster than diffusion baseline Cosmos). Manipulation only, image-goal only &mdash; authors flag language conditioning as future work.</li>
+          <li><strong>Closest match:</strong> "Policy-Guided World Model Planning for Language-Conditioned Visual Navigation" (arXiv:2603.25981) &mdash; JEPA-style + language, but <strong>ground robots only</strong>, explicitly contrasted against aerial platforms.</li>
+          <li>WorldFly / WorldVLN / ImagineUAV all pair language with a world model &mdash; but via generative/diffusion/flow-matching, never JEPA's non-generative objective. ImagineUAV even name-checks the JEPA alternative and doesn't use it.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>Technical risks</summary>
+      <div class="dbody">
+        <div class="risk-row"><span class="icon">&#9888;</span>JEPA is documented to suffer <strong>representational collapse</strong>, requiring regularization tricks (SigReg, EMA target encoders).</div>
+        <div class="risk-row"><span class="icon">&#9888;</span><strong>Reduced sensitivity to fine-grained action differences</strong> &mdash; a problem for precise attitude/thrust control specifically (flagged for manipulation by CAPE, arXiv:2606.07304, likely extends to flight).</div>
+        <div class="risk-row"><span class="icon">&#9888;</span><strong>Data hunger</strong> &mdash; V-JEPA 2 pretrained on 1M+ hours of video. No aerial egocentric footage exists at that scale; needs a SkyJEPA-style simulated pipeline plus a new language-labeling layer.</div>
+        <div class="risk-row"><span class="icon">&#9888;</span>Naive long-horizon planning collapses under CEM/MPC &mdash; FF-JEPA (arXiv:2606.09311) built a hierarchical fix worth borrowing.</div>
+      </div>
+    </details>
+
+    <details>
+      <summary>Scoped project sketch</summary>
+      <div class="dbody">
+        <ul class="sketch-steps">
+          <li>Extend <strong>SkyJEPA's</strong> state-history latent-dynamics architecture with a text encoder feeding a subgoal-conditioning mechanism.</li>
+          <li>Model the conditioning on <strong>FF-JEPA's</strong> action-free latent planner, not V-JEPA 2-AC's brittle explicit image-goal requirement.</li>
+          <li>Train on SkyJEPA-style simulated data augmented with auto-generated language annotations.</li>
+          <li>Benchmark against three baselines: <strong>SkyJEPA</strong> (no language), <strong>WorldFly</strong> (generative, has language), and a naive VLM+classical-planner pipeline.</li>
+          <li>Report both task success <em>and</em> control-loop latency &mdash; latency is precisely what motivates JEPA over the generative alternative.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <!-- ============ IDEA 4 ============ -->
+  <div class="idea">
+    <div class="idea-head">
+      <div class="idea-title"><div class="idea-pos">4</div><h2>Gaussian-native policies &amp; world models for UAVs</h2></div>
+      <span class="badge b-ok">genuinely open, aerial-specific</span>
+    </div>
+    <p class="summary">Feed Gaussian primitives directly into a policy or predict future Gaussian states &mdash; instead of only rendering images from a splat. This pattern is already a named subfield. It has just never left the ground.</p>
+
+    <details open>
+      <summary>Prior art &amp; closest existing work</summary>
+      <div class="dbody">
+        <ul>
+          <li><strong>GST-VLA</strong> (arXiv:2603.09079) &mdash; tokenizes Gaussian position/covariance/SH coefficients directly into a VLA transformer, bypassing rendering. <span class="mono">Tabletop manipulation only.</span></li>
+          <li><strong>ManiGaussian</strong> (arXiv:2403.08321, ECCV 2024) &mdash; predicts actions from Gaussian embedding-space features, +13.1% success across 10 RLBench tasks.</li>
+          <li><strong>"Gaussian world models"</strong> are now a named pattern: <strong>GWM</strong> (ICCV 2025), <strong>GAF</strong> (arXiv:2506.14135) predict future 4D Gaussian states for manipulation; <strong>GEM</strong> (arXiv:2605.17682) applies it to driving occupancy forecasting.</li>
+          <li>Every UAV-3DGS system found (SOUS VIDE/FiGS, GRaD-Nav, Splat-Nav, ActiveGS, VISTA, FalconGym 2.0) uses 3DGS <strong>only</strong> as a differentiable simulator/map &mdash; never as direct policy input or predictive substrate.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>Technical risks</summary>
+      <div class="dbody">
+        <div class="risk-row"><span class="icon">&#9888;</span>3DGS compression is mature for <strong>storage/render FPS</strong> (LightGaussian: 15&times; smaller, 139&rarr;215 FPS) &mdash; but <strong>no paper benchmarks compressed-Gaussian-to-policy inference latency</strong>. "Cheap enough for a control loop" is an extrapolation, not a validated result.</div>
+        <div class="risk-row"><span class="icon">&#9888;</span>Risk of being under-differentiated from simply porting ManiGaussian/GWM to a new domain, unless paired with a genuinely new predictive objective.</div>
+      </div>
+    </details>
+
+    <details>
+      <summary>Scoped project sketch</summary>
+      <div class="dbody">
+        <ul class="sketch-steps">
+          <li>Build a compressed/pooled Gaussian scene descriptor: <strong>PUP 3D-GS</strong>-style uncertainty pruning + <strong>GaussianPrediction</strong>-style motion distillation (cuts dynamic nodes from hundreds of thousands to a few hundred).</li>
+          <li>Feed it as direct input to a lightweight UAV navigation policy.</li>
+          <li>Benchmark against (a) a standard image-based VLA baseline, and (b) ManiGaussian's approach ported to a navigation task.</li>
+          <li>Report task success <em>and</em> the previously-unmeasured Gaussian-to-policy forward-pass latency at flight-control rates.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <!-- ============ IDEA 3 ============ -->
+  <div class="idea">
+    <div class="idea-head">
+      <div class="idea-title"><div class="idea-pos">3</div><h2>Matryoshka-style VLM/VLA unification</h2></div>
+      <span class="badge b-warn">open but risky</span>
+    </div>
+    <p class="summary">Train one nested model instead of gluing a slow VLM planner to a fast VLA controller. Unclaimed at the technique level &mdash; but the closest analog domain shows the underlying problem (catastrophic forgetting) is only partially solved, even by frontier labs.</p>
+
+    <details open>
+      <summary>Prior art &amp; closest existing work</summary>
+      <div class="dbody">
+        <ul>
+          <li><strong>Matryoshka Representation Learning</strong> (arXiv:2205.13147) and <strong>MatFormer</strong> (arXiv:2310.07707) &mdash; one 850M-param run yields 200+ extractable submodels, each beating independently trained models of the same size. Already reached VLMs: <strong>M3</strong> (arXiv:2405.17430), <strong>MQT-LLaVA</strong> (arXiv:2405.19315).</li>
+          <li>Targeted search for "Matryoshka VLA" / "elastic VLA" / "MatFormer robot": <strong>nothing found</strong>. The pattern has never touched an action-generation head, on any robot.</li>
+          <li>Distinct from <strong>VLA distillation</strong> (already a small niche): VLA-AD compresses OpenVLA 44&times; to 158M params with a 0.27% performance gap (arXiv:2605.16241) &mdash; but that's a second standalone student model, not one artifact serving both roles.</li>
+          <li>Only clean shared-weight precedent: <strong>FiS-VLA</strong> (arXiv:2506.01953) &mdash; fast System 1 literally = the final blocks of the same network as slow System 2.</li>
+          <li>Closest UAV precedent: <strong>LiteVLA-H</strong> (arXiv:2605.00884) &mdash; one 256M model serves both a 19.74Hz fast mode and a slower semantic mode, but via <em>decoding-length</em> elasticity, not weight nesting.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>Technical risks</summary>
+      <div class="dbody">
+        <div class="risk-row"><span class="icon">&#9888;</span><strong>VLM2VLA</strong> (arXiv:2509.22195): OpenVLA scores <strong>0 on most of 12 VQA benchmarks</strong> after action fine-tuning &mdash; severe catastrophic forgetting.</div>
+        <div class="risk-row"><span class="icon">&#9888;</span><strong>&pi;0.5's Knowledge Insulation</strong> (arXiv:2504.16054), built specifically to prevent this, still shows major collapse on some benchmarks (MMB-cn 0.3, RealWorldQA 2.7). Authors' own conclusion: <em>"co-training is not a guaranteed solution to catastrophic forgetting."</em></div>
+        <div class="risk-row"><span class="icon">&#9888;</span>A null result (nesting doesn't help) is a live possibility that would need honest reporting, not just a positive result to chase.</div>
+      </div>
+    </details>
+
+    <details>
+      <summary>Scoped project sketch</summary>
+      <div class="dbody">
+        <ul class="sketch-steps">
+          <li>Train one UAV VLA with <strong>MatFormer-style nested FFN blocks</strong> so the smallest extractable submodel is the fast reactive controller, and the full model is the slow semantic planner.</li>
+          <li>Borrow a <strong>knowledge-insulation-style gradient-isolation scheme</strong> from &pi;0.5 to protect the smallest submodel's control competence from the largest submodel's language objective.</li>
+          <li>Compare against <strong>CognitiveDrone-R1's</strong> glued two-network baseline (arXiv:2503.01378) and against LiteVLA-H.</li>
+          <li>Report task success at each nesting level <em>and</em> VQA/semantic retention &mdash; directly testing whether nesting mitigates or worsens the VLM2VLA-style forgetting pattern.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <!-- ============ IDEA 1 (excluded) ============ -->
+  <div class="idea excluded">
+    <div class="idea-head">
+      <div class="idea-title"><div class="idea-pos">&times;</div><h2>JEV for real-time UAV decisions</h2></div>
+      <span class="badge b-off">not viable as a foundation</span>
+    </div>
+    <p class="summary">TypeSafe AI's "System One" model, launched Sept 15&ndash;16, 2026. Interesting as a trend signal, not as infrastructure to build a thesis on.</p>
+
+    <details>
+      <summary>What it actually is &amp; why it falls short</summary>
+      <div class="dbody">
+        <ul>
+          <li>No independent technical paper &mdash; only a company blog post and press coverage. "No architecture paper, no public leaderboard scores... for independent testing" (Hacker News digest).</li>
+          <li>Outputs only <strong>Choice</strong> (categorical), <strong>Score</strong> (ordinal), or <strong>Noul</strong> (single 0&ndash;1 value) &mdash; cannot emit continuous multi-DoF flight commands directly.</li>
+          <li><strong>Cloud/API-only</strong> ($0.042/M tokens, no open weights) &mdash; the reported 70&ndash;500ms latency is a network round-trip, which undercuts any "onboard real-time" framing.</li>
+          <li>Self-labeled "0% hallucination" claim is admitted by TypeSafe itself to be <strong>"not empirical."</strong></li>
+          <li>One existing demo: <strong>jev-drone</strong> (independent GitHub hobbyist project) &mdash; Jev as an advisory 2.5Hz layer over a conventional flight controller, MuJoCo sim only. Author's own words: "a single 65s run, not a seed-matched average," and the harder tunnel test is "not a working system."</li>
+          <li>The underlying concept &mdash; fast, parallel, calibrated discrete decisions &mdash; already has prior art: dual-process "System 1/2" navigation (arXiv:2601.21506), discretized-action driving (DriveAction, arXiv:2506.05667), calibration-aware VLA action selection (CALMM-Drive, ReconVLA).</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <!-- ============ FUSION ============ -->
+  <div class="fusion">
+    <div class="eyebrow" style="color:var(--green);">#1 &middot; where two ideas fuse</div>
+    <h2 style="font-size:20px;">Idea 2 + Idea 4 = the strongest single project</h2>
+    <p style="margin-top:10px;">Two independent research passes flagged the <strong>exact same unaddressed intersection</strong> from opposite directions: the JEPA notes call GAF/4DGS-WAM "the closest existing analogue to a JEPA-style predictor applied to Gaussians"; the 3DGS notes independently call the same papers "Gaussians as JEPA-like predictive latents." Neither literature has combined them for aerial navigation.</p>
+    <div class="fusion-row">
+      <div class="fpill">JEPA-style latent prediction</div>
+      <div class="fplus">+</div>
+      <div class="fpill">Compressed / tokenized Gaussian scene state</div>
+    </div>
+    <div class="fresult">A predictor that imagines future geometry, not future pixels &mdash; language-conditioned, real-time, and built on exactly the SLAM/3DGS fluency a language-only or robotics-only researcher wouldn't bring.</div>
+  </div>
+
+  <footer>
+    Distilled from <span class="mono">reports/VLM UAV navigation research ideas.md</span>. Caveat carried through from the source report: none of these gaps were confirmed via exhaustive search &mdash; arXiv indexing of Q2&ndash;Q3 2026 preprints may be incomplete. A final targeted search for "JEPA + Gaussian + UAV/aerial/drone" is worth running immediately before committing to a proposal.
+  </footer>
+</div>

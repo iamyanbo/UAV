@@ -1,0 +1,19 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "failure": null,
+  "cleanup_errors": [],
+  "frames": 420,
+  "missing_video_frames": 50,
+  "missing_metric_geometry_frames": 420,
+  "goal_conditioned_frames": 420,
+  "alignment_reasons": {
+    "tracking_lost": 294,
+    "insufficient_causal_support": 2
+  },
+  "processing_p95_seconds": 0.049513722094707176,
+  "processing_max_seconds": 0.07865654211491346,
+  "processing_deadlines_missed": 20,
+  "publication_lateness_p95_seconds": 0.7698148416355249,
+  "scope": "shared causal fast path; slow-feature publication replay and flight acceptance remain separate"
+}

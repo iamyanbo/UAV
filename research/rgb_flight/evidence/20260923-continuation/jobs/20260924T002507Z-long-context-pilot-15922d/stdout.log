@@ -1,0 +1,29 @@
+
+=============
+== PyTorch ==
+=============
+
+NVIDIA Release 25.11 (build 231036168)
+PyTorch Version 2.10.0a0+b558c98
+Container image Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+Copyright (c) 2014-2024 Facebook Inc.
+Copyright (c) 2011-2014 Idiap Research Institute (Ronan Collobert)
+Copyright (c) 2012-2014 Deepmind Technologies    (Koray Kavukcuoglu)
+Copyright (c) 2011-2012 NEC Laboratories America (Koray Kavukcuoglu)
+Copyright (c) 2011-2013 NYU                      (Clement Farabet)
+Copyright (c) 2006-2010 NEC Laboratories America (Ronan Collobert, Leon Bottou, Iain Melvin, Jason Weston)
+Copyright (c) 2006      Idiap Research Institute (Samy Bengio)
+Copyright (c) 2001-2004 Idiap Research Institute (Ronan Collobert, Samy Bengio, Johnny Mariethoz)
+Copyright (c) 2015      Google Inc.
+Copyright (c) 2015      Yangqing Jia
+Copyright (c) 2013-2016 The Caffe contributors
+All rights reserved.
+
+Various files include modifications (c) NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+
+GOVERNING TERMS: The software and materials are governed by the NVIDIA Software License Agreement
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-software-license-agreement/)
+and the Product-Specific Terms for NVIDIA AI Products
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/product-specific-terms-for-ai-products/).
+
+{"status": "completed", "accepted": false, "updates": 2, "resumed_from_update": 0, "objective_version": "metric-long-sequence-fixed-bn/v2", "manifest_sha256": "ca0bcfece57326729f5ed600f639834c7ca45eba48402180c6fd0912f0b14eab", "resume_evidence": null, "gradient_evidence": {"encoder": {"finite_gradients": true, "changed": true}, "temporal": {"finite_gradients": true, "changed": true}, "motion": {"finite_gradients": true, "changed": true}, "motion_uncertainty": {"finite_gradients": true, "changed": true}}, "train_windows": 111, "development_windows": 33, "elapsed_seconds": 28.833828769857064, "reason": "Full held-out trajectory drift and uncertainty qualification still required", "sequence_steps": 160, "warmup_steps": 32, "normalization": "fixed inference BatchNorm statistics", "activation_checkpointing": true}

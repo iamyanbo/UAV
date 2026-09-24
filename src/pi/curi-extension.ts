@@ -8,6 +8,7 @@ import { sparkModelConfig } from "../config/spark-model.js";
 import { validateDataRequest } from "../research/data-request.js";
 import { discoveryUrl } from "../research/public-source.js";
 import { runProcess } from "../worker/process.js";
+import { campaignExec, type CampaignPolicy } from "../worker/campaign-exec.js";
 import { referenceToolOutput } from "../worker/tool-output.js";
 import { getRecord, searchRecords } from "../research/search-index.js";
 
@@ -51,6 +52,7 @@ function markdownActions(): MarkdownActionDefinition[] {
 }
 
 export default function curiExtension(pi: ExtensionAPI): void {
+  let campaignToolCalls = 0;
   const spark = sparkModelConfig();
   if (spark) pi.registerProvider("dgx-spark", spark);
   pi.on("tool_result", (event, ctx) => {
@@ -62,6 +64,19 @@ export default function curiExtension(pi: ExtensionAPI): void {
   });
   pi.on("tool_call", (event) => {
     const input = event.input as Record<string, unknown>;
+    if (process.env.CURI_CAMPAIGN_POLICY) {
+      const policy = JSON.parse(readFileSync(process.env.CURI_CAMPAIGN_POLICY, "utf8")) as CampaignPolicy;
+      campaignToolCalls++;
+      if (campaignToolCalls > Number(process.env.CURI_TASK_MAX_TOOL_CALLS ?? 120)) return { block: true, reason: "Campaign tool budget reached; return a partial handoff now." };
+      if (Date.now() >= Math.min(policy.deadline_ms, policy.task_deadline_ms ?? Infinity) || existsSync(policy.cancel_file)) return { block: true, reason: "Campaign cancelled or deadline reached." };
+      if (["bash", "run_check", "subagent"].includes(event.toolName)) return { block: true, reason: "Use campaign_exec for tracked resource-owned commands." };
+      if (["write", "edit"].includes(event.toolName)) {
+        const path = String(input.path ?? input.file_path ?? "").replaceAll("\\", "/");
+        const relativePath = relative(process.cwd(), resolve(process.cwd(), path)).replaceAll("\\", "/");
+        if (/^(brief|bootstrap|\.campaign)(\/|$)/i.test(relativePath)) return { block: true, reason: "Campaign instructions and bootstrap helpers are read-only." };
+        if (policy.readonly_evaluator && !/^(run|reports)(\/|$)/.test(relativePath)) return { block: true, reason: "Frozen evaluator task: source/model changes are not allowed." };
+      }
+    }
     // The search curator opens a browser tab for a person to approve results.
     // Unattended research has no reviewer, so searches return results headlessly.
     if (event.toolName === "web_search") input.workflow = "none";
@@ -88,6 +103,20 @@ export default function curiExtension(pi: ExtensionAPI): void {
     }
     return undefined;
   });
+
+  if (allowed.has("campaign_exec") && process.env.CURI_CAMPAIGN_POLICY) pi.registerTool(defineTool({
+    name: "campaign_exec", label: "Campaign command",
+    description: "Run one foreground command on Windows or Ubuntu WSL with resource monitoring, owned process-group cleanup, deadline, logs and cache paths. No detached/background jobs. Use kind=gpu for CUDA; cpu/download hide CUDA. Arguments are literal; write a script for multi-step setup. WSL root_install is only for apt-get/dpkg. cwd is relative to your workspace. Return code and full output tail are evidence, not a scientific result.",
+    parameters: Type.Object({ backend: Type.Union([Type.Literal("windows"), Type.Literal("wsl")]),
+      kind: Type.Union([Type.Literal("cpu"), Type.Literal("gpu"), Type.Literal("download")]),
+      executable: Type.String(), args: Type.Array(Type.String()), cwd: Type.Optional(Type.String()),
+      timeout_seconds: Type.Optional(Type.Number()), root_install: Type.Optional(Type.Boolean()) }),
+    async execute(_id, params, signal) {
+      const value = await campaignExec(process.env.CURI_CAMPAIGN_POLICY!, params, signal);
+      append({ type: "campaign_check", ...value });
+      return result(JSON.stringify(value), value);
+    },
+  }));
 
   if (allowed.has("curi_state")) {
     pi.registerTool(defineTool({

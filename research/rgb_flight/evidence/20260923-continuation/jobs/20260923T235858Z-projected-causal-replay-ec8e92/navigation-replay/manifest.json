@@ -1,0 +1,72 @@
+{
+  "schema": "causal-navigation-replay/v1",
+  "episode_id": "train-00000",
+  "checkpoint_set_sha256": "01a0afdd1ed3f04d405cd399be7047d72e9c87330f81b3203ba2a26ad9111762",
+  "source_rgb_sha256": "d8441a1dfdb62064b06bb9476e1d60b6fdb044b56a12a9570dd76e67e0ff00a7",
+  "goal_sha256": "1c651e3d721deb9a4bc7e5bedd2d2c6aa0f5f6066497f0ef2b6255ba62acfe29",
+  "runtime_source_sha256": "94412ad363894d5d41fe5a7c7e6ec58a5878b7edc80a6dfd2a858d18b0001d3b",
+  "observation_time_grid": "original exposure timestamps; no duplicated images",
+  "slow_feature_mode": "measured paced replay with actual asynchronous video completion",
+  "availability_clock": "replay monotonic; original image exposure timestamps preserved",
+  "video": {
+    "status": "completed",
+    "accepted": false,
+    "episode_id": "train-00000",
+    "outputs": 51,
+    "unavailable_windows": 46,
+    "busy_requests": 5,
+    "frozen_encoder": true,
+    "publication_clock": "actual completion in this replay/live process"
+  },
+  "shards": [
+    {
+      "path": "runtime-000000.pt",
+      "sha256": "a22d17be6689cf68a1dd2a61042a855dfec97213d2fee64cf47d78d8b2fcb534",
+      "samples": 64,
+      "first_ns": 1790207196389236736,
+      "last_ns": 1790207200136316672
+    },
+    {
+      "path": "runtime-000001.pt",
+      "sha256": "0b20b90fd886f0ca52237fe2b92da6e3340e65702de687bc131443e7bebf4679",
+      "samples": 64,
+      "first_ns": 1790207200166317312,
+      "last_ns": 1790207202233361408
+    },
+    {
+      "path": "runtime-000002.pt",
+      "sha256": "060521e22e270c6280e88c90b98896f7f49b3ff0e5e5e9479a8ccabe695249a9",
+      "samples": 64,
+      "first_ns": 1790207202260361984,
+      "last_ns": 1790207204030399744
+    },
+    {
+      "path": "runtime-000003.pt",
+      "sha256": "5081b18c96bbf3c201de53abc9134199a0c03042bbdf9b527a42ff292facbb61",
+      "samples": 64,
+      "first_ns": 1790207204060400384,
+      "last_ns": 1790207206019442176
+    },
+    {
+      "path": "runtime-000004.pt",
+      "sha256": "ec9c132ee269af8f6d15ceb2aa7457b9bac9218ad0bfa5ccfd3fc0ededc0fb03",
+      "samples": 64,
+      "first_ns": 1790207206052442880,
+      "last_ns": 1790207207897482240
+    },
+    {
+      "path": "runtime-000005.pt",
+      "sha256": "52b02f4da5e77fc2a7b4936293e2633ba78b3ffd0be47d82daa176374f170391",
+      "samples": 64,
+      "first_ns": 1790207207927482880,
+      "last_ns": 1790207210000527104
+    },
+    {
+      "path": "runtime-000006.pt",
+      "sha256": "cb207f14ccc9db90981f956c99c6627c76083dd5cd51661a28d39b6b5353dcc1",
+      "samples": 16,
+      "first_ns": 1790207210030527744,
+      "last_ns": 1790207210495537664
+    }
+  ]
+}

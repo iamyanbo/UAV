@@ -30,6 +30,8 @@ export interface WorkerWorkBudget {
 }
 
 export interface WorkerRequest {
+  /** Opt-in resource-owned execution for the operator-approved Idea 1 campaign. */
+  campaignPolicyPath?: string;
   role: WorkerRole;
   prompt: string;
   systemPrompt?: string;

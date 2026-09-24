@@ -12,9 +12,28 @@ import type { PiHostConfig } from "./pi-host.js";
 import { blankBrokerCredentials } from "../config/broker-env.js";
 import { configuredModelIdentity, sparkModelConfig, sparkTransportModel } from "../config/spark-model.js";
 import { probeOpenAiCompatible } from "../research/provider-health.js";
+import { getModels } from "@earendil-works/pi-ai";
+
+/** Keep the Spark default, while allowing Pi's installed subscription providers. */
+export function selectedPiModel(provider: string, requested?: string, env: NodeJS.ProcessEnv = process.env): string {
+  return requested?.trim() || env.AR_PI_MODEL?.trim()
+    || (provider === "openai-codex" ? "gpt-5.6-sol" : sparkTransportModel());
+}
+
+export type PiThinkingLevel = "off" | "minimal" | "low" | "medium" | "high" | "xhigh";
+
+/** Sol is the deliberate high-effort invention/review lead for CURI-UAV. */
+export function selectedPiThinkingLevel(provider: string, model: string,
+  env: NodeJS.ProcessEnv = process.env): PiThinkingLevel {
+  const requested = env.AR_PI_THINKING_LEVEL?.trim();
+  if (requested && ["off", "minimal", "low", "medium", "high", "xhigh"].includes(requested)) {
+    return requested as PiThinkingLevel;
+  }
+  return provider === "openai-codex" && model === "gpt-5.6-sol" ? "xhigh" : "medium";
+}
 
 import { acquireInferenceSlot, inferenceConcurrency } from "./inference-capacity.js";
-import { killProcessTree, runProcess, validateProcess } from "./process.js";
+import { killProcessTree, runProcess, validateProcess, withCudaMemoryGuard } from "./process.js";
 import type { AgentWorker, MarkdownAction, TraceStep, WorkerCheck, WorkerRequest, WorkerResult, WorkerUsage } from "./types.js";
 
 export { killProcessTree, runProcess, validateProcess } from "./process.js";
@@ -22,7 +41,7 @@ export { killProcessTree, runProcess, validateProcess } from "./process.js";
 const EMPTY_USAGE: WorkerUsage = { inputTokens: 0, outputTokens: 0, totalTokens: 0, costUsd: 0, modelRequests: 0 };
 const MAX_TRACE_STEPS = 20_000;
 const MAX_STEP_CHARS = 4_000;
-const SPECIAL_TOOLS = new Set(["curi_state", "curi_search", "run_check", "record_outcome", "activate_shadow"]);
+const SPECIAL_TOOLS = new Set(["curi_state", "curi_search", "run_check", "record_outcome", "activate_shadow", "campaign_exec"]);
 const WEB_TOOLS = new Set(["web_search", "fetch_content", "code_search", "get_search_content"]);
 
 interface PersistentClient {
@@ -42,7 +61,8 @@ const persistentClients = new Map<string, PersistentClient>();
 export function sessionVersion(request: Pick<WorkerRequest, "systemPrompt" | "tools">, provider: string, model: string,
   env: NodeJS.ProcessEnv = process.env): string {
   return createHash("sha256").update(JSON.stringify({ systemPrompt: request.systemPrompt ?? "",
-    tools: [...request.tools].sort(), provider, model, epoch: env.AR_LEAD_SESSION_EPOCH ?? "" })).digest("hex");
+    tools: [...request.tools].sort(), provider, model, thinkingLevel: selectedPiThinkingLevel(provider, model, env),
+    epoch: env.AR_LEAD_SESSION_EPOCH ?? "" })).digest("hex");
 }
 
 /**
@@ -180,7 +200,8 @@ function traceCollector(tracePath: string, started: number) {
 async function createClient(request: WorkerRequest, sessionDir: string, spoolPath: string, statePath: string,
   persistent: boolean): Promise<PersistentClient> {
   const provider = process.env.AR_PI_PROVIDER?.trim() || "dgx-spark";
-  const model = request.model ?? sparkTransportModel();
+  const model = selectedPiModel(provider, request.model);
+  const thinkingLevel = selectedPiThinkingLevel(provider, model);
   const requested = new Set(request.tools);
   const builtins = builtInTools(request.tools);
   const actionNames = new Set((request.markdownActions ?? []).map((action) => action.name));
@@ -217,8 +238,9 @@ async function createClient(request: WorkerRequest, sessionDir: string, spoolPat
   if (!existsSync(spoolPath)) writeFileSync(spoolPath, "", "utf8");
   const childCapacity = 0;
   // Inherited by child Pi processes too; keep global model/auth files untouched.
-  const spark = sparkModelConfig();
+  const spark = provider === "dgx-spark" ? sparkModelConfig() : null;
   const sparkEnv: Record<string, string> = {};
+  let modelsFile: string | undefined;
   if (spark) {
     const agentDir = join(sessionDir, "agent-config");
     mkdirSync(agentDir, { recursive: true });
@@ -226,20 +248,48 @@ async function createClient(request: WorkerRequest, sessionDir: string, spoolPat
     writeFileSync(join(agentDir, "settings.json"), JSON.stringify({ defaultProvider: provider, defaultModel: model,
       compaction: { enabled: true, reserveTokens: 49152, keepRecentTokens: 12000 } }), "utf8");
     sparkEnv.PI_CODING_AGENT_DIR = agentDir;
+  } else if (provider === "openai-codex" && !getModels("openai-codex").some(item => item.id === model)
+    && ["gpt-5.6-sol", "gpt-6-astra"].includes(model)) {
+    // This installed Pi version may predate the requested subscription model.
+    // Extend its model list locally, while keeping the user's global OAuth
+    // file and Pi config untouched.
+    modelsFile = join(sessionDir, "models-codex.json");
+    const models = [
+      {
+        id: "gpt-5.6-sol", name: "GPT-5.6 Sol", api: "openai-codex-responses",
+        reasoning: true, input: ["text", "image"], contextWindow: 128000, maxTokens: 32000,
+        thinkingLevelMap: { off: "none", minimal: "low", low: "low", medium: "medium", high: "high", xhigh: "xhigh" },
+      },
+      {
+        id: "gpt-6-astra", name: "GPT-6 Astra", api: "openai-codex-responses",
+        reasoning: true, input: ["text", "image"], contextWindow: 1050000, maxTokens: 128000,
+        thinkingLevelMap: { minimal: "low", low: "low", medium: "medium", high: "high", xhigh: "xhigh" },
+      },
+    ];
+    writeFileSync(modelsFile, JSON.stringify({ providers: { "openai-codex": { models } } }), "utf8");
   }
   const hostConfig: PiHostConfig = { cwd: request.cwd, agentDir: sparkEnv.PI_CODING_AGENT_DIR
     ?? process.env.PI_CODING_AGENT_DIR ?? join(homedir(), ".pi", "agent"), sessionDir, persistent,
+    modelsFile,
     provider, model, tools: [...enabledTools], extensions: [curiExtensionPath(),
       ...([...requested].some(tool => WEB_TOOLS.has(tool)) ? [webExtensionPath()] : [])],
-    systemPrompt: request.systemPrompt, yieldOnTools: enabledTools.has("delegate_task") ? ["delegate_task"] : [] };
+    thinkingLevel, systemPrompt: request.systemPrompt, yieldOnTools: enabledTools.has("delegate_task") ? ["delegate_task"] : [],
+    ...(request.campaignPolicyPath ? { workBudget: request.workBudget } : {}) };
   const hostConfigPath = join(sessionDir, "host-config.json");
   writeFileSync(hostConfigPath, JSON.stringify(hostConfig), "utf8");
   if (!process.env.AR_PI_CLI_JS?.trim()) args.push("--config", hostConfigPath);
   const client = new RpcClient({ cliPath: piCliPath(), cwd: request.cwd, provider, model, args,
-    env: { ...blankBrokerCredentials(), ...sparkEnv, CURI_ALLOWED_TOOLS: customTools.join(","), CURI_ACTION_SPOOL: spoolPath,
+    // The Pi host also owns the native `bash` tool. Pass the guard into its
+    // environment so Python launched through that tool receives sitecustomize
+    // too; the ordinary runProcess path already applies the same guard.
+    env: withCudaMemoryGuard({ ...blankBrokerCredentials(), ...sparkEnv,
+      ...(request.campaignPolicyPath ? { CURI_CAMPAIGN_POLICY: request.campaignPolicyPath,
+        CURI_TASK_MAX_TOOL_CALLS: String(request.workBudget?.maxToolCalls ?? 120),
+        CURI_APPROVED_CAMPAIGN: "idea1-mission-world-model-2026-09-21", CURI_MAX_VRAM_FRACTION: "0.8" } : {}),
+      CURI_ALLOWED_TOOLS: customTools.join(","), CURI_ACTION_SPOOL: spoolPath,
       CURI_STATE_SNAPSHOT: statePath, CURI_MARKDOWN_ACTIONS_JSON: JSON.stringify(request.markdownActions ?? []),
       CURI_FULL_STATE_SNAPSHOT: join(sessionDir, "state.full.md"), CURI_SEARCH_INDEX: request.searchIndex ?? "",
-      CURI_SUBAGENT_CONCURRENCY: String(childCapacity), PI_CODING_AGENT_SESSION_DIR: sessionDir } });
+      CURI_SUBAGENT_CONCURRENCY: String(childCapacity), PI_CODING_AGENT_SESSION_DIR: sessionDir }) });
   await client.start();
   return { client, cwd: request.cwd, provider, model, version: sessionVersion(request, provider, model),
     sessionDir, spoolPath, statePath };
@@ -251,7 +301,7 @@ async function clientFor(request: WorkerRequest, spoolPath: string, statePath: s
     return { holder: await createClient(request, join(request.attemptDir, "pi-session"), spoolPath, statePath, false), owned: true };
   }
   const provider = process.env.AR_PI_PROVIDER?.trim() || "dgx-spark";
-  const model = request.model ?? sparkTransportModel();
+  const model = selectedPiModel(provider, request.model);
   const version = sessionVersion(request, provider, model);
   const found = persistentClients.get(persistent.key);
   // Changed instructions or tools restart the process, and a new version also
@@ -285,11 +335,12 @@ export class PiWorker implements AgentWorker {
     const tracePath = join(request.attemptDir, "trace.jsonl");
     const { trace, push } = traceCollector(tracePath, started);
     const provider = process.env.AR_PI_PROVIDER?.trim() || "dgx-spark";
+    const selectedModel = selectedPiModel(provider, request.model);
     const topLevelCapacity = inferenceConcurrency(provider);
     const childCapacity = 0;
     writeFileSync(join(request.attemptDir, "command.json"), JSON.stringify({ role: request.role,
-      provider, model: request.model ?? sparkTransportModel(),
-      modelIdentity: configuredModelIdentity(),
+      provider, model: selectedModel,
+      modelIdentity: provider === "dgx-spark" ? configuredModelIdentity() : selectedModel,
       modelRoot: process.env.AR_MODEL_ROOT ?? null, modelDisplayName: process.env.AR_MODEL_DISPLAY_NAME ?? null,
       inferenceConcurrency: topLevelCapacity, subagentConcurrency: childCapacity,
       cwd: request.cwd, persistentKey: persistent?.key ?? null, issuedAt: new Date().toISOString() }, null, 2), "utf8");

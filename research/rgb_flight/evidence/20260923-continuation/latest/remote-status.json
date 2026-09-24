@@ -1,0 +1,272 @@
+{
+  "long-context-r15": {
+    "long-context-trajectories": {
+      "status": "completed",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002434Z-long-context-trajectories-29c622",
+      "reason": "Worker completed; acceptance not inferred"
+    },
+    "long-context-pilot": {
+      "status": "completed",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002507Z-long-context-pilot-15922d",
+      "reason": "Worker completed; acceptance not inferred",
+      "latest": {
+        "update": 2,
+        "loss": 32.517982482910156,
+        "validation": {
+          "loss": 51.84182999350808,
+          "windows": 22,
+          "translation_rmse_m": 0.23828039047392932,
+          "rotation_rmse_rad": 0.16300156035206534,
+          "accumulated_translation_error_m": 19.261185039173473,
+          "marginal_95pct_coverage": 0.2630800272930752,
+          "evaluated_seconds": 6.7685534087094394
+        },
+        "translation_rmse_m": 0.1212887316942215,
+        "rotation_rmse_rad": 0.0844959169626236,
+        "accumulated_translation_error_m": 12.00223159790039,
+        "marginal_95pct_coverage": 0.17578125,
+        "evaluated_seconds": 4.353093147277832
+      },
+      "last_validation": {
+        "update": 2,
+        "loss": 32.517982482910156,
+        "validation": {
+          "loss": 51.84182999350808,
+          "windows": 22,
+          "translation_rmse_m": 0.23828039047392932,
+          "rotation_rmse_rad": 0.16300156035206534,
+          "accumulated_translation_error_m": 19.261185039173473,
+          "marginal_95pct_coverage": 0.2630800272930752,
+          "evaluated_seconds": 6.7685534087094394
+        },
+        "translation_rmse_m": 0.1212887316942215,
+        "rotation_rmse_rad": 0.0844959169626236,
+        "accumulated_translation_error_m": 12.00223159790039,
+        "marginal_95pct_coverage": 0.17578125,
+        "evaluated_seconds": 4.353093147277832
+      }
+    },
+    "long-context-training": {
+      "status": "running",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002553Z-long-context-training-e5f7af",
+      "reason": "Owned remote guard running",
+      "latest": {
+        "update": 764,
+        "loss": 0.4634745419025421,
+        "validation": null,
+        "translation_rmse_m": 0.0633840337395668,
+        "rotation_rmse_rad": 0.1562981754541397,
+        "accumulated_translation_error_m": 20.593307495117188,
+        "marginal_95pct_coverage": 0.9361979365348816,
+        "evaluated_seconds": 7.83916711807251
+      },
+      "last_validation": {
+        "update": 700,
+        "loss": -1.007211685180664,
+        "validation": {
+          "loss": -0.4844378869641911,
+          "windows": 22,
+          "translation_rmse_m": 0.05981970510699532,
+          "rotation_rmse_rad": 0.0719173401594162,
+          "accumulated_translation_error_m": 17.085375569083475,
+          "marginal_95pct_coverage": 0.9804687689651143,
+          "evaluated_seconds": 6.7685534087094394
+        },
+        "translation_rmse_m": 0.04838748648762703,
+        "rotation_rmse_rad": 0.0729951336979866,
+        "accumulated_translation_error_m": 10.597814559936523,
+        "marginal_95pct_coverage": 0.8333333730697632,
+        "evaluated_seconds": 5.0011067390441895
+      }
+    },
+    "long-context-pack": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for long-context-training=completed"
+    },
+    "long-context-qualification": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for long-context-pack=completed"
+    }
+  },
+  "motion-rate-r20": {
+    "motion-rate-pilot": {
+      "status": "completed",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T005320Z-motion-rate-pilot-cd75c6",
+      "reason": "Worker completed; acceptance not inferred",
+      "latest": {
+        "update": 2,
+        "loss": 3.3632211685180664,
+        "validation": {
+          "loss": 7.148879506371238,
+          "windows": 22,
+          "translation_rmse_m": 0.1446500691500577,
+          "rotation_rmse_rad": 0.14746655049649152,
+          "accumulated_translation_error_m": 19.814753359014336,
+          "normalized_motion_rate_rmse": 2.5777089812538843,
+          "marginal_95pct_coverage": 0.8289536291902716,
+          "evaluated_seconds": 6.7685534087094394,
+          "selection_score": 3.553533117891298
+        },
+        "translation_rmse_m": 0.08774825930595398,
+        "rotation_rmse_rad": 0.06254478543996811,
+        "accumulated_translation_error_m": 12.972179412841797,
+        "normalized_motion_rate_rmse": 1.7191816568374634,
+        "marginal_95pct_coverage": 0.8333333730697632,
+        "evaluated_seconds": 4.353093147277832
+      },
+      "last_validation": {
+        "update": 2,
+        "loss": 3.3632211685180664,
+        "validation": {
+          "loss": 7.148879506371238,
+          "windows": 22,
+          "translation_rmse_m": 0.1446500691500577,
+          "rotation_rmse_rad": 0.14746655049649152,
+          "accumulated_translation_error_m": 19.814753359014336,
+          "normalized_motion_rate_rmse": 2.5777089812538843,
+          "marginal_95pct_coverage": 0.8289536291902716,
+          "evaluated_seconds": 6.7685534087094394,
+          "selection_score": 3.553533117891298
+        },
+        "translation_rmse_m": 0.08774825930595398,
+        "rotation_rmse_rad": 0.06254478543996811,
+        "accumulated_translation_error_m": 12.972179412841797,
+        "normalized_motion_rate_rmse": 1.7191816568374634,
+        "marginal_95pct_coverage": 0.8333333730697632,
+        "evaluated_seconds": 4.353093147277832
+      }
+    },
+    "motion-rate-training": {
+      "status": "running",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T005426Z-motion-rate-training-d6d010",
+      "reason": "Owned remote guard running",
+      "latest": {
+        "update": 229,
+        "loss": -0.0028053265996277332,
+        "validation": null,
+        "translation_rmse_m": 0.009844251908361912,
+        "rotation_rmse_rad": 0.0048004030250012875,
+        "accumulated_translation_error_m": 1.5927314758300781,
+        "normalized_motion_rate_rmse": 0.2251063883304596,
+        "marginal_95pct_coverage": 1.0,
+        "evaluated_seconds": 4.230090141296387
+      },
+      "last_validation": {
+        "update": 200,
+        "loss": -0.022404223680496216,
+        "validation": {
+          "loss": 0.03793804193000225,
+          "windows": 22,
+          "translation_rmse_m": 0.013131334658034823,
+          "rotation_rmse_rad": 0.006954197644848715,
+          "accumulated_translation_error_m": 10.52573299407959,
+          "normalized_motion_rate_rmse": 0.15981061180884187,
+          "marginal_95pct_coverage": 1.0,
+          "evaluated_seconds": 6.7685534087094394,
+          "selection_score": 0.6781750913117344
+        },
+        "translation_rmse_m": 0.00702280830591917,
+        "rotation_rmse_rad": 0.003569396212697029,
+        "accumulated_translation_error_m": 4.767180919647217,
+        "normalized_motion_rate_rmse": 0.11390364915132523,
+        "marginal_95pct_coverage": 1.0,
+        "evaluated_seconds": 5.4151153564453125
+      }
+    },
+    "motion-rate-pack": {
+      "status": "ready",
+      "job": null,
+      "reason": null
+    },
+    "motion-rate-qualification": {
+      "status": "ready",
+      "job": null,
+      "reason": null
+    }
+  },
+  "goal-continuation-r21": {
+    "goal-corrective-training": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for active flight/exclusive resource lease"
+    },
+    "corrected-goal-qualification": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for goal-corrective-training=completed"
+    }
+  },
+  "fresh-motion-r22": {
+    "fresh-aligned-flights": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for active flight/exclusive resource lease"
+    },
+    "aligned-trajectories": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for fresh-aligned-flights=completed"
+    },
+    "recurrent-odometry": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for aligned-trajectories=completed"
+    },
+    "package-updated-perception": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for recurrent-odometry=completed"
+    },
+    "fresh-motion-qualification": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for package-updated-perception=completed"
+    },
+    "updated-perception-replay": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for fresh-motion-qualification=completed"
+    }
+  },
+  "fresh-motion-r23": {
+    "fresh-aligned-flights": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for active flight/exclusive resource lease"
+    },
+    "aligned-trajectories": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for fresh-aligned-flights=completed"
+    },
+    "recurrent-odometry": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for aligned-trajectories=completed"
+    },
+    "package-updated-perception": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for recurrent-odometry=completed"
+    },
+    "fresh-motion-qualification": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for package-updated-perception=completed"
+    },
+    "updated-perception-replay": {
+      "status": "ready",
+      "job": null,
+      "reason": "Waiting for fresh-motion-qualification=completed"
+    }
+  },
+  "causal-memory-r19": {
+    "mapping-causal-replay": {
+      "status": "completed",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T005055Z-mapping-causal-replay-2ee772",
+      "reason": "Worker completed; acceptance not inferred"
+    }
+  }
+}

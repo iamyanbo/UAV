@@ -14,6 +14,7 @@ import Database from "better-sqlite3";
 import type { ResearchStore } from "./store.js";
 import { researchHash } from "./store.js";
 import { evidenceBoundary } from "./evidence-policy.js";
+import { recordReview, researchEpoch } from "./model-research.js";
 
 export interface SearchRecord { id: string; kind: string; status: string; at: string; title: string; body: string }
 
@@ -43,9 +44,20 @@ export function collectSearchRecords(store: ResearchStore, directionId: string):
   const records: SearchRecord[] = [];
   // Source excerpts keep the disposable index small; full bodies are already
   // staged in agent workspaces. Research findings must remain searchable in full.
-  const add = (record: SearchRecord) => records.push({ ...record,
-    body: record.kind === "source" || record.kind === "source-version"
+  const epoch = researchEpoch(store, directionId);
+  const add = (record: SearchRecord) => {
+    const primary = ["brief", "source", "source-version", "discovery"].includes(record.kind);
+    const review = primary ? undefined : recordReview(store, directionId, record.id);
+    if (!primary && (review || epoch && record.at < epoch)) {
+      records.push({ ...record, id: `${record.id}/raw`, kind: "historical", status: "archived",
+        body: `HISTORICAL UNREVIEWED INTERPRETATION. Not standing evidence; applies at most to its actual implementation.\n${record.body}` });
+      records.push({ ...record, status: review?.disposition === "literature-context" ? "literature-context" : "archived",
+        body: `${review?.summary_md ?? "Archived during model-development reboot. No broad model-family conclusion is established."}\nOriginal retained at ${record.id}/raw.` });
+      return;
+    }
+    records.push({ ...record, body: record.kind === "source" || record.kind === "source-version"
       ? record.body.slice(0, MAX_RECORD_CHARS) : record.body });
+  };
   const direction = store.direction(directionId);
   if (direction) add({ id: direction.direction_id, kind: "brief", status: direction.status, at: direction.created_at,
     title: direction.title, body: `${direction.brief_md}\n\n${direction.constraints_md}\n\n${direction.research_map_md}` });
@@ -167,7 +179,7 @@ export function searchRecords(path: string, query: string, limit = 8): string {
     // Every term is quoted, so user punctuation can never become FTS5 syntax.
     const match = terms.map((term) => `"${term.replace(/"/g, "\"\"")}"`).join(" OR ");
     const rows = db.prepare(`SELECT id,kind,status,at,title,snippet(records,5,'**','**',' … ',24) excerpt FROM records
-      WHERE records MATCH ? ORDER BY bm25(records,0,0,0,0,4.0,1.0) LIMIT ?`)
+      WHERE records MATCH ? AND status <> 'archived' ORDER BY bm25(records,0,0,0,0,4.0,1.0) LIMIT ?`)
       .all(match, Math.max(1, Math.min(25, Math.floor(limit)))) as Array<Record<string, string>>;
     if (!rows.length) return `No research records matched: ${query}`;
     return `${rows.map((row) => `- ${row.id} [${row.kind}${row.status ? `, ${row.status}` : ""}] ${String(row.at).slice(0, 10)}: ${row.title}\n  ${String(row.excerpt).replace(/\s+/g, " ")}`).join("\n")}`

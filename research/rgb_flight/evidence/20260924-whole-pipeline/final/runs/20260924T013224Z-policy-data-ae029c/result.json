@@ -1,0 +1,24 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T013224Z-policy-data-ae029c/source/stage_worker.py",
+    "build-policy-view",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r25/trajectory-bundle",
+    "--navigation-pack",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r25/checkpoints",
+    "--runtime-replay",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T012910Z-causal-replay-f03fb3/navigation-replay",
+    "--world-checkpoint",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T013218Z-world-update-05b7f9/training/final.pt",
+    "--artifact-output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r26/policy-data"
+  ],
+  "seconds": 1200,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 20.0,
+  "status": "finished",
+  "return_code": 1,
+  "elapsed_seconds": 4.015681168995798
+}

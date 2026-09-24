@@ -1,0 +1,30 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Corrected actual supervised Qwen LoRA update with frozen-base verification",
+  "stages": [
+    {
+      "id": "qwen-supervised-update",
+      "kind": "gpu",
+      "peak_gib": 40,
+      "seconds": 1800,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/configuration-data/configurator.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-configurator",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/configuration-data",
+        "--integration-only",
+        "--updates",
+        "1"
+      ],
+      "receipt": "{job}/configurator/result.json",
+      "outputs": [
+        "{job}/configurator/latest.pt"
+      ]
+    }
+  ]
+}

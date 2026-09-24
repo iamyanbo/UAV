@@ -1,0 +1,61 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Foundation engineering round; does not authorize acceptance or sealed evaluation",
+  "stages": [
+    {
+      "id": "trajectory-preparation",
+      "kind": "cpu",
+      "peak_gib": 8,
+      "seconds": 1800,
+      "depends_on": [],
+      "inputs": ["/home/iamyanbo/uav-rgb-flight/launches/training-checkpoints/odometry-update-19316.pt"],
+      "command": [
+        "/home/iamyanbo/uav-rgb-flight/envs/airsim/bin/python",
+        "{source}/trajectory_bundle.py",
+        "--collection-root", "/home/iamyanbo/uav-rgb-flight/launches",
+        "--output", "{round}/trajectory-bundle",
+        "--initialization", "/home/iamyanbo/uav-rgb-flight/launches/training-checkpoints/odometry-update-19316.pt"
+      ],
+      "receipt": "{round}/trajectory-bundle/result.json",
+      "outputs": ["{round}/trajectory-bundle/manifest.json"]
+    },
+    {
+      "id": "recurrent-odometry-integration",
+      "kind": "gpu",
+      "peak_gib": 24,
+      "seconds": 1800,
+      "depends_on": [{"stage": "trajectory-preparation", "status": "completed"}],
+      "inputs": ["{round}/trajectory-bundle/manifest.json"],
+      "command": [
+        "python3", "{source}/stage_worker.py",
+        "train-odometry", "--dataset", "{round}/trajectory-bundle",
+        "--initialize-from", "initialization.pt", "--updates", "2"
+      ],
+      "receipt": "{job}/visual-training/result.json",
+      "checkpoint": "{job}/visual-training/latest.pt",
+      "resume_command": [
+        "python3", "{source}/stage_worker.py",
+        "train-odometry", "--dataset", "{round}/trajectory-bundle",
+        "--resume", "{checkpoint}", "--updates", "2"
+      ],
+      "outputs": ["{job}/visual-training/latest.pt", "{job}/visual-training/best.pt"]
+    },
+    {
+      "id": "goal-development-qualification",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 1800,
+      "depends_on": [{"stage": "recurrent-odometry-integration", "status": "completed"}],
+      "inputs": ["/home/iamyanbo/uav-rgb-flight/launches/visual-training.json", "/home/iamyanbo/uav-rgb-flight/launches/training-checkpoints/goal-best-100000.pt"],
+      "command": [
+        "python3", "{source}/stage_worker.py",
+        "qualify-goal", "--dataset", "/home/iamyanbo/uav-rgb-flight/launches",
+        "--goal-checkpoint", "training-checkpoints/goal-best-100000.pt"
+      ],
+      "receipt": "{job}/goal-qualification/result.json",
+      "outputs": ["{job}/goal-qualification/predictions.jsonl"]
+    }
+  ]
+}
+
+

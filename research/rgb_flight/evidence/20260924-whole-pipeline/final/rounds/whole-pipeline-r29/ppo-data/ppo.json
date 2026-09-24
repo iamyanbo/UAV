@@ -1,0 +1,204 @@
+{
+  "actual_continuous_physics": true,
+  "all_failures_retained": true,
+  "reward_privileged_distance_progress_training_only": true,
+  "behavior_policy_sha256": "68ecc034081458a11bc12c750f54bfecea29d3048dca46410514d9af8551d561",
+  "behavior_frozen_during_collection": true,
+  "safety_filter_active": true,
+  "slow_planner_disabled": true,
+  "initial_policy_checkpoint": "initial-policy.pt",
+  "goal_encoder_checkpoint_sha256": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+  "perception_artifacts_sha256": {
+    "goal": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+    "odometry": "05ece968b12db87b41137425d110067e9e3a71d0dba7f4c64174ae7f924a5434",
+    "projection": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d"
+  },
+  "completed_episodes": [
+    {
+      "attempt_id": "20260924T015057Z",
+      "termination": "timeout",
+      "collision": false
+    }
+  ],
+  "shards": [
+    {
+      "path": "shards/ppo-000000.pt",
+      "sha256": "fc08875044bb4c45bd327a357cfb82cd7140cbd8ac1d00236ef86c9cc60591a2"
+    },
+    {
+      "path": "shards/ppo-000001.pt",
+      "sha256": "a0136f123bbc685e32c1599632dec981f2f2440f827d2f1924fdee528da35eb7"
+    },
+    {
+      "path": "shards/ppo-000002.pt",
+      "sha256": "425497716b7a33c6583c8c6d518e83d436560a687fe664993057485d8d17a1c7"
+    },
+    {
+      "path": "shards/ppo-000003.pt",
+      "sha256": "a8a630051521518b8b0d43fef016e5b48f95b17a3f2ccdabdc14b4261b347442"
+    },
+    {
+      "path": "shards/ppo-000004.pt",
+      "sha256": "9f4ccf8ffd01d5a0695282b17a9b40e666c920777c43321ed188c3cfb452293d"
+    },
+    {
+      "path": "shards/ppo-000005.pt",
+      "sha256": "9c6407383ce3e775debc4ea24e0ab5eb9af5ce00a3d2aad94d144ecfc888b202"
+    },
+    {
+      "path": "shards/ppo-000006.pt",
+      "sha256": "552c687f1ff7eaacbab325e8dbb1511c62da5f14a95efc3eab90c43b294b0c1d"
+    },
+    {
+      "path": "shards/ppo-000007.pt",
+      "sha256": "507a5b5077689f7eb4bc8dc9379c96269752c6aee3df787d99c9161a1098ff26"
+    },
+    {
+      "path": "shards/ppo-000008.pt",
+      "sha256": "1088aa52b30d9daf7f56071a78247ad4dc8756f4ae82cac2fc07efe42bc45ad8"
+    },
+    {
+      "path": "shards/ppo-000009.pt",
+      "sha256": "c3c748b4df4246be3dce3aaff967ab3a368520ad46be385475a014f6c79425e0"
+    },
+    {
+      "path": "shards/ppo-000010.pt",
+      "sha256": "900135f914ba2d21fc24b48a94f435bfd0f2a3f1b100419da45517c067962b99"
+    },
+    {
+      "path": "shards/ppo-000011.pt",
+      "sha256": "4ea3a702e446a6b8a6b680d0b4a35242813b87ba1ec2ac8db283c172287cf610"
+    },
+    {
+      "path": "shards/ppo-000012.pt",
+      "sha256": "72fc84be3e9723adf3b44883e056b206f09928634fe05174c88e6b1e505ccfcb"
+    },
+    {
+      "path": "shards/ppo-000013.pt",
+      "sha256": "133c72a888c706f2d6c3f0658d3a7ef9069e15c669b12446785526fec6221c4b"
+    },
+    {
+      "path": "shards/ppo-000014.pt",
+      "sha256": "969541b221ffc38f83dfaa36d6b52a32f39115f7f89819745927afd02e727170"
+    },
+    {
+      "path": "shards/ppo-000015.pt",
+      "sha256": "500bc1b77ddc2a13d429fad4506c6481b087e107c24d13b4169bb956775d5e3d"
+    },
+    {
+      "path": "shards/ppo-000016.pt",
+      "sha256": "f03287621d63b96e36a2a4789455798fae8fc850fcc7196f6013011ce01e2ada"
+    },
+    {
+      "path": "shards/ppo-000017.pt",
+      "sha256": "06af89e04e1473053d8a6e690aa4866fb6d116f5bae1298f782cc84ddcab0a44"
+    },
+    {
+      "path": "shards/ppo-000018.pt",
+      "sha256": "27dab6ca05367f971e122f4c615e9d8587caf51a5e3865ce689fcb35421dfad7"
+    },
+    {
+      "path": "shards/ppo-000019.pt",
+      "sha256": "28f1b4faa26b8dfc6da7866d38b510f4f721be75c94b5744bbf67b557ad5d496"
+    },
+    {
+      "path": "shards/ppo-000020.pt",
+      "sha256": "e95dc07d79a4c55c5ed539d022c8f8e9143c9ded852a4527cb1952560a2b8dc1"
+    },
+    {
+      "path": "shards/ppo-000021.pt",
+      "sha256": "af9cb62d743e79ea3c0bf02e82d6587f9f34d6a959b595adf23ffeb100e3a1a5"
+    },
+    {
+      "path": "shards/ppo-000022.pt",
+      "sha256": "c6011c1f3e9f7c515dd193d7b23e985bb783bb067113965226dde41960fd3f11"
+    },
+    {
+      "path": "shards/ppo-000023.pt",
+      "sha256": "01509ebd78b50ce3d0ad6f54139350676e755e83b38632716661ac63dfbb5832"
+    },
+    {
+      "path": "shards/ppo-000024.pt",
+      "sha256": "10d790bc92161a107f1d4dfe3e271eed11c095acd06ffeec002f90d704a34d31"
+    },
+    {
+      "path": "shards/ppo-000025.pt",
+      "sha256": "19e6abe91f6c7c33e92ef8479f9c1696da1f1a47f5e012adefa7df2256f93328"
+    },
+    {
+      "path": "shards/ppo-000026.pt",
+      "sha256": "c048b8067e8a7c30ad225ca65c5524b8633dca0eb48d6ca5c31a1c3ff4141853"
+    },
+    {
+      "path": "shards/ppo-000027.pt",
+      "sha256": "b405503f08f128e76677470ec554029b078868488e328d0150183669b2ff931d"
+    },
+    {
+      "path": "shards/ppo-000028.pt",
+      "sha256": "8358dbf73aeee24a21fca0ca6e58a92002939d2c321cf8e5dbdf62faa6e77465"
+    },
+    {
+      "path": "shards/ppo-000029.pt",
+      "sha256": "a96d73b487e3ed9a591386eb8711171607739d9f1aaae12e79d3f60f912ef1ad"
+    },
+    {
+      "path": "shards/ppo-000030.pt",
+      "sha256": "b88ab58c0f6f856dd341af7d910c40c0b25e545ec471acab6232ab8d81094c4b"
+    },
+    {
+      "path": "shards/ppo-000031.pt",
+      "sha256": "b125306954dacd28db57063539cacf8990dfb47361abc8868ad1c9bbedfa0916"
+    },
+    {
+      "path": "shards/ppo-000032.pt",
+      "sha256": "41261f712d60b04b2fd4fdd538a6fd7650d4b1d8fc456ddca3949b81ba8dae32"
+    },
+    {
+      "path": "shards/ppo-000033.pt",
+      "sha256": "b473f0c2cae7d7e8c5610f874922a015ea900137b8a6588ed1e3ae5bcfd97e1b"
+    },
+    {
+      "path": "shards/ppo-000034.pt",
+      "sha256": "ce68806e29712dc79fa03f3c49690c6c2dc8ac57451810fc55e1892c06a6f785"
+    },
+    {
+      "path": "shards/ppo-000035.pt",
+      "sha256": "0809706cfae1f0c14fdba8eed7beda00d3e982eb597e6ca715ab4b537f359774"
+    },
+    {
+      "path": "shards/ppo-000036.pt",
+      "sha256": "076189437731651bef95cc0dd5ad9de6c320b1c04e1f6104983f54555fea51ec"
+    },
+    {
+      "path": "shards/ppo-000037.pt",
+      "sha256": "4054d4c8c573c3430ca26d2872dc9a6470f6c860e74440e2e70af05d5ff1a107"
+    },
+    {
+      "path": "shards/ppo-000038.pt",
+      "sha256": "5d05675b96e993348726125e370d56531eb8811facbe28418d90a7a6c768cf9d"
+    },
+    {
+      "path": "shards/ppo-000039.pt",
+      "sha256": "ba072502500af8efa1d54bc94c1a148105a735dae8136048dbdff676d555411c"
+    },
+    {
+      "path": "shards/ppo-000040.pt",
+      "sha256": "5d667e4b17638b7526905b3985e4bb602cfe3f640f2cb3d45602006a05656a0c"
+    },
+    {
+      "path": "shards/ppo-000041.pt",
+      "sha256": "b83a741336ac0999187dc46f9c0a74d28ca0dc4802e6fbc2cbf7e2c7fbf26b0f"
+    },
+    {
+      "path": "shards/ppo-000042.pt",
+      "sha256": "41cc64e9548186565fa07e53cf06192831990418d6482b8b10ded22f65eaf9cc"
+    }
+  ],
+  "collected_proposals": 1994,
+  "unique_learning_transitions": 1693,
+  "skipped_gap_windows": 7,
+  "reward_definition": "metric distance progress minus elapsed time cost 10/180 per second; only observed endpoints; incomplete tails bootstrap",
+  "termination_semantics": "shards end at observed RGB states before evaluator termination; collection-truncated tails bootstrap; completed episode collision uses separate evaluator receipt",
+  "source_outcome_sha256": "4ccec56d4e94af654629257343048160c9ca932dc8716732b4c79a631e9d27f2",
+  "source_collection_sha256": "b13d5446d4b8e9069c62391d19455dcafa829c60bfe4194872c5a29cb70fea5c"
+}

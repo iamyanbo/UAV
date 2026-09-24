@@ -1,0 +1,21 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T000757Z-package-updated-perception-65c1e6/source/package_navigation.py",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/launches/training-checkpoints/goal-best-100000.pt",
+    "--odometry",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T000301Z-recurrent-odometry-544ac1/visual-training/best.pt",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/navigation-checkpoints",
+    "--goal-match-threshold",
+    "0.9968814849853516"
+  ],
+  "seconds": 600,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 2.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 1.0126339260023087
+}

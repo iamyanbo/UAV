@@ -1,0 +1,56 @@
+{
+  "schema": "causal-navigation-replay/v1",
+  "episode_id": "train-00000",
+  "checkpoint_set_sha256": "01a0afdd1ed3f04d405cd399be7047d72e9c87330f81b3203ba2a26ad9111762",
+  "source_rgb_sha256": "d8441a1dfdb62064b06bb9476e1d60b6fdb044b56a12a9570dd76e67e0ff00a7",
+  "goal_sha256": "1c651e3d721deb9a4bc7e5bedd2d2c6aa0f5f6066497f0ef2b6255ba62acfe29",
+  "runtime_source_sha256": "bfe0289ff272c810288f784225bf4a9088105ee077e26a67d28b2b1bd12e244d",
+  "observation_time_grid": "original exposure timestamps; no duplicated images",
+  "slow_feature_mode": "measured paced replay with actual asynchronous video completion",
+  "availability_clock": "replay monotonic; original image exposure timestamps preserved",
+  "goal_tokens": {
+    "path": "goal-tokens.pt",
+    "sha256": "b50a2698964d18d7da1493b80de591540498e5cb97167d2241e11ffea70be603"
+  },
+  "video": {
+    "status": "completed",
+    "accepted": false,
+    "episode_id": "train-00000",
+    "outputs": 22,
+    "unavailable_windows": 46,
+    "busy_requests": 4,
+    "frozen_encoder": true,
+    "publication_clock": "actual completion in this replay/live process"
+  },
+  "mapping": null,
+  "shards": [
+    {
+      "path": "runtime-000000.pt",
+      "sha256": "4abe474e62d784668ff1c8dd1fb4bb671b5e236307d6ec8e3d6f9db63e0d67ab",
+      "samples": 64,
+      "first_ns": 1790207196389236736,
+      "last_ns": 1790207200136316672
+    },
+    {
+      "path": "runtime-000001.pt",
+      "sha256": "1ae8c43501b03338ed78a85df4b6ede0a5f2c9a3e109bd1f10f64122fcf8e53c",
+      "samples": 64,
+      "first_ns": 1790207200166317312,
+      "last_ns": 1790207202233361408
+    },
+    {
+      "path": "runtime-000002.pt",
+      "sha256": "1118eaf1f40d1266cbe102e87e99f66ff9bcbc6ca8411ab028432749f1a7bc35",
+      "samples": 64,
+      "first_ns": 1790207202260361984,
+      "last_ns": 1790207204030399744
+    },
+    {
+      "path": "runtime-000003.pt",
+      "sha256": "8db3e6fe07982a8e631e7c724fbf93c7ed981eb1a0c74d36b321496011184945",
+      "samples": 8,
+      "first_ns": 1790207204060400384,
+      "last_ns": 1790207204309405696
+    }
+  ]
+}

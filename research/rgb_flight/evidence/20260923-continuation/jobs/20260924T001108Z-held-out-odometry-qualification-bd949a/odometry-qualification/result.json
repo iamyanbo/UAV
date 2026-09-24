@@ -1,0 +1,67 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "checkpoint_sha256": "29798f084f09ab7c1b2e9e9017ce798925cb9df26bda5b777f27efeb92d1e14a",
+  "source_bundle_sha256": "d5df5c5faf566900d317912d37011a61316bcd47f05d05f7f04e1caa9e2b4d9e",
+  "development_attempts": 33,
+  "development_episode_ids": [
+    "train-00010",
+    "train-00012",
+    "train-00030",
+    "train-00043",
+    "train-00056",
+    "train-00059",
+    "train-00064",
+    "train-00075",
+    "train-00093",
+    "train-00102",
+    "train-00103",
+    "train-00121",
+    "train-00132",
+    "train-00142",
+    "train-00163",
+    "train-00171",
+    "train-00184",
+    "train-00189",
+    "train-00193",
+    "train-00221",
+    "train-00232",
+    "train-00235",
+    "train-00239",
+    "train-00253",
+    "train-00259",
+    "train-00262",
+    "train-00294"
+  ],
+  "motion_pairs": 5949,
+  "translation_rmse_m": 0.13990539583879016,
+  "rotation_rmse_rad": 0.04151741448676036,
+  "marginal_95pct_coverage": 0.27903849386451507,
+  "horizons": {
+    "1": {
+      "windows": 417,
+      "translation_rmse_m": 3.535173188864083,
+      "rotation_rmse_rad": 0.9564598013572533
+    },
+    "2": {
+      "windows": 370,
+      "translation_rmse_m": 6.311985298951984,
+      "rotation_rmse_rad": 1.8439372006028094
+    },
+    "4": {
+      "windows": 310,
+      "translation_rmse_m": 11.667263068914858,
+      "rotation_rmse_rad": 1.5457856553975635
+    },
+    "10": {
+      "windows": 197,
+      "translation_rmse_m": 34.17643348014299,
+      "rotation_rmse_rad": 1.7471227504031908
+    }
+  },
+  "limitations": [
+    "Repeated attempts are not independent episodes",
+    "Unaligned labels and RGB gaps are reported, not interpolated across missing coverage",
+    "Long-horizon covariance uses first-order independent increment propagation; empirical calibration remains required"
+  ]
+}

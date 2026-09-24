@@ -1,0 +1,255 @@
+[
+  {
+    "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T014546Z/episode",
+    "result": {
+      "status": "learned_flight_finished",
+      "episode_id": "train-00000",
+      "split": "train",
+      "phase": 1,
+      "runtime_goal_sha256": "c93dd8779874fcf49f6ca80b56ccdeaa8d5fcb0a2ee62f4a31d3e38803077210",
+      "pose_setting_calls_before_recording": 1,
+      "pre_episode_goal_pose_setting_calls": 4,
+      "pose_setting_calls_after_recording": 0,
+      "clock_speed": 1.0,
+      "maximum_speed_mps": 3.0,
+      "controller_kind": "learned_mode_1",
+      "runtime_isolation": {
+        "status": "live_inference_boundary_passed",
+        "episode_id": "train-00000",
+        "rgb_bytes": 921600,
+        "first_sim_ns": 1790214373217835776,
+        "last_sim_ns": 1790214373502841856,
+        "goal_views": 4,
+        "denied_operations": 5,
+        "simulator_rpc_inaccessible": true,
+        "privileged_files_inaccessible": true
+      },
+      "controller_checkpoint_sha256": "f2e1efdf40179c5c00d40ec126083556bb9517a4726802f34e774d3a1986f7eb",
+      "termination": "timeout",
+      "success": false,
+      "elapsed_sim_seconds": 180.00083994865417,
+      "traveled_distance_m": 0.5435853004455566,
+      "final_navigation_error_m": 38.92935903030462,
+      "final_horizontal_error_m": 38.803444452884115,
+      "final_vertical_error_m": 3.1285289038614366,
+      "path_efficiency": 0.0,
+      "fixed_outcome_reward": -35,
+      "stop_requested": false,
+      "stopped_speed_mps": 0.0030065225437283516,
+      "airsim_collision": false,
+      "geometry_collision": false,
+      "learned_controller": {
+        "status": "completed",
+        "accepted": false,
+        "frames": 2090,
+        "error": null,
+        "shards": [
+          {
+            "path": "controller-000000.pt",
+            "sha256": "db57261a37d3512b4750e9908991efc8becdaadd64457999978bfc5bf2a7af13",
+            "samples": 64
+          },
+          {
+            "path": "controller-000001.pt",
+            "sha256": "469c00559320814bcb202d6e30a8a43c7058695e6f86c59e054087307c2dc509",
+            "samples": 64
+          },
+          {
+            "path": "controller-000002.pt",
+            "sha256": "3846ff75aca8e14c237f6d1675f3177f933c5017aa2bffb3ed279480e37cca57",
+            "samples": 64
+          },
+          {
+            "path": "controller-000003.pt",
+            "sha256": "345c1441c381e5011ab526f1748ed4f251bcf01651be4620a838dcde7072b996",
+            "samples": 64
+          },
+          {
+            "path": "controller-000004.pt",
+            "sha256": "80483c6cfcdb0c1fc430b047eb72f7f5bccd1e003d0d348a2bef13f6c82ba00c",
+            "samples": 64
+          },
+          {
+            "path": "controller-000005.pt",
+            "sha256": "f24dd05e9ce09883c9b093d2dc55740f8d7005a84d41c609144d4e4f9a713dca",
+            "samples": 64
+          },
+          {
+            "path": "controller-000006.pt",
+            "sha256": "7b99cf0f9faeba3d9e5563aa30dd7acee67dad3d16cf61e935733c0e2e17c756",
+            "samples": 64
+          },
+          {
+            "path": "controller-000007.pt",
+            "sha256": "69600d9fb45b229f81547fc652d6846e468dcd568386cacfaa6d12b2acd6f5af",
+            "samples": 64
+          },
+          {
+            "path": "controller-000008.pt",
+            "sha256": "c71732a056f676f5d71b0e8dae865a510d8aea1d2318ac8c5387637e4b5f1d88",
+            "samples": 64
+          },
+          {
+            "path": "controller-000009.pt",
+            "sha256": "7a58ac5768b4875dd3a2a02720ffa82caf9360d9bb8cd544704faa6bfe9bb588",
+            "samples": 64
+          },
+          {
+            "path": "controller-000010.pt",
+            "sha256": "3499d10516f989697e2fc160b41606b2bedbe2b3fa7bd8fa3c00d38b39759d75",
+            "samples": 64
+          },
+          {
+            "path": "controller-000011.pt",
+            "sha256": "38ae1aed5ccf52c31207886cb54eb2d8ff65c97c414bcad185f38a4a11c78dde",
+            "samples": 64
+          },
+          {
+            "path": "controller-000012.pt",
+            "sha256": "79b275f45dc3891d2a77eee39bf76f5f55c36953d024f1fc959c24a0621dcb17",
+            "samples": 64
+          },
+          {
+            "path": "controller-000013.pt",
+            "sha256": "bb65b522b2bb0d04d444fbe55c4a8c4b5723450866681f9704fe0c2f8f6a2b1a",
+            "samples": 64
+          },
+          {
+            "path": "controller-000014.pt",
+            "sha256": "e6894c524d82d839acff6a6fd2162624500c185a1a07e250db7737a0edc6d4d1",
+            "samples": 64
+          },
+          {
+            "path": "controller-000015.pt",
+            "sha256": "49315499a9bd194bfbd64aab52550b4e45f81c5e9f587611794a339084ee6084",
+            "samples": 64
+          },
+          {
+            "path": "controller-000016.pt",
+            "sha256": "4b54b5705ebdf57f7ad37d96ffcd56eaf34f3a91df29df72c801b6692d8e77fc",
+            "samples": 64
+          },
+          {
+            "path": "controller-000017.pt",
+            "sha256": "244873cee1d79ca006579f79db03100ef5fe9f7c45dc94cc874b880a53c13304",
+            "samples": 64
+          },
+          {
+            "path": "controller-000018.pt",
+            "sha256": "ce8a82642d700a0c9c4b2ab518a1658b5608b40ecd876ce07320d8d4b00f8735",
+            "samples": 64
+          },
+          {
+            "path": "controller-000019.pt",
+            "sha256": "a085b979f4b589fc4bb3bd7ab24c32466c1a97a22f8ed6031e6b91cc0cfae7ae",
+            "samples": 64
+          },
+          {
+            "path": "controller-000020.pt",
+            "sha256": "1e3321069eac4b73b3adf9542bd0f629d32c9049506747fc646d547edd6fd8b0",
+            "samples": 64
+          },
+          {
+            "path": "controller-000021.pt",
+            "sha256": "867ee14403f7241b27ca4a957c50a18f09be4bea7e1c644b85b199721a0bec48",
+            "samples": 64
+          },
+          {
+            "path": "controller-000022.pt",
+            "sha256": "2e543e5315296e61e95cea0c45849bd6877dd63f2e32cce73f6fe0d4977d2668",
+            "samples": 64
+          },
+          {
+            "path": "controller-000023.pt",
+            "sha256": "bf778537cc760ae287f6d621713c563e3b3e4898f1d663b28d654cfde26f52a2",
+            "samples": 64
+          },
+          {
+            "path": "controller-000024.pt",
+            "sha256": "5e2e82dbed0503596c60caad22c2afc5342bcdfce29253dd7af1a4a90ebd8bf2",
+            "samples": 64
+          },
+          {
+            "path": "controller-000025.pt",
+            "sha256": "31e83da6aeac47121665845f9445e18a6195e47e5a0946bd30aba02c970f43af",
+            "samples": 64
+          },
+          {
+            "path": "controller-000026.pt",
+            "sha256": "64a1b4cdb79e3c97f0ed4cad10dccbd109e1d725adbe499c7222ce0da2250917",
+            "samples": 64
+          },
+          {
+            "path": "controller-000027.pt",
+            "sha256": "32f46da8500f7155af08f764d7aee44a813dc608277df2f436bb702c2868038e",
+            "samples": 64
+          },
+          {
+            "path": "controller-000028.pt",
+            "sha256": "cfc3181fbf43ff9177b6da051b67cbb9e4b7f8c5d38459d878d4c87cf1f56e9a",
+            "samples": 64
+          },
+          {
+            "path": "controller-000029.pt",
+            "sha256": "30fbd97fac68ae2a978c427fa735f4cc0d30f1cb450ce9d6487521bff895cadd",
+            "samples": 64
+          },
+          {
+            "path": "controller-000030.pt",
+            "sha256": "e78d324ff57611c5562fd96a23515f924fd41217246269a4dbf4f9f09799c804",
+            "samples": 64
+          },
+          {
+            "path": "controller-000031.pt",
+            "sha256": "38a309844b469d8372918ed6027c4c854085db0d7cb06f149176d5bdddd8abf6",
+            "samples": 64
+          },
+          {
+            "path": "controller-000032.pt",
+            "sha256": "13f768c68225988825430b5d7b2c3d4bef20b9863cddba8e68b73f79770421bd",
+            "samples": 42
+          }
+        ],
+        "scope": "Live Mode 1 only; no planner or Qwen configuration",
+        "sampled_policy": false
+      },
+      "broker_errors": [],
+      "commands": 4372,
+      "control_latency_p95_seconds": 0.147003136,
+      "capture_interval_p95_sim_seconds": 0.132002816,
+      "fresh_rgb_hz": 11.886412684520318,
+      "control_work_p95_seconds": 0.001216242043301463,
+      "control_missed_deadlines": 0,
+      "control_interval_p95_seconds": 0.04542116750963032,
+      "control_interval_max_seconds": 0.06693985895253718,
+      "control_schedule_missed_deadlines": 1,
+      "timing_gate": {
+        "accepted": false,
+        "capture_control_passed": false,
+        "requirements": {
+          "fresh_rgb_hz_min": 19,
+          "rgb_interval_p95_max": 0.075,
+          "control_p95_max": 0.05
+        },
+        "reason": "Learned safety inference latency and command-application timestamps not yet qualified",
+        "application_timestamps_available": false
+      },
+      "depth_label_index": "training_labels/depth/index.jsonl",
+      "depth_label_samples": 0,
+      "storage": {
+        "frames": 2347,
+        "stream_sha256": "cf251bb9a4def98c3d61a22a867ba75d68f7a87523f0da155fbe05201cec444a",
+        "complete": true,
+        "codec": "per-frame zlib level 1, lossless RGB24",
+        "timestamps": "original AirSim image nanoseconds",
+        "pixel_format": "RGB24",
+        "color_calibration_sha256": "d960f0510e9e59dbfa0025fe6bc034b73e117229246d10a581bb5b0c925fc094"
+      },
+      "training_label_frames": 3588,
+      "mean_actual_velocity_mps": 0.0030085694229379793,
+      "maximum_actual_velocity_mps": 0.003009137464687228,
+      "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+    },
+    "launcher_return_code": 2
+  }
+]

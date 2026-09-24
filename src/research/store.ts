@@ -7,9 +7,11 @@ import Database from "better-sqlite3";
 import { inspect } from "../daemon.js";
 
 import { evidenceBoundary } from "./evidence-policy.js";
+import { currentResearchRecords, researchEpoch } from "./model-research.js";
 import { briefSimilarity } from "./delegation.js";
 import { DATA_POLICY_REASON, RETIRED_DATA_PROVIDERS } from "./data-policy.js";
 import { validateDataRequest, type DataRequestParameters } from "./data-request.js";
+import { isMethodDevelopmentTask, isProposalOnlyTask } from "./task-classification.js";
 
 import type {
   ArtifactProgram, LeanDirection, LeanSource, LeanTask, OutcomeVerdict, ResearchContext,
@@ -887,7 +889,7 @@ ${item.description_md ?? ""}`) >= 0.75) return null;
   }
 
   delegateTask(input: { directionId: string; mode: TaskMode; markdown: string; parentTaskId?: string | null;
-    componentId?: string | null; isChallenger?: boolean }): string {
+    componentId?: string | null; isChallenger?: boolean; taskKind?: string }): string {
     if (!input.markdown.trim()) throw new Error("experiment Markdown is empty");
     const engine = this.direction(input.directionId)?.engine_version ?? "legacy";
     if (engine === "legacy" && this.db.prepare(
@@ -911,16 +913,23 @@ ${item.description_md ?? ""}`) >= 0.75) return null;
         : this.createComponent(input.directionId, input.markdown);
     }
     const mentionedProgram = input.markdown.match(/\bPROG-[0-9a-f-]{8,}\b/i)?.[0] ?? null;
-    const program = mentionedProgram && this.db.prepare(
+    const explicitProgram = mentionedProgram && this.db.prepare(
       "SELECT 1 FROM artifact_programs WHERE program_id=? AND direction_id=? AND status='active'",
     ).get(mentionedProgram, input.directionId) ? mentionedProgram : null;
+    const continuation = !mentionedProgram && !input.isChallenger && input.directionId === "uav-navigation"
+      && isMethodDevelopmentTask({ task_kind: input.taskKind, brief_md: input.markdown })
+      ? this.db.prepare("SELECT program_id FROM artifact_programs WHERE direction_id=? AND status='active' ORDER BY created_at DESC LIMIT 1")
+        .get(input.directionId) as { program_id: string } | undefined : undefined;
+    const program = explicitProgram ?? continuation?.program_id ?? null;
     const id = researchId("TASK");
     const now = researchNow();
     this.transact((store) => {
       store.db.prepare(
         `INSERT INTO tasks(task_id,direction_id,parent_task_id,component_id,program_id,mode,task_kind,brief_md,state,is_challenger,created_at,updated_at)
-         VALUES (?,?,?,?,?,?,'research',?,'queued',?,?,?)`,
-      ).run(id, input.directionId, input.parentTaskId ?? null, component, program, input.mode, input.markdown,
+         VALUES (?,?,?,?,?,?,?,?,'queued',?,?,?)`,
+      ).run(id, input.directionId, input.parentTaskId ?? null, component, program, input.mode,
+        isMethodDevelopmentTask({ task_kind: input.taskKind, brief_md: input.markdown })
+          ? "method-development" : input.taskKind ?? "research", input.markdown,
         input.isChallenger ? 1 : 0, now, now);
       const known = store.db.prepare("SELECT source_id FROM sources WHERE direction_id=?").all(input.directionId) as
         Array<{ source_id: string }>;
@@ -942,9 +951,37 @@ ${item.description_md ?? ""}`) >= 0.75) return null;
   recordOutcome(input: { directionId: string; taskId: string; runId?: string | null; verdict: OutcomeVerdict; markdown: string }): string {
     const id = researchId("OUT");
     this.transact((store) => {
-      const task = store.db.prepare("SELECT state FROM tasks WHERE task_id=? AND direction_id=?")
-        .get(input.taskId, input.directionId) as { state: string } | undefined;
+      const task = store.db.prepare("SELECT state,task_kind,brief_md FROM tasks WHERE task_id=? AND direction_id=?")
+        .get(input.taskId, input.directionId) as { state: string; task_kind: string; brief_md: string } | undefined;
       if (!task) throw new Error(`unknown task ${input.taskId}`);
+      if (!isProposalOnlyTask(task) && (task.task_kind === "method-development" || /METHOD_DEVELOPMENT_REQUIRED/i.test(task.brief_md))) {
+        const audit = store.db.prepare(
+          "SELECT event_type FROM events WHERE direction_id=? AND task_id=? AND event_type IN ('task.method_audit_valid','task.method_audit_partial','task.method_audit_invalid') ORDER BY seq DESC LIMIT 1",
+        ).get(input.directionId, input.taskId) as { event_type: string } | undefined;
+        // UAV outcomes are interpreted in the outcome itself. A separate audit
+        // handoff is optional and must never be needed just to close a task.
+        if (input.directionId === "uav-navigation") {
+          if (["supported", "refuted"].includes(input.verdict) && !store.db.prepare(
+            "SELECT 1 FROM events WHERE direction_id=? AND task_id=? AND event_type='task.representative_validated' LIMIT 1",
+          ).get(input.directionId, input.taskId)) {
+            throw new Error("a strong UAV method outcome needs representative evidence; record a bounded result otherwise");
+          }
+        } else {
+          if (!audit) throw new Error("method-development task requires a recorded method audit before an outcome");
+          if (audit.event_type === "task.method_audit_partial" && !["bounded", "inconclusive", "blocked"].includes(input.verdict)) {
+            throw new Error("an implementation milestone is not representative evidence: only bounded, inconclusive or blocked is permitted");
+          }
+          if (audit.event_type === "task.method_audit_invalid"
+            && input.verdict !== "inconclusive" && input.verdict !== "blocked") {
+            throw new Error("an invalid method experiment may only conclude inconclusive or blocked; it cannot support or refute the method");
+          }
+          if (audit.event_type === "task.method_audit_valid" && !store.db.prepare(
+            "SELECT 1 FROM events WHERE direction_id=? AND task_id=? AND event_type='task.representative_validated' LIMIT 1",
+          ).get(input.directionId, input.taskId)) {
+            throw new Error("method-development task requires representative visual/closed-loop validation before a valid outcome");
+          }
+        }
+      }
       store.db.prepare(
         "INSERT INTO outcomes(outcome_id,direction_id,task_id,run_id,verdict,report_md,created_at) VALUES (?,?,?,?,?,?,?)",
       ).run(id, input.directionId, input.taskId, input.runId ?? null, input.verdict, input.markdown + (store.direction(input.directionId)?.engine_version === "adaptive-v2" ? evidenceBoundary(store, input.taskId) : ""), researchNow());
@@ -1036,7 +1073,16 @@ ${item.description_md ?? ""}`) >= 0.75) return null;
   context(directionId: string): ResearchContext {
     const direction = this.direction(directionId);
     if (!direction) throw new Error(`unknown direction ${directionId}`);
-    const all = <T>(sql: string, ...args: unknown[]) => this.db.prepare(sql).all(...args) as T[];
+    const epoch = researchEpoch(this, directionId);
+    const all = <T>(sql: string, ...args: unknown[]) => {
+      const rows = this.db.prepare(sql).all(...args) as T[];
+      // Only the live projection changes. Original ledgers, artifacts and source archives remain intact.
+      if (!epoch || /FROM (sources|source_versions|data_snapshots)\b/i.test(sql)) return rows;
+      return rows.filter(row => {
+        const value = row as { created_at?: string; started_at?: string };
+        return !value.created_at && !value.started_at || currentResearchRecords(this, directionId, [value]).length > 0;
+      });
+    };
     return {
       direction,
       components: all("SELECT * FROM components WHERE direction_id=? ORDER BY created_at", directionId),

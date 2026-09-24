@@ -212,7 +212,8 @@ export function commitProgramCheckpoint(
  * Evidence capture and workspace fingerprints read the live index and HEAD, so a
  * checkpoint taken from a returned task must leave both alone. A temporary index
  * seeded from HEAD records tracked and untracked, non-ignored files as they are on
- * disk, including binary artifacts that a text patch could not carry.
+ * disk. Declared learned weights and large datasets can be excluded from the
+ * commit and restored from the sealed artifact bundle instead.
  */
 export function commitWorktreeSnapshot(worktree: string, input: {
   message: string; ref: string; exclude?: string[];
@@ -224,8 +225,14 @@ export function commitWorktreeSnapshot(worktree: string, input: {
   try {
     const head = run(["rev-parse", "HEAD"]);
     run(["read-tree", head]);
-    run(["add", "-A"]);
-    for (const path of input.exclude ?? []) run(["rm", "-r", "-q", "--cached", "--ignore-unmatch", "--", path]);
+    // Excluded learned weights/data are sealed by the evidence bundle. Do not
+    // even stage their blobs into Git's object store before removing paths.
+    // Stage only changed, non-ignored paths. A broad `git add .` with negative
+    // pathspecs can still fail on an ignored research mount on Windows.
+    const excluded = (path: string) => (input.exclude ?? []).some(item =>
+      path === item || path.startsWith(`${item.replace(/[\\/]$/, "")}/`));
+    const paths = diffAgainstHead(worktree).changedPaths.filter(path => !excluded(path));
+    if (paths.length) run(["add", "-A", "--", ...paths]);
     const tree = run(["write-tree"]);
     const revision = run(["-c", "user.name=CURI", "-c", "user.email=research@local",
       "commit-tree", tree, "-p", head, "-m", input.message]);

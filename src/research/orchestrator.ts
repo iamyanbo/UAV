@@ -11,7 +11,7 @@ import { canonicalGate, captureQuantTrials, checkpointEligibleCandidate, isQuant
   quantEvaluationContract, runCanonicalEvaluation, stageQuantHarness, verifyQuantHarness } from "./quant-evaluation.js";
 import { ACQUISITION_POLICY, dataPipelineConfig, dataRequestReadiness } from "./data-pipeline.js";
 
-import { commitProgramCheckpoint, diffAgainstHead, git, removeWorktree, sha256File } from "../core/workspace.js";
+import { commitProgramCheckpoint, commitWorktreeSnapshot, diffAgainstHead, git, removeWorktree, sha256File } from "../core/workspace.js";
 import { runProcess, runWorker } from "../worker/pi-worker.js";
 import { latestCheckpointFromAttempt } from "../worker/context-management.js";
 import type { MarkdownAction, WorkerResult } from "../worker/types.js";
@@ -24,9 +24,11 @@ import type { ArtifactProgram, LeanDirection, LeanTask, OutcomeVerdict } from ".
 import { renderResearchFrontier } from "./frontier.js";
 import { investigationContext, recordInvestigation, stageInvestigations } from "./investigations.js";
 import { investigationPlanContext, planInvestigation, researchPauseBlockers, runtimeTimeContext } from "./investigation-plans.js";
+import { isMethodDevelopmentTask } from "./task-classification.js";
 import { frameInvestigation, lifecycleContext, registerForecast, resolveForecast } from "./lifecycle.js";
 import { activationEvidenceFailures, adaptationContext, registerAdaptation } from "./adaptation.js";
 import { evidenceContext as renderEvidenceContext } from "./evidence-policy.js";
+import { MODEL_RESEARCH_REVISION, modelImplementationEvidence, researchEpoch, researchMemoryContext, stageModelGuidance } from "./model-research.js";
 import {
   cleanupStagedTaskSnapshot, currentSnapshotFiles, renderSnapshotContract, stageDirectionSnapshot, stageTaskSnapshot,
   verifyStagedTaskSnapshot, acquisitionContract,
@@ -44,7 +46,7 @@ export const MAX_EXECUTOR_ATTEMPTS = Number(process.env.AR_MAX_EXECUTOR_ATTEMPTS
 const ORCHESTRATOR_MAX_OUTPUT_TOKENS = 12_288;
 
 const ORCHESTRATOR_ACTIONS = [
-  ["start_program", "Start one persistent artifact-building program only after citing a completed OUT outcome that justifies the lineage. State the thesis, nearest prior art, intended novelty, interfaces, milestones, validation plan, and pivot conditions."],
+  ["start_program", "Start a persistent implementation lineage. UAV model-development may begin from a sourced model design without a prior OUT result; other domains require a completed OUT. State the thesis, closest methods, model changes, milestones, validation plan and pivot conditions."],
   ["checkpoint_program", "Checkpoint the returned program task after its decisive checks passed. Explain what coherent capability is now reusable and why the checkpoint is justified independently of metric improvement."],
   ["delegate_task", "Delegate one research task in Markdown. The task may be a reproduction, mechanism test, analysis, implementation, comparison, integration, or another method suited to the question."],
   ["record_supported", "Conclude the returned task as supported using a scoped Markdown interpretation of its evidence."],
@@ -65,6 +67,8 @@ const ADAPTIVE_ORCHESTRATOR_ACTIONS = [
   ["register_adaptation", "Declare numeric observation triggers for a paper checkpoint using the tool arguments. Explain replacement and retirement reasoning in ordinary prose. Monitoring triggers review, never automatic trading."],
   ["plan_investigation", "Schedule a useful next question, waiting condition or closure using the tool arguments. Write reasoning freely. Review dates are optional and chosen by you. Interpret the current delegated handoff before dispatching the next one."],
   ["record_investigation", "Preserve an exploratory investigation in freeform Markdown: observations, hypotheses, alternatives, implementation constraints, architecture links, and useful follow-ups. A mature implementation hypothesis is not required. Attribute claims and distinguish observations from interpretation. To revise a case put Revises: INV-id on its own line; other INV citations link ideas. These records never count as verified outcomes or accepted evidence."],
+  ["approve_task", "Approve one queued task for execution only after checking its prior art, evidence provenance, implementation scope, baselines, compute/latency assumptions, and falsifier. Cite exactly one TASK-id and write the review in Markdown. This does not claim novelty."],
+  ["audit_method", "Optional critical audit of one returned method-development TASK-id: METHOD_AUDIT: VALID, PARTIAL or INVALID. Use when the scientific interpretation needs a distinct review, not for routine bounded implementation handoffs. Inspect actual behavior and closest methods."],
   ["delegate_task", "Delegate a compact question-led handoff in freeform Markdown: why it matters, key references or boundaries, and what result changes the view. The worker owns methods, comparisons, tests, and artifacts. Mention a COMP identifier only when continuing a lineage."],
   ["record_outcome", "Interpret the returned task with its exact TASK-id, a scoped verdict, and freeform evidence before the next delegation."],
   ["record_synthesis", "Propose a durable conclusion or material revision in freeform prose with exact evidence references. A fresh independent critic reviews it through the same delegated slot."],
@@ -81,6 +85,77 @@ function compactValue(value: unknown): string {
   if (value && typeof value === "object") return Object.entries(value as Record<string, unknown>)
     .map(([key, item]) => `${key}: ${compactValue(item)}`).join("; ");
   return String(value ?? "");
+}
+
+/** A queued task is a hypothesis until the lead has checked its evidence and feasibility. */
+export function taskPreflightGaps(markdown: string): string[] {
+  const text = markdown.toLowerCase();
+  const requirements: Array<[string, RegExp]> = [
+    ["the question or motivation", /why|motivat|failure|question/],
+    ["prior art and functional equivalents", /prior\s*-?art|functional equivalent|closest paper|existing work/],
+    ["source provenance", /source|paper|citation|url|arxiv|github|verified|unverified|unknown|discovery-only/],
+    ["implementation or method", /implement|method|pipeline|model|data path/],
+    ["baselines, ablations, or comparison", /baseline|ablation|comparison|control/],
+    ["evaluation or falsifier", /test|evaluat|metric|falsif|kill|drop|stop/],
+    ["limitations and uncertainty", /limit|risk|unknown|uncertain|failure mode/],
+  ];
+  const gaps = requirements.filter(([, pattern]) => !pattern.test(text)).map(([label]) => label);
+  if (/uav|drone|aerial|flight|navigation|visual/.test(text)) {
+    if (!/latency|action age|stale|braking|speed|timing|p95/.test(text)) gaps.push("UAV timing, action age, or braking assumptions");
+    if (!/compute|gpu|3060|hardware|memory|vram/.test(text)) gaps.push("compute and hardware budget");
+  }
+  return gaps;
+}
+
+/** Require explicit lead approval without prescribing the research design. */
+export function methodDesignReviewGaps(markdown: string): string[] {
+  const gaps: string[] = [];
+  if (!/^METHOD_REVIEW:\s*APPROVED\s*$/im.test(markdown)) gaps.unshift("METHOD_REVIEW: APPROVED");
+  if (markdown.replace(/^METHOD_REVIEW:\s*APPROVED\s*$/im, "").trim().length < 100)
+    gaps.push("brief scientific rationale and executable next step");
+  return gaps;
+}
+
+export function taskPreflightApproved(store: ResearchStore, directionId: string, taskId: string): boolean {
+  return Boolean(store.db.prepare(
+    "SELECT 1 FROM events WHERE direction_id=? AND task_id=? AND event_type='task.preflight_approved' ORDER BY seq DESC LIMIT 1",
+  ).get(directionId, taskId));
+}
+
+/**
+ * Exploratory research is allowed to move continuously once its handoff is
+ * complete enough to be executed safely. The runtime check preserves the
+ * evidence/latency/compute/falsifier contract without making every ordinary
+ * literature or local-simulation task wait for another model turn.
+ * UAV method-development tasks may execute under standing safety boundaries;
+ * claims still require critical interpretation after the work returns.
+ */
+export function autoApproveExploratoryPreflight(store: ResearchStore, directionId: string, task: LeanTask): boolean {
+  if (taskPreflightApproved(store, directionId, task.task_id)) return true;
+  if (task.mode !== "exploration") return false;
+  if (isMethodDevelopmentTask(task)) {
+    if (directionId !== "uav-navigation") return false;
+    store.appendEvent(directionId, task.task_id, "task.preflight_approved", "runtime",
+      "UAV method development may execute under the standing no-flight, no-spend and VRAM constraints. "
+      + "Execution is not a novelty, safety or scientific-result approval; the returned evidence still needs interpretation.");
+    return true;
+  }
+  // Investigation dispatches intentionally keep the task brief compact and
+  // point at the full case file. Include that authoritative exploratory card
+  // in the completeness check; otherwise a well-specified injected idea would
+  // be rejected simply because its baselines live in its linked INV record.
+  const investigationIds = [...task.brief_md.matchAll(/\.research-investigations\/(INV-[a-z0-9-]+)\.md/gi)]
+    .map(match => match[1]!);
+  const linkedBodies = investigationIds.length
+    ? (store.db.prepare(`SELECT body_md FROM investigations WHERE direction_id=? AND investigation_id IN (${investigationIds.map(() => "?").join(",")})`)
+      .all(directionId, ...investigationIds) as Array<{ body_md: string }>).map(row => row.body_md)
+    : [];
+  const gaps = taskPreflightGaps([task.brief_md, ...linkedBodies].join("\n\n"));
+  if (gaps.length) return false;
+  store.appendEvent(directionId, task.task_id, "task.preflight_approved", "runtime",
+    "Automatic bounded preflight for an exploratory task: the handoff contains motivation/question, prior-art/provenance boundaries, implementation/data path, baselines or ablations, evaluation/falsifier, limitations, and relevant compute/latency assumptions. "
+    + "This admits execution; it does not claim novelty, scientific success, or physical-flight authorization.");
+  return true;
 }
 
 /** Public, immutable context agents need without exposing the protected evaluator. */
@@ -147,13 +222,20 @@ export function renderDomainContract(direction: LeanDirection, program?: Artifac
  * resent on every wake. Nothing volatile belongs here (program revisions, dates,
  * counts, blockers): a change starts a fresh session, so churn would discard it.
  */
+function scientificContract(projectRoot: string, directionId: string): string {
+  const path = join(projectRoot, "docs", "uav-scientific-contract.md");
+  return directionId === "uav-navigation" && existsSync(path) ? readFileSync(path, "utf8") : "";
+}
+
 export function leadSessionPrompt(projectRoot: string, store: ResearchStore, directionId: string, rolePrompt: string): string {
   const direction = store.direction(directionId);
   if (!direction) throw new Error(`unknown direction ${directionId}`);
   const quietly = <T>(read: () => T, fallback: T): T => { try { return read(); } catch { return fallback; } };
   return [
     rolePrompt.trim(),
+    scientificContract(projectRoot, directionId),
     "# Session context\nEverything below stays fixed for this session. Each wake carries the runtime summary and what changed.",
+    `## Canonical operator repository\n${projectRoot}\nYour persistent role workspace may contain older copies of public mission documents, proposal packets and starter implementations. If a current handoff references missing or superseded public files, read their current versions at this canonical repository path. Keep your edits in the isolated workspace; this reference does not grant access to protected evaluation or private runtime files. Current direction instructions take precedence over historical workspace documents.`,
     `## Direction: ${direction.title}\n${direction.brief_md}`,
     `## Human constraints\n${direction.constraints_md || "None supplied."}`,
     continuousResearch(projectRoot) ? "## Continuous research mandate\nThe operator has authorized continued research. Waiting for a particular source, dataset, evaluation run, or hardware result applies to that investigation only. Use plan_investigation to wait on that case and pursue other consequential questions, experiments, source research, acquisition repairs or independent review. Choose and delegate useful next work. If you finish with the research slot unassigned, the runtime hands the standing mission and current agenda to the same researcher to choose an informative investigation; it does not purchase another status turn. Interpret that result before delegating again. The operator controls direction-wide suspension. Choose methods and depth freely; do not manufacture studies or repeat status commentary." : "",
@@ -601,9 +683,10 @@ export function applyOrchestratorActions(store: ResearchStore, directionId: stri
   // Apply evidence interpretations before conclusions that may cite the newly
   // created outcomes. This is dependency ordering, not a one-action gate.
   const ordered = [
+    ...actions.filter((action) => action.name === "audit_method"),
     ...actions.filter((action) => Boolean(verdicts[action.name])),
     ...actions.filter((action) => action.name === "checkpoint_program"),
-    ...actions.filter((action) => !verdicts[action.name] && action.name !== "checkpoint_program"),
+    ...actions.filter((action) => !verdicts[action.name] && action.name !== "checkpoint_program" && action.name !== "audit_method"),
   ];
   const applyOrdered = () => { for (const action of ordered) {
     const originalMarkdown = action.markdown || "(No additional Markdown supplied.)";
@@ -635,6 +718,55 @@ export function applyOrchestratorActions(store: ResearchStore, directionId: stri
       store.updateResearchMap(directionId, markdown);
       continue;
     }
+    if (adaptive && action.name === "approve_task") {
+      const cited = [...markdown.matchAll(/\bTASK-[A-Za-z0-9-]+\b/gi)].map((match) => match[0]!);
+      const task = cited.length === 1
+        ? (store.db.prepare("SELECT * FROM tasks WHERE direction_id=? AND task_id=? AND state='queued'")
+          .get(directionId, cited[0]) as LeanTask | undefined)
+        : undefined;
+      if (!task) {
+        store.saveNote(directionId, runId, "runtime",
+          "Task preflight refused: cite exactly one currently queued TASK-id. Returned or running tasks need interpretation, not approval.\n\n" + markdown);
+        continue;
+      }
+      const gaps = directionId === "uav-navigation"
+        ? isMethodDevelopmentTask(task) ? methodDesignReviewGaps(markdown) : []
+        : [...taskPreflightGaps(markdown),
+          ...(isMethodDevelopmentTask(task) ? methodDesignReviewGaps(markdown) : [])];
+      if (gaps.length) {
+        store.saveNote(directionId, runId, "runtime",
+          `Task preflight refused for ${task.task_id}: missing ${gaps.join(", ")}.\n\nThe review must distinguish verified evidence, inference and unknowns before execution.\n\n${markdown}`);
+        continue;
+      }
+      store.appendEvent(directionId, task.task_id, "task.preflight_approved", "orchestrator", markdown);
+      continue;
+    }
+    if (adaptive && action.name === "audit_method") {
+      const cited = [...markdown.matchAll(/\bTASK-[A-Za-z0-9-]+\b/gi)].map(match => match[0]!);
+      const task = cited.length === 1 ? awaitingTasks.find(item => item.task_id === cited[0]) : undefined;
+      if (!task || !isMethodDevelopmentTask(task) || !task.workspace_path) {
+        store.saveNote(directionId, runId, "runtime", "Method audit refused: cite exactly one returned method-development TASK-id.");
+        continue;
+      }
+      const gaps = methodAuditGaps(markdown, task.workspace_path);
+      if (gaps.length) {
+        store.saveNote(directionId, runId, "runtime", `Method audit refused for ${task.task_id}: ${gaps.join(", ")}.`);
+        continue;
+      }
+      const valid = /^METHOD_AUDIT:\s*VALID\s*$/im.test(markdown);
+      const partial = /^METHOD_AUDIT:\s*PARTIAL\s*$/im.test(markdown);
+      if (partial && modelImplementationEvidence(task.workspace_path).gaps.length) {
+        store.saveNote(directionId, runId, "runtime", `Partial audit needs inspectable model artifacts: ${modelImplementationEvidence(task.workspace_path).gaps.join(", ")}`);
+        continue;
+      }
+      if (valid && !store.db.prepare("SELECT 1 FROM events WHERE task_id=? AND event_type='task.representative_validated'").get(task.task_id)) {
+        store.saveNote(directionId, runId, "runtime", `Method audit refused for ${task.task_id}: representative validation is incomplete.`);
+        continue;
+      }
+      store.appendEvent(directionId, task.task_id, valid ? "task.method_audit_valid" : partial ? "task.method_audit_partial" : "task.method_audit_invalid",
+        "orchestrator", markdown);
+      continue;
+    }
     if (adaptive && ["record_source", "request_discovery"].includes(action.name)) {
       try {
         const parameters = action.parameters ?? {};
@@ -653,7 +785,7 @@ export function applyOrchestratorActions(store: ResearchStore, directionId: stri
         "SELECT outcome_id FROM outcomes WHERE direction_id=? ORDER BY created_at",
       ).all(directionId) as Array<{ outcome_id: string }>).some((outcome) =>
         markdown.toUpperCase().includes(outcome.outcome_id.toUpperCase()));
-      if (!citedOutcome) {
+      if (!citedOutcome && directionId !== "uav-navigation") {
         store.saveNote(directionId, runId, "runtime",
           "Program start refused: a persistent implementation lineage must be earned by citing a completed"
           + " OUT outcome from an initial independent study. Delegate the smallest discriminating study first.\n\n"
@@ -674,12 +806,26 @@ export function applyOrchestratorActions(store: ResearchStore, directionId: stri
           `Program checkpoint refused: no returned program task with a preserved worktree.\n\n${markdown}`);
         continue;
       }
-      const verifications = store.db.prepare(
-        "SELECT exit_code FROM commands WHERE task_id=? AND kind='verification' ORDER BY created_at",
+      const uav = directionId === "uav-navigation";
+      const verifications = store.db.prepare(uav
+        ? `SELECT c.exit_code FROM commands c WHERE c.task_id=? AND
+           ((c.kind='check' AND c.exit_code=0) OR (c.kind='verification' AND c.rowid IN
+           (SELECT MAX(rowid) FROM commands WHERE task_id=c.task_id AND kind='verification' GROUP BY executable,args_json)))`
+        : "SELECT exit_code FROM commands WHERE task_id=? AND kind='verification' ORDER BY created_at"
       ).all(awaiting.task_id) as Array<{ exit_code: number | null }>;
+      const artifactGaps = uav ? modelImplementationEvidence(awaiting.workspace_path).gaps : [];
+      // An engineering checkpoint is not a claim of independent replication. Repaired checks may replace failed attempts.
+      if (artifactGaps.length) {
+        store.saveNote(directionId, runId, "runtime", `Program checkpoint needs usable model artifacts: ${artifactGaps.join(", ")}`);
+        continue;
+      }
+      if (store.db.prepare("SELECT 1 FROM program_checkpoints WHERE task_id=? LIMIT 1").get(awaiting.task_id)) {
+        store.saveNote(directionId, runId, "runtime", `Program task ${awaiting.task_id} already has a checkpoint; continue its next milestone instead of duplicating it.`);
+        continue;
+      }
       if (verifications.length === 0 || verifications.some((check) => check.exit_code !== 0)) {
         store.saveNote(directionId, runId, "runtime",
-          `Program checkpoint refused: at least one independently rerun check must pass and none may fail.\n\n${markdown}`);
+          `Program checkpoint refused: ${uav ? "at least one meaningful executed check must pass; repair outstanding failed checks" : "at least one independently rerun check must pass and none may fail"}.\n\n${markdown}`);
         continue;
       }
       if (direction && isQuantDirection(direction.domain_path)) {
@@ -701,9 +847,29 @@ export function applyOrchestratorActions(store: ResearchStore, directionId: stri
         store.saveNote(directionId, runId, "runtime", `Program checkpoint refused: active program is missing.\n\n${markdown}`);
         continue;
       }
-      const committed = commitProgramCheckpoint(projectRoot, statePath(projectRoot, "worktrees"),
-        program.current_revision, diff.diffText, markdown.split(/\r?\n/)[0]!.slice(0, 120),
-        researchHash(awaiting.program_id).slice(0, 16));
+      const message = markdown.split(/\r?\n/)[0]!.slice(0, 120);
+      let committed: { ok: true; revision: string } | { ok: false; failure: string };
+      if (uav) {
+        try {
+          const implementation = modelImplementationEvidence(awaiting.workspace_path).manifest!;
+          const binaries = [...implementation.models.map((model: { checkpoint?: string }) => model.checkpoint),
+            ...diff.changedPaths.filter(path => /\.(?:pt|pth|safetensors|npz|npy|onnx|ckpt|bin)$/i.test(path)
+              || (existsSync(join(awaiting.workspace_path!, path))
+                && statSync(join(awaiting.workspace_path!, path)).isFile()
+                && statSync(join(awaiting.workspace_path!, path)).size > 8 * 1024 * 1024))]
+            .filter((path: unknown): path is string => typeof path === "string" && Boolean(path));
+          const revision = commitWorktreeSnapshot(awaiting.workspace_path, {
+            message, ref: `refs/autoresearch/program/${researchHash(awaiting.program_id).slice(0, 16)}`,
+            exclude: [".research-tool-output", ".research-upstreams", ".research-guidance",
+              ".research-sources", ".research-investigations", ".research-evidence",
+              ".research-prior-evidence", ...binaries],
+          });
+          committed = { ok: true, revision };
+        } catch (error) { committed = { ok: false, failure: String(error) }; }
+      } else {
+        committed = commitProgramCheckpoint(projectRoot, statePath(projectRoot, "worktrees"),
+          program.current_revision, diff.diffText, message, researchHash(awaiting.program_id).slice(0, 16));
+      }
       if (!committed.ok) {
         store.saveNote(directionId, runId, "runtime", `Program checkpoint refused: ${committed.failure}\n\n${markdown}`);
         continue;
@@ -862,9 +1028,13 @@ export function applyOrchestratorActions(store: ResearchStore, directionId: stri
         store.saveNote(directionId, runId, "runtime",
           `Outcome refused: ${awaiting.task_id} was already interpreted in this turn.\n\n${markdown}`);
       } else {
-        sameTurnOutcomeId = store.recordOutcome({ directionId, taskId: awaiting.task_id, runId,
-          verdict: verdicts[action.name]!, markdown });
-        resolvedTasks.add(awaiting.task_id);
+        try {
+          sameTurnOutcomeId = store.recordOutcome({ directionId, taskId: awaiting.task_id, runId,
+            verdict: verdicts[action.name]!, markdown });
+          resolvedTasks.add(awaiting.task_id);
+        } catch (error) {
+          store.saveNote(directionId, runId, "runtime", `Outcome refused for ${awaiting.task_id}: ${String(error)}`);
+        }
       }
       continue;
     }
@@ -933,6 +1103,7 @@ export async function runOrchestratorTurn(input: {
   const workspace = adaptive ? ensureRoleWorkspace(input.projectRoot, input.directionId, "lead") : input.projectRoot;
   const quant = adaptive && isQuantDirection(direction.domain_path);
   if (adaptive) {
+    stageModelGuidance(input.projectRoot, workspace, input.directionId);
     stageDiscoverySources(input.store, input.projectRoot, input.directionId, workspace);
     stageInvestigations(input.store, input.directionId, workspace);
     // The lead tests ideas with the same evaluator executors use. A fresh copy
@@ -949,6 +1120,7 @@ export async function runOrchestratorTurn(input: {
   const snapshotContract = renderSnapshotContract(staged, workspace);
   const fullStateMarkdown = [
     runtimeTimeContext(),
+    researchMemoryContext(input.store, input.directionId),
     ...(adaptive ? [investigationPlanContext(input.store, input.directionId, true)] : []),
     storageContract(input.projectRoot),
     acquisitionContract(input.projectRoot, direction, input.store),
@@ -976,7 +1148,7 @@ export async function runOrchestratorTurn(input: {
         lifecycleContext(input.store, input.directionId), renderEvidenceContext(input.store, input.directionId), adaptationContext(input.store, input.directionId), fullStateMarkdown].filter(Boolean).join("\n\n")
     : fullStateMarkdown;
   const prompt = adaptive
-    ? `${runtimeTimeContext()}\n\nCall curi_state. It opens with your Book, Candidates, Agenda and Findings. Prioritize returned evidence and actionable investigation follow-ups. When the queue is empty, choose a consequential unresolved question and plan or delegate its next investigation; use curi_search before repeating earlier work. If no useful action is executable, record a concrete waiting condition or closure. Repeated holdings commentary is not research progress.`
+    ? `${runtimeTimeContext()}\n\nCall curi_state. It opens with your Book, Candidates, Agenda and Findings. The runtime automatically admits complete exploratory tasks after checking motivation, prior art/provenance, implementation, baselines, evaluation/falsifier, limitations, UAV timing and compute/latency assumptions. Inspect any incomplete or higher-risk queued task that has no task.preflight_approved event: either use approve_task with exactly one TASK-id and a complete review, or record a concrete reason to revise or abandon it. Do not repeatedly restate a queued task or let one held task block independent runnable work. After queued work is handled, prioritize returned evidence and actionable investigation follow-ups. When the queue is empty, choose a consequential unresolved question and plan or delegate its next investigation; use curi_search before repeating earlier work. If no useful action is executable, record a concrete waiting condition or closure.`
     : stateMarkdown;
   const attemptDir = statePath(input.projectRoot, "attempts", "orchestrator", input.directionId, researchId("attempt"));
   const runId = input.store.beginRun({ directionId: input.directionId, role: "orchestrator", inputMarkdown: stateMarkdown, attemptDir });
@@ -1111,6 +1283,44 @@ export function verifyStagedReturnedEvidence(staged: StagedReturnedEvidence | nu
 }
 
 /** A critic must receive original artifacts, not only the previous agent's summary. */
+function restoreProgramModelArtifacts(store: ResearchStore, projectRoot: string, workspace: string, programId: string): void {
+  const checkpoint = store.db.prepare("SELECT task_id FROM program_checkpoints WHERE program_id=? ORDER BY created_at DESC LIMIT 1")
+    .get(programId) as { task_id: string } | undefined;
+  if (!checkpoint) return;
+  const bundle = store.db.prepare("SELECT manifest_path,content_hash FROM evidence_bundles WHERE task_id=? ORDER BY created_at DESC LIMIT 1")
+    .get(checkpoint.task_id) as { manifest_path: string; content_hash: string } | undefined;
+  if (!bundle) throw new Error(`Program checkpoint ${checkpoint.task_id} has no sealed artifacts`);
+  const path = ensureInside(projectRoot, resolve(projectRoot, bundle.manifest_path));
+  if (sha256File(path) !== bundle.content_hash) throw new Error("Program artifact manifest hash mismatch");
+  const manifest = JSON.parse(readFileSync(path, "utf8")) as EvidenceManifest;
+  const modelFile = manifest.files.find(file => file.logicalPath === "MODEL_IMPLEMENTATION.json"
+    || file.logicalPath === "research/model_program/MODEL_IMPLEMENTATION.json");
+  if (!modelFile) throw new Error("Program checkpoint has no model manifest");
+  const modelPath = ensureInside(projectRoot, resolve(projectRoot, modelFile.storedPath));
+  if (sha256File(modelPath) !== modelFile.contentHash) throw new Error("Program model manifest hash mismatch");
+  const model = JSON.parse(readFileSync(modelPath, "utf8"));
+  const names = new Set([...(Array.isArray(model.metrics_path) ? model.metrics_path : [model.metrics_path]),
+    ...(model.models ?? []).map((m: { checkpoint?: string }) => m.checkpoint), ...(model.continuation_paths ?? [])]
+    .filter((p): p is string => typeof p === "string" && Boolean(p)).map(p => p.replace(/\\/g, "/")));
+  for (const name of names) {
+    const file = manifest.files.find(item => item.logicalPath === name);
+    if (!file) throw new Error(`Program continuation artifact not sealed: ${name}`);
+    const source = ensureInside(projectRoot, resolve(projectRoot, file.storedPath));
+    const target = ensureInside(workspace, resolve(workspace, file.logicalPath));
+    if (!existsSync(source) || sha256File(source) !== file.contentHash) throw new Error(`Program artifact hash mismatch: ${name}`);
+    if (existsSync(target)) {
+      // Text committed to Git may be checked out with different line endings.
+      // The sealed bundle remains immutable; only binary model/data conflicts
+      // must prevent continuation.
+      if (/\.(?:pt|pth|safetensors|npz|npy|onnx|ckpt|bin)$/i.test(name)
+        && sha256File(target) !== file.contentHash) throw new Error(`Program artifact conflicts with checkpoint: ${name}`);
+      continue;
+    }
+    mkdirSync(dirname(target), { recursive: true });
+    cpSync(source, target);
+  }
+}
+
 export function stagePriorEvidence(store: ResearchStore, projectRoot: string, workspace: string,
   directionId: string, brief: string): StagedReturnedEvidence[] {
   const outcomes = store.db.prepare("SELECT outcome_id,task_id,run_id FROM outcomes WHERE direction_id=?").all(directionId) as
@@ -1209,7 +1419,7 @@ export function createTaskWorkspace(projectRoot: string, taskId: string, revisio
 }
 
 function ensureRoleWorkspace(projectRoot: string, directionId: string, role: "lead" | "verifier"): string {
-  const name = `${role}-${directionId}`.replace(/[^a-z0-9_-]/gi, "_");
+  const name = `${role}-${directionId}${directionId === "uav-navigation" ? `-${MODEL_RESEARCH_REVISION}` : ""}`.replace(/[^a-z0-9_-]/gi, "_");
   const workspace = statePath(projectRoot, "worktrees", name);
   if (existsSync(workspace) && existsSync(join(workspace, ".git"))) return workspace;
   return createTaskWorkspace(projectRoot, name);
@@ -1225,6 +1435,37 @@ function saveCommand(store: ResearchStore, input: {
      VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
   ).run(input.commandId ?? researchId("CMD"), input.directionId, input.taskId, input.runId, input.kind, input.executable,
     JSON.stringify(input.args), input.result.exitCode, input.result.stdout, input.result.stderr, input.durationMs, researchNow());
+}
+
+/** Method-development tasks cannot close on a feature-only or toy result. */
+export function representativeValidationGaps(workspace: string): string[] {
+  const path = [join(workspace, "REPRESENTATIVE_RESULT.md"), join(workspace, "research", "model_program", "REPRESENTATIVE_RESULT.md")]
+    .find(existsSync);
+  if (!path) return ["REPRESENTATIVE_RESULT.md is missing"];
+  let body = "";
+  try { body = readFileSync(path, "utf8"); } catch { return ["REPRESENTATIVE_RESULT.md is unreadable"]; }
+  const gaps = body.trim() ? [] : ["representative report is empty"];
+  if (existsSync(join(workspace, ".research-guidance", "manifest.json"))) {
+    const evidence = modelImplementationEvidence(workspace);
+    gaps.push(...evidence.gaps);
+    if (evidence.manifest?.scope !== "representative") gaps.push("representative model manifest scope");
+  } else {
+    // Legacy non-UAV tasks have no model manifest; retain their existing check.
+    for (const label of ["Code", "Metrics"]) {
+      const raw = body.match(new RegExp(`^${label}:\\s*(\\S+)\\s*$`, "im"))?.[1];
+      if (!raw || !resolve(workspace, raw).startsWith(resolve(workspace) + sep)
+        || !existsSync(resolve(workspace, raw))) gaps.push(`${label.toLowerCase()} artifact`);
+    }
+  }
+  return gaps;
+}
+
+/** Require an inspectable finding, including the case where the pilot was invalid. */
+export function methodAuditGaps(markdown: string, workspace: string): string[] {
+  const gaps: string[] = /^METHOD_AUDIT:\s*(VALID|PARTIAL|INVALID)\s*$/im.test(markdown)
+    ? [] : ["METHOD_AUDIT: VALID, PARTIAL or INVALID"];
+  // Artifact provenance is checked from the worker's manifest, not from prose labels.
+  return gaps;
 }
 
 function saveWorkerChecks(store: ResearchStore, directionId: string, taskId: string, runId: string,
@@ -1291,6 +1532,19 @@ function captureArtifacts(store: ResearchStore, projectRoot: string, directionId
     const full = ensureInside(workspace, join(workspace, path));
     if (!existsSync(full) || !statSync(full).isFile()) continue;
     preserve(path, full, "changed_file");
+  }
+  // Learned weights/declared continuation data may be intentionally Git-ignored.
+  if (directionId === "uav-navigation") {
+    const implementation = modelImplementationEvidence(workspace);
+    const m = implementation.manifest;
+    if (m && !implementation.gaps.length) {
+      const declared = [...(Array.isArray(m.metrics_path) ? m.metrics_path : [m.metrics_path]),
+        ...m.models.map((model: Record<string, unknown>) => model.checkpoint), ...(m.continuation_paths ?? [])];
+      for (const path of declared) if (typeof path === "string" && path) {
+        const full = ensureInside(workspace, resolve(workspace, path));
+        if (statSync(full).isFile()) preserve(relative(workspace, full), full, "model_artifact");
+      }
+    }
   }
   const task = store.db.prepare("SELECT task_id,brief_md,component_id,program_id FROM tasks WHERE task_id=?")
     .get(taskId) as Record<string, unknown>;
@@ -1422,8 +1676,8 @@ export async function finalizeExecutorHandoff(input: ExecutorHandoff): Promise<{
   taskId: string; runId: string; result: WorkerResult;
 }> {
   const { store, projectRoot, directionId, taskId, runId, workspace, result, staged, quantHarness } = input;
-  const task = store.db.prepare("SELECT state FROM tasks WHERE task_id=? AND direction_id=?").get(taskId, directionId) as
-    { state: string } | undefined;
+  const task = store.db.prepare("SELECT state,task_kind,brief_md FROM tasks WHERE task_id=? AND direction_id=?").get(taskId, directionId) as
+    { state: string; task_kind?: string; brief_md?: string } | undefined;
   if (!task) throw new Error("unknown executor handoff task");
   if (["awaiting_orchestrator", "concluded", "blocked"].includes(task.state)) return { taskId, runId, result };
   const sealed = () => Boolean(store.db.prepare("SELECT 1 FROM evidence_bundles WHERE task_id=? AND run_id=?").get(taskId, runId));
@@ -1486,6 +1740,23 @@ export async function finalizeExecutorHandoff(input: ExecutorHandoff): Promise<{
     try { cleanupStagedTaskSnapshot(staged); }
     catch (error) { store.appendEvent(directionId, taskId, "task.cleanup_failed", "runtime", String(error)); }
   }
+  if (isMethodDevelopmentTask(task)) {
+    const implementation = directionId === "uav-navigation" ? modelImplementationEvidence(workspace) : null;
+    if (implementation && !implementation.gaps.length) {
+      store.appendEvent(directionId, taskId, "task.implementation_delivered", "runtime",
+        JSON.stringify({ scope: implementation.manifest?.scope, claim: implementation.manifest?.implemented_claim,
+          next: implementation.manifest?.next_milestone, limitations: implementation.manifest?.limitations,
+          warning: "Artifact paths/declarations inspected, not independent scientific validation." }));
+    }
+    const gaps = representativeValidationGaps(workspace);
+    if (gaps.length) {
+      store.appendEvent(directionId, taskId, "task.representative_validation_required", "runtime",
+        `This handoff is not representative evidence: ${gaps.join(", ")}. A working MODEL_IMPLEMENTATION.json milestone can receive METHOD_AUDIT: PARTIAL, a checkpoint, and a bounded/inconclusive outcome with an explicit continuation; do not reject the wider research direction.`);
+    } else {
+      store.appendEvent(directionId, taskId, "task.representative_validated", "runtime",
+        "Representative artifact declarations are present. This mechanical check does not verify fidelity, causal interpretation or generalization; the lead must inspect code, metrics and model provenance in audit_method.");
+    }
+  }
   store.db.transaction(() => {
     store.db.prepare("UPDATE tasks SET state='awaiting_orchestrator',updated_at=? WHERE task_id=?").run(researchNow(), taskId);
     store.appendEvent(directionId, taskId, "task.returned", "executor", result.finalText || "Inspect returned trace and artifacts.");
@@ -1496,12 +1767,36 @@ export async function finalizeExecutorHandoff(input: ExecutorHandoff): Promise<{
 export async function runNextExecutorTask(input: {
   store: ResearchStore; projectRoot: string; directionId: string; model?: string;
 }): Promise<{ taskId: string; runId: string; result: WorkerResult } | null> {
-  const task = input.store.db.prepare(
-    "SELECT * FROM tasks WHERE direction_id=? AND state='queued' ORDER BY created_at LIMIT 1",
-  ).get(input.directionId) as LeanTask | undefined;
-  if (!task) return null;
+  // Do not let one incomplete exploratory handoff freeze independent work.
+  // Complete exploratory tasks are admitted by the bounded runtime preflight;
+  // claim/program tasks, or incomplete tasks, remain available for lead review.
+  const queued = input.store.db.prepare(
+    "SELECT * FROM tasks WHERE direction_id=? AND state='queued' ORDER BY created_at",
+  ).all(input.directionId) as LeanTask[];
   const direction = input.store.direction(input.directionId)!;
   const adaptive = direction.engine_version === "adaptive-v2";
+  let task: LeanTask | undefined;
+  for (const candidate of queued) {
+    if (!adaptive || autoApproveExploratoryPreflight(input.store, input.directionId, candidate)) {
+      task = candidate;
+      break;
+    }
+    const latest = input.store.db.prepare(
+      "SELECT event_type FROM events WHERE direction_id=? AND task_id=? ORDER BY seq DESC LIMIT 1",
+    ).get(input.directionId, candidate.task_id) as { event_type: string } | undefined;
+    if (latest?.event_type !== "task.preflight_required" && latest?.event_type !== "task.preflight_deferred") {
+      const investigationIds = [...candidate.brief_md.matchAll(/\.research-investigations\/(INV-[a-z0-9-]+)\.md/gi)]
+        .map(match => match[1]!);
+      const linkedBodies = investigationIds.length
+        ? (input.store.db.prepare(`SELECT body_md FROM investigations WHERE direction_id=? AND investigation_id IN (${investigationIds.map(() => "?").join(",")})`)
+          .all(input.directionId, ...investigationIds) as Array<{ body_md: string }>).map(row => row.body_md)
+        : [];
+      const gaps = taskPreflightGaps([candidate.brief_md, ...linkedBodies].join("\n\n"));
+      input.store.appendEvent(input.directionId, candidate.task_id, "task.preflight_deferred", "runtime",
+        `This queued task remains available for lead review; independent runnable tasks may proceed. Missing: ${gaps.join(", ") || "explicit high-risk approval"}.`);
+    }
+  }
+  if (!task) return null;
   const priors = priorExecutorRuns(input.store, task.task_id);
   const completed = priors.at(-1);
   if (completed?.state === "succeeded" && completed.attempt_dir && task.workspace_path) {
@@ -1554,9 +1849,13 @@ export async function runNextExecutorTask(input: {
     staged = stageTaskSnapshot({ projectRoot: input.projectRoot, store: input.store,
       direction, taskId: task.task_id, workspace });
     // A retry retains the exploratory context available on its first attempt.
+    if (adaptive) stageModelGuidance(input.projectRoot, workspace, input.directionId);
     if (adaptive) stageDiscoverySources(input.store, input.projectRoot, input.directionId, workspace);
     if (adaptive && !inherited) stageInvestigations(input.store, input.directionId, workspace);
     if (adaptive) priorEvidence = stagePriorEvidence(input.store, input.projectRoot, workspace, input.directionId, task.brief_md);
+    if (adaptive && !inherited && task.program_id && input.directionId === "uav-navigation") {
+      restoreProgramModelArtifacts(input.store, input.projectRoot, workspace, task.program_id);
+    }
     if (isQuantDirection(direction.domain_path)) quantHarness = stageQuantHarness(input.projectRoot, workspace);
   } catch (error) {
     if (isStorageOperationalError(error)) {
@@ -1599,7 +1898,8 @@ export async function runNextExecutorTask(input: {
   mkdirSync(attemptDir, { recursive: true });
   writeFileSync(join(attemptDir, "handoff-inputs.json"), JSON.stringify({ workspace, staged, quantHarness, priorEvidence }), "utf8");
   const systemPrompt = readFileSync(join(input.projectRoot, "prompts",
-    adaptive ? "research-worker-v2.md" : "implementation-executor.md"), "utf8");
+    adaptive ? "research-worker-v2.md" : "implementation-executor.md"), "utf8")
+    + "\n\n" + scientificContract(input.projectRoot, input.directionId);
   const searchIndex = adaptive ? refreshSearchIndex(input.store, input.directionId,
     statePath(input.projectRoot, "pi", "directions", input.directionId, "search.sqlite")) : undefined;
   const workerResult = await runWorker({
@@ -1651,10 +1951,10 @@ export async function runNextSynthesisVerifier(input: {
   if (input.store.direction(input.directionId)?.engine_version !== "adaptive-v2") return null;
   const synthesis = input.store.db.prepare(
     `SELECT s.* FROM component_syntheses s
-     WHERE s.direction_id=? AND NOT EXISTS (
+     WHERE s.direction_id=? AND s.created_at>=? AND NOT EXISTS (
        SELECT 1 FROM synthesis_reviews r WHERE r.synthesis_id=s.synthesis_id)
      ORDER BY s.created_at LIMIT 1`,
-  ).get(input.directionId) as Record<string, unknown> | undefined;
+  ).get(input.directionId, researchEpoch(input.store, input.directionId)) as Record<string, unknown> | undefined;
   if (!synthesis) return null;
   const context = input.store.context(input.directionId);
   const outcomeIds = context.synthesisOutcomes.filter((item) => item.synthesis_id === synthesis.synthesis_id)
@@ -1671,6 +1971,7 @@ export async function runNextSynthesisVerifier(input: {
   const verifierWorkspace = createTaskWorkspace(input.projectRoot,
     `verifier-${input.directionId}-${String(synthesis.synthesis_id)}`);
   stageDiscoverySources(input.store, input.projectRoot, input.directionId, verifierWorkspace);
+  stageModelGuidance(input.projectRoot, verifierWorkspace, input.directionId);
   const direction = input.store.direction(input.directionId)!;
   const staged = stageDirectionSnapshot({ projectRoot: input.projectRoot, store: input.store,
     direction, workspace: verifierWorkspace });
@@ -1735,7 +2036,8 @@ export async function runNextSynthesisVerifier(input: {
   ];
   const workerResult = await runWorker({
     role: "verifier", prompt: evidence,
-    systemPrompt: readFileSync(join(input.projectRoot, "prompts", "verifier-v2.md"), "utf8"),
+    systemPrompt: readFileSync(join(input.projectRoot, "prompts", "verifier-v2.md"), "utf8")
+      + "\n\n" + scientificContract(input.projectRoot, input.directionId),
     cwd: verifierWorkspace, attemptDir,
     searchIndex: refreshSearchIndex(input.store, input.directionId, join(attemptDir, "search.sqlite")),
     tools: ["read", "write", "edit", "ls", "find", "grep", "run", "web_search", "fetch_content", "get_search_content", "curi_search",

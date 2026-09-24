@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "batchId": "uav-2026-09-19-mission-agenda",
+  "directionId": "uav-navigation",
+  "contractFile": "presearch/injections/2026-09-19-mission-agenda/execution-contract.md",
+  "ideas": [
+    {
+      "key": "navigation-before-commitment",
+      "title": "Navigation: resolve the right uncertainty before committing to a route",
+      "file": "presearch/injections/2026-09-19-mission-agenda/01-navigation.md",
+      "nextStep": "Start with NAV-1, the ambiguous-junction commitment experiment. Motivation: late semantic evidence can cause a collision-free wrong turn. Read the full card and primary-source prior art; implement a partially observed continuous-time pilot against belief-planning, delay-aware speed and query-timing baselines. Test mission completion and detour at matched time/safety; ablate commitment cost. Novelty is uncertain. Measure latency and speed; use CPU or the 3060 Ti within 60% VRAM. Preserve code, raw metrics and limitations. Merge any existing arrival-aware sensing result; do not repeat it. NAV-2 and NAV-3 are conditional follow-ups, not three jobs to launch together."
+    },
+    {
+      "key": "tracking-recoverability",
+      "title": "Tracking: preserve the ability to find the correct target again",
+      "file": "presearch/injections/2026-09-19-mission-agenda/02-tracking.md",
+      "nextStep": "Start with TRACK-1, a moving cooperative target behind an occluder with a similar distractor. Motivation: a good present view need not preserve identity when a delayed update arrives. Check OA-VAT and Fast-Tracker 2.0 primary-source methods and functional prior art. Implement joint viewpoint/query timing and compare predictive visibility control plus adaptive detection scheduling; ablate the interaction. Evaluate correct-target time, identity switches, loss/recovery and collision at matched speed/compute. Novelty and transfer are uncertain. Measure latency; CPU or 3060 Ti below 60% VRAM, no physical flight. TRACK-2 and TRACK-3 follow only if informative."
+    },
+    {
+      "key": "exploration-trustworthy-maps",
+      "title": "Exploration: discover useful space without mistaking imagined space for observed space",
+      "file": "presearch/injections/2026-09-19-mission-agenda/03-exploration.md",
+      "nextStep": "Start with EXPLORE-1, matched partial worlds and correlated wrong completion priors. Motivation: confident map completion can leave important connections unverified. Check FUEL, HUME, SCOUT, Plan2Explore and functional prior art using primary sources. Implement evidence-aware verification allocation; compare frontier, information-gain and robust belief baselines, with an ablation of evidence independence. Evaluate verified coverage/connectivity per time, false-free beliefs and feasible return. Novelty is uncertain; do not claim a new simulator as a contribution. Measure latency and speed; CPU or 3060 Ti within 60% VRAM. Document all limitations; later capture/3DGS experiments are conditional."
+    }
+  ]
+}

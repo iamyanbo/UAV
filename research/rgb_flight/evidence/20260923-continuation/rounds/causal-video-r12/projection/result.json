@@ -1,0 +1,11 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "fit_split": "train",
+  "episodes": [
+    "train-00000"
+  ],
+  "samples": 3200,
+  "projection_sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+  "explained_variance_fraction": 0.9796425943134041
+}

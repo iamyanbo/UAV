@@ -47,6 +47,8 @@ test("an unavailable program revision blocks its task without taking down indepe
     const program = store.startProgram("d", "Unavailable program", "a".repeat(40));
     const first = store.delegateTask({ directionId: "d", mode: "exploration", markdown: "Continue" });
     store.db.prepare("UPDATE tasks SET program_id=? WHERE task_id=?").run(program, first);
+    store.appendEvent("d", first, "task.preflight_approved", "test",
+      "Question and motivation, prior art, provenance, implementation, baselines, evaluation, limitations, compute, and latency review completed.");
     assert.equal(await runNextExecutorTask({ store, projectRoot: root, directionId: "d" }), null);
     assert.equal((store.db.prepare("SELECT state FROM tasks WHERE task_id=?").get(first) as { state: string }).state, "blocked");
     const next = store.delegateTask({ directionId: "d", mode: "exploration", markdown: "Independent question" });

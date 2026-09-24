@@ -1,0 +1,19 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T012910Z-causal-replay-f03fb3/source/replay_collection.py",
+    "--collection",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T012523Z-confirmed-command-flight-e4610f/collection/flights.json",
+    "--checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r25/checkpoints",
+    "--frames",
+    "420"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "exclusive",
+  "peak_gib": 32.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 50.04065059381537
+}

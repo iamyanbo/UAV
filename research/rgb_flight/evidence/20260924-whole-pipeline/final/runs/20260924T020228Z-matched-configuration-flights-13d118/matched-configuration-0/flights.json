@@ -1,0 +1,186 @@
+[
+  {
+    "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T020228Z/episode",
+    "result": {
+      "status": "learned_flight_finished",
+      "episode_id": "train-00000",
+      "split": "train",
+      "phase": 1,
+      "runtime_goal_sha256": "a767a6b80a4e61525991ac9f8a7940f576a20d856288cd4810b429301c6c509b",
+      "pose_setting_calls_before_recording": 1,
+      "pre_episode_goal_pose_setting_calls": 0,
+      "pose_setting_calls_after_recording": 0,
+      "clock_speed": 1.0,
+      "maximum_speed_mps": 3.0,
+      "controller_kind": "learned_mode_1",
+      "runtime_isolation": {
+        "status": "live_inference_boundary_passed",
+        "episode_id": "train-00000",
+        "rgb_bytes": 921600,
+        "first_sim_ns": 1790215378638004736,
+        "last_sim_ns": 1790215378917010688,
+        "goal_views": 4,
+        "denied_operations": 5,
+        "simulator_rpc_inaccessible": true,
+        "privileged_files_inaccessible": true
+      },
+      "controller_checkpoint_sha256": "73bece6b19e9611f3d740bbac3020cbb6f5894c38a161161be82aab7f6562ca6",
+      "termination": "timeout",
+      "success": false,
+      "elapsed_sim_seconds": 180.00984001159668,
+      "traveled_distance_m": 0.5436124801635742,
+      "final_navigation_error_m": 38.94743810086093,
+      "final_horizontal_error_m": 38.803444452884115,
+      "final_vertical_error_m": 3.3459876288370225,
+      "path_efficiency": 0.0,
+      "fixed_outcome_reward": -35,
+      "stop_requested": false,
+      "stopped_speed_mps": 0.0030064955353736877,
+      "airsim_collision": false,
+      "geometry_collision": false,
+      "learned_controller": {
+        "status": "completed",
+        "accepted": false,
+        "frames": 1203,
+        "error": null,
+        "shards": [
+          {
+            "path": "controller-000000.pt",
+            "sha256": "f731029032721ef10fb0ca0488fc5687a0ba780c7e14148b3ee3f526c28cc513",
+            "samples": 64
+          },
+          {
+            "path": "controller-000001.pt",
+            "sha256": "764e28e31c6513aebbc2ab68fd927a0596182c81418f013aa7dd6d7757fec755",
+            "samples": 64
+          },
+          {
+            "path": "controller-000002.pt",
+            "sha256": "bd6f2430b5826f11428d2e13b16b2db21e5fcf5e19d9805d7197ec7e5d1d0196",
+            "samples": 64
+          },
+          {
+            "path": "controller-000003.pt",
+            "sha256": "e1ba8e867aba30a678aa320f33ce6bc282494166a91cb56baea9c2a974e31387",
+            "samples": 64
+          },
+          {
+            "path": "controller-000004.pt",
+            "sha256": "89c922812594f254f047a4041601a310c8441ae602a537ab83ec2cb0a1665ab9",
+            "samples": 64
+          },
+          {
+            "path": "controller-000005.pt",
+            "sha256": "2555a0669be656e6e61858276990f1d6da6f5c94a94a7c8de0e7321b119f877a",
+            "samples": 64
+          },
+          {
+            "path": "controller-000006.pt",
+            "sha256": "5a7444893f2394234e48276da21a5271cbcbcc5899d9cc6010ababee5df791d2",
+            "samples": 64
+          },
+          {
+            "path": "controller-000007.pt",
+            "sha256": "6cbe31069e9055527b2c5870f97fdee459e6bf2cea2a19e56177392e881dca5c",
+            "samples": 64
+          },
+          {
+            "path": "controller-000008.pt",
+            "sha256": "c932da3e66147fb5ab32441d8d44c22d56514aa201c450ae6c99b47b10f0cade",
+            "samples": 64
+          },
+          {
+            "path": "controller-000009.pt",
+            "sha256": "b7adc3577ca83da18354aaea6a21f69e6124ee09387ff41e128e9c2852963a80",
+            "samples": 64
+          },
+          {
+            "path": "controller-000010.pt",
+            "sha256": "a9dc3cb2775e0ff3414d360854c1724257a28db93401debb504829c5b14ee135",
+            "samples": 64
+          },
+          {
+            "path": "controller-000011.pt",
+            "sha256": "2ce523da7874c78134c960e3f9732a56f50f512f25f7667f3f5556a53810c911",
+            "samples": 64
+          },
+          {
+            "path": "controller-000012.pt",
+            "sha256": "178062f0f5a6ce2b03b0c9c307592a784cb9564a8129a0c65bf277be66d9cbed",
+            "samples": 64
+          },
+          {
+            "path": "controller-000013.pt",
+            "sha256": "a97271196e15ce5ab173fcf54c807c53e6136f1590909d7b197e2912299a2db8",
+            "samples": 64
+          },
+          {
+            "path": "controller-000014.pt",
+            "sha256": "d177f715e5d1e5eaaef02339d831ae0a4a6d6a0a6ef45d6022b1bfaf3ee12bb4",
+            "samples": 64
+          },
+          {
+            "path": "controller-000015.pt",
+            "sha256": "4e638399115013ce4521f02fc8254dc7693be2d905d36bebfbbf00b3ecc8e163",
+            "samples": 64
+          },
+          {
+            "path": "controller-000016.pt",
+            "sha256": "4e4d792cad5969e15491b7870d3f35e657c3f618a74631ac49105b6625f076c0",
+            "samples": 64
+          },
+          {
+            "path": "controller-000017.pt",
+            "sha256": "5d824117627b8e773ca95f78efd744b848072346f03129c7e5a739ef3affa0ad",
+            "samples": 64
+          },
+          {
+            "path": "controller-000018.pt",
+            "sha256": "0728ccc210cfa8ef156f26554ef3d80db598b959ef8b36fc0e64a6b2d5b7558c",
+            "samples": 51
+          }
+        ],
+        "scope": "Mode 1, Qwen and frozen predictive planning",
+        "sampled_policy": false,
+        "slow_planner_enabled": true
+      },
+      "broker_errors": [],
+      "commands": 5167,
+      "control_latency_p95_seconds": 0.3535575423999997,
+      "capture_interval_p95_sim_seconds": 0.16500352,
+      "fresh_rgb_hz": 8.782453002590342,
+      "control_work_p95_seconds": 0.0012902738759294151,
+      "control_missed_deadlines": 0,
+      "control_interval_p95_seconds": 0.04534525074996054,
+      "control_interval_max_seconds": 0.06362287513911724,
+      "control_schedule_missed_deadlines": 2,
+      "timing_gate": {
+        "accepted": false,
+        "capture_control_passed": false,
+        "requirements": {
+          "fresh_rgb_hz_min": 19,
+          "rgb_interval_p95_max": 0.075,
+          "control_p95_max": 0.05
+        },
+        "reason": "Learned safety inference latency and command-application timestamps not yet qualified",
+        "application_timestamps_available": false
+      },
+      "depth_label_index": "training_labels/depth/index.jsonl",
+      "depth_label_samples": 0,
+      "storage": {
+        "frames": 2051,
+        "stream_sha256": "9ea4a41affc9e1182962174f1631f9035d37fc0afb66578bd3533cc6fb82c802",
+        "complete": true,
+        "codec": "per-frame zlib level 1, lossless RGB24",
+        "timestamps": "original AirSim image nanoseconds",
+        "pixel_format": "RGB24",
+        "color_calibration_sha256": "eb0f5d6d569353ab27f2374c466954866f4cde6ba09888506ad18cbaa0282fa4"
+      },
+      "training_label_frames": 3587,
+      "mean_actual_velocity_mps": 0.003007593130184468,
+      "maximum_actual_velocity_mps": 0.0030090860091149807,
+      "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+    },
+    "launcher_return_code": 2
+  }
+]

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UAV VLM &amp; World Models — Annotated Catalogue and Novelty Audit</title>
+<style>
+:root{--bg:#0e1013;--s:#151a20;--s2:#1b212a;--ink:#eaeef3;--dim:#93a1b1;--ac:#7fd3ff;--ac2:#ffd47f;--ok:#8ee6a8;--wn:#ffb37f;--bd:#ff9a9a;--ln:#282f38;--mo:ui-monospace,SFMono,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.75 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%}
+.wrap{max-width:1120px;margin:0 auto;padding:26px 22px 96px}
+h1{font-size:27px;line-height:1.25;margin:0 0 10px}
+h2{font-size:14px;margin:38px 0 14px;color:var(--ac);text-transform:uppercase;letter-spacing:1.1px;border-bottom:1px solid var(--ln);padding-bottom:7px}
+h3{font-size:15.5px;margin:0 0 9px;color:#fff;font-weight:650}
+p{margin:0}
+.meta{color:var(--dim);font-size:13px;font-family:var(--mo)}
+.en{background:var(--s);border:1px solid var(--ln);border-left:3px solid var(--ac);border-radius:10px;padding:14px 16px;margin:0 0 13px}
+.hd{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;margin-bottom:9px}
+.id{font:12px/1 var(--mo);color:var(--ac2);background:#20272f;padding:3px 7px;border-radius:5px}
+.row{display:grid;grid-template-columns:92px 1fr;gap:10px;margin:5px 0}
+@media(max-width:760px){.row{grid-template-columns:1fr;gap:2px}}
+.k1{font:11.5px/1.6 var(--mo);color:var(--ac);text-transform:uppercase;letter-spacing:.6px;padding-top:1px}
+.v{font-size:14.6px;line-height:1.72}
+.v b{color:#fff;font-weight:650}
+ul{margin:3px 0 3px 16px;padding:0}
+li{margin:3px 0;font-size:14.6px}
+.n{font-family:var(--mo);color:var(--ok)}
+.gp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:9px}
+@media(max-width:820px){.gp{grid-template-columns:1fr}}
+.gp>div{background:var(--s2);border-radius:8px;padding:9px 11px;font-size:14.2px}
+.gp b{color:var(--ok);font:11.5px var(--mo);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:3px}
+.gp .bb b{color:var(--wn)}
+table{width:100%;border-collapse:collapse;font-size:13.8px;margin:6px 0}
+th,td{padding:6px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--ln)}
+th{color:var(--ac);font:11.5px var(--mo);text-transform:uppercase;letter-spacing:.5px;background:#12171c}
+.fig{background:var(--s);border:1px solid var(--ln);border-radius:10px;padding:12px;margin:0 0 13px}
+.cap{color:var(--dim);font-size:12.5px;margin-top:7px}
+svg{max-width:100%;height:auto}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin:0 0 16px}
+.kpi div{background:var(--s);border:1px solid var(--ln);border-radius:9px;padding:10px 12px}
+.kpi b{display:block;font:19px/1.25 var(--mo);color:var(--ok)}
+.kpi span{font-size:11.5px;color:var(--dim);line-height:1.4;display:block}
+input[type=range]{width:100%;accent-color:#7fd3ff}
+.dash{background:var(--s2);border:1px dashed var(--ln);border-radius:9px;padding:10px 12px;margin-top:9px;font-size:14.2px}
+.out{font-family:var(--mo);font-size:13px;color:var(--ok);margin-top:6px}
+.pl{color:var(--dim);font-size:13px;margin-top:5px}
+.sub{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:860px){.sub{grid-template-columns:1fr}}
+details{background:var(--s2);border:1px solid var(--ln);border-radius:9px;padding:9px 12px;margin:0 0 9px}
+summary{cursor:pointer;font-weight:650;color:var(--ac);font-size:14.5px}
+.toc{background:var(--s);border:1px solid var(--ln);border-radius:10px;padding:12px 14px;margin:0 0 20px;font-size:14px}
+.toc ol{margin:4px 0 0 18px}.toc li{margin:2px 0;font-size:14px}
+hr{border:0;border-top:1px solid var(--ln);margin:26px 0}
+</style>
+</head>
+<body><div class="wrap">
+
+<h1>UAV VLM &amp; World Models — Annotated Catalogue</h1>
+<p class="meta">Companion to UAV VLM Literature Review - Full.md · supervisor-facing novelty audit · 18 September 2026</p>
+
+<div class="kpi">
+<div><b>60+</b><span>annotated entries</span></div>
+<div><b>6</b><span>anchor papers</span></div>
+<div><b>8</b><span>named open challenges</span></div>
+<div><b>13×</b><span>cloud-VLM latency spread</span></div>
+<div><b>19.74 Hz</b><span>onboard reference rate</span></div>
+</div>
+
+<div class="toc"><b>Contents</b>
+<ol>
+<li>Glossary — the five terms everything rests on</li>
+<li>Anchor papers, fully annotated</li>
+<li>The three architecture patterns</li>
+<li>Benchmarks and data</li>
+<li>VLM / VLA methods</li>
+<li>World models — two families</li>
+<li>Gaussian representations, the precursors, the SLAM stack</li>
+<li>Latency and inference</li>
+<li>Nesting and the two-speed design</li>
+<li>Certification toolbox</li>
+<li>The eight challenges, goods and bads</li>
+<li>Live arithmetic</li>
+<li>Verification ledger</li>
+<li>Supervisor-facing novelty audit</li>
+<li>Architecture audit — VLM/VLA implementation differences</li>
+</ol></div>
+
+<div class="en" style="border-left-color:var(--bd)"><div class="hd"><h3>Read this before using the idea shortlist</h3></div>
+<div class="row"><div class="k1">correction</div><div class="v">The earlier “Gaussian + language + UAV” and “uncertainty-aware JEPA” gaps were too broad. SINGER, GRAD-NAV++, PiJEPA, Calibrated Predictive Safety, and Think Like a Pilot cover important parts already.</div></div>
+<div class="row"><div class="k1">honest gap</div><div class="v">The remaining candidate is narrower: action-sensitive geometric prediction for 6-DoF flight, calibrated uncertainty that changes behavior, measured delay in meters of travel, and controlled transfer to held-out real routes.</div></div>
+<div class="row"><div class="k1">evidence</div><div class="v">Peer-reviewed papers, workshop papers, preprints, repositories, and vendor claims are not equivalent. The status of each line of evidence matters for a supervisor-facing novelty claim.</div></div></div>
+
+<h2>1 · Glossary</h2>
+
+<div class="en"><div class="hd"><h3>VLM — vision-language model</h3></div>
+<div class="row"><div class="k1">role</div><div class="v">reads one image plus a text prompt, answers in words.</div></div>
+<div class="row"><div class="k1">note</div><div class="v">a perceiver here: a later, smaller net turns its words into the flight command.</div></div></div>
+
+<div class="en"><div class="hd"><h3>VLA — vision-language-action model</h3></div>
+<div class="row"><div class="k1">role</div><div class="v">one network, image plus instruction in, the flight action out; no interface in between.</div></div>
+<div class="row"><div class="k1">note</div><div class="v">the dominant pattern in 2025–2026 work.</div></div></div>
+
+<div class="en"><div class="hd"><h3>World model — three flavours</h3></div>
+<div class="row"><div class="k1">flavour a</div><div class="v"><b>Dreamer / RSSM.</b> Compact recurrent latent state; imagined roll-outs inside the training loop; smallest compute per step.</div></div>
+<div class="row"><div class="k1">flavour b</div><div class="v"><b>Generative video.</b> Predicts the next frames in pixel or video-embedding space; richest signal; costliest step.</div></div>
+<div class="row"><div class="k1">flavour c</div><div class="v"><b>JEPA.</b> Predicts the <i>embedding</i> of the future, no pixel decoding; one distance in latent space plus a regulariser against collapse.</div></div>
+<div class="row"><div class="k1">note</div><div class="v">the three have begun to merge: PiJEPA covers language-conditioned latent planning, while Gaussian-JEPA and 4DGS-WAM cover predictive Gaussian representations. The remaining question is the full aerial, action-sensitive, uncertainty-aware, low-latency system.</div></div></div>
+
+<div class="en"><div class="hd"><h3>3DGS / 4DGS — the geometry</h3></div>
+<div class="row"><div class="k1">3DGS</div><div class="v">the scene as coloured anisotropic Gaussians; each primitive is <i>a list of numbers</i> — metric mean, log-scale spread, orientation, colour, opacity; renders fast and photorealistically.</div></div>
+<div class="row"><div class="k1">4DGS</div><div class="v">the same, time-indexed, splitting static background from movers, so only the movers need extrapolating.</div></div>
+<div class="row"><div class="k1">opacity</div><div class="v">already a per-primitive confidence, which scalar depth cannot express — the seed of the confidence-gate idea.</div></div></div>
+
+<div class="en"><div class="hd"><h3>Prefill — the number that explains the rest</h3></div>
+<div class="row"><div class="k1">share</div><div class="v">about <span class="n">94.4%</span> of on-device step time is the phase that <i>reads</i> the input, not the phase that writes the answer.</div></div>
+<div class="row"><div class="k1">meaning</div><div class="v">the input token budget binds first, parameter count second; one primitive set of a few hundred numbers is exactly such a budget.</div></div></div>
+
+<h2>2 · Anchor papers, fully annotated</h2>
+
+<div class="en"><div class="hd"><h3>VLM-Nav</h3><span class="id">PLOS ONE · Apr 2026</span></div>
+<div class="row"><div class="k1">what</div><div class="v">A three-stage, map-free pipeline for monocular aerial navigation, built against the two failure modes the authors flag: weak multimodal fusion and uninterpretable outputs.</div></div>
+<div class="row"><div class="k1">how</div><div class="v"><ul>
+<li><b>Stage 1</b> — one RGB camera; monocular depth from DepthAnything-V2.</li>
+<li><b>Stage 2</b> — image, depth map and a structured prompt go to a cloud VLM for obstacle and goal understanding.</li>
+<li><b>Stage 3</b> — a small fusion network combines that answer with distance-sensor readings and picks one of <span class="n">5</span> flight actions.</li></ul></div></div>
+<div class="row"><div class="k1">pattern</div><div class="v">VLM-as-perception: the language model never emits control; a hand-designed decoder bridges to a classical controller.</div></div>
+<div class="row"><div class="k1">results</div><div class="v">Completion <span class="n">0.98</span> on both AirSim scenes (Blocks, Downtown West); code released.</div></div>
+<div class="row"><div class="k1">says</div><div class="v">monocular depth plus a cloud VLM suffices for structured scenes; the compact fusion head keeps the loop real-time.</div></div>
+<div class="gp">
+<div><b>good</b><ul><li>every stage testable in isolation</li><li>the 5-way action set makes the interface concrete</li><li>open code, two public scenes</li></ul></div>
+<div class="bb"><b>bad</b><ul><li>cloud round-trips inside the loop</li><li>only two synthetic scenes</li><li>monocular scale drift passes straight into stage 3</li></ul></div></div></div>
+
+<div class="en"><div class="hd"><h3>FlightGPT</h3><span class="id">2505.12835</span><span class="id">EMNLP 2025</span></div>
+<div class="row"><div class="k1">what</div><div class="v">A VLM-based aerial VLN framework with an explicit two-stage recipe, aimed at the three weaknesses the authors list: insufficient multimodal fusion, weak generalisation, poor interpretability.</div></div>
+<div class="row"><div class="k1">how</div><div class="v"><ul>
+<li><b>Stage 1, SFT</b> — supervised fine-tuning on high-quality demonstrations, to improve the initialisation and the structured reasoning before any reinforcement.</li>
+<li><b>Stage 2, GRPO</b> — group-relative policy optimisation under a <i>composite</i> reward: goal accuracy, reasoning quality, format compliance.</li>
+<li><b>Reasoning</b> — a chain-of-thought trace precedes the action, which is what makes the decision readable.</li></ul></div></div>
+<div class="row"><div class="k1">why it works</div><div class="v">the composite reward is the load-bearing part: format-only training yields correct-looking but useless coordinates; the reasoning term forces the trace to agree with the emitted waypoint.</div></div>
+<div class="row"><div class="k1">results</div><div class="v">CityNav, leading every scenario; <span class="n">+9.22%</span> over the strongest baseline on <i>unseen</i> environments.</div></div>
+<div class="row"><div class="k1">says</div><div class="v">reasoning-before-acting buys the unseen margin; the stage order matters because the first stage already carries structured reasoning.</div></div>
+<div class="gp">
+<div><b>good</b><ul><li>interpretable traces, not only scores</li><li>clean, reproducible recipe</li><li>largest reported unseen-split margin among the anchors</li><li>open code</li></ul></div>
+<div class="bb"><b>bad</b><ul><li>no timing column at all</li><li>trace length <i>is</i> the latency budget — a long chain is a slow step</li><li>authors note no explicit staged/hierarchical planning inside the model</li></ul></div></div></div>
+
+<div class="en"><div class="hd"><h3>AirDreamer</h3><span class="id">2606.03252</span><span class="id">Jun 2026</span></div>
+<div class="row"><div class="k1">what</div><div class="v">A generalist navigator: a Dreamer-style world model for environment understanding with an RL policy on top, trained on imagined roll-outs — motivated by animal navigation, against hand-designed chains that generalise poorly across layouts.</div></div>
+<div class="row"><div class="k1">how</div><div class="v"><ul>
+<li><b>State</b> — compact recurrent latent; imagination replaces full pixel decoding per step.</li>
+<li><b>Reward</b> — deliberately sparse, no hand-crafted shaping, credited with escaping local-minimum traps and with useful yaw behaviour.</li>
+<li><b>Transfer</b> — effective sim-to-real with <i>no</i> extra tuning at deployment.</li></ul></div></div>
+<div class="row"><div class="k1">results</div><div class="v"><span class="n">+5.3%</span> over the best baseline in challenging maps; real flight to <span class="n">1.8 m/s</span>; scanning emerges without a shaping term.</div></div>
+<div class="row"><div class="k1">says</div><div class="v">for layout-sensitive navigation the imagination is the source of generalisation, and one sparse signal suffices to train it.</div></div>
+<div class="gp">
+<div><b>good</b><ul><li>the cleanest zero-tuning transfer claim in the set</li><li>minimal reward engineering</li><li>emergent scanning shows the imagined state is being used</li></ul></div>
+<div class="bb"><b>bad</b><ul><li>no language channel</li><li>modest absolute speed, 1.8 m/s</li><li>gains are percentage-point scale</li></ul></div></div></div>
+
+<div class="en"><div class="hd"><h3>WorldFly</h3><span class="id">2606.06147</span><span class="id">Jun 2026</span></div>
+<div class="row"><div class="k1">what</div><div class="v">A world-model-based VLA where one coupled flow-matching head jointly predicts the next near-term observation <i>and</i> the next action, targeted at occlusion-heavy urban canyons with abrupt view change.</div></div>
+<div class="row"><div class="k1">how</div><div class="v"><ul>
+<li><b>Two branches, one head</b> — branch one completes the visual future, branch two the action; trained so the imagined frame conditions the action.</li>
+<li><b>Why coupled</b> — both outputs share one representation, so no separate planner is needed.</li>
+<li><b>Extra</b> — introduces the Urban-Canyon Traversal benchmark.</li></ul></div></div>
+<div class="row"><div class="k1">results</div><div class="v">
+<table><tr><th>metric</th><th>WorldFly</th><th>OpenFly</th><th>π₀-UAV</th></tr>
+<tr><td>success, seen</td><td class="n">87%</td><td class="n">72%</td><td class="n">29%</td></tr>
+<tr><td>success, unseen</td><td class="n">31%</td><td class="n">16%</td><td class="n">10%</td></tr>
+<tr><td>nav error, new</td><td class="n">31.08 m</td><td class="n">35.32 m</td><td>—</td></tr></table></div></div>
+<div class="row"><div class="k1">says</div><div class="v">explicit future prediction helps most where the view changes abruptly; the authors price it as the dominant compute cost.</div></div>
+<div class="gp">
+<div><b>good</b><ul><li>best-in-class on both splits</li><li>an elegant single-artefact joint head</li><li>useful new benchmark</li></ul></div>
+<div class="bb"><b>bad</b><ul><li>author-stated expensive frame prediction</li><li>seen→unseen halves (87→31), so generalisation binds</li></ul></div></div></div>
+
+<div class="en"><div class="hd"><h3>Qwen-Drive</h3><span class="id">2609.00111</span></div>
+<div class="row"><div class="k1">what</div><div class="v">A foundation-style VLM for ground driving: Qwen3.5-4B language core, bird's-eye-view perception, flow-matching trajectory planner.</div></div>
+<div class="row"><div class="k1">says</div><div class="v">competitive for its size; cite as a VLM-for-mobility exemplar; numbers are not transferable to a quadrotor since camera geometry and action space differ.</div></div>
+<div class="gp">
+<div><b>good</b><ul><li>compact core plus flow-matching head is a good recipe</li><li>BEV is genuinely useful where poses are known</li></ul></div>
+<div class="bb"><b>bad</b><ul><li>not aerial</li><li>the BEV grid does not map cleanly onto a banked craft with a rolling view</li></ul></div></div></div>
+
+<div class="en"><div class="hd"><h3>CoDrone / CODrone</h3><span class="id">2504.20032</span></div>
+<div class="row"><div class="k1">what</div><div class="v">An oriented object-detection benchmark: <span class="n">10,000+</span> high-resolution aerial photographs, <span class="n">590,000+</span> labelled instances, twelve categories, oriented boxes.</div></div>
+<div class="row"><div class="k1">says</div><div class="v">a strong perception resource; there is no navigation paper under this name — a genuine dead end for the navigation question; a hobby product shares the name.</div></div>
+<div class="gp">
+<div><b>good</b><ul><li>oriented boxes fit aerial viewpoints</li><li>usable as a perception pretraining source</li></ul></div>
+<div class="bb"><b>bad</b><ul><li>detection only: no instructions, no trajectories</li><li>cannot carry a navigation result alone</li></ul></div></div></div>
+
+<h2>3 · The three architecture patterns</h2>
+<div class="fig"><svg viewbox="0 0 1120 292">
+<defs><marker id="ar" marker-width="8" marker-height="8" ref-x="7" ref-y="4" orient="auto"><path d="M0,0 L7,4 L0,8 Z" fill="#7fd3ff"/></marker></defs>
+<rect x="14" y="14" width="352" height="264" rx="11" fill="#151a20" stroke="#282f38"/>
+<text x="30" y="38" fill="#7fd3ff" font-size="13" font-weight="bold">1 · VLM-as-Perception</text>
+<text x="30" y="66" fill="#eaeef3" font-size="12">RGB → depth → VLM caption</text>
+<text x="30" y="86" fill="#eaeef3" font-size="12">caption + ranging → decoder → controller</text>
+<text x="30" y="118" fill="#93a1b1" font-size="11.5">members:</text>
+<text x="30" y="136" fill="#93a1b1" font-size="11.5">· UAV-ON 2508.00288</text>
+<text x="30" y="154" fill="#93a1b1" font-size="11.5">· MapNav 2502.13451</text>
+<text x="30" y="172" fill="#93a1b1" font-size="11.5">· VLM-Nav (monocular)</text>
+<text x="30" y="206" fill="#8ee6a8" font-size="11.5">+ each stage isolable</text>
+<text x="30" y="226" fill="#ff9a9a" font-size="11.5">- interface losses between stages</text>
+<text x="30" y="246" fill="#ff9a9a" font-size="11.5">- two stacks to keep warm</text>
+<rect x="384" y="14" width="352" height="264" rx="11" fill="#151a20" stroke="#282f38"/>
+<text x="400" y="38" fill="#7fd3ff" font-size="13" font-weight="bold">2 · VLM-as-Planner</text>
+<text x="400" y="66" fill="#eaeef3" font-size="12">VLM 1–5 Hz → waypoints / sub-goals</text>
+<text x="400" y="86" fill="#eaeef3" font-size="12">NMPC 20–50 Hz → thrust, body rates</text>
+<text x="400" y="118" fill="#93a1b1" font-size="11.5">members:</text>
+<text x="400" y="136" fill="#93a1b1" font-size="11.5">· SkyVLN 2507.06564</text>
+<text x="400" y="154" fill="#93a1b1" font-size="11.5">· OpenUAV 2410.07087</text>
+<text x="400" y="172" fill="#93a1b1" font-size="11.5">· UAV-VLRR 2503.02465 · FC-Planner 2309.13882</text>
+<text x="400" y="206" fill="#8ee6a8" font-size="11.5">+ certified inner loop, 2 speeds free</text>
+<text x="400" y="226" fill="#ff9a9a" font-size="11.5">- two artefacts, hand-tuned coupling</text>
+<text x="400" y="246" fill="#ff9a9a" font-size="11.5">- waypoints lose path curvature</text>
+<rect x="754" y="14" width="352" height="264" rx="11" fill="#151a20" stroke="#282f38"/>
+<text x="770" y="38" fill="#7fd3ff" font-size="13" font-weight="bold">3 · End-to-End VLA</text>
+<text x="770" y="66" fill="#eaeef3" font-size="12">image + instruction → one net → chunk</text>
+<text x="770" y="98" fill="#93a1b1" font-size="11.5">members:</text>
+<text x="770" y="116" fill="#93a1b1" font-size="11.5">· FlightGPT · AerialVLA 2603.14363</text>
+<text x="770" y="134" fill="#93a1b1" font-size="11.5">· AutoFly 2602.09657 · VLA-AN 2512.15258</text>
+<text x="770" y="152" fill="#93a1b1" font-size="11.5">· GRaD-Nav++ 2506.14009</text>
+<text x="770" y="170" fill="#93a1b1" font-size="11.5">· SINGER 2509.18610 · LiteVLA-H 2605.00884</text>
+<text x="770" y="188" fill="#93a1b1" font-size="11.5">· OnFly 2603.10682 · WorldFly 2606.06147</text>
+<text x="770" y="222" fill="#8ee6a8" font-size="11.5">+ one artefact, gradients reach input</text>
+<text x="770" y="242" fill="#ff9a9a" font-size="11.5">- prefill-bound; semantics may fade</text>
+<text x="770" y="262" fill="#ff9a9a" font-size="11.5">- cf. zero VQA in 2509.22195</text>
+</svg>
+<div class="cap">Pattern 3 is the 2025–2026 default; 1 and 2 survive where timing must be certified or the inner loop must be provably stable.</div></div>
+
+<h2>4 · Benchmarks and data</h2>
+
+<div class="en"><div class="hd"><h3>AerialVLN</h3><span class="id">2308.06735</span></div>
+<div class="row"><div class="k1">what</div><div class="v">Founded aerial VLN: <span class="n">25</span> synthetic city scenes in UE4 with an AirSim front-end; over <span class="n">25,000</span> written instructions; a discretised action space.</div></div>
+<div class="row"><div class="k1">good</div><div class="v">cheap, reproducible, still the reference split; discretised actions make tables comparable.</div></div>
+<div class="row"><div class="k1">bad</div><div class="v">synthetic only; coarse action space; its 20 m success radius is looser than 15 m elsewhere.</div></div></div>
+
+<div class="en"><div class="hd"><h3>CityNav</h3><span class="id">2406.14240</span></div>
+<div class="row"><div class="k1">what</div><div class="v">First large real-world aerial set: <span class="n">32,637</span> recorded paths over <span class="n">4.65 km²</span> of two real cities, rebuilt from laser-scanned point clouds; two interaction modes.</div></div>
+<div class="row"><div class="k1">finding</div><div class="v">every tested method improves once the geo-reference map is supplied — the ablation behind the 46.8%→22.5% figure.</div></div>
+<div class="row"><div class="k1">good</div><div class="v">truly real geometry, metric scale, a ready map ablation.</div></div>
+<div class="row"><div class="k1">bad</div><div class="v">two cities only; long paths stress memory; the map input is itself a confound.</div></div></div>
+
+<div class="en"><div class="hd"><h3>OpenFly</h3><span class="id">2502.18041</span></div>
+<div class="row"><div class="k1">what</div><div class="v">One platform with <i>four renderers at once</i>: UE, a game engine, satellite tiles, and 3DGS from real photos; ≈<span class="n">100,000</span> paths over <span class="n">18</span> scenes; an agent on a compact backbone.</div></div>
+<div class="row"><div class="k1">results</div><div class="v">OpenFly-Agent <span class="n">26.09%</span> on real outdoor flights; the 3DGS lane gives the best fidelity per unit cost.</div></div>
+<div class="row"><div class="k1">good</div><div class="v">the four-way renderer ablation is exactly what a representation study needs.</div></div>
+<div class="row"><div class="k1">bad</div><div class="v">renderer-to-renderer shifts leak into cross-paper tables; one instruction per path.</div></div></div>
+
+<div class="en"><div class="hd"><h3>OpenUAV</h3><span class="id">2410.07087</span></div>
+<div class="row"><div class="k1">what</div><div class="v">Realistic platform and benchmark: multi-view camera streams plus the UAV-Need-Help set for open-world object search.</div></div>
+<div class="row"><div class="k1">good</div><div class="v">real scans, multi-view, open-ended goals; a consistent multi-view gain.</div></div>
+<div class="row"><div class="k1">bad</div><div class="v">instruction style differs from AerialVLN, so cross-table numbers are only approximate.</div></div></div>
+
+<div class="en"><div class="hd"><h3>UAV-ON</h3><span class="id">2508.00288</span></div>
+<div class="row"><div class="k1">what</div><div class="v">Open-world object-goal benchmark: captions from a precomputing VLM form the semantic field; a separate agent then navigates.</div></div>
+<div class="row"><div class="k1">good</div><div class="v">clean two-stage protocol; captions cheap to regenerate.</div></div>
+<div class="row"><div class="k1">bad</div><div class="v">information lost at the caption interface; a fresh call per step.</div></div></div>
+
+<div class="en"><div class="hd"><h3>MapNav</h3><span class="id">2502.13451</span></div>
+<div class="row"><div class="k1">what</div><div class="v">An annotated semantic map <i>as the memory</i> — an explicit queryable list of what has been seen — feeding a decoupled planner.</div></div>
+<div class="row"><div class="k1">good</div><div class="v">directly comparable to a primitive-indexed memory; easy to ablate.</div></div>
+<div class="row"><div class="k1">bad</div><div class="v">ground-robot origin; annotation quality is the ceiling.</div></div></div>
+
+<div class="en"><div class="hd"><h3>AeroVerse</h3><span class="id">2408.15511</span></div>
+<div class="row"><div class="k1">what</div><div class="v">The benchmark suite around the aerial world model; it integrates over ten 2D/3D vision-language models, two pre-training sets, five fine-tuning sets, ten-plus metrics and a simulator.</div></div>
+<div class="row"><div class="k1">data</div><div class="v"><ul>
+<li><b>AerialAgent-Ego10k</b> — first-person real urban drone images, the first large real-world image-text pre-training set</li>
+<li><b>CyberAgent-Ego500k</b> — virtual image–text–<i>pose</i> aligned set for world-model pre-training</li>
+<li>five task families: scene awareness, spatial reasoning, navigational exploration, task planning, motion decision</li>
+<li>five matching instruction sets, 3k each</li></ul></div></div>
+<div class="row"><div class="k1">scoring</div><div class="v">SkyAgentEval, a GPT-judged metric layer — it reveals where 2D versus 3D models differ on UAV-agent tasks.</div></div>
+<div class="gp">
+<div><b>good</b><ul><li>the five-way split is the field's standard</li><li>aligned pose data is rare and directly useful</li><li>the scorer is scriptable</li></ul></div>
+<div class="bb"><b>bad</b><ul><li>judge noise needs a human-checked anchor subset</li><li>the five-way split is coarse</li><li>a per-step judge cost</li></ul></div></div></div>
+
+<div class="en"><div class="hd"><h3>Other sets, one line each</h3></div>
+<div class="row"><div class="k1">entries</div><div class="v"><ul>
+<li><b>IndoorUAV</b> <span class="id">2512.19024</span> — indoor coverage, 5,000+ paths, low ceilings, narrow passages; indoor scores sit below outdoor ones under the same radius.</li>
+<li><b>UAV-VLN</b> <span class="id">2504.21432</span> — end-to-end with lightweight fusion.</li>
+<li><b>UAV-VLRR</b> <span class="id">2503.02465</span> — rapid-response search-and-rescue split.</li>
+<li><b>LHNV</b> <span class="id">2412.09082</span> — multi-stage long-horizon formulation.</li>
+<li><b>NaVILA</b> <span class="id">2412.04453</span> — legged-robot baseline with a compact action head.</li>
+<li><b>FALCON-S</b> <span class="id">2609.06046</span> — modular high-fidelity suite for fixed-wing near-ground craft, full rigid-body 6-DoF.</li>
+<li><b>Open-vocab grounding</b> <span class="id">2506.10756</span> — fewer hallucinated objects, better tolerance.</li>
+<li><b>A2RL</b> <span class="id">2602.01860</span> — vision-only state estimation; post-stall NMPC <span class="id">2201.01186</span> for the aggressive fixed-wing regime.</li></ul></div></div>
+<div class="row"><div class="k1">caveat</div><div class="v">eight different action-space conventions and radius settings — reconciling them is itself a contribution.</div></div></div>
+
+<h2>5 · VLM / VLA methods</h2>
+
+<div class="en"><div class="hd"><h3>SINGER — onboard generalist</h3><span class="id">2509.18610</span><span class="id">Sep 2025</span></div>
+<div class="row"><div class="k1">what</div><div class="v">Language-guided aerial navigation with onboard sensing and compute only, aimed squarely at the field's three complaints: scarce demonstrations, real-time control demands, unreliable external pose.</div></div>
+<div class="row"><div class="k1">how</div><div class="v"><ul>
+<li><b>(i) Simulator</b> — a photorealistic, language-embedded flight simulator using Gaussian Splatting, built to keep the sim-to-real gap small and data generation cheap.</li>
+<li><b>(ii) Expert</b> — an RRT-inspired multi-trajectory generator producing collision-free demonstrations.</li>
+<li><b>(iii) Policy</b> — a lightweight end-to-end visuomotor net for real-time closed-loop control, trained on ≈<span class="n">700k–1M</span> observation–action pairs.</li></ul></div></div>
+<div class="row"><div class="k1">results</div><div class="v">Over a velocity-controlled semantic guidance baseline: reaches the query <span class="n">+23.33%</span> more often, holds it in view <span class="n">+16.67%</span> more, <span class="n">10%</span> fewer collisions; superior zero-shot transfer to unseen scenes <i>and</i> unseen goal objects.</div></div>
+<div class="gp">
+<div><b>good</b><ul><li>the whole chain inside one loop</li><li>the RRT expert makes labels cheap</li><li>only onboard hardware needed</li></ul></div>
+<div class="bb"><b>bad</b><ul><li>a fitted map per site</li><li>the expert's quality is the ceiling of the distilled policy</li></ul></div></div></div>
+
+<div class="en"><div class="hd"><h3>GRaD-Nav++ — VLM, Gaussian field, differentiable dynamics</h3><span class="id">2506.14009</span><span class="id">RA-L 11(2)</span></div>
+<div class="row"><div class="k1">what</div><div class="v">A lightweight VLA running fully onboard that follows natural-language commands in real time, built against hand-crafted skills, heavy tuning, and models too slow for the craft.</div></div>
+<div class="row"><div class="k1">how</div><div class="v"><ul>
+<li><b>Simulator</b> — a photorealistic 3DGS scene, so the fitted field is also the renderer.</li>
+<li><b>Training</b> — differentiable RL: gradients flow through renderer <i>and</i> dynamics together.</li>
+<li><b>Head</b> — a mixture-of-experts action head routing computation adaptively, improving generalisation while mitigating forgetting.</li></ul></div></div>
+<div class="row"><div class="k1">results</div><div class="v">
+<table><tr><th>setting</th><th>trained tasks</th><th>unseen tasks</th></tr>
+<tr><td>simulation</td><td class="n">83%</td><td class="n">75%</td></tr>
+<tr><td>real hardware</td><td class="n">67%</td><td class="n">50%</td></tr></table>
+multi-environment average <span class="n">81%</span> sim, <span class="n">67%</span> real.</div></div>
+<div class="row"><div class="k1">says</div><div class="v">compact, efficient models suffice for reliable language-guided flight without external infrastructure; the MoE head is the documented anti-forgetting device.</div></div>
+<div class="gp">
+<div><b>good</b><ul><li>the only entry with a full sim-and-real matrix on both splits</li><li>gradients through the renderer is a real efficiency gain</li></ul></div>
+<div class="bb"><b>bad</b><ul><li>a fitted scene per environment</li><li>several experts raise peak memory</li></ul></div></div></div>
+
+<div class="en"><div class="hd"><h3>SkyVLN</h3><span class="id">2507.06564</span></div>
+<div class="row"><div class="k1">what</div><div class="v">Planner–controller split: the language model emits sparse waypoints, then nonlinear MPC tracks them with the model inside its loop, in urban settings.</div></div>
+<div class="row"><div class="k1">good</div><div class="v">two speeds for free; a certifiable inner loop.</div></div>
+<div class="row"><div class="k1">bad</div><div class="v">waypoint coarseness limits curvature; no timing column.</div></div></div>
+
+<div class="en"><div class="hd"><h3>AerialVLA</h3><span class="id">2603.14363</span></div>
+<div class="row"><div class="k1">what</div><div class="v">Minimalist end-to-end: a compact backbone with a small regression head emitting continuous references, no separate controller.</div></div>
+<div class="row"><div class="k1">good</div><div class="v">one artefact; clean continuous outputs.</div></div>
+<div class="row"><div class="k1">bad</div><div class="v">a full-depth cost every step; possible semantic fading after tuning.</div></div></div>
+
+<div class="en"><div class="hd"><h3>VLA-AN</h3><span class="id">2512.15258</span></div>
+<div class="row"><div class="k1">what</div><div class="v">Onboard framework for complex environments: 3DGS-generated demonstrations, compact backbone, a cached prefix to stay warm between steps.</div></div>
+<div class="row"><div class="k1">good</div><div class="v">prefix caching is the standard cheap trick; runs on Jetson-class hardware.</div></div>
+<div class="row"><div class="k1">bad</div><div class="v">data cost moves into the map build; prefix staleness.</div></div></div>
+
+<div class="en"><div class="hd"><h3>The 2026 method line</h3></div>
+<div class="row"><div class="k1">entries</div><div class="v"><ul>
+<li><b>AutoFly</b> <span class="id">2602.09657</span> — wild-oriented VLA, reduced instruction set, compact action tokeniser; the token vocabulary caps precision.</li>
+<li><b>AeroDuo</b> <span class="id">2508.15232</span> — dual-stream, deliberative plus reactive fused per step; gains on long-horizon splits; two heads to calibrate.</li>
+<li><b>OpenVLN</b> <span class="id">2511.06182</span> — open-world expansion with a lightweight reasoner; leads that split; nomadic goals stress every reasoner.</li>
+<li><b>LookasideVLN</b> <span class="id">2604.17190</span> — a lookaside branch carries the heading into fusion, over memory graphs with lookahead; cheap and effective, one extra branch.</li>
+<li><b>See-and-Reach</b> <span class="id">2606.20045</span> — decouples far-range discovery from in-field approach, the staged structure single-stage recipes miss; needs a stage boundary.</li>
+<li><b>DynFly</b> <span class="id">2606.31654</span> — dynamic-aware <i>continuous</i> trajectory generation rather than sparse waypoints; smoother feasible tracks; chunk length must match the rate.</li>
+<li><b>CognitiveDrone</b> <span class="id">2503.01378</span> — real-time cognitive solving and reasoning on the craft, reasoning layer around <span class="n">≈2 Hz</span>.</li></ul></div></div></div>
+
+<h2>6 · World models — two families</h2>
+
+<div class="en"><div class="hd"><h3>Family A — compressed-state prediction</h3></div>
+<div class="row"><div class="k1">MAD</div><div class="v"><span class="id">2606.04534</span> mapping-aware model whose core predicts the occupancy / visibility map rather than raw pixels — the lowest-dimensional useful state in the set. <span class="n">9.66 m/s</span> sim, <span class="n">5.05 m/s</span> real, forest, depth camera only. Good: cheapest state, few samples. Bad: texture and colour detail are lost.</div></div>
+<div class="row"><div class="k1">Dream to Fly</div><div class="v"><span class="id">2501.14377</span> model-based RL from images only, compact recurrent state, on a racing set: up to <span class="n">9 m/s</span>; the craft learns to point at texture-rich gates untaught. Sample efficiency and generalisation both flagged for the base recipe.</div></div>
+<div class="row"><div class="k1">Dreaming Falcon</div><div class="v"><span class="id">2511.18243</span> physics-informed model-based RL; better convergence with fewer samples against the plain recipe and two other model-based methods; the same latent family underneath.</div></div>
+<div class="row"><div class="k1">SkyJEPA</div><div class="v"><span class="id">2606.23444</span> latent-only prediction, no pixel decoding; trained in a flightmare-style simulator, deployed zero-shot with no extra real-world fine-tuning. Cheapest imagination; no language channel.</div></div>
+<div class="row"><div class="k1">AirDreamer</div><div class="v">see §2 — the same family with a deliberately sparse reward.</div></div></div>
+
+<div class="en"><div class="hd"><h3>Family B — generative video plus language</h3></div>
+<div class="row"><div class="k1">WorldVLN</div><div class="v"><ul>
+<li><b>what</b> <span class="id">2605.15964</span> — first autoregressive world-action model for aerial VLN; short-horizon state transitions decoded to waypoint actions.</li>
+<li><b>how</b> a latent autoregressive video backbone; each executed segment's new observations are re-encoded into the <i>same</i> context, so prediction is closed-loop rather than one clip.</li>
+<li><b>training</b> two stages: ground the video prior in instruction-conditioned dynamics, then an action-aware group-relative update scoring waypoints by their rollout consequences.</li>
+<li><b>results</b> <span class="n">+12%</span> over VLA baselines, larger on hard cases; zero-shot to a real craft.</li>
+<li><b>bad</b> autoregressive length is the budget; stage two may fade the language part.</li></ul></div></div>
+<div class="row"><div class="k1">AeroAct</div><div class="v"><ul>
+<li><b>what</b> <span class="id">2607.14997</span> — action-centred world-action model; the paper claims the first WAM instantiated <i>and</i> demonstrated for real-world aerial flight. Treat this as the authors’ scope claim, not evidence that the broader aerial VLA field is empty.</li>
+<li><b>how</b> a pretrained video diffusion transformer adapted to emit local trajectory-action chunks from egocentric history, proprioception and language.</li>
+<li><b>the trick</b> future frames act as dense consequence supervision <i>during training only</i>; at deployment the model decodes actions without generating video — the two-speed logic inside one net.</li>
+<li><b>data</b> a DiffAero-based pipeline with complementary Isaac-Lab and 3DGS renderers; a low-cost handheld capture device recreates flight-like egocentric trajectories; a self-guidance pass improves temporal consistency across overlapping chunks.</li>
+<li><b>bad</b> chunk length must be tuned; the decode still dominates when the video branch is kept.</li></ul></div></div>
+<div class="row"><div class="k1">ImagineUAV</div><div class="v"><span class="id">2606.01205</span> WAM plus a kinodynamic planner: the learned part imagines the goal, the classical part turns it into a feasible track. Consistent long-horizon gains; two interfaces to tune.</div></div></div>
+
+<div class="en"><div class="hd"><h3>Latent-side studies worth importing</h3></div>
+<div class="row"><div class="k1">entries</div><div class="v"><ul>
+<li><b>DiLA</b> <span class="id">2605.15725</span> — disentangled latent-action models from unlabelled video, asymmetric two-branch design.</li>
+<li><b>Language-conditioned WMs</b> <span class="id">2511.22904</span> — dynamics-descriptive language, not merely task instructions, improves generalisation.</li>
+<li><b>Predictability theory</b> <span class="id">2607.10362</span> — a control-theoretic account of prediction-error training for latent models inside planners.</li>
+<li><b>Stability</b> <span class="id">2605.09241</span> subspace regularisation; <b>belief space</b> <span class="id">2605.25313</span>; <b>V-JEPA 2</b> <span class="id">2506.09985</span> long-horizon with short-distance embeddings; <b>FF-JEPA</b> <span class="id">2606.09311</span> latent planners.</li>
+<li><b>CAPE</b> <span class="id">2606.07304</span> — contrastive action-conditioned parallel encoding; notes that small-but-critical action differences are harder to separate in latent space.</li></ul></div></div></div>
+
+<h2>7 · Gaussian representations, precursors, the SLAM stack</h2>
+
+<div class="en"><div class="hd"><h3>Splat-Nav</h3><span class="id">2403.02751</span></div>
+<div class="row"><div class="k1">what</div><div class="v">A real-time pipeline in two modules over a Gaussian field.</div></div>
+<div class="row"><div class="k1">how</div><div class="v"><ul>
+<li><b>Splat-Plan</b> — a safe-by-construction polytope corridor from rigorous collision constraints, then a Bézier trajectory through it.</li>
+<li><b>Splat-Loc</b> — recursive pose estimates from the onboard RGB feed alone, exploiting the point-cloud form the field already has.</li>
+<li><b>goals</b> — by coordinates, or by language over a semantic field.</li></ul></div></div>
+<div class="row"><div class="k1">results</div><div class="v"><span class="n">126</span> hardware flights; safety and speed equivalent to motion capture and visual odometry <i>without</i> their manual frame alignment; re-planning above <span class="n">2 Hz</span>, pose about <span class="n">25 Hz</span> — an order faster than the NeRF-based pipeline.</div></div>
+<div class="gp">
+<div><b>good</b><ul><li>corridors make safety provable</li><li>the rate gap versus the older method is decisive</li></ul></div>
+<div class="bb"><b>bad</b><ul><li>a fitted map per site</li><li>corridor tightness must be tuned</li></ul></div></div></div>
+
+<div class="en"><div class="hd"><h3>SOUS VIDE / FiGS</h3><span class="id">2412.16346</span></div>
+<div class="row"><div class="k1">what</div><div class="v">A simulator, a training approach and a policy architecture together, for end-to-end visual navigation with zero-shot transfer on onboard sensing and compute only.</div></div>
+<div class="row"><div class="k1">simulator</div><div class="v"><b>FiGS</b> couples a computationally simple dynamics model to a high-fidelity Gaussian-Splatting reconstruction; up to <span class="n">130 fps</span> photorealistic images.</div></div>
+<div class="row"><div class="k1">training</div><div class="v"><span class="n">100k–300k</span> image / state / action pairs from an expert MPC with privileged state and dynamics, randomised over dynamics parameters and spatial disturbances, distilled into a lightweight net.</div></div>
+<div class="row"><div class="k1">policy</div><div class="v"><b>SV-Net</b> consumes colour image, optical flow and IMU, emitting thrust and body-rate commands at <span class="n">20 Hz</span>; a learned module adapts at runtime to variations in the craft's own dynamics.</div></div>
+<div class="row"><div class="k1">results</div><div class="v"><span class="n">105</span> hardware experiments; robust to 30% mass change, 40 m/s gusts, 60% brightness change, moved or removed objects, and people crossing the field.</div></div>
+<div class="gp">
+<div><b>good</b><ul><li>the best-documented zero-shot recipe</li><li>the three streams match the three quantities the inner loop needs</li><li>the perturbation list is a ready-made protocol</li></ul></div>
+<div class="bb"><b>bad</b><ul><li>a fitted scene per site</li><li>optical flow depends on the frame rate</li></ul></div></div></div>
+
+<div class="en"><div class="hd"><h3>ActiveGS and VISTA — the active-perception pair</h3></div>
+<div class="row"><div class="k1">ActiveGS</div><div class="v"><span class="id">2412.17769</span> active scene reconstruction: which next view best reduces the field's uncertainty; published in a letters venue, tested on an unmanned platform. Directly reusable as a planner's next-best-view list; coverage stays limited in narrow passages.</div></div>
+<div class="row"><div class="k1">VISTA</div><div class="v"><ul>
+<li><b>what</b> <span class="id">2507.01125</span> — open-vocabulary, task-relevant exploration with an <i>online</i> semantic field; a search instruction in, an informative trajectory out.</li>
+<li><b>metric</b> — a viewpoint-semantic coverage score quantifying geometric view diversity <i>and</i> task relevance in one number.</li>
+<li><b>planning</b> — receding-horizon trajectories prioritising semantic similarity to the query plus unexplored regions.</li>
+<li><b>results</b> — beats FisherRF and Bayes' Rays in computation speed and reconstruction quality on static sets; <span class="n">6×</span> higher success in challenging maps on a craft, matching them in easy ones; platform-agnostic across a quadrotor and a legged robot.</li>
+<li><b>bad</b> — the coverage weighting must be tuned; semantic quality caps the score.</li></ul></div></div></div>
+
+<div class="en"><div class="hd"><h3>Gaussian world models — the manipulation line</h3></div>
+<div class="row"><div class="k1">entries</div><div class="v"><ul>
+<li><b>GWM</b> <span class="id">2508.17600</span> — scalable Gaussian world models for manipulation.</li>
+<li><b>GAF</b> <span class="id">2506.14135</span> — the Gaussian Action Field, a 4D form for dynamic scenes in manipulation.</li>
+<li><b>GEM-4D</b> <span class="id">2605.22882</span> — geometry-enhanced video world model on LiDAR point clouds, asymmetric-resolution design; <span class="n">+26.8%</span> sim, <span class="n">+34.3%</span> real over the video-only baseline.</li>
+<li><b>ManiGaussian</b> <span class="id">2403.08321</span> and the hierarchical bi-manual <b>++</b> <span class="id">2506.19842</span>.</li></ul></div></div>
+<div class="row"><div class="k1">caveat</div><div class="v">all manipulation or ground: the primitive list is the natural interface, but none is tested on a flying craft.</div></div></div>
+
+<div class="en"><div class="hd"><h3>The three precursors of the combined project</h3></div>
+<div class="row"><div class="k1">Gaussian-JEPA</div><div class="v"><span class="id">2608.15651</span><ul>
+<li>predicts the representations of held-out primitive blocks from the visible context</li>
+<li>an online encoder plus a stop-gradient target encoder, an exponential moving average of it, giving multi-scale targets; complementary target projections; feature-space grounding</li>
+<li>no input-space decoder is needed at all</li>
+<li>evaluated under resampling, partial observation, renderable shape completion, part segmentation, classification — better consistency and instance retention</li>
+<li><i>it is representation pretraining: no language component, no navigation evaluation</i></li></ul></div></div>
+<div class="row"><div class="k1">4DGS-WAM</div><div class="v"><span class="id">2608.25956</span><ul>
+<li>an object-centric model over the time-indexed field, separating movers from the static background</li>
+<li>a policy model predicts the actors' future actions; a world model predicts the primitives' transformations; static content is reused from past frames, so extrapolation concentrates on the movers</li>
+<li>on a driving set, with an ablation for the static-reuse choice</li>
+<li><i>Gaussian-based world-action model, but driving, not aerial</i></li></ul></div></div>
+<div class="row"><div class="k1">GST-VLA</div><div class="v"><span class="id">2603.09079</span><ul>
+<li>a Gaussian Spatial Tokenizer turns frozen dense depth and frozen semantic patch features into <span class="n">128</span> anisotropic primitives — metric residual mean, log-scale covariance, learned opacity — pooled to a fixed budget</li>
+<li>a 3D depth-aware chain-of-thought supervises four structured intermediate thoughts: object grounding, grasp-contact geometry, pairwise metric distances, coarse SE(3) waypoints</li>
+<li>a <span class="n">300M</span> flow-matching action expert with a mixture-of-experts feedforward block decodes 7-DoF delta actions by conditional ODE integration</li>
+<li>results: 96.4% on one manipulation suite (+2.0), 80.2% on the other (+5.4)</li>
+<li><i>the primitive set is already the interface here — but manipulation, not a flying craft</i></li></ul></div></div></div>
+
+<div class="en"><div class="hd"><h3>Compression and uncertainty — ready-made blocks</h3></div>
+<div class="row"><div class="k1">entries</div><div class="v"><ul>
+<li><b>survey</b> <span class="id">2407.09510</span> — the compression landscape in one place.</li>
+<li><b>LightGaussian</b> <span class="id">2311.17245</span> — <span class="n">15×</span> smaller at 200+ fps.</li>
+<li><b>PUP</b> <span class="id">2406.10219</span> — principled uncertainty-guided pruning of redundant primitives.</li>
+<li><b>PRIMU</b> <span class="id">2508.02443</span> — post-hoc primitive-level error and coverage straight from the primitives; the natural gate variable.</li>
+<li><b>grouping</b> <span class="id">2312.00732</span> — primitives into instance-level groups for downstream tasks.</li></ul></div></div>
+<div class="row"><div class="k1">note</div><div class="v">a budget of a few hundred primitives is realistic; that budget <i>is</i> the prefill token budget.</div></div></div>
+
+<div class="en"><div class="hd"><h3>The factor-graph memory stack — the SLAM seam</h3></div>
+<div class="row"><div class="k1">base</div><div class="v"><b>GS-SLAM</b> <span class="id">2311.11700</span> — first dense map on the primitive representation inside the loop, balancing efficiency and accuracy.</div></div>
+<div class="row"><div class="k1">speed</div><div class="v"><b>CaRtGS</b> <span class="id">2410.00486</span> computational alignment for real time; <b>LPIPSuite</b> <span class="id">2505.09915</span> large-scale with progressive initialisation, no depth input needed.</div></div>
+<div class="row"><div class="k1">failures</div><div class="v"><b>MBA</b> <span class="id">2411.08279</span> motion-blur aware; <b>EGS</b> <span class="id">2508.07003</span> event-fused for blur; <b>RGS</b> <span class="id">2601.00705</span> one-shot dense initialisation replacing iterative densification.</div></div>
+<div class="row"><div class="k1">coverage</div><div class="v"><b>MCGS</b> <span class="id">2509.14191</span> first purely RGB multi-camera; <b>Spectral</b> <span class="id">2606.21258</span> observability-aware and degeneracy-robust; <b>PanoGS</b> <span class="id">2609.17387</span> panoramic; <b>MonoEM-GS</b> <span class="id">2604.10593</span> expectation-maximisation with feed-forward priors.</div></div>
+<div class="row"><div class="k1">4D &amp; misc</div><div class="v">hybrid 3D–4D <span class="id">2505.13215</span>; alias-free 4D <span class="id">2511.18367</span>; cascaded temporal residue <span class="id">2505.18306</span>; object view priors <span class="id">2506.12716</span>; faster optimisation <span class="id">2602.09999</span>; the predict-then-update template <span class="id">2501.01715</span>; 2.5D-simplified fits <span class="id">2405.17083</span>; event-aided <span class="id">2410.15392</span>; Levenberg-Marquardt variants <span class="id">2409.12892</span>.</div></div>
+<div class="row"><div class="k1">gap</div><div class="v">the SLAM backend is still not automatically a learned policy state. The credible opening is to test which compressed map, pose-uncertainty, and map-age variables are sufficient for action selection.</div></div></div>
+
+<h2>8 · Latency and inference</h2>
+<div class="en"><div class="hd"><h3>The measured numbers</h3></div>
+<div class="row"><div class="k1">cloud</div><div class="v">
+<table><tr><th>system</th><th>setting</th><th>number</th></tr>
+<tr><td>GPT-5 Nano</td><td>per query</td><td class="n">22.0 s</td></tr>
+<tr><td>Gemini 2.5 Flash-Lite</td><td>per query</td><td class="n">1.7 s</td></tr>
+<tr><td>typical 4G</td><td>round trip</td><td class="n">1.5–3.0 s</td></tr></table></div></div>
+<div class="row"><div class="k1">onboard</div><div class="v">
+<table><tr><th>system</th><th>mechanism</th><th>number</th></tr>
+<tr><td>CognitiveDrone <span class="id">2503.01378</span></td><td>reasoning layer on the craft</td><td class="n">≈2 Hz</td></tr>
+<tr><td>OnFly <span class="id">2603.10682</span></td><td>prefix caching on the mobile SoC</td><td class="n">6.5×</td></tr>
+<tr><td>Jetson-PI <span class="id">2607.12659</span></td><td>foresight-aligned asynchronous inference</td><td class="n">8.66×</td></tr>
+<tr><td>LiteVLA-H <span class="id">2605.00884</span></td><td>256 M, dual-rate, on-device</td><td class="n">50.65 ms ≈ 19.74 Hz</td></tr></table></div></div>
+<div class="row"><div class="k1">reading</div><div class="v">the 13× cloud spread is itself a design decision; the 94.4% share makes the token count the binding constraint; the two speed-up families attack it from opposite sides — caching the prefix, and aligning the asynchronous branches.</div></div>
+<div class="row"><div class="k1">also on file</div><div class="v">asynchronous two-branch policy <span class="id">2512.20188</span> · latency-resilient fusion <span class="id">2606.20458</span> · low-resource wrapper <span class="id">2512.11769</span> · action tokenisation <span class="id">2501.09747</span> · action-chain reasoning <span class="id">2601.11404</span> · thinking-with-image <span class="id">2603.14523</span> · verbalised latent planning <span class="id">2601.09708</span> · attention steering <span class="id">2608.17095</span> · tool injection <span class="id">2608.14047</span> · distillation <span class="id">2510.09607</span> · tiny adapter <span class="id">2509.09372</span> · 100k-hour backbone <span class="id">2607.15330</span> · horizon-adaptive multi-turn <span class="id">2602.12351</span> · progress-reward synthesis <span class="id">2607.21655</span>.</div></div>
+<div class="row"><div class="k1">gap</div><div class="v">almost none of these prints mass or power of the on-device unit, so both must be measured.</div></div></div>
+
+<h2>9 · Nesting and the two-speed design</h2>
+<div class="en"><div class="hd"><h3>The ingredients, with their exact contribution</h3></div>
+<div class="row"><div class="k1">nesting</div><div class="v"><ul>
+<li><b>MRL</b> <span class="id">2205.13147</span> — one run, many nested sub-models, each beating a from-scratch model of its size; the prefix is the small piece.</li>
+<li><b>MatFormer</b> <span class="id">2310.07707</span> — nested transformer for elastic inference; many sub-settings from one training.</li>
+<li><b>M3</b> <span class="id">2405.17430</span> — the same for the multimodal case, where vision tokens dominate the budget.</li></ul></div></div>
+<div class="row"><div class="k1">depth</div><div class="v">a halting unit sets the depth per sample <span class="id">2004.13542</span>; per-token recurrence converges to the same state <span class="id">2607.14427</span> — a different mechanism from the fixed prefix.</div></div>
+<div class="row"><div class="k1">two speeds</div><div class="v">shared-weight fast-and-slow <span class="id">2405.17418</span>; asynchronous branches <span class="id">2512.20188</span>; dual-rate on-device <span class="id">2605.00884</span> — the three realisations of the same idea.</div></div>
+<div class="row"><div class="k1">forgetting</div><div class="v">zero on twelve suites after action tuning <span class="id">2509.22195</span>; insulating the base helps yet is not a guaranteed cure; in-context updates ease the plasticity loss <span class="id">2605.12484</span>. Report both scores side by side.</div></div></div>
+
+<h2>10 · Certification toolbox</h2>
+<div class="en"><div class="hd"><h3>The five, plus the statistics</h3></div>
+<div class="row"><div class="k1">entries</div><div class="v"><ul>
+<li>reachability for controlled systems <span class="id">1805.09944</span></li>
+<li>specification-guided safety for feedforward nets <span class="id">1812.06161</span></li>
+<li>simulation-guided reachable-set estimation <span class="id">2004.12273</span></li>
+<li>runtime verification case study <span class="id">2408.08592</span></li>
+<li>unified piecewise-linear view <span class="id">1711.00455</span></li>
+<li>statistics for offline randomisation <span class="id">2506.10133</span></li></ul></div></div>
+<div class="row"><div class="k1">reading</div><div class="v">all operate on low-dimensional maps, so the short nested prefix and a primitive-indexed vector keep the cost small; the bound widens with the layer count, which is why the small piece is the certifiable one.</div></div></div>
+
+<h2>11 · The eight challenges, goods and bads</h2>
+<details open><summary>1 · Latency and onboard compute</summary>
+<p><b>Good</b> — two working strategies: hierarchical splitting, the two-speed design, nearly universal; and staleness tolerance, fused asynchronous branches with a six-second tolerance noted. Hardware-optimised lines reach 6.5× and 8.66×.</p>
+<p><b>Bad</b> — capability papers print no timing; no reporting norm; mass and power rarely stated; no incident log, so every safety claim is architectural.</p></details>
+<details><summary>2 · Generalisation, the sim-to-real gap</summary>
+<p><b>Good</b> — named by both surveys; measurable with mixed protocols; zero-shot transfer shown three times over.</p>
+<p><b>Bad</b> — map removal 46.8%→22.5%; 87→31 on the leading model; only a few methods ever flew; no controlled paired study found.</p></details>
+<details><summary>3 · Safety and formal guarantees</summary>
+<p><b>Good</b> — the whole toolbox above is cheap on the small pieces.</p>
+<p><b>Bad</b> — still future work in the roadmap; hallucination persists; unapplied to aerial policies.</p></details>
+<details><summary>4 · Data and metrics</summary>
+<p><b>Good</b> — real scanned cities; generous sizes; a standard five-way split.</p>
+<p><b>Bad</b> — radius drift 1–5 m and 20 versus 15 m; thin indoor coverage; varying instruction styles.</p></details>
+<details><summary>5 · Multi-drone</summary>
+<p><b>Good</b> — early attempts exist; the leader–follower pairing is natural.</p>
+<p><b>Bad</b> — unsettled whether gains come from the structure or merely from capacity; overhead and staleness.</p></details>
+<details><summary>6 · Long-horizon memory, the SLAM seam</summary>
+<p><b>Good</b> — a mature factor-graph stack maps straight onto the need; the primitive map is already an explicit queryable memory.</p>
+<p><b>Bad</b> — the reviewed VLA papers rarely expose a factor-graph memory interface; map age, pose uncertainty, and viewpoint change remain poorly measured.</p></details>
+<details><summary>7 · Regulation</summary>
+<p><b>Good</b> — a written pathway: the June 2025 order and the proposed Part 108 with automated detection and avoidance, remote identification and approved service providers.</p>
+<p><b>Bad</b> — no reviewed technical paper ties its design to those clauses.</p></details>
+<details><summary>8 · The Gaussian gap</summary>
+<p><b>Good</b> — mature simulator, compression and uncertainty; three precursors already cover the parts.</p>
+<p><b>Bad</b> — no paper located here demonstrates the complete combination of predicted Gaussian/geometric state, language-conditioned 6-DoF action selection, calibrated uncertainty, delay-aware execution, and controlled real-flight transfer with measured onboard latency.</p></details>
+
+<h2>12 · Live arithmetic</h2>
+<div class="sub">
+<div class="en"><div class="hd"><h3>Travel per decision step</h3></div>
+<label class="out">speed v: <span id="v1">9.0</span> m/s</label><input id="v" type="range" min="1" max="10" step="0.1" value="9">
+<label class="out">step t: <span id="t1">50.65</span> ms</label><input id="t" type="range" min="20" max="3000" step="1" value="50.65">
+<p id="o1" class="out"></p>
+<p class="cap">Reference points: cloud 1.7 s and 22.0 s; 4G 1.5–3.0 s; onboard 50.65 ms.</p></div>
+<div class="en"><div class="hd"><h3>Token budget versus prefill</h3></div>
+<label class="out">primitives N: <span id="n1">128</span></label><input id="n" type="range" min="32" max="512" step="1" value="128">
+<label class="out">views K: <span id="k1">3</span></label><input id="k" type="range" min="1" max="9" step="1" value="3">
+<p id="o2" class="out"></p>
+<p class="cap">With the prefill share near 0.944 the token count effectively is the rate.</p></div></div>
+<script>
+var V=document.getElementById('v'),T=document.getElementById('t'),N=document.getElementById('n'),K=document.getElementById('k');
+function up(){var v=+V.value,t=+T.value;document.getElementById('v1').textContent=v.toFixed(1);document.getElementById('t1').textContent=t.toFixed(2);
+document.getElementById('o1').innerHTML='d = v·t = '+ (v*t/1000).toFixed(3) +' m per step · f = 1/t = '+(1000/t).toFixed(2)+' Hz';}
+function toks(){var n=+N.value,k=+K.value;document.getElementById('n1').textContent=n;document.getElementById('k1').textContent=k;
+document.getElementById('o2').innerHTML='tokens N·K = '+(n*k)+' · prefill share ≈ 0.944 · prefill tokens ≈ '+(n*k*0.944).toFixed(1);}
+V.oninput=up;T.oninput=up;N.oninput=toks;K.oninput=toks;up();toks();
+</script>
+
+<h2>13 · Verification ledger</h2>
+<div class="en"><div class="hd"><h3>What was checked where</h3></div>
+<div class="row"><div class="k1">abstracts</div><div class="v">the six anchors · both surveys · FlightGPT · GRaD-Nav++ · SOUS VIDE · SINGER · VISTA · Splat-Nav · AeroVerse · AeroAct · AirDreamer · WorldVLN · the Gaussian and JEPA precursors.</div></div>
+<div class="row"><div class="k1">vendor page</div><div class="v">Atlas, with its two documented caveats — an asymmetric camera comparison, and no independent reproduction located.</div></div>
+<div class="row"><div class="k1">still to read</div><div class="v">the 2 Hz, 22.0 s and 1.7 s figures, the 46.8→22.5 drop, +13.1%, and the 126 and 105 flight counts arrived as search summaries; confirm them in the PDFs.</div></div>
+<div class="row"><div class="k1">name note</div><div class="v">the nested-transformer companion cited by name only — its identifier was not confirmed among the retrieved records.</div></div></div>
+
+<h2>14 · Supervisor-facing novelty audit</h2>
+<div class="en" style="border-left-color:var(--bd)"><div class="hd"><h3>Bottom line</h3></div>
+<div class="row"><div class="k1">not new</div><div class="v">Language-conditioned UAV control, Gaussian-splat flight simulation, Gaussian-based real-to-sim transfer, JEPA-style latent planning, uncertainty-aware candidate scoring, and two-speed latency handling have all appeared in close prior work.</div></div>
+<div class="row"><div class="k1">still open</div><div class="v">No paper located here demonstrates the complete combination on a real UAV: action-sensitive geometric prediction, calibrated uncertainty that changes behavior, delay expressed in flight distance, and controlled transfer to held-out real routes.</div></div>
+<div class="row"><div class="k1">claim to use</div><div class="v">The contribution should be a measurable mechanism for action-sensitive 6-DoF prediction and safe execution—not “the first JEPA UAV,” “the first Gaussian VLA,” or “the first language-conditioned drone.”</div></div></div>
+
+<div class="en"><div class="hd"><h3>Closest prior work: contribution, strength, limitation, opening</h3></div>
+<div class="row"><div class="k1">UAV-Flow</div><div class="v"><b>NeurIPS 2025.</b> Real-world language-conditioned fine-grained UAV control benchmark. <b>Strength:</b> concrete aerial task and expert trajectories. <b>Limit:</b> benchmark, not a new predictive mechanism. <b>Open:</b> use it to test stale observations, dynamic obstacles, and safety—not to claim language-to-action novelty.</div></div>
+<div class="row"><div class="k1">SINGER</div><div class="v"><b>UAV generalist navigation.</b> Language-conditioned onboard policy with a 3DGS simulator and hardware transfer. <b>Strength:</b> end-to-end system evidence. <b>Limit:</b> does not establish action-sensitive calibrated latent prediction. <b>Open:</b> show a causal benefit from geometric prediction under partial maps, fast motion, and delayed sensing.</div></div>
+<div class="row"><div class="k1">GRAD-NAV++</div><div class="v"><b>RA-L 2026.</b> Onboard aerial VLA with photorealistic 3DGS simulation and real-flight evaluation. <b>Strength:</b> very close system prior. <b>Limit:</b> differentiable simulation is not the same as calibrated future imagination. <b>Open:</b> isolate whether an action-conditioned geometric state reduces failures.</div></div>
+<div class="row"><div class="k1">Splat-Nav / SOUS VIDE</div><div class="v"><b>T-RO / RA-L lines.</b> Gaussian maps and Gaussian-splat simulators already support safe navigation and sim-to-real flight. <b>Strength:</b> real hardware and disturbance testing. <b>Limit:</b> not language-conditioned JEPA planning. <b>Open:</b> add a predictive state or uncertainty-to-action mechanism, not Gaussian rendering alone.</div></div>
+<div class="row"><div class="k1">PiJEPA</div><div class="v"><b>CVPR Workshop 2026.</b> Policy-guided JEPA-style planning for language-conditioned navigation. <b>Strength:</b> direct precedent for language plus latent planning. <b>Limit:</b> not high-speed 6-DoF UAV control. <b>Open:</b> add flight geometry, braking/recoverability, observation age, and hardware timing.</div></div>
+<div class="row"><div class="k1">Calibrated Predictive Safety</div><div class="v"><b>2026 preprint.</b> Action chunks, action-conditioned JEPA, calibrated risk/progress, deterministic safety shield, fallback ladder. <b>Strength:</b> closest prior to selective latent planning. <b>Limit:</b> simulation-only and not UAV-specific. <b>Open:</b> a genuinely new speed-aware recoverability mechanism with real-flight evidence.</div></div>
+<div class="row"><div class="k1">Think Like a Pilot</div><div class="v"><b>2026 UAV preprint.</b> Slow semantic pilot, fast action model, and delayed-feature alignment. <b>Strength:</b> directly addresses action staleness. <b>Limit:</b> fast inference does not guarantee correct or safe actions. <b>Open:</b> learn a validity boundary tied to speed, braking distance, and predicted recoverability.</div></div>
+<div class="row"><div class="k1">VLM-MPPI</div><div class="v"><b>September 2026 UAV preprint.</b> Asynchronous VLM selection among six behavior-conditioned MPPI trajectory modes; MPPI replans at 20 Hz and the paper reports real-quadrotor tests. <b>Strength:</b> strong practical latency baseline. <b>Limit:</b> no learned latent world model or calibrated uncertainty; 20 Hz is not a high-speed safety proof. <b>Open:</b> predict candidate validity over delay and trigger slowdown, re-observation, or fallback.</div></div>
+<div class="row"><div class="k1">EmbodiedSplat / Atlas</div><div class="v"><b>ICCV 2025 / vendor system.</b> Personalized real-to-sim navigation and camera-conditioned scene reconstruction. <b>Strength:</b> target-environment simulation is practical and relevant. <b>Limit:</b> not UAV physics; Atlas is not independently validated here. <b>Open:</b> held-out UAV transfer, metric geometry validation, moving obstacles, and reduced real-data requirements.</div></div>
+</div>
+
+<div class="en"><div class="hd"><h3>Idea-by-idea status</h3></div>
+<table><tr><th>idea</th><th>status</th><th>what it would need</th></tr>
+<tr><td>Jev / fast structured decision</td><td>component, not thesis</td><td>reproducible small model, calibrated abstention, measured onboard benefit</td></tr>
+<tr><td>Language-conditioned JEPA UAV</td><td>close, not cleanly novel</td><td>action-sensitive geometry, 6-DoF feasibility, language subgoal, real timing</td></tr>
+<tr><td>Matryoshka VLM/VLA</td><td>least-covered, high risk</td><td>small mode must reduce end-to-end latency and retain language grounding on target hardware</td></tr>
+<tr><td>Gaussian-native policy</td><td>largely established</td><td>specific predictive-state or uncertainty mechanism</td></tr>
+<tr><td>Uncertainty-aware latent planning</td><td>very close prior art</td><td>new UAV-specific uncertainty-to-action behavior with real-flight improvement</td></tr>
+<tr><td>Action-age-aware async control</td><td>already directly implemented</td><td>new recoverability-aware validity mechanism that beats existing delay alignment</td></tr>
+<tr><td>Atlas real-to-sim-to-real</td><td>direction established</td><td>independent held-out UAV transfer and data-efficiency result</td></tr></table></div>
+
+<div class="en"><div class="hd"><h3>Recommended supervisor-facing claim</h3></div>
+<div class="row"><div class="k1">proposal</div><div class="v">“We will test whether an action-sensitive, physically grounded geometric latent state improves language-conditioned UAV navigation under delayed observations and partial geometry. The system will use an explicit safety fallback, report end-to-end latency in flight distance, and evaluate transfer to held-out real routes. Gaussian or Atlas representations will be retained only if they improve this measured problem.”</div></div>
+<div class="row"><div class="k1">avoid</div><div class="v">Do not claim the first JEPA UAV, first aerial world model, first Gaussian VLA, or first language-conditioned Gaussian sim-to-real system. The literature already makes each of those claims unsafe.</div></div>
+<div class="row"><div class="k1">evidence</div><div class="v">This audit covers primary or official sources located for NeurIPS, CVPR/CVPR Workshops/Findings, ICLR, CoRL, RA-L, T-RO, arXiv, OpenReview, and official project pages through 18 September 2026. Recent preprints and vendor claims require PDF/proceedings rechecking before submission.</div></div></div>
+
+<h2>15 · Architecture audit: what “using a VLM/VLA” actually means</h2>
+<div class="en" style="border-left-color:var(--ac2)"><div class="hd"><h3>Model labels are not comparable architectures</h3></div>
+<div class="row"><div class="k1">VLM-as-perception</div><div class="v">The model outputs text, detections, semantic labels, depth, or a structured scene description. A separate planner/controller flies. Inspectable and easier to keep outside the safety loop, but the semantic bottleneck may discard metric geometry.</div></div>
+<div class="row"><div class="k1">VLM selector</div><div class="v">The model chooses a waypoint or candidate trajectory while MPPI/MPC/PID handles high-rate control. Better latency structure, but the candidate set may omit the correct behavior and the selection can become stale.</div></div>
+<div class="row"><div class="k1">End-to-end VLA</div><div class="v">The model outputs velocity, action tokens, thrust/angular velocity, or action chunks. Direct and task-oriented, but opaque, data-hungry, hard to calibrate, and dependent on the action space matching aircraft dynamics.</div></div>
+<div class="row"><div class="k1">World/JEPA</div><div class="v">The model predicts a future latent/state under an action and a planner scores candidates. Efficient compared with video generation, but only useful if the latent preserves controllable geometry and uncertainty.</div></div>
+<div class="row"><div class="k1">3DGS backend</div><div class="v">The representation may be a map, renderer, memory, policy input, predicted state, or simulator. “Uses Gaussian splats” is incomplete until that role is specified.</div></div></div>
+
+<div class="en"><div class="hd"><h3>Implementation-level comparisons</h3></div>
+<div class="row"><div class="k1">LookasideVLN</div><div class="v"><b>CVPR 2026.</b> Adds an Egocentric Lookaside Graph for directional landmark relations, a Spatial Landmark Knowledge Base for lightweight retrieval, and a Lookaside MLLM agent. It also uses situation-specific prompts and visited-landmark history summaries. <b>Meaning:</b> its novelty is a memory/reference-frame paradigm, not simply an MLLM prompt.</div></div>
+<div class="row"><div class="k1">UAV-Flow</div><div class="v"><b>NeurIPS 2025.</b> Adapts recurrent VLN and VLA architectures to atomic language-conditioned fine-grained flight, with real/sim trajectories and an OpenVLA-UAV baseline. <b>Meaning:</b> “VLM/VLA baseline” must specify action horizon, history, action representation, control rate, and aerial adaptation.</div></div>
+<div class="row"><div class="k1">SINGER</div><div class="v"><b>Onboard policy.</b> Semantics-rich 3DGS simulator + RRT*-style trajectories + MPC expert + lightweight imitation policy mapping RGB and a language goal directly to control. <b>Meaning:</b> the online policy is not a large VLM; semantic knowledge is distilled into a compact closed-loop controller.</div></div>
+<div class="row"><div class="k1">GRAD-NAV++</div><div class="v"><b>RA-L 2026.</b> Differentiable 3DGS simulation, DiffRL, and a mixture-of-experts action head for compact onboard visual-language-action control. <b>Meaning:</b> one-model language-to-flight action generation is already a concrete prior.</div></div>
+<div class="row"><div class="k1">VLM-MPPI</div><div class="v"><b>September 2026 preprint.</b> Six behaviour-conditioned MPPI planners generate intentionally different feasible trajectories; an asynchronous VLM selects the candidate from an overlaid FPV image; MPPI replans at 20 Hz and PID tracks it. <b>Meaning:</b> a new fast VLM selector alone is not novel.</div></div>
+<div class="row"><div class="k1">AutoFly</div><div class="v"><b>ICLR 2026.</b> End-to-end VLA with pseudo-depth features and progressive visual/depth/language/action alignment for unknown outdoor navigation. <b>Meaning:</b> an explicit geometric latent must beat a strong pseudo-depth/action baseline under partial and delayed sensing.</div></div>
+<div class="row"><div class="k1">PiJEPA</div><div class="v"><b>CVPR Workshop 2026.</b> Policy prior + frozen visual encoder + action-conditioned JEPA prediction + MPPI-style planning. <b>Meaning:</b> “language-conditioned JEPA planning” is already a close prior; UAV novelty must be 6-DoF feasibility, recoverability, timing, and hardware evidence.</div></div>
+<div class="row"><div class="k1">Calibrated Predictive Safety</div><div class="v"><b>2026 preprint.</b> Action proposer + action-conditioned JEPA + calibrated risk/progress heads + deterministic safety shield and fallback. <b>Meaning:</b> generic uncertainty-aware latent candidate filtering is already covered.</div></div>
+<div class="row"><div class="k1">Gaussian-JEPA / 4DGS-WAM / GST-VLA</div><div class="v"><b>Representation precedents.</b> Predictive Gaussian tokens, object-centric Gaussian dynamics, and Gaussian spatial-token interfaces already exist. <b>Meaning:</b> state explicitly whether Gaussians are used for mapping, rendering, memory, policy input, predicted future, uncertainty, or action decoding.</div></div></div>
+
+<div class="en"><div class="hd"><h3>What would actually differ in our system?</h3></div>
+<div class="row"><div class="k1">input</div><div class="v">RGB-D/stereo, VIO/SLAM state, map age, pose uncertainty, velocity, and instruction.</div></div>
+<div class="row"><div class="k1">language</div><div class="v">Convert instruction into a structured subgoal and constraints rather than repeating a free-form prompt at every control step.</div></div>
+<div class="row"><div class="k1">prediction</div><div class="v">Condition a compact geometric latent predictor on candidate action chunks and predict future clearance, relative pose, progress, and validity.</div></div>
+<div class="row"><div class="k1">execution</div><div class="v">Use MPPI or another feasible local planner, a hard collision/recoverability check, and an uncertainty-triggered slow-down, re-observation, or fallback.</div></div>
+<div class="row"><div class="k1">evidence</div><div class="v">Hold the controller and candidate planner constant across VLM-as-perception, VLM-MPPI selector, end-to-end VLA, predictive-only JEPA, action-conditioned JEPA, and full uncertainty/fallback variants.</div></div></div>
+
+<div class="en" style="border-left-color:var(--bd)"><div class="hd"><h3>Non-novel “VLM on top” changes</h3></div>
+<div class="row"><div class="k1">insufficient</div><div class="v">Replacing one VLM with Qwen; prompting left/right/forward; adding a language embedding to an existing geometric policy; using a VLM to select a waypoint from a Gaussian map; swapping in a VLA action head; increasing planner frequency; or adding Atlas images without a transfer result.</div></div>
+<div class="row"><div class="k1">test</div><div class="v">The architecture must reduce a specific failure—action confusion, stale semantic decisions, overconfident latent rollouts, or sim-to-real failure—under matched latency and real-flight conditions.</div></div></div>
+
+</div></body>
+</html>

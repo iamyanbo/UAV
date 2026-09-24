@@ -1,0 +1,142 @@
+{
+  "captured_utc": "2026-09-24T02:37:38.495135+00:00",
+  "rounds": {
+    "hover-correction-r36": {
+      "trajectory-preparation": {
+        "status": "completed",
+        "reason": "Worker completed; acceptance not inferred",
+        "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T023445Z-trajectory-preparation-9b2fca",
+        "process": {
+          "pid": 2505263,
+          "start_ticks": "131641756",
+          "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+        }
+      },
+      "motion-rate-pilot": {
+        "status": "completed",
+        "reason": "Worker completed; acceptance not inferred",
+        "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T023529Z-motion-rate-pilot-b969a3",
+        "process": {
+          "pid": 2505829,
+          "start_ticks": "131646163",
+          "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+        },
+        "latest_metric": {
+          "update": 2,
+          "loss": 0.3977507948875427,
+          "validation": {
+            "loss": 0.12371904402971268,
+            "windows": 22,
+            "translation_rmse_m": 0.05297189781611616,
+            "rotation_rmse_rad": 0.005902143851430578,
+            "accumulated_translation_error_m": 11.71269330111417,
+            "normalized_motion_rate_rmse": 0.30091836100274866,
+            "marginal_95pct_coverage": 0.8731060786680742,
+            "evaluated_seconds": 6.7685534087094394,
+            "selection_score": 0.877737492746264
+          },
+          "translation_rmse_m": 0.0540371872484684,
+          "rotation_rmse_rad": 0.04725886136293411,
+          "accumulated_translation_error_m": 2.8450446128845215,
+          "normalized_motion_rate_rmse": 0.4599442780017853,
+          "marginal_95pct_coverage": 0.8671875,
+          "evaluated_seconds": 11.937254905700684
+        }
+      },
+      "motion-rate-training": {
+        "status": "running",
+        "reason": "Owned remote guard running",
+        "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T023623Z-motion-rate-training-e01e5e",
+        "process": {
+          "pid": 2506494,
+          "start_ticks": "131651585",
+          "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+        },
+        "latest_metric": {
+          "update": 13,
+          "loss": 0.37349551916122437,
+          "validation": null,
+          "translation_rmse_m": 0.06881289184093475,
+          "rotation_rmse_rad": 0.027807900682091713,
+          "accumulated_translation_error_m": 7.312892436981201,
+          "normalized_motion_rate_rmse": 0.37093839049339294,
+          "marginal_95pct_coverage": 0.8424479365348816,
+          "evaluated_seconds": 11.65224838256836
+        }
+      },
+      "motion-rate-pack": {
+        "status": "ready",
+        "reason": "Waiting for motion-rate-training=completed"
+      },
+      "motion-rate-qualification": {
+        "status": "ready",
+        "reason": "Waiting for motion-rate-pack=completed"
+      }
+    },
+    "goal-continuation-r21": {
+      "goal-corrective-training": {
+        "status": "running",
+        "reason": "Owned remote guard running",
+        "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T023445Z-goal-corrective-training-d4f310",
+        "process": {
+          "pid": 2505150,
+          "start_ticks": "131641729",
+          "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+        },
+        "latest_metric": {
+          "update": 999,
+          "train_loss": 0.0452052503824234,
+          "validation_loss": null,
+          "elapsed_seconds": 122.69832855090499
+        }
+      },
+      "corrected-goal-qualification": {
+        "status": "ready",
+        "reason": "Waiting for goal-corrective-training=completed"
+      }
+    },
+    "whole-pipeline-r35": {
+      "compact-data": {
+        "status": "completed",
+        "reason": "Worker completed; acceptance not inferred",
+        "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T022858Z-compact-data-f60a1d",
+        "process": {
+          "pid": 2502551,
+          "start_ticks": "131607067",
+          "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+        }
+      },
+      "qwen-supervised-update": {
+        "status": "completed",
+        "reason": "Worker completed; acceptance not inferred",
+        "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T022900Z-qwen-supervised-update-702d17",
+        "process": {
+          "pid": 2502565,
+          "start_ticks": "131607267",
+          "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+        }
+      },
+      "combined-pack": {
+        "status": "completed",
+        "reason": "Worker completed; acceptance not inferred",
+        "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T023014Z-combined-pack-d2baad",
+        "process": {
+          "pid": 2503113,
+          "start_ticks": "131614678",
+          "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+        }
+      },
+      "combined-learned-flight": {
+        "status": "completed",
+        "reason": "Worker completed; acceptance not inferred",
+        "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T023016Z-combined-learned-flight-e4ed52",
+        "process": {
+          "pid": 2503125,
+          "start_ticks": "131614879",
+          "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+        }
+      }
+    }
+  },
+  "mem_available_gib": 109.88648223876953
+}

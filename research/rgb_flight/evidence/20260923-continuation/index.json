@@ -1,0 +1,709 @@
+{
+  "exported_unix": 1790211090.450078,
+  "files": {
+    "rounds/goal-correction-r7/state.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/state.json",
+      "sha256": "b8558e3e082722d58f6fe85de0a411fb240b5510d72983db507a8ebf897af3cd"
+    },
+    "jobs/20260923T233002Z-aligned-goal-supervision-bcc24e/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233002Z-aligned-goal-supervision-bcc24e/request.json",
+      "sha256": "76f0db7f89ced9779424b15c2194600574a6b336445ab1bb36a548a471e37642"
+    },
+    "jobs/20260923T233002Z-aligned-goal-supervision-bcc24e/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233002Z-aligned-goal-supervision-bcc24e/source_hashes.json",
+      "sha256": "4c8139c7702a4a2a6064d1feacc8ba5db4e6040a08ecaaacffba0093e58ff8f6"
+    },
+    "jobs/20260923T233002Z-aligned-goal-supervision-bcc24e/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233002Z-aligned-goal-supervision-bcc24e/stdout.log",
+      "sha256": "422cdedf4c6780ce237cd7d58cb0a52438b73698b3e0f320a64878f33ff2efe8"
+    },
+    "jobs/20260923T233002Z-aligned-goal-supervision-bcc24e/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233002Z-aligned-goal-supervision-bcc24e/result.json",
+      "sha256": "e2ebd27820b6028a70a8356ea91f7694fbb8119ae5c82ae686af3f69395fbe0d"
+    },
+    "jobs/20260923T233013Z-visual-negative-mining-97d346/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233013Z-visual-negative-mining-97d346/request.json",
+      "sha256": "32fccba91638f748e77a0d96ca3279c568d392bc9ab3421c3f5a2649fe455e4b"
+    },
+    "jobs/20260923T233013Z-visual-negative-mining-97d346/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233013Z-visual-negative-mining-97d346/source_hashes.json",
+      "sha256": "4c8139c7702a4a2a6064d1feacc8ba5db4e6040a08ecaaacffba0093e58ff8f6"
+    },
+    "jobs/20260923T233013Z-visual-negative-mining-97d346/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233013Z-visual-negative-mining-97d346/stdout.log",
+      "sha256": "85c2dc62ac160938c17bc2dedd2065e68e5d07e5bd664ee67542fbb07bc3af06"
+    },
+    "jobs/20260923T233013Z-visual-negative-mining-97d346/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233013Z-visual-negative-mining-97d346/result.json",
+      "sha256": "8bc5703d3d25b878e06a32fb49d38be40905e62ad3de45f0938ab646b932cb65"
+    },
+    "jobs/20260923T233205Z-goal-corrective-training-79abf0/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233205Z-goal-corrective-training-79abf0/request.json",
+      "sha256": "20f191918ad9f2e1027db4ba8692bffa4980672243256853fe08bf270e605988"
+    },
+    "jobs/20260923T233205Z-goal-corrective-training-79abf0/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233205Z-goal-corrective-training-79abf0/source_hashes.json",
+      "sha256": "4c8139c7702a4a2a6064d1feacc8ba5db4e6040a08ecaaacffba0093e58ff8f6"
+    },
+    "jobs/20260923T233205Z-goal-corrective-training-79abf0/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233205Z-goal-corrective-training-79abf0/stdout.log",
+      "sha256": "836af75a1d20da97a68c0c85e0b47c7e3a9ab1440114c73f1dabaa790995101a"
+    },
+    "jobs/20260923T233205Z-goal-corrective-training-79abf0/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233205Z-goal-corrective-training-79abf0/result.json",
+      "sha256": "35be1ee2953a0566d470edbd58d242b7167dbba26ae20a1546e52007b383f725"
+    },
+    "jobs/20260923T233205Z-goal-corrective-training-79abf0/visual-training/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233205Z-goal-corrective-training-79abf0/visual-training/result.json",
+      "sha256": "3a2cc2c343d616e8a3d78bae6b4277294b2e64ce918e6a9d869d4e5b59fd95ba"
+    },
+    "jobs/20260923T233205Z-goal-corrective-training-79abf0/visual-training/metrics.jsonl": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T233205Z-goal-corrective-training-79abf0/visual-training/metrics.jsonl",
+      "sha256": "ad9e50f52b71fe8d13920081a7333d1dc0d1dc4390878a7d1c33e3dd25b02f12"
+    },
+    "jobs/20260923T234129Z-corrected-goal-qualification-a72118/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T234129Z-corrected-goal-qualification-a72118/request.json",
+      "sha256": "e6e211332fb38a92f65783da8be2c058221fc76f104eb12f1470119f2f89d8d7"
+    },
+    "jobs/20260923T234129Z-corrected-goal-qualification-a72118/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T234129Z-corrected-goal-qualification-a72118/source_hashes.json",
+      "sha256": "4c8139c7702a4a2a6064d1feacc8ba5db4e6040a08ecaaacffba0093e58ff8f6"
+    },
+    "jobs/20260923T234129Z-corrected-goal-qualification-a72118/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T234129Z-corrected-goal-qualification-a72118/stdout.log",
+      "sha256": "6142697feac11da083d09e137e56f768f2b2b9e67d6514121b1deef75c50fa46"
+    },
+    "jobs/20260923T234129Z-corrected-goal-qualification-a72118/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T234129Z-corrected-goal-qualification-a72118/result.json",
+      "sha256": "02726255c410e7bd7d421f5ec95052ed65f784147ed6ec81305f3d82d8ed5f4b"
+    },
+    "jobs/20260923T234129Z-corrected-goal-qualification-a72118/goal-qualification/predictions.jsonl": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T234129Z-corrected-goal-qualification-a72118/goal-qualification/predictions.jsonl",
+      "sha256": "4fa4c59d0975244a4b6ae60ac0d99102363ff2e83faf3ad1d094249674de9c66"
+    },
+    "jobs/20260923T234129Z-corrected-goal-qualification-a72118/goal-qualification/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T234129Z-corrected-goal-qualification-a72118/goal-qualification/result.json",
+      "sha256": "ef617d3102c7212aa19d0e7cc94ae1a92055c3fdac0c8a51e7b734fec2c5aae6"
+    },
+    "rounds/goal-correction-r7/goal-data/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/goal-data/result.json",
+      "sha256": "87e269b5c8887abbc238355c6be8407fe065fd2839ca935a2e8dad920dfeecb7"
+    },
+    "rounds/goal-correction-r7/goal-candidates/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/goal-candidates/result.json",
+      "sha256": "0370e87b565ab148c9fa7f4a578e3c3ce6f7a833ee5fb2fd1fd6b3ac1b337c11"
+    },
+    "rounds/fresh-sequence-r9/state.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r9/state.json",
+      "sha256": "9f696a3230bcdb93c256786ad6ad6143b639ce06cc6dbd765809b5edacba478e"
+    },
+    "jobs/20260923T234609Z-fresh-aligned-flights-4ad27b/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T234609Z-fresh-aligned-flights-4ad27b/request.json",
+      "sha256": "20b83f33c6a42a3d3729f84197daf5728bcc9618e492df2224afb06960f32600"
+    },
+    "jobs/20260923T234609Z-fresh-aligned-flights-4ad27b/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T234609Z-fresh-aligned-flights-4ad27b/source_hashes.json",
+      "sha256": "6d10220ef0ddc82b75ec1c2c1f44122e2938f5e181323a1585fa7a907c871714"
+    },
+    "jobs/20260923T234609Z-fresh-aligned-flights-4ad27b/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T234609Z-fresh-aligned-flights-4ad27b/stdout.log",
+      "sha256": "9a97ea972dde87b8f4cb9bb3285751e1993390474eeafa8d6d2d3bb5b9bf29b9"
+    },
+    "jobs/20260923T234609Z-fresh-aligned-flights-4ad27b/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T234609Z-fresh-aligned-flights-4ad27b/result.json",
+      "sha256": "4342f86a40438662bcc9ce63cbc2106fcbe14b6f55c8b0bc0af8c03d95c531ac"
+    },
+    "rounds/fresh-sequence-r10/state.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/state.json",
+      "sha256": "91f0fc7718460ddcb6bdb5403cf7649c7286a5841e66fd3577aae945ca5e2e37"
+    },
+    "jobs/20260924T000226Z-fresh-aligned-flights-898ffe/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000226Z-fresh-aligned-flights-898ffe/request.json",
+      "sha256": "aa1858355dd72302a390beb6a20b33bdbfa73f872fc10f1e1b26f59d864a956e"
+    },
+    "jobs/20260924T000226Z-fresh-aligned-flights-898ffe/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000226Z-fresh-aligned-flights-898ffe/source_hashes.json",
+      "sha256": "ff9d1f22c39a512c5689b0913668460cc4931bc1505a9d3716dfd2ae0e1e3372"
+    },
+    "jobs/20260924T000226Z-fresh-aligned-flights-898ffe/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000226Z-fresh-aligned-flights-898ffe/stdout.log",
+      "sha256": "c52a4c399d4dfa4f0c4b8925265488702fb0a6445dd6092c35e38cecfb4e99fd"
+    },
+    "jobs/20260924T000226Z-fresh-aligned-flights-898ffe/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000226Z-fresh-aligned-flights-898ffe/result.json",
+      "sha256": "d8557c6a49a46250356d34a7bd742e740aea5e70672aec464ab5de3009a4c5f3"
+    },
+    "jobs/20260924T000228Z-aligned-trajectories-7e7731/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000228Z-aligned-trajectories-7e7731/request.json",
+      "sha256": "e06d0bc0a130c47e649344b9ca8d9e8f178bb72e52ee2c0192a75d78be96000f"
+    },
+    "jobs/20260924T000228Z-aligned-trajectories-7e7731/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000228Z-aligned-trajectories-7e7731/source_hashes.json",
+      "sha256": "ff9d1f22c39a512c5689b0913668460cc4931bc1505a9d3716dfd2ae0e1e3372"
+    },
+    "jobs/20260924T000228Z-aligned-trajectories-7e7731/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000228Z-aligned-trajectories-7e7731/stdout.log",
+      "sha256": "85ab8c5d6dab49169ba4181ba46e3969d017b233655d2be75df645649ff41901"
+    },
+    "jobs/20260924T000228Z-aligned-trajectories-7e7731/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000228Z-aligned-trajectories-7e7731/result.json",
+      "sha256": "edef07a74c8ce44fd1eb87619779a36207341e8a6f1c4ad3ccf5d3c933a435b1"
+    },
+    "jobs/20260924T000301Z-recurrent-odometry-544ac1/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000301Z-recurrent-odometry-544ac1/request.json",
+      "sha256": "f0f5c580d4e866965a7128dd90b52fb9eae30ba79306358f443bbc47e404a8e3"
+    },
+    "jobs/20260924T000301Z-recurrent-odometry-544ac1/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000301Z-recurrent-odometry-544ac1/source_hashes.json",
+      "sha256": "ff9d1f22c39a512c5689b0913668460cc4931bc1505a9d3716dfd2ae0e1e3372"
+    },
+    "jobs/20260924T000301Z-recurrent-odometry-544ac1/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000301Z-recurrent-odometry-544ac1/stdout.log",
+      "sha256": "0702fcd69d65bcfd32b85ef91ef200c820665f98889efc038b5dc5d8073a269f"
+    },
+    "jobs/20260924T000301Z-recurrent-odometry-544ac1/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000301Z-recurrent-odometry-544ac1/result.json",
+      "sha256": "bfc384f1601f82aaef1c76814dbc8ba9ebbe4cb3149793f68819c5731cea81fd"
+    },
+    "jobs/20260924T000301Z-recurrent-odometry-544ac1/visual-training/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000301Z-recurrent-odometry-544ac1/visual-training/result.json",
+      "sha256": "b49793413695bf113117164f5b9a73ac67f50631321b9066377e2f76e50f7f1b"
+    },
+    "jobs/20260924T000301Z-recurrent-odometry-544ac1/visual-training/metrics.jsonl": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000301Z-recurrent-odometry-544ac1/visual-training/metrics.jsonl",
+      "sha256": "f0447663250b29b61a594cd8ec179e834c1b383f7fdb76da07a9240a43ba7a72"
+    },
+    "jobs/20260924T000757Z-package-updated-perception-65c1e6/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000757Z-package-updated-perception-65c1e6/request.json",
+      "sha256": "fd13dadec4f1958a0968d8790eed94f36ed8f5e7f90bc08fc0e33e69ff6d50a7"
+    },
+    "jobs/20260924T000757Z-package-updated-perception-65c1e6/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000757Z-package-updated-perception-65c1e6/source_hashes.json",
+      "sha256": "ff9d1f22c39a512c5689b0913668460cc4931bc1505a9d3716dfd2ae0e1e3372"
+    },
+    "jobs/20260924T000757Z-package-updated-perception-65c1e6/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000757Z-package-updated-perception-65c1e6/stdout.log",
+      "sha256": "74302a48bcbba8a85a75a944cd53ae5cc95dac8e61a40268f8f145cff8963f21"
+    },
+    "jobs/20260924T000757Z-package-updated-perception-65c1e6/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000757Z-package-updated-perception-65c1e6/result.json",
+      "sha256": "397e1ba1d464fdb68492bf6b1f79fede0e9df5a92220623655c65da760a4f801"
+    },
+    "jobs/20260924T000759Z-updated-perception-replay-23333f/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000759Z-updated-perception-replay-23333f/request.json",
+      "sha256": "838be1c5cea07f6425593f5b032aa3a04376ffd9cea3f3190304fa0c16197037"
+    },
+    "jobs/20260924T000759Z-updated-perception-replay-23333f/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000759Z-updated-perception-replay-23333f/source_hashes.json",
+      "sha256": "ff9d1f22c39a512c5689b0913668460cc4931bc1505a9d3716dfd2ae0e1e3372"
+    },
+    "jobs/20260924T000759Z-updated-perception-replay-23333f/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000759Z-updated-perception-replay-23333f/stdout.log",
+      "sha256": "3088bb511141ff057d32b611e44ab802196170cde75c7b7766ea4d4a75d10d59"
+    },
+    "jobs/20260924T000759Z-updated-perception-replay-23333f/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000759Z-updated-perception-replay-23333f/result.json",
+      "sha256": "4d779e76835d01e3bf129d6ca3235eadc033e4b11f7de93d30e238952869efae"
+    },
+    "jobs/20260924T000759Z-updated-perception-replay-23333f/navigation-replay/manifest.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000759Z-updated-perception-replay-23333f/navigation-replay/manifest.json",
+      "sha256": "7b41effe57b2c9f9ac735ec82d9cd46932c781ba5485b162a5b45d75757ad4b4"
+    },
+    "jobs/20260924T000759Z-updated-perception-replay-23333f/navigation-replay/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000759Z-updated-perception-replay-23333f/navigation-replay/result.json",
+      "sha256": "a7a9270b007def26b11089c6be0fc60f3d98faa8def93300115a8c4235e214b6"
+    },
+    "rounds/fresh-sequence-r10/navigation-checkpoints/checkpoints.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/navigation-checkpoints/checkpoints.json",
+      "sha256": "6cb04472aed94ee62f59f573fcfe5c655a9731ae66cac4545e0f69578315b444"
+    },
+    "rounds/fresh-sequence-r10/trajectory-bundle/manifest.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/trajectory-bundle/manifest.json",
+      "sha256": "d5df5c5faf566900d317912d37011a61316bcd47f05d05f7f04e1caa9e2b4d9e"
+    },
+    "rounds/fresh-sequence-r10/trajectory-bundle/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/trajectory-bundle/result.json",
+      "sha256": "96e4ae2753a6626b4a4dcf2cc7bfa79f518458cd0c1657274be280115ed2f6d9"
+    },
+    "rounds/goal-normalization-r11/state.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/goal-normalization-r11/state.json",
+      "sha256": "fb166cec32bdb4b4b90f6e3e966e6a66840ce793551a4963efc4b16fa1da6613"
+    },
+    "jobs/20260923T235816Z-goal-corrective-training-03d6f1/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235816Z-goal-corrective-training-03d6f1/request.json",
+      "sha256": "cd9ff8501c08ee46172e5009e06cf7e4fdf3071ddf5bf2637a30107cb6bd7118"
+    },
+    "jobs/20260923T235816Z-goal-corrective-training-03d6f1/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235816Z-goal-corrective-training-03d6f1/source_hashes.json",
+      "sha256": "3c0f173b704c220e0394b6318a8a64b360c2e72b2ed668d4adb2f91f085d0b74"
+    },
+    "jobs/20260923T235816Z-goal-corrective-training-03d6f1/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235816Z-goal-corrective-training-03d6f1/stdout.log",
+      "sha256": "d4b68768c8486182246b7b15982bf2415044f7908f7a4d699dc20998bd05852c"
+    },
+    "jobs/20260923T235816Z-goal-corrective-training-03d6f1/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235816Z-goal-corrective-training-03d6f1/result.json",
+      "sha256": "41ca482e84ec443b8a4391a6d97ebde159f81b7b1590000a0fb5a41cd02376fc"
+    },
+    "jobs/20260923T235816Z-goal-corrective-training-03d6f1/visual-training/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235816Z-goal-corrective-training-03d6f1/visual-training/result.json",
+      "sha256": "3b1cfd66db80c67bdb2db1ade7bc5191e73baf192199fd423d3b32e4fce02ba7"
+    },
+    "jobs/20260923T235816Z-goal-corrective-training-03d6f1/visual-training/metrics.jsonl": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235816Z-goal-corrective-training-03d6f1/visual-training/metrics.jsonl",
+      "sha256": "5c6c11d79657a6f38ec709f96a4eafc88cc1ddbd19d795e38f9aca62bff6e5c8"
+    },
+    "jobs/20260924T000227Z-corrected-goal-qualification-8e4ca2/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000227Z-corrected-goal-qualification-8e4ca2/request.json",
+      "sha256": "fb8f7de3678f6b737545418e16a3a7e1eed56fe100b3d889c219c5d1bd9a01f3"
+    },
+    "jobs/20260924T000227Z-corrected-goal-qualification-8e4ca2/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000227Z-corrected-goal-qualification-8e4ca2/source_hashes.json",
+      "sha256": "3c0f173b704c220e0394b6318a8a64b360c2e72b2ed668d4adb2f91f085d0b74"
+    },
+    "jobs/20260924T000227Z-corrected-goal-qualification-8e4ca2/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000227Z-corrected-goal-qualification-8e4ca2/stdout.log",
+      "sha256": "212c2037f6063b05c6c460f1b156b6d108e6423e6aca2b5e7276fd84b31f2d3c"
+    },
+    "jobs/20260924T000227Z-corrected-goal-qualification-8e4ca2/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000227Z-corrected-goal-qualification-8e4ca2/result.json",
+      "sha256": "85e850c03bfaa63aa4efd65ee1da03dd9f1003b52f572578fd5c60e61b66707a"
+    },
+    "jobs/20260924T000227Z-corrected-goal-qualification-8e4ca2/goal-qualification/predictions.jsonl": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000227Z-corrected-goal-qualification-8e4ca2/goal-qualification/predictions.jsonl",
+      "sha256": "2ffc1951108ebca46e30a0ee6426d800fa3c36922e2c21337cb69bfefc843d15"
+    },
+    "jobs/20260924T000227Z-corrected-goal-qualification-8e4ca2/goal-qualification/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000227Z-corrected-goal-qualification-8e4ca2/goal-qualification/result.json",
+      "sha256": "53cad2b61445e6b3f492b6f01335f6b18bd0c8c63859aaa7b005ee0c520ff324"
+    },
+    "rounds/causal-video-r12/state.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/state.json",
+      "sha256": "6bddfb9535c28c2b90c8e94bc1097de605817bcbdb179eb1536c56d7e678e9a4"
+    },
+    "jobs/20260923T235815Z-async-video-replay-10264b/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235815Z-async-video-replay-10264b/request.json",
+      "sha256": "9bec42a2f2f650c9262d57c67d6d0f5edba17884e7956d126891c7963ffd9d59"
+    },
+    "jobs/20260923T235815Z-async-video-replay-10264b/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235815Z-async-video-replay-10264b/source_hashes.json",
+      "sha256": "9e47594757b80e9830eae66de83e485a15fb88b09de01b8505dafd8e077d7132"
+    },
+    "jobs/20260923T235815Z-async-video-replay-10264b/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235815Z-async-video-replay-10264b/stdout.log",
+      "sha256": "c4085eab02063194cd8df689e6b77859374610c2225f2e08977e6bd21b298620"
+    },
+    "jobs/20260923T235815Z-async-video-replay-10264b/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235815Z-async-video-replay-10264b/result.json",
+      "sha256": "cf3e3d28da32d455125382b659be62c221fa7a3be76ac89eef7e5121ff060af6"
+    },
+    "jobs/20260923T235815Z-async-video-replay-10264b/navigation-replay/manifest.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235815Z-async-video-replay-10264b/navigation-replay/manifest.json",
+      "sha256": "5c7753c21156ba61ca3ffde8724fb47cce96dd98f9f069e0dd358fef06212794"
+    },
+    "jobs/20260923T235815Z-async-video-replay-10264b/navigation-replay/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235815Z-async-video-replay-10264b/navigation-replay/result.json",
+      "sha256": "2da9d1d65ee81f22745672fe904bb48b4cd435ae79d668886d85046440b5ae83"
+    },
+    "jobs/20260923T235815Z-async-video-replay-10264b/navigation-replay/video/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235815Z-async-video-replay-10264b/navigation-replay/video/result.json",
+      "sha256": "9892b3d45d0fa63fe5a41cacd8bba5388a7d64e366cd35f8bf6a510ed9fc65df"
+    },
+    "jobs/20260923T235851Z-training-projection-a10b72/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235851Z-training-projection-a10b72/request.json",
+      "sha256": "43d7639c8df617dd23486374c027b7974bf545fdd94d38df241168b7d195ee80"
+    },
+    "jobs/20260923T235851Z-training-projection-a10b72/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235851Z-training-projection-a10b72/source_hashes.json",
+      "sha256": "9e47594757b80e9830eae66de83e485a15fb88b09de01b8505dafd8e077d7132"
+    },
+    "jobs/20260923T235851Z-training-projection-a10b72/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235851Z-training-projection-a10b72/stdout.log",
+      "sha256": "daebda38df67ced181b18f6c05f16e3e8fd5aaebecb0d47a78277b67326fc8a4"
+    },
+    "jobs/20260923T235851Z-training-projection-a10b72/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235851Z-training-projection-a10b72/result.json",
+      "sha256": "47b22b4e16b6431472f71c481730f396594bac540081be6504a98bbfd70eac85"
+    },
+    "jobs/20260923T235856Z-projected-perception-package-277b11/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235856Z-projected-perception-package-277b11/request.json",
+      "sha256": "cd48f58290e5890058295a25e62909c7ca8827cc969192b3d9edb008005a7a4c"
+    },
+    "jobs/20260923T235856Z-projected-perception-package-277b11/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235856Z-projected-perception-package-277b11/source_hashes.json",
+      "sha256": "9e47594757b80e9830eae66de83e485a15fb88b09de01b8505dafd8e077d7132"
+    },
+    "jobs/20260923T235856Z-projected-perception-package-277b11/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235856Z-projected-perception-package-277b11/stdout.log",
+      "sha256": "d056b31a193771ceabaed2593c0dfc2a276f4cabbe530416f83fcf56a89e6b54"
+    },
+    "jobs/20260923T235856Z-projected-perception-package-277b11/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235856Z-projected-perception-package-277b11/result.json",
+      "sha256": "3358f517c6ba936a42659f14cf54be5ed83d7f2524834732a0ea67d48eedc092"
+    },
+    "jobs/20260923T235858Z-projected-causal-replay-ec8e92/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235858Z-projected-causal-replay-ec8e92/request.json",
+      "sha256": "ad5f4635aa9eebb8de7d91fdd9d575513f654d5c7da822cd2b621cf977ee3f1e"
+    },
+    "jobs/20260923T235858Z-projected-causal-replay-ec8e92/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235858Z-projected-causal-replay-ec8e92/source_hashes.json",
+      "sha256": "9e47594757b80e9830eae66de83e485a15fb88b09de01b8505dafd8e077d7132"
+    },
+    "jobs/20260923T235858Z-projected-causal-replay-ec8e92/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235858Z-projected-causal-replay-ec8e92/stdout.log",
+      "sha256": "e50c050385dbc71b1c20c8ace22b949e4524496a103179c5bbcc00dd504981b1"
+    },
+    "jobs/20260923T235858Z-projected-causal-replay-ec8e92/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235858Z-projected-causal-replay-ec8e92/result.json",
+      "sha256": "954e76535bd8a1cdacc95b19b41d42346459ae2ea353316c900584e441f6af2e"
+    },
+    "jobs/20260923T235858Z-projected-causal-replay-ec8e92/navigation-replay/manifest.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235858Z-projected-causal-replay-ec8e92/navigation-replay/manifest.json",
+      "sha256": "ce420ae2ad44963e507d4b36f6e8da9f82644c9e7071779a590d314d65de2602"
+    },
+    "jobs/20260923T235858Z-projected-causal-replay-ec8e92/navigation-replay/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235858Z-projected-causal-replay-ec8e92/navigation-replay/result.json",
+      "sha256": "99926a8b3e4b2df4625c51abff127e685395a5e270702546f9a1a60985a84340"
+    },
+    "jobs/20260923T235858Z-projected-causal-replay-ec8e92/navigation-replay/video/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260923T235858Z-projected-causal-replay-ec8e92/navigation-replay/video/result.json",
+      "sha256": "b5d10c608f6a4dcf1fd7a883e707279e92f63f545f5bdcda3a831660e0acbd26"
+    },
+    "rounds/causal-video-r12/checkpoints/checkpoints.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/checkpoints/checkpoints.json",
+      "sha256": "01a0afdd1ed3f04d405cd399be7047d72e9c87330f81b3203ba2a26ad9111762"
+    },
+    "rounds/causal-video-r12/projection/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/projection/result.json",
+      "sha256": "20ab64e6dab74d2d834856a5274ebc6a0e4274f93e666d1ce3f4227f78840690"
+    },
+    "rounds/world-view-r13/state.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/world-view-r13/state.json",
+      "sha256": "0c035d0167dd6b18cb07e877906b8fd1c5ae35c696e605f0488b5302cab53b43"
+    },
+    "jobs/20260924T000550Z-world-sequence-views-272c98/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000550Z-world-sequence-views-272c98/request.json",
+      "sha256": "c24d8c655eab2cd3f3296ac483e60f308b274837754917bc1c17411eab358217"
+    },
+    "jobs/20260924T000550Z-world-sequence-views-272c98/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000550Z-world-sequence-views-272c98/source_hashes.json",
+      "sha256": "66a09a158dd2947db77829cbee6933537d64dd4825e396cf0be8e48e5e93318c"
+    },
+    "jobs/20260924T000550Z-world-sequence-views-272c98/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000550Z-world-sequence-views-272c98/stdout.log",
+      "sha256": "c39fb61d3a851da7d7a37c409a3697a15ac92e778cfdb0da50515640d5fb66ed"
+    },
+    "jobs/20260924T000550Z-world-sequence-views-272c98/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000550Z-world-sequence-views-272c98/result.json",
+      "sha256": "f9c0ac51ded043ab085e97f93b4aac5f4f38bc7ab8149959b30d36334cfbc96e"
+    },
+    "jobs/20260924T000731Z-isolated-async-replay-11f3d8/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000731Z-isolated-async-replay-11f3d8/request.json",
+      "sha256": "ea009c580c3a44d20c04ec32a8553c6643c41fea0a2e3cf6f827c755899a5502"
+    },
+    "jobs/20260924T000731Z-isolated-async-replay-11f3d8/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000731Z-isolated-async-replay-11f3d8/source_hashes.json",
+      "sha256": "66a09a158dd2947db77829cbee6933537d64dd4825e396cf0be8e48e5e93318c"
+    },
+    "jobs/20260924T000731Z-isolated-async-replay-11f3d8/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000731Z-isolated-async-replay-11f3d8/stdout.log",
+      "sha256": "c68a9c66e770af276cfc0c40ad6d2a0e4ac6bff1b0aac81a79be359f83fda7e5"
+    },
+    "jobs/20260924T000731Z-isolated-async-replay-11f3d8/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000731Z-isolated-async-replay-11f3d8/result.json",
+      "sha256": "a9feee5778bae8f321938952313915988be1ee10521f1fe43527336e81c30788"
+    },
+    "jobs/20260924T000731Z-isolated-async-replay-11f3d8/navigation-replay/manifest.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000731Z-isolated-async-replay-11f3d8/navigation-replay/manifest.json",
+      "sha256": "ac3bac18d519d395a1cae9951181d15bd4f549eabf34fe36a2be338cec049247"
+    },
+    "jobs/20260924T000731Z-isolated-async-replay-11f3d8/navigation-replay/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000731Z-isolated-async-replay-11f3d8/navigation-replay/result.json",
+      "sha256": "30abc5aa8b2c37f48f86380b35263dacaf7e07f518d9993722402cd9d31006b0"
+    },
+    "jobs/20260924T000731Z-isolated-async-replay-11f3d8/navigation-replay/video/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T000731Z-isolated-async-replay-11f3d8/navigation-replay/video/result.json",
+      "sha256": "b5d10c608f6a4dcf1fd7a883e707279e92f63f545f5bdcda3a831660e0acbd26"
+    },
+    "rounds/world-view-r13/world-views/manifest.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/world-view-r13/world-views/manifest.json",
+      "sha256": "361101c39ec4df7410790aa4b547df4633f4ea1506e19d8a997df34bce2c58ee"
+    },
+    "rounds/world-view-r13/world-views/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/world-view-r13/world-views/result.json",
+      "sha256": "b6cde544aec33fee9fe9ee5c034e42676e16caf5192fe0ede9d8a4cc10ac8c3b"
+    },
+    "rounds/odometry-qualification-r14/state.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/odometry-qualification-r14/state.json",
+      "sha256": "43954023b0934f5aa4c05a5075d4cfb09a6f2705292bb7bad1c212776cfab58c"
+    },
+    "jobs/20260924T001108Z-held-out-odometry-qualification-bd949a/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T001108Z-held-out-odometry-qualification-bd949a/request.json",
+      "sha256": "1264e11b3ea80ab2d6c58c63ddf09f1a1c2b14cd7525b915973de362af86caf8"
+    },
+    "jobs/20260924T001108Z-held-out-odometry-qualification-bd949a/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T001108Z-held-out-odometry-qualification-bd949a/source_hashes.json",
+      "sha256": "f315b547ab7b5f74027f7d193c841cb4b7815225c8883753f6252d4753f77d52"
+    },
+    "jobs/20260924T001108Z-held-out-odometry-qualification-bd949a/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T001108Z-held-out-odometry-qualification-bd949a/stdout.log",
+      "sha256": "c11ec2a0fd3ece444c46bc24e70bc2225831193d91523a6a82a3ff1475920ab3"
+    },
+    "jobs/20260924T001108Z-held-out-odometry-qualification-bd949a/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T001108Z-held-out-odometry-qualification-bd949a/result.json",
+      "sha256": "c7d995e85a674c87a81339ce160c50a94d25f4f783a19b00a6a6fdc30019a24c"
+    },
+    "jobs/20260924T001108Z-held-out-odometry-qualification-bd949a/odometry-qualification/episodes.jsonl": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T001108Z-held-out-odometry-qualification-bd949a/odometry-qualification/episodes.jsonl",
+      "sha256": "6ae831e5e8fa908cbb889ef1438189d69947a6bf65f438323b21487a83df03b2"
+    },
+    "jobs/20260924T001108Z-held-out-odometry-qualification-bd949a/odometry-qualification/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T001108Z-held-out-odometry-qualification-bd949a/odometry-qualification/result.json",
+      "sha256": "223f0ffed7f785235ba8911762d299020f1cfc87be958c03b99cdac20ac87d3b"
+    },
+    "jobs/20260924T001108Z-held-out-odometry-qualification-bd949a/odometry-qualification/horizons.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T001108Z-held-out-odometry-qualification-bd949a/odometry-qualification/horizons.json",
+      "sha256": "a6c2451334f5f7833099a010a5961f474aca31aad55530374512c6fdec21311b"
+    },
+    "rounds/long-context-r15/state.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/state.json",
+      "sha256": "735858db9b26f0b560701d833793edfc938b965276a72f2dfc47e65037a4cbc7"
+    },
+    "jobs/20260924T002434Z-long-context-trajectories-29c622/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002434Z-long-context-trajectories-29c622/request.json",
+      "sha256": "4a602985df1dec63b2c097368755686630bcab447e463895082d20ed1c25e51e"
+    },
+    "jobs/20260924T002434Z-long-context-trajectories-29c622/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002434Z-long-context-trajectories-29c622/source_hashes.json",
+      "sha256": "a718725ec7fd4bd38e95d353ef716f6adccb643a4e7be43b1bc0775df04ffba7"
+    },
+    "jobs/20260924T002434Z-long-context-trajectories-29c622/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002434Z-long-context-trajectories-29c622/stdout.log",
+      "sha256": "99ae0be494981ef7336feada32a7ce8f6a3e8827c9ec3d3ff4af50a8779270cd"
+    },
+    "jobs/20260924T002434Z-long-context-trajectories-29c622/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002434Z-long-context-trajectories-29c622/result.json",
+      "sha256": "ab9c1ac03d763c16b9f6dc45c1ea4822a6ec372e807611f84ea898f1cbd1f402"
+    },
+    "jobs/20260924T002507Z-long-context-pilot-15922d/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002507Z-long-context-pilot-15922d/request.json",
+      "sha256": "13d1d621ddbc79bc1fa5a52d21f241f9c7910d86617d2918a0641713ee18432b"
+    },
+    "jobs/20260924T002507Z-long-context-pilot-15922d/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002507Z-long-context-pilot-15922d/source_hashes.json",
+      "sha256": "a718725ec7fd4bd38e95d353ef716f6adccb643a4e7be43b1bc0775df04ffba7"
+    },
+    "jobs/20260924T002507Z-long-context-pilot-15922d/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002507Z-long-context-pilot-15922d/stdout.log",
+      "sha256": "2dc252c6c07331e379cb3dfb68839ad0e6e6057fb6f2ff25a6713e6003480e91"
+    },
+    "jobs/20260924T002507Z-long-context-pilot-15922d/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002507Z-long-context-pilot-15922d/result.json",
+      "sha256": "ea1af8ecccaf951b75b927d95acf9c2843718658169ba6616ad6208a18cd13b6"
+    },
+    "jobs/20260924T002507Z-long-context-pilot-15922d/visual-training/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002507Z-long-context-pilot-15922d/visual-training/result.json",
+      "sha256": "db2ff8173fdc105eb5dda4a4bdc88f907c618da5a0e6ba4a89e063f5b54d90c7"
+    },
+    "jobs/20260924T002507Z-long-context-pilot-15922d/visual-training/metrics.jsonl": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002507Z-long-context-pilot-15922d/visual-training/metrics.jsonl",
+      "sha256": "8fa3b609ea87f21a5e0b29cb8ce30b045ddf39fdcd89e72644655dd9c5a33a39"
+    },
+    "jobs/20260924T002553Z-long-context-training-e5f7af/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002553Z-long-context-training-e5f7af/request.json",
+      "sha256": "5bce0139748adc03546302340dca067b69ba91ae76f957fec3b2f907f2f5cb4b"
+    },
+    "jobs/20260924T002553Z-long-context-training-e5f7af/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002553Z-long-context-training-e5f7af/source_hashes.json",
+      "sha256": "a718725ec7fd4bd38e95d353ef716f6adccb643a4e7be43b1bc0775df04ffba7"
+    },
+    "jobs/20260924T002553Z-long-context-training-e5f7af/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002553Z-long-context-training-e5f7af/stdout.log",
+      "sha256": "7b2d9d5bf1d07ddaeb399e8251fd8167cee77edaf7d7b4b96701d6597e1d378a"
+    },
+    "jobs/20260924T002553Z-long-context-training-e5f7af/visual-training/metrics.jsonl": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002553Z-long-context-training-e5f7af/visual-training/metrics.jsonl",
+      "sha256": "685a52cc26f7d066a4965876110ba45d4ca72791438e1790de3c870e266b9d5a"
+    },
+    "rounds/long-context-r15/trajectory-bundle/manifest.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/trajectory-bundle/manifest.json",
+      "sha256": "ca0bcfece57326729f5ed600f639834c7ca45eba48402180c6fd0912f0b14eab"
+    },
+    "rounds/long-context-r15/trajectory-bundle/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/trajectory-bundle/result.json",
+      "sha256": "6108066dc3c252d59aac17eca1c7556a48a78d8f196ff222cbb172a95d864f35"
+    },
+    "rounds/mapping-replay-r15/state.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/mapping-replay-r15/state.json",
+      "sha256": "6cda346a92dfe0108a2fc2a5250db52906751e96bb5312ea139b45ca9e092bc4"
+    },
+    "jobs/20260924T002356Z-mapping-causal-replay-912d2a/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002356Z-mapping-causal-replay-912d2a/request.json",
+      "sha256": "6a2e9494dfe22c9141090b373b9de981b015d266c373df1a0fab2185aab809bb"
+    },
+    "jobs/20260924T002356Z-mapping-causal-replay-912d2a/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002356Z-mapping-causal-replay-912d2a/source_hashes.json",
+      "sha256": "a718725ec7fd4bd38e95d353ef716f6adccb643a4e7be43b1bc0775df04ffba7"
+    },
+    "jobs/20260924T002356Z-mapping-causal-replay-912d2a/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002356Z-mapping-causal-replay-912d2a/stdout.log",
+      "sha256": "90ca7e5c410e2a8e506647783aa8b1d27e6297b31ef6b3b238270547c73914ba"
+    },
+    "jobs/20260924T002356Z-mapping-causal-replay-912d2a/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002356Z-mapping-causal-replay-912d2a/result.json",
+      "sha256": "17ce3b303fa8d34518fe02010bc3e951ecc572730cf27b0d72e7e3d0d881344c"
+    },
+    "jobs/20260924T002356Z-mapping-causal-replay-912d2a/navigation-replay/video/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002356Z-mapping-causal-replay-912d2a/navigation-replay/video/result.json",
+      "sha256": "494a0e66fc0f1474a6134058515a3a1a3ac4bffeafe88054ebc5a3173987e389"
+    },
+    "rounds/mapping-recovery-r16/state.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/mapping-recovery-r16/state.json",
+      "sha256": "939185cf6ce0db604d5f3cdbd6bceb9e21eab9f3cc84b59d16d4889e101f47fb"
+    },
+    "jobs/20260924T002951Z-mapping-causal-replay-d5ada8/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002951Z-mapping-causal-replay-d5ada8/request.json",
+      "sha256": "d085aa80cbcc17dc188776e31ef2913c71f6b4d39c4c14eab2aa1abdba2beadc"
+    },
+    "jobs/20260924T002951Z-mapping-causal-replay-d5ada8/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002951Z-mapping-causal-replay-d5ada8/source_hashes.json",
+      "sha256": "eb98e2796d01ae402d94b9ecc5e30bd684d29ac8331334e6b0007b364fe0b3f3"
+    },
+    "jobs/20260924T002951Z-mapping-causal-replay-d5ada8/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002951Z-mapping-causal-replay-d5ada8/stdout.log",
+      "sha256": "54c325b0bca0d4541dfdab19e74fc4d2b00467808d371ddd681a9ff8cb936acc"
+    },
+    "jobs/20260924T002951Z-mapping-causal-replay-d5ada8/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002951Z-mapping-causal-replay-d5ada8/result.json",
+      "sha256": "a84fc59bee58cc7e6171b5aa7b7d963324d4c960de77cbcfc3a4bd8130c1fa6e"
+    },
+    "jobs/20260924T002951Z-mapping-causal-replay-d5ada8/navigation-replay/manifest.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002951Z-mapping-causal-replay-d5ada8/navigation-replay/manifest.json",
+      "sha256": "eb72bbe61f8eec65d0060670b73607434aec4c78a3aabeac6cce23b6140a2212"
+    },
+    "jobs/20260924T002951Z-mapping-causal-replay-d5ada8/navigation-replay/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002951Z-mapping-causal-replay-d5ada8/navigation-replay/result.json",
+      "sha256": "ea1cdc72b7f93b268231ef1129e94b032b2ae517d4c84a2d4b6ba8cc0245a864"
+    },
+    "jobs/20260924T002951Z-mapping-causal-replay-d5ada8/navigation-replay/video/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002951Z-mapping-causal-replay-d5ada8/navigation-replay/video/result.json",
+      "sha256": "b752e9e3812cac01bba479fb459dfe95985a17849d594b693e876101b02e5604"
+    },
+    "jobs/20260924T002951Z-mapping-causal-replay-d5ada8/navigation-replay/reconstruction/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T002951Z-mapping-causal-replay-d5ada8/navigation-replay/reconstruction/result.json",
+      "sha256": "047d465c258df3eac77f720eebf86553ad82b8ac071137c0af5356ae7f89c4bc"
+    },
+    "rounds/runtime-isolation-r17/state.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/runtime-isolation-r17/state.json",
+      "sha256": "6f50b6ed0ff9ad24ef24e919950ef4cbd1fd6c213e6d1a18df72369c71a129a9"
+    },
+    "jobs/20260924T004623Z-physical-field-coverage-3f137e/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004623Z-physical-field-coverage-3f137e/request.json",
+      "sha256": "3305f6eee5e56cf32072ecb03cced222636440f1b538f2764b0a07725d96ca28"
+    },
+    "jobs/20260924T004623Z-physical-field-coverage-3f137e/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004623Z-physical-field-coverage-3f137e/source_hashes.json",
+      "sha256": "845b3d12c2bc2692321b8699c52deb38df86e8e74d3dfef25b46cb4f5faca3eb"
+    },
+    "jobs/20260924T004623Z-physical-field-coverage-3f137e/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004623Z-physical-field-coverage-3f137e/stdout.log",
+      "sha256": "8cfed081e1196f3306af714bbfc78c1180ca06f6900bc34155934ab357e33d29"
+    },
+    "jobs/20260924T004623Z-physical-field-coverage-3f137e/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004623Z-physical-field-coverage-3f137e/result.json",
+      "sha256": "daaf12f729ce32376a8d655a8a0bcaa2e10b0f453b7eb4f218cbabeefd12707d"
+    },
+    "rounds/runtime-isolation-r18/state.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/runtime-isolation-r18/state.json",
+      "sha256": "78b44fadbfe70b43bb3db058bd15b358a2d48e3b3608e45df3da5a45a17c6f03"
+    },
+    "jobs/20260924T004747Z-physical-field-coverage-ae5bbd/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004747Z-physical-field-coverage-ae5bbd/request.json",
+      "sha256": "43051a1b11f27865ba0f209941c9560559d970b77c12da3c59749448d2f79ab2"
+    },
+    "jobs/20260924T004747Z-physical-field-coverage-ae5bbd/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004747Z-physical-field-coverage-ae5bbd/source_hashes.json",
+      "sha256": "ca93028272570a6bfeccdbffd9f856269c6a55e7b58fb176e8741964520f731d"
+    },
+    "jobs/20260924T004747Z-physical-field-coverage-ae5bbd/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004747Z-physical-field-coverage-ae5bbd/stdout.log",
+      "sha256": "8885c85beec0eb857e7d0cb6bfb467d270c2b081dff52d7f8ef196dcb72a2540"
+    },
+    "jobs/20260924T004747Z-physical-field-coverage-ae5bbd/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004747Z-physical-field-coverage-ae5bbd/result.json",
+      "sha256": "5bc1a19f11d201934e9052149f0dd20d5533db3fbab6e614a28efe4444dbbca5"
+    },
+    "jobs/20260924T004747Z-physical-field-coverage-ae5bbd/field-coverage/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004747Z-physical-field-coverage-ae5bbd/field-coverage/result.json",
+      "sha256": "e497e966ca55eaf4677955d42d907794e985be22fd02d6d4b558bd8c1a9b0f2c"
+    },
+    "jobs/20260924T004747Z-physical-field-coverage-ae5bbd/field-coverage/comparisons.jsonl": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004747Z-physical-field-coverage-ae5bbd/field-coverage/comparisons.jsonl",
+      "sha256": "5d2c19512f0c3f9a60e1f982e3939446482e7d2f141fa2f0f7e5a89653a7fa10"
+    },
+    "jobs/20260924T004749Z-restricted-runtime-replay-70f08f/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004749Z-restricted-runtime-replay-70f08f/request.json",
+      "sha256": "a4f0e052b9a3d976c245a10c460ad25c5051596683e935aa859f18c40f7ca2b0"
+    },
+    "jobs/20260924T004749Z-restricted-runtime-replay-70f08f/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004749Z-restricted-runtime-replay-70f08f/source_hashes.json",
+      "sha256": "ca93028272570a6bfeccdbffd9f856269c6a55e7b58fb176e8741964520f731d"
+    },
+    "jobs/20260924T004749Z-restricted-runtime-replay-70f08f/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004749Z-restricted-runtime-replay-70f08f/stdout.log",
+      "sha256": "4d381c6b074630f10acc0472e4dae2663723395b320b906835556127f3b82b17"
+    },
+    "jobs/20260924T004749Z-restricted-runtime-replay-70f08f/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004749Z-restricted-runtime-replay-70f08f/result.json",
+      "sha256": "c3062e491de2a4f4b669b08ebde170bf430cd68e5bef093606ee0b4e4bb4e57c"
+    },
+    "jobs/20260924T004749Z-restricted-runtime-replay-70f08f/inference-source-hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004749Z-restricted-runtime-replay-70f08f/inference-source-hashes.json",
+      "sha256": "c371c5ec127de73fece92b1e556436af23a7d76b71f6ae28c1bf66dc6c9dc2e2"
+    },
+    "jobs/20260924T004749Z-restricted-runtime-replay-70f08f/navigation-replay/manifest.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004749Z-restricted-runtime-replay-70f08f/navigation-replay/manifest.json",
+      "sha256": "e9f5df2dec74a147ddf749fda9046ac929e9377344b979c6c8a929f0996f0183"
+    },
+    "jobs/20260924T004749Z-restricted-runtime-replay-70f08f/navigation-replay/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004749Z-restricted-runtime-replay-70f08f/navigation-replay/result.json",
+      "sha256": "bb8f0a64ade6e9a433a91b30ed4393702cbfaabe0c0dfb345c6598b65a9c0a7a"
+    },
+    "jobs/20260924T004749Z-restricted-runtime-replay-70f08f/navigation-replay/video/result.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T004749Z-restricted-runtime-replay-70f08f/navigation-replay/video/result.json",
+      "sha256": "7737681cb47b8598f657ae298480eb996bea905385d891b4c6f4e6b717787c61"
+    },
+    "rounds/causal-memory-r19/state.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/causal-memory-r19/state.json",
+      "sha256": "04c8cf43945b7243dcb7e0cf69294a879ac292716d3334a3ddb75325fe964795"
+    },
+    "jobs/20260924T005055Z-mapping-causal-replay-2ee772/request.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T005055Z-mapping-causal-replay-2ee772/request.json",
+      "sha256": "5f0b3569a5dc24a8452f236d8f361c64281ddefd7e0a33a5b47939b6408ed56d"
+    },
+    "jobs/20260924T005055Z-mapping-causal-replay-2ee772/source_hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T005055Z-mapping-causal-replay-2ee772/source_hashes.json",
+      "sha256": "8f1a77efa9b4f94e76f575ffe4f0c4a0684e628d2c7d75a666032be73b1e5359"
+    },
+    "jobs/20260924T005055Z-mapping-causal-replay-2ee772/stdout.log": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T005055Z-mapping-causal-replay-2ee772/stdout.log",
+      "sha256": "ae15bc22c68f0f9dfaed905fe461fb0dd047f1dbe3640ac7813b39144f4050c0"
+    },
+    "jobs/20260924T005055Z-mapping-causal-replay-2ee772/inference-source-hashes.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T005055Z-mapping-causal-replay-2ee772/inference-source-hashes.json",
+      "sha256": "a5fba8216b0fda0af691c6ad2e8d0d4bed46bb1e5ecb9883f0d8607c0dd161b3"
+    },
+    "jobs/20260924T005055Z-mapping-causal-replay-2ee772/inference-output/navigation-replay/alignment.jsonl": {
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T005055Z-mapping-causal-replay-2ee772/inference-output/navigation-replay/alignment.jsonl",
+      "sha256": "d7caf22cba80514097dfecd20833d4984a0121d703a36494f24f7a80ac2644e8"
+    },
+    "flights/20260923T234610Z.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/result.json",
+      "sha256": "4678dfe8f21fcecc0e3a7354f317fe38c8be9185a8ecb780d822fd43deae5e55"
+    },
+    "flights/20260923T235745Z.json": {
+      "source": "/home/iamyanbo/uav-rgb-flight/launches/20260923T235745Z/episode/result.json",
+      "sha256": "90f1127bcd1532de26faa18980633fa4a6e758d660aed83ee834761736946d11"
+    }
+  }
+}

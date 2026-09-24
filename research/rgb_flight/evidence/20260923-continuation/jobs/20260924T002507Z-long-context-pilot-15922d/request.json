@@ -1,0 +1,20 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T002507Z-long-context-pilot-15922d/source/stage_worker.py",
+    "train-odometry",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/trajectory-bundle",
+    "--initialize-from",
+    "initialization.pt",
+    "--updates",
+    "2",
+    "--validation-every",
+    "2"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 16.0,
+  "status": "running"
+}

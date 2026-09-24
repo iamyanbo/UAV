@@ -1,0 +1,84 @@
+{
+  "schema_version": 3,
+  "program": "random-visual-goal-continuous-flight",
+  "scene": "env_airsim_16",
+  "scope": "within-environment study; model priors allowed; no persistent runtime atlas",
+  "runtime": {
+    "allowed_inputs": ["current_RGB", "four_goal_RGB_views", "camera_calibration", "timestamps", "previous_commands"],
+    "forbidden_inputs": ["simulator_depth", "true_pose", "true_velocity", "destination_coordinates", "complete_map", "privileged_obstacle_field", "training_labels"],
+    "rgb": {"width": 640, "height": 480, "hz": 20, "format": "RGB24", "resize": "aspect_preserving_letterbox_no_crop"},
+    "command_frame": "body_forward_right_down; yaw_rate_degrees_per_second",
+    "absolute_command_limits": {"horizontal_mps": 6, "vertical_mps": 1, "yaw_dps": 45},
+    "speed_curriculum_mps": [3, 4.5, 6],
+    "reset_episode_memory": true,
+    "physics_advances_during_inference": true,
+    "privileged_process_not_mounted_in_runtime": true
+  },
+  "obstacle_field": {
+    "source": "dense_depth_and_semantic_capture_fusion",
+    "privileged_only": true,
+    "visible_geometry_including_foliage_is_occupied": true,
+    "vehicle_ellipsoid_radii_m": [0.75, 0.75, 0.4],
+    "geometry_margin_m": 0.25,
+    "collision_rule": "AirSim contact OR swept ellipsoid intersects field"
+  },
+  "episodes": {
+    "deterministic_manifest_seed": 20260921,
+    "counts": {"train": 10000, "validation": 150, "sealed_test": 200},
+    "disjoint": ["goal_region", "complete_start_goal_pair"],
+    "phases": {
+      "1": {"path_m": [20, 80], "agl_m": [5, 10]},
+      "2": {"path_m": [50, 180], "agl_m": [5, 15]},
+      "3": {"path_m": [100, 300], "agl_m": [5, 20]}
+    },
+    "random_start_yaw": true,
+    "require_privileged_collision_free_3d_reference_path": true,
+    "setup": "reset collision and motion; one simSetVehiclePose at start; stable hover; no pose setting after recording starts",
+    "goal_observation": "four RGB views at fixed yaw order 0,90,180,270; runtime record contains pixels/calibration/timestamps only",
+    "success": {"explicit_stop": true, "horizontal_m": 3, "vertical_m": 2, "speed_below_mps": 0.5, "dwell_sim_seconds": 1},
+    "timeout_sim_seconds": 180,
+    "legacy_20_route_survey": "stop after current episode; preserve evidence; never gate visual-goal training"
+  },
+  "models": {
+    "fast_odometry": {"hz": 20, "inputs": ["successive_RGB", "previous_command"], "outputs": ["motion", "scale", "uncertainty"], "supervision": "simulator_training_labels_only"},
+    "visual": {"upstream": "https://github.com/facebookresearch/vjepa2", "backbone": "V-JEPA 2 ViT-L", "hz": 5, "frozen_initially": true, "role": "causal video teacher and future-token world-model target"},
+    "goal_matcher": {"type": "shared MobileNetV3-Large spatial encoder plus four-view cross-attention", "goal_input": "retain all four 640x480 RGB views; cache every spatial token once per episode at a versioned encoder snapshot", "forbidden_goal_bottlenecks": ["8x8 average-pooling of goal", "goal-only PCA", "12 scalar task values as sole goal input"], "positives": "frames within goal radius", "negatives": "spatially separated frames", "outputs": ["goal_match_probability", "predicted_time_to_goal", "goal_conditioned_terminal_value", "goal_context"]},
+    "memory": {"mapping": "asynchronous Splat-SLAM and 3DGS", "episode_local": true, "persistent_atlas": false, "contents": ["geometry_and_uncertainty", "keyframes", "traversability_graph", "frontiers", "goal_panorama_similarity"]},
+    "world": {"layers": 6, "width": 384, "heads": 8, "dt_seconds": 0.2, "bootstrap_heads": 3, "goal_bridge": "trainable cross-attention from V-JEPA future tokens to cached spatial goal tokens", "selected_target": "264-dimensional token resolved from Qwen-selected observed episode-memory ID", "predictions": ["future_visual_tokens", "motion", "collision_risk", "visibility", "useful_observation", "goal_match_probability", "time_to_goal"]},
+    "mode_1": {"backbone": "MobileNetV3-Large shared frozen goal-matcher snapshot", "gru_dim": 256, "hz": 20, "inputs_include": ["current spatial RGB tokens", "all four cached goal spatial grids", "selected observed target token", "episode memory", "bounded task configuration"], "continues_during_slow_computation": true},
+    "mode_2": {"hz": 2, "horizon_seconds": 4, "actions": 20, "action_gradient_steps": 12, "speed_restricted_if_braking_plus_one_second_exceeds_horizon": true},
+    "configurator": {"backbone": "Qwen/Qwen2.5-VL-3B-Instruct", "asynchronous": true, "minimum_interval_sim_seconds": 3, "maximum_validity_sim_seconds": 5, "triggers": ["episode_start", "goal_or_frontier_change", "tracking_loss", "periodic"], "inputs": ["goal_panorama", "current_RGB", "up_to_three_keyframes", "frontier_thumbnails", "belief_uncertainty_progress"], "outputs": ["goal_match_or_frontier_id", "search_inspect_approach_stop", "time_goal_information_weights", "additional_caution", "confidence", "validity_horizon", "deliberate_immediately"], "velocity_output_forbidden": true, "cannot_reduce_mandatory_safety": true, "lora_rank": 8},
+    "safety": {"hz": 20, "independent": true, "mandatory_brakes": ["stale_RGB", "tracking_loss", "excessive_scale_uncertainty", "unsafe_stopping_distance", "predicted_collision"], "configurator_override_forbidden": true}
+  },
+  "training": {
+    "start_after_valid_expert_episodes": 250,
+    "collection_milestones": [250, 1000, 2500, 5000, 10000],
+    "order": ["fast_visual_odometry", "goal_encoder_matcher", "jepa_world_model_and_heads", "critic_and_mode_1_recurrent_imitation", "qwen_configurator_lora", "dagger", "constrained_ppo", "qwen_complete_flight_preferences"],
+    "gradient_boundaries": "matcher trains shared goal/current RGB encoder; world trains predictor and goal bridge against frozen V-JEPA targets; Mode 2 differentiates cost with respect to candidate actions only; Mode 1 trains by imitation and physical PPO; Qwen LoRA and Splat-SLAM optimize separately",
+    "expert_execution": "privileged 3D path executed through body-relative velocity commands and continuous physics; no pose-jump trajectory",
+    "coverage": ["turns", "vertical_transitions", "occlusions", "recoveries", "near_obstacle_approaches", "failed_attempts"],
+    "labels_separate": ["true_pose", "true_velocity", "depth", "collision", "goal_distance"],
+    "budgets": {"world_updates": 300000, "imitation_updates": 200000, "ppo_physics_transitions": 10000000, "qwen_configuration_examples": 25000, "matched_configuration_pairs": 2000},
+    "world": {"updates": 300000, "effective_batch": 16, "optimizer": "AdamW", "lr": 0.0001, "validate_every": 2000, "horizons_seconds": [1, 2, 3, 4]},
+    "policy": {"imitation_updates": 200000, "effective_batch": 32, "ppo_transition_cap": 10000000},
+    "configurator": {"supervised_examples_target": 25000, "supervised_epochs": 2, "paired_outcome_trials": 2000, "preference_passes": 1, "effective_batch": 16},
+    "reference_budgets": {"world_updates": 60000, "imitation_updates": 40000, "ppo_transitions": 1000000, "grounding_examples": 5000, "configuration_pairs": 200},
+    "ppo": {"privileged_distance_progress_reward_only": true, "distance_is_never_observation": true, "collision_is_constrained_cost": true},
+    "objective": ["avoid_collision", "reach_and_stop", "minimize_simulated_completion_time"],
+    "cache_goal_and_vjepa_features": true,
+    "overlap_offline_encoding_when_admitted": true,
+    "unload_qwen_during_predictor_only_training": true
+  },
+  "curriculum_gate": {"validation_collision_free_success_min": 0.9, "validation_collision_rate_max": 0.01, "architecture_changes_between_speed_stages": false},
+  "evaluation": {
+    "clock_speed": 1.0,
+    "primary_score": "median completion time among policies meeting collision and success thresholds",
+    "metrics": ["collision_free_success", "path_efficiency", "final_error", "traveled_distance", "completion_time", "control_latency", "actual_velocity", "collision_rate"],
+    "variants": ["mode_1_only", "mode_1_plus_geometry_planner", "jepa_without_gaussian_history", "jepa_with_episode_gaussian_memory", "fixed_qwen_configuration", "trained_qwen_configuration", "privileged_expert_upper_bound"],
+    "mechanism_checks": ["candidate_actions_produce_different_futures", "jepa_predictions_change_ranking", "qwen_configuration_changes_plans", "episode_memory_helps_revisits", "runtime_cannot_access_privileged_labels"],
+    "retain_all_failures": true,
+    "foliage_intersection_is_collision_even_without_airsim_contact": true
+  },
+  "resources": {"backend": "dgx_spark", "minimum_available_memory_gib": 12, "checkpoint_headroom_gib": 4, "job_window_hours": 8, "flight_excludes_background_gpu_training": true, "cloud_spend": 0, "toy_fallback": false},
+  "stages": ["build-obstacle-field", "generate-manifests", "capture-goals", "collect-expert", "encode", "train-odometry", "train-goal", "train-world", "train-policy", "train-configurator", "dagger", "ppo", "validate", "evaluate", "report"]
+}

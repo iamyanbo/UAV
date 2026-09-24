@@ -1,6 +1,7 @@
 import { execFileSync, spawn } from "node:child_process";
 import { existsSync } from "node:fs";
-import { isAbsolute, resolve, sep } from "node:path";
+import { dirname, isAbsolute, join, resolve, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { environmentFor } from "../config/msvc-env.js";
 import { withoutBrokerCredentials } from "../config/broker-env.js";
@@ -8,8 +9,40 @@ import { processStartId } from "../daemon.js";
 import type { ProgressHeartbeat } from "../supervision/progress-heartbeat.js";
 
 const MAX_TOOL_OUTPUT = 40_000;
+export const MAX_LOCAL_CUDA_MEMORY_FRACTION = 0.60;
+/** The operator approved 80% only for this isolated campaign, not other runs. */
+export function localCudaFraction(env: NodeJS.ProcessEnv): number {
+  if (env.CURI_APPROVED_CAMPAIGN !== "idea1-mission-world-model-2026-09-21") return MAX_LOCAL_CUDA_MEMORY_FRACTION;
+  const requested = Number(env.CURI_MAX_VRAM_FRACTION ?? 0.60);
+  if (!Number.isFinite(requested) || requested <= 0) throw new Error("Invalid campaign CUDA fraction");
+  return Math.min(0.80, requested);
+}
 const INTERPRETERS = new Set(["python", "python3", "py", "node"]);
 const DENIED_EXECUTABLES = new Set(["bash", "sh", "zsh", "fish", "cmd", "powershell", "pwsh", "wsl"]);
+
+function projectRootFromModule(): string {
+  // src/worker/process.ts and dist/worker/process.js are both three parents
+  // below the project root.
+  return dirname(dirname(dirname(fileURLToPath(import.meta.url))));
+}
+
+export function withCudaMemoryGuard(input: NodeJS.ProcessEnv = process.env): Record<string, string> {
+  const env: Record<string, string> = {};
+  for (const [key, value] of Object.entries(input)) if (value !== undefined) env[key] = value;
+  const guard = join(projectRootFromModule(), "scripts", "cuda-memory-guard");
+  if (existsSync(join(guard, "sitecustomize.py"))) {
+    env.PYTHONPATH = [guard, env.PYTHONPATH].filter(Boolean).join(process.platform === "win32" ? ";" : ":");
+    // The guard refuses values above this fraction. Local numerical
+    // concurrency remains one by default.
+    env.CURI_GPU_MEMORY_GUARD = "1";
+    env.CURI_MAX_VRAM_FRACTION = String(localCudaFraction(input));
+  }
+  return env;
+}
+
+function guardedEnvironment(executable: string): NodeJS.ProcessEnv {
+  return withCudaMemoryGuard(withoutBrokerCredentials(environmentFor(executable)));
+}
 
 export const PROCESS_RULES = [
   "Checks run without a shell; arguments are passed literally, without pipes, redirection or glob expansion.",
@@ -77,7 +110,7 @@ export async function runProcess(
   return await new Promise((done) => {
     const child = spawn(executable, args, {
       cwd: root, shell: false, windowsHide: true, stdio: ["ignore", "pipe", "pipe"],
-      env: withoutBrokerCredentials(environmentFor(inheritBuildEnvironment ? "nvcc" : executable)),
+      env: guardedEnvironment(inheritBuildEnvironment ? "nvcc" : executable),
       ...(process.platform === "win32" ? {} : { detached: true }),
     });
     const operation = { kind: "process" as const, name: executable, pid: child.pid,

@@ -1,0 +1,15 @@
+[
+  {
+    "schema": "confirmed-constant-command/v1",
+    "begin_sim_ns": 1790217043192713984,
+    "end_sim_ns": 1790217275160662528,
+    "values": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "proof": "completed identical command before capture; single writer issued only identical commands until conservative pre-submission end",
+    "individual_application_timestamps_observed": false
+  }
+]

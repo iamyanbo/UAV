@@ -22,6 +22,7 @@ import { paperEvidenceStatus } from "./paper-status.js";
 import { canonicalGate } from "./quant-evaluation.js";
 import { statePath } from "./paths.js";
 import type { ResearchStore } from "./store.js";
+import { currentResearchRecords, modelProgramContext, researchMemoryContext } from "./model-research.js";
 
 const pct = (value: unknown, digits = 1) => typeof value === "number" && Number.isFinite(value)
   ? `${value >= 0 ? "+" : ""}${(value * 100).toFixed(digits)}%` : "n/a";
@@ -107,6 +108,7 @@ export function snapshotBenchmarks(root: string, store: ResearchStore, direction
 
 export function renderBook(root: string, store: ResearchStore, directionId: string,
   benchmarks: BenchmarkProvider = snapshotBenchmarks(root, store, directionId)): string {
+  if (directionId === "uav-navigation") return modelProgramContext(store, directionId) + "\n" + researchMemoryContext(store, directionId);
   const lines = ["## Book"];
   const status = (() => { try { return paperEvidenceStatus(root, directionId, store); } catch { return null; } })();
   const active = store.db.prepare("SELECT checkpoint_id,revision,activated_at FROM shadow_candidates WHERE direction_id=?")
@@ -186,6 +188,11 @@ export function evaluationSummary(reportPath: string, reportHash: string | null 
 }
 
 export function renderCandidates(store: ResearchStore, directionId: string, projectRoot?: string): string {
+  if (directionId === "uav-navigation") {
+    const context = store.context(directionId);
+    return "## Implementation checkpoints\n" + (context.programCheckpoints.map(p => `${p.checkpoint_id}: ${p.task_id} revision ${p.revision}\n${p.summary_md}`).join("\n")
+      || "No current checkpoint. Build the active program's first working model milestone; a prior toy OUT result is not required.");
+  }
   const lines = ["## Candidates"];
   const ledger = hasTable(store.db, "quant_evaluations");
   const active = store.db.prepare("SELECT revision FROM shadow_candidates WHERE direction_id=?").get(directionId) as { revision: string } | undefined;
@@ -263,13 +270,13 @@ export function renderAgenda(store: ResearchStore, directionId: string): string 
 }
 
 export function renderFindings(store: ResearchStore, directionId: string, limit = 15): string {
-  const outcomes = store.db.prepare("SELECT outcome_id,task_id,verdict,report_md,created_at FROM outcomes WHERE direction_id=? ORDER BY created_at DESC")
-    .all(directionId) as Array<Record<string, string>>;
+  const outcomes = currentResearchRecords(store, directionId, store.db.prepare("SELECT outcome_id,task_id,verdict,report_md,created_at FROM outcomes WHERE direction_id=? ORDER BY created_at DESC")
+    .all(directionId) as Array<Record<string, string>>);
   const reviews = store.db.prepare(`SELECT r.synthesis_id,r.verdict FROM synthesis_reviews r JOIN component_syntheses s ON s.synthesis_id=r.synthesis_id
     WHERE s.direction_id=? ORDER BY r.created_at`).all(directionId) as Array<{ synthesis_id: string; verdict: string }>;
   const latest = new Map(reviews.map((review) => [review.synthesis_id, review.verdict]));
-  const syntheses = store.db.prepare("SELECT synthesis_id,supersedes_synthesis_id,body_md,created_at FROM component_syntheses WHERE direction_id=? ORDER BY created_at DESC")
-    .all(directionId) as Array<Record<string, string | null>>;
+  const syntheses = currentResearchRecords(store, directionId, store.db.prepare("SELECT synthesis_id,supersedes_synthesis_id,body_md,created_at FROM component_syntheses WHERE direction_id=? ORDER BY created_at DESC")
+    .all(directionId) as Array<Record<string, string | null>>);
   const accepted = syntheses.filter((row) => latest.get(String(row.synthesis_id)) === "accepted");
   const superseded = new Set(accepted.map((row) => row.supersedes_synthesis_id).filter(Boolean));
   const standing = accepted.filter((row) => !superseded.has(row.synthesis_id)).slice(0, 5);
@@ -296,6 +303,11 @@ const RESEARCH_DATA: Array<[table: string, label: string]> = [
  * weighed against the record rather than a sense that the history is exhausted.
  */
 export function renderCoverage(root: string, store: ResearchStore, directionId: string): string {
+  if (directionId === "uav-navigation") {
+    const c = store.context(directionId);
+    return `## UAV development coverage\nCurrent epoch: ${c.tasks.length} tasks, ${c.programCheckpoints.length} checkpoints, ${c.outcomes.length} scoped outcomes; ${c.sources.length} preserved literature sources.\n`
+      + "Coverage is not established by counts. Track actual model training, visual/simulator integration, held-out environment evaluation and closest-method comparisons in PROJECT.md. Missing capabilities are next milestones, not reasons to replace the method with a proxy.";
+  }
   const verdicts = store.db.prepare("SELECT verdict, COUNT(*) n FROM outcomes WHERE direction_id=? GROUP BY verdict ORDER BY verdict")
     .all(directionId) as Array<{ verdict: string; n: number }>;
   const outcomes = verdicts.reduce((sum, row) => sum + row.n, 0);

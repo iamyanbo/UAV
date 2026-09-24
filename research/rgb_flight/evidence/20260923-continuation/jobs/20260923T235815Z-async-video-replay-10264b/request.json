@@ -1,0 +1,21 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260923T235815Z-async-video-replay-10264b/source/navigation_process.py",
+    "--observations",
+    "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/observations",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/goal",
+    "--integration-only",
+    "--video",
+    "--frames",
+    "400",
+    "--checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-r8/checkpoints-complete"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 24.0,
+  "status": "running"
+}

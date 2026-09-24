@@ -1,0 +1,11 @@
+{
+  "audited_observation_conditioned_configurations": true,
+  "grounding": "grounding.jsonl",
+  "grounding_sha256": "183fb756961c2e34a366d45e38cf407970b93ca4694ff148618d26909cc33d7d",
+  "source_replay_sha256": "ee09dd78f5fe7e54f3f21e6d2764232928f574f0210059670aaadebfb0f84de4",
+  "scope": "Bootstrap abstention only; no directional search quality claimed",
+  "output_format": "compact/v2",
+  "source_manifest_sha256": "ec292e9c0c88ceef2d3f1b21e4bc58f98196d28e665eb5617b2aed4135a95ced",
+  "initialization_sha256": "117ac83ba2f35bdd5f8fdb0acd6b0012043728f92f5a5e7a6b40637b3f58039e",
+  "encoding": "t target, i intention, w same four bounded continuous multipliers, c confidence, h horizon, d deliberation"
+}

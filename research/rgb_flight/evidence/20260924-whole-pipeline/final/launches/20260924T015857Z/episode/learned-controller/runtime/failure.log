@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/source/learned_controller.py", line 137, in main
+    video.observe(metadata,rgb);value=core.observe(metadata,rgb)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 121, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/source/navigation_state.py", line 281, in observe
+    self.configuration.validate_grounding(self.episode_id,self.memory.observed_ids,ns/1e9)
+  File "/source/contracts.py", line 206, in validate_grounding
+    raise ValueError("Ungrounded, cross-episode or expired configuration")
+ValueError: Ungrounded, cross-episode or expired configuration

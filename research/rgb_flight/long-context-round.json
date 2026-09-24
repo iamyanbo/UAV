@@ -1,0 +1,171 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Corrective 160-step odometry, 32-step warm-up, real-update pilot, exact continuation and full development qualification",
+  "stages": [
+    {
+      "id": "long-context-trajectories",
+      "kind": "cpu",
+      "peak_gib": 8,
+      "seconds": 1800,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/navigation-checkpoints/odometry.pt"
+      ],
+      "command": [
+        "/home/iamyanbo/uav-rgb-flight/envs/airsim/bin/python",
+        "{source}/trajectory_bundle.py",
+        "--collection-root",
+        "/home/iamyanbo/uav-rgb-flight/launches",
+        "--initialization",
+        "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/navigation-checkpoints/odometry.pt",
+        "--output",
+        "{round}/trajectory-bundle"
+      ],
+      "receipt": "{round}/trajectory-bundle/result.json",
+      "outputs": [
+        "{round}/trajectory-bundle/manifest.json"
+      ]
+    },
+    {
+      "id": "long-context-pilot",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 1800,
+      "depends_on": [
+        {
+          "stage": "long-context-trajectories",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/trajectory-bundle/manifest.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-odometry",
+        "--dataset",
+        "{round}/trajectory-bundle",
+        "--initialize-from",
+        "initialization.pt",
+        "--updates",
+        "2",
+        "--validation-every",
+        "2"
+      ],
+      "receipt": "{job}/visual-training/result.json",
+      "outputs": [
+        "{job}/visual-training/latest.pt",
+        "{job}/visual-training/best.pt"
+      ]
+    },
+    {
+      "id": "long-context-training",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 18000,
+      "depends_on": [
+        {
+          "stage": "long-context-pilot",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/trajectory-bundle/manifest.json",
+        "{stage:long-context-pilot:job}/visual-training/latest.pt"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-odometry",
+        "--dataset",
+        "{round}/trajectory-bundle",
+        "--resume",
+        "{stage:long-context-pilot:job}/visual-training/latest.pt",
+        "--updates",
+        "1000",
+        "--validation-every",
+        "100"
+      ],
+      "resume_command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-odometry",
+        "--dataset",
+        "{round}/trajectory-bundle",
+        "--resume",
+        "{checkpoint}",
+        "--updates",
+        "1000",
+        "--validation-every",
+        "100"
+      ],
+      "checkpoint": "{job}/visual-training/latest.pt",
+      "receipt": "{job}/visual-training/result.json",
+      "outputs": [
+        "{job}/visual-training/latest.pt",
+        "{job}/visual-training/best.pt"
+      ]
+    },
+    {
+      "id": "long-context-pack",
+      "kind": "cpu",
+      "peak_gib": 2,
+      "seconds": 600,
+      "depends_on": [
+        {
+          "stage": "long-context-training",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{stage:long-context-training:job}/visual-training/best.pt"
+      ],
+      "command": [
+        "python3",
+        "{source}/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260923T235816Z-goal-corrective-training-03d6f1/visual-training/best.pt",
+        "--odometry",
+        "{stage:long-context-training:job}/visual-training/best.pt",
+        "--output",
+        "{round}/checkpoints",
+        "--goal-match-threshold",
+        "1.0"
+      ],
+      "receipt": "{round}/checkpoints/checkpoints.json",
+      "outputs": [
+        "{round}/checkpoints/checkpoints.json"
+      ]
+    },
+    {
+      "id": "long-context-qualification",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 1800,
+      "depends_on": [
+        {
+          "stage": "long-context-pack",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/checkpoints/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "qualify-odometry",
+        "--dataset",
+        "{round}/trajectory-bundle",
+        "--navigation-pack",
+        "{round}/checkpoints"
+      ],
+      "receipt": "{job}/odometry-qualification/result.json",
+      "outputs": [
+        "{job}/odometry-qualification/episodes.jsonl",
+        "{job}/odometry-qualification/horizons.json"
+      ]
+    }
+  ]
+}

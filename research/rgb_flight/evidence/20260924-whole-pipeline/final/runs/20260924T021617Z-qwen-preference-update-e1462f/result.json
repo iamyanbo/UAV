@@ -1,0 +1,23 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T021617Z-qwen-preference-update-e1462f/source/stage_worker.py",
+    "train-configurator",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r33/preference-data",
+    "--configurator-phase",
+    "preference",
+    "--initialize-from",
+    "supervised.pt",
+    "--integration-only",
+    "--updates",
+    "1"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 40.0,
+  "status": "finished",
+  "return_code": 1,
+  "elapsed_seconds": 2.0122159118764102
+}

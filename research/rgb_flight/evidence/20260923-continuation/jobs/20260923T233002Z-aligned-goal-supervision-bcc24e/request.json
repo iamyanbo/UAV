@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/home/iamyanbo/uav-rgb-flight/envs/airsim/bin/python",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260923T233002Z-aligned-goal-supervision-bcc24e/source/build_goal_round.py",
+    "--bundle",
+    "/home/iamyanbo/uav-rgb-flight/rounds/integration-r3/trajectory-bundle",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/goal-candidates",
+    "--initialization",
+    "/home/iamyanbo/uav-rgb-flight/launches/training-checkpoints/goal-best-100000.pt"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 8.0,
+  "status": "running"
+}

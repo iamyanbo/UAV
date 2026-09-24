@@ -1,0 +1,9 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "complete_flights": 1,
+  "successes": 0,
+  "all_failures_retained": true,
+  "controller_frozen_during_collection": true,
+  "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015057Z-fresh-ppo-flight-f15950/collection/flights.json"
+}

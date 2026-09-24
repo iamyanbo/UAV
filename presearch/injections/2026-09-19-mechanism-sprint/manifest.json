@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "batchId": "uav-2026-09-19-mechanism-sprint",
+  "directionId": "uav-navigation",
+  "contractFile": "presearch/injections/2026-09-19-mechanism-sprint/execution-contract.md",
+  "ideas": [
+    {
+      "key": "feedback-policy-packets",
+      "title": "Send a small feedback policy, not a stale action chunk",
+      "file": "presearch/injections/2026-09-19-mechanism-sprint/01-feedback-policy-packets.md",
+      "nextStep": "Test a learned observation-conditioned policy packet against an equally expressive cached-goal fast policy and delayed chunks. Audit contingency policies and real-time correction first. Preserve fresh-observation access equally; train and test on separate worlds. Do not replace the learned packet with oracle branch selection."
+    },
+    {
+      "key": "observation-consistent-worlds",
+      "title": "Train against worlds that look identical until the UAV investigates",
+      "file": "presearch/injections/2026-09-19-mechanism-sprint/02-observation-consistent-worlds.md",
+      "nextStep": "Construct observation-matched hidden-world pairs, prove their prefix observations match, then train a small recurrent sensing/navigation policy. Compare against matched domain randomization and an explicit belief planner. Preserve unknown geometry, teacher-only state and held-out topology; this is not a photorealistic simulator-addition claim."
+    },
+    {
+      "key": "information-source-router",
+      "title": "Learn whether to think more, look closer, or move to see",
+      "file": "presearch/injections/2026-09-19-mechanism-sprint/03-information-source-router.md",
+      "nextStep": "Train a small value-of-information router over semantic inference, a fresh crop, a safe reveal maneuver, and continue/brake. Make each resource solve a different controlled uncertainty and charge its measured wall-clock/motion cost. Compare learned routing to strong heuristics and equal-budget single-resource policies."
+    },
+    {
+      "key": "arrival-aware-sensing",
+      "title": "Choose camera motion for the time a model answer will arrive",
+      "file": "presearch/injections/2026-09-19-mechanism-sprint/04-arrival-aware-sensing.md",
+      "nextStep": "Implement delay-conditioned camera/body/capture co-control with rendered partial observations. Compare against current-visibility control, the same controller given delay, and execution-time prediction. Test whether changed sensing, rather than merely slower flight or forecasting, produces the benefit."
+    },
+    {
+      "key": "dependency-local-semantic-repair",
+      "title": "Repair only the parts of a semantic plan whose evidence changed",
+      "file": "presearch/injections/2026-09-19-mechanism-sprint/05-dependency-local-semantic-repair.md",
+      "nextStep": "Build an executable semantic dependency graph with unknown/false distinction and local re-grounding. Compare against whole-plan replanning and an equally informed incremental scene-graph baseline. Include actual visual grounding errors, not only perfect predicates; audit STeP, LabGuard, LTLCodeGen and LookasideVLN for equivalence."
+    }
+  ]
+}

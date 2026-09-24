@@ -1,0 +1,12 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 400,
+  "missing_video_frames": 56,
+  "missing_metric_geometry_frames": 400,
+  "processing_p95_seconds": 0.05285344460280612,
+  "processing_max_seconds": 0.08387129893526435,
+  "processing_deadlines_missed": 28,
+  "publication_lateness_p95_seconds": 0.11022541184211147,
+  "scope": "shared causal fast path; slow-feature publication replay and flight acceptance remain separate"
+}

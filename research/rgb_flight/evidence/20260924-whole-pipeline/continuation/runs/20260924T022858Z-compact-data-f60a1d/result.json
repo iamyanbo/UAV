@@ -1,0 +1,19 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T022858Z-compact-data-f60a1d/source/reformat_configuration_dataset.py",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/configuration-data",
+    "--adapter",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T014938Z-qwen-supervised-update-bee1ad/configurator/latest.pt",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/configuration-data"
+  ],
+  "seconds": 300,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 4.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 1.0123016159050167
+}

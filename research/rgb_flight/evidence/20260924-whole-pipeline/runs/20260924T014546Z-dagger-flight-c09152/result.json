@@ -1,0 +1,17 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T014546Z-dagger-flight-c09152/source/collect_learning_round.py",
+    "--episode-id",
+    "train-00000",
+    "--controller-checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints"
+  ],
+  "seconds": 1200,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "flight",
+  "peak_gib": 64.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 231.12703531701118
+}

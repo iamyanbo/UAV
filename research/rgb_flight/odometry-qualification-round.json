@@ -1,0 +1,31 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Full recorded development episode qualification of shared causal odometry path",
+  "stages": [
+    {
+      "id": "held-out-odometry-qualification",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 1800,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/trajectory-bundle/manifest.json",
+        "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/navigation-checkpoints/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "qualify-odometry",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/trajectory-bundle",
+        "--navigation-pack",
+        "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/navigation-checkpoints"
+      ],
+      "receipt": "{job}/odometry-qualification/result.json",
+      "outputs": [
+        "{job}/odometry-qualification/episodes.jsonl",
+        "{job}/odometry-qualification/horizons.json"
+      ]
+    }
+  ]
+}

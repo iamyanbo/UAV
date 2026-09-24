@@ -11,7 +11,8 @@ import { checkStorage, isStorageOperationalError, StorageCapacityError } from ".
 import { createWorktree, removeWorktree } from "../core/workspace.js";
 import { closePersistentPiSessions, runWorker } from "../worker/pi-worker.js";
 
-import { leadWakeReason, runNextExecutorTask, runNextSynthesisVerifier, runOrchestratorTurn } from "./orchestrator.js";
+import { leadWakeReason, runNextExecutorTask, runNextSynthesisVerifier, runOrchestratorTurn,
+  taskPreflightApproved } from "./orchestrator.js";
 import { dispatchInvestigation, investigationPlanContext } from "./investigation-plans.js";
 import { researchReadiness } from "./lifecycle.js";
 import { monitorAdaptation } from "./adaptation.js";
@@ -20,6 +21,7 @@ import {
 } from "./control.js";
 import { startMirrorSync } from "./mirror-sync.js";
 import { ResearchStore, researchId, researchNow } from "./store.js";
+import { modelProgramContext, researchEpoch } from "./model-research.js";
 import { watcherSweep as sweep } from "./watcher.js";
 import { dataPipelineConfig, dataStatus, dataRequestReadiness, recordShadowResult, runDataPipeline, runDataPipelineAsync } from "./data-pipeline.js";
 import { runScheduledMaintenance } from "./maintenance.js";
@@ -199,8 +201,9 @@ export function reconcileSupervisorState(store: ResearchStore, directionId: stri
     store.db.prepare(
       `UPDATE tasks SET state='queued',updated_at=?
        WHERE direction_id=? AND state='cancelled' AND workspace_path IS NOT NULL
+         AND created_at>=?
          AND NOT EXISTS (SELECT 1 FROM outcomes WHERE outcomes.task_id=tasks.task_id)`,
-    ).run(now, directionId);
+    ).run(now, directionId, researchEpoch(store, directionId));
     return;
   }
   store.db.prepare(
@@ -256,15 +259,17 @@ export function dispatchContinuousResearch(store: ResearchStore, projectRoot: st
     if (store.db.prepare("SELECT 1 FROM runs WHERE direction_id=? AND state IN ('active','waiting_external')").get(directionId)) return null;
     if (store.db.prepare("SELECT 1 FROM events WHERE direction_id=? AND event_type='research.continued' AND payload_md=?")
       .get(directionId, lead.run_id)) return null;
-    const taskId = store.delegateTask({ directionId, mode: "exploration", markdown: [
+    const activeModel = directionId === "uav-navigation" && store.db.prepare("SELECT 1 FROM artifact_programs WHERE direction_id=? AND status='active'").get(directionId);
+    const taskId = store.delegateTask({ directionId, mode: "exploration", taskKind: activeModel ? "method-development" : "research", markdown: [
       "# Continue the authorized research mission",
       `The operator has authorized research during downtime. After lead turn ${lead.run_id}, the delegated slot is unassigned. This runtime handoff carries that standing mandate; it does not prescribe a hypothesis or endorse an earlier conclusion.`,
       `## Mission\n${direction.brief_md}`,
       `## Operator constraints\n${direction.constraints_md || "None supplied."}`,
       `## Lead's current understanding (unverified)\n${direction.research_map_md || "No belief memo recorded."}`,
       investigationPlanContext(store, directionId, true),
+      activeModel ? modelProgramContext(store, directionId) + "\nResearch stage: implementation. Continue PROJECT.md's concrete next milestone from the inherited program code and restored weights. Read .research-guidance/CONTRACT.md and START.md. Implement/train/integrate the actual model; do not reset to a new toy or unrelated literature-only question. A PARTIAL capability is legitimate with artifacts and a next milestone; novelty remains separately assessed." : "",
       "Choose a consequential unresolved question that can advance using available evidence, methods or permitted acquisition. Use the existing findings and artifacts to avoid repeating completed work. A waiting source, dataset, evaluation run or hardware result blocks that case only; select work that can proceed independently of it. Follow the UAV mechanism and failure mode rather than producing a routine status memo.",
-      "When the uncertainty is testable with existing data, implement and run an informative experiment and preserve its inputs, code, results and limitations. When it needs investigation first, follow the evidence. Choose the question, methods, depth and duration yourself. A negative result or reasoned no-trade conclusion can be useful; a routine status memo or an invented backtest is not a substitute for investigation. Return inspectable work for the lead to interpret before any further delegation.",
+      "Implement and run informative work and preserve its inputs, code, weights, results and limitations. Use research to resolve specific design uncertainties. A scoped negative result can be useful; a routine status memo or fabricated evaluation cannot replace implementation. Return inspectable work for the lead before further delegation.",
       "Discovery sources remain leads until separately validated against the primary source. Existing independent review, spending, storage and cancellation controls still apply. This task does not authorize aircraft commands or unsafe physical tests.",
     ].join("\n\n") });
     store.appendEvent(directionId, taskId, "research.continued", "runtime", lead.run_id);
@@ -369,7 +374,13 @@ async function probeCircuit(input: { projectRoot: string; directionId: string; m
     if (prior.state === "open") store.appendEvent(input.directionId, null, "provider.circuit_closed", "system",
       `${provider}: ${result.detail}. Stale Pi sessions were discarded and research may resume.`);
     return true;
-  } finally { store.close(); }
+  } finally {
+    store.close();
+    // Foreground turns own their persistent lead host too. Do not leave a Pi
+    // child alive after the loop returns (especially after --no-watch turns),
+    // or later runs accumulate stale Spark sessions and appear hung.
+    await closePersistentPiSessions();
+  }
 }
 
 export async function runResearchLoop(input: {
@@ -471,8 +482,9 @@ export async function runResearchLoop(input: {
         "SELECT 1 FROM tasks WHERE direction_id=? AND state='awaiting_orchestrator' LIMIT 1",
       ).get(input.directionId);
       const queued = !returned && store.db.prepare(
-        "SELECT 1 FROM tasks WHERE direction_id=? AND state='queued' LIMIT 1",
-      ).get(input.directionId);
+        "SELECT task_id FROM tasks WHERE direction_id=? AND state='queued' ORDER BY created_at LIMIT 1",
+      ).get(input.directionId) as { task_id: string } | undefined;
+      let preflightReviewNeeded = false;
       if (queued) {
         let executed;
         try {
@@ -501,12 +513,20 @@ export async function runResearchLoop(input: {
           }
           continue;
         }
-        consecutiveProviderFailures = 0;
-        resetProviderFailures(input.projectRoot, executed?.result.provider ?? configuredProvider());
-        continue;
+        if (executed) {
+          consecutiveProviderFailures = 0;
+          resetProviderFailures(input.projectRoot, executed.result.provider ?? configuredProvider());
+          continue;
+        }
+        // Incomplete or higher-risk tasks still wake the lead for review.
+        // Complete exploratory tasks are admitted by the bounded runtime
+        // preflight, and an incomplete task cannot block another queued task.
+        preflightReviewNeeded = direction.engine_version === "adaptive-v2"
+          && !taskPreflightApproved(store, input.directionId, queued.task_id);
+        if (!preflightReviewNeeded) continue;
       }
       if (direction.engine_version === "adaptive-v2" && !returned
-          && !leadWakeReason(store, input.projectRoot, input.directionId)) {
+          && !preflightReviewNeeded && !leadWakeReason(store, input.projectRoot, input.directionId)) {
         if (dispatchContinuousResearch(store, input.projectRoot, input.directionId)) continue;
         return { turns, stopped: "idle: awaiting changed evidence or actionable work" };
       }
@@ -551,7 +571,13 @@ export async function runResearchLoop(input: {
         return { turns, stopped: "idle: no experiment delegated" };
       }
     }
-  } finally { store.close(); }
+  } finally {
+    store.close();
+    // A foreground turn owns the persistent lead host it starts. Always stop
+    // it when the loop returns so --no-watch runs cannot leave Spark sessions
+    // alive and make the next turn appear hung.
+    await closePersistentPiSessions();
+  }
 }
 
 function startDetached(projectRoot: string, args: string[], pidPath: string, logPath: string): { running: boolean; pid: number } {

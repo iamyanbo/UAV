@@ -1,0 +1,29 @@
+
+=============
+== PyTorch ==
+=============
+
+NVIDIA Release 25.11 (build 231036168)
+PyTorch Version 2.10.0a0+b558c98
+Container image Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+Copyright (c) 2014-2024 Facebook Inc.
+Copyright (c) 2011-2014 Idiap Research Institute (Ronan Collobert)
+Copyright (c) 2012-2014 Deepmind Technologies    (Koray Kavukcuoglu)
+Copyright (c) 2011-2012 NEC Laboratories America (Koray Kavukcuoglu)
+Copyright (c) 2011-2013 NYU                      (Clement Farabet)
+Copyright (c) 2006-2010 NEC Laboratories America (Ronan Collobert, Leon Bottou, Iain Melvin, Jason Weston)
+Copyright (c) 2006      Idiap Research Institute (Samy Bengio)
+Copyright (c) 2001-2004 Idiap Research Institute (Ronan Collobert, Samy Bengio, Johnny Mariethoz)
+Copyright (c) 2015      Google Inc.
+Copyright (c) 2015      Yangqing Jia
+Copyright (c) 2013-2016 The Caffe contributors
+All rights reserved.
+
+Various files include modifications (c) NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+
+GOVERNING TERMS: The software and materials are governed by the NVIDIA Software License Agreement
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-software-license-agreement/)
+and the Product-Specific Terms for NVIDIA AI Products
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/product-specific-terms-for-ai-products/).
+
+{"status": "completed", "accepted": false, "updates": 1000, "resumed_from_update": 0, "objective_version": "metric-sequence-nll-se3/v1", "manifest_sha256": "d5df5c5faf566900d317912d37011a61316bcd47f05d05f7f04e1caa9e2b4d9e", "resume_evidence": null, "gradient_evidence": {"encoder": {"finite_gradients": true, "changed": true}, "temporal": {"finite_gradients": true, "changed": true}, "motion": {"finite_gradients": true, "changed": true}, "motion_uncertainty": {"finite_gradients": true, "changed": true}}, "train_windows": 915, "development_windows": 268, "elapsed_seconds": 255.07350395899266, "reason": "Full held-out trajectory drift and uncertainty qualification still required"}

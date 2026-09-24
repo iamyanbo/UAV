@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/source/learned_controller.py", line 133, in main
+    try:trace['broker_acceptance']=client.command(last,list(asdict(command).values()),stop=stop)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/source/wire.py", line 92, in command
+    return self.request('command', frame_id=frame_id, values=list(values), stop=stop)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/source/wire.py", line 74, in request
+    raise RuntimeError(metadata['error'])
+RuntimeError: Broker unavailable

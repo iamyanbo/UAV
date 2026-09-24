@@ -1,0 +1,78 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Exact corrective goal continuation from update 500 to 2500, fixed normalization and prior, selected-checkpoint held-out qualification",
+  "stages": [
+    {
+      "id": "goal-corrective-training",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 18000,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/goal-data/visual-training.json",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260923T235816Z-goal-corrective-training-03d6f1/visual-training/final.pt"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-goal",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/goal-data",
+        "--resume",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260923T235816Z-goal-corrective-training-03d6f1/visual-training/final.pt",
+        "--updates",
+        "2500",
+        "--validation-every",
+        "500"
+      ],
+      "resume_command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-goal",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/goal-data",
+        "--resume",
+        "{checkpoint}",
+        "--updates",
+        "2500",
+        "--validation-every",
+        "500"
+      ],
+      "receipt": "{job}/visual-training/result.json",
+      "checkpoint": "{job}/visual-training/latest.pt",
+      "outputs": [
+        "{job}/visual-training/best.pt",
+        "{job}/visual-training/final.pt"
+      ]
+    },
+    {
+      "id": "corrected-goal-qualification",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 3600,
+      "depends_on": [
+        {
+          "stage": "goal-corrective-training",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/goal-data/visual-training.json",
+        "{stage:goal-corrective-training:job}/visual-training/best.pt"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "qualify-goal",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/goal-correction-r7/goal-data",
+        "--goal-checkpoint",
+        "{stage:goal-corrective-training:job}/visual-training/best.pt"
+      ],
+      "receipt": "{job}/goal-qualification/result.json",
+      "outputs": [
+        "{job}/goal-qualification/predictions.jsonl"
+      ]
+    }
+  ]
+}

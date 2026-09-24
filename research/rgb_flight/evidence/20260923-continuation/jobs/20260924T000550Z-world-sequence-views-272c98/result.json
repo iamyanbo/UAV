@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T000550Z-world-sequence-views-272c98/source/stage_worker.py",
+    "build-world-view",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/trajectory-bundle",
+    "--runtime-replay",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260923T235858Z-projected-causal-replay-ec8e92/navigation-replay",
+    "--navigation-pack",
+    "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/checkpoints",
+    "--artifact-output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/world-view-r13/world-views"
+  ],
+  "seconds": 1200,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 8.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 3.0123323060106486
+}

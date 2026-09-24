@@ -1,6 +1,8 @@
 import { researchReadiness } from "./agenda.js";
 import { ensureInvestigations } from "./investigations.js";
 import { researchHash, researchNow, type ResearchStore } from "./store.js";
+import { isMethodDevelopmentTask } from "./task-classification.js";
+import { researchEpoch } from "./model-research.js";
 
 interface Plan {
   investigation_id: string; direction_id: string; state: string; review_after: string | null;
@@ -73,15 +75,23 @@ export function dispatchInvestigation(store: ResearchStore, directionId: string,
       .get(directionId, now) as Plan | undefined;
     if (!plan) return null;
     const frame = store.db.prepare("SELECT lane,independent,body_md FROM research_frames WHERE investigation_id=?").get(plan.investigation_id) as { lane: string; independent: number; body_md: string } | undefined;
-    const taskId = store.delegateTask({ directionId, mode: "exploration", isChallenger: Boolean(frame?.independent), markdown: [
+    const methodDevelopment = isMethodDevelopmentTask({ brief_md: `${plan.body_md}\n${frame?.body_md ?? ""}` });
+    const taskId = store.delegateTask({ directionId, mode: "exploration", taskKind: methodDevelopment ? "method-development" : "research",
+      isChallenger: Boolean(frame?.independent), markdown: [
       `# Investigate ${plan.investigation_id}`,
       plan.body_md,
       frame?.body_md ?? "",
       `Read .research-investigations/${plan.investigation_id}.md. Its interpretation is unverified.`,
       "Carry out the next informative investigation, not another status report. Follow useful adjacent leads within the question. Preserve inspectable source excerpts, URLs, publication/retrieval times, contradictions, competing interpretations and limits in ordinary files. Distinguish observations, inference and speculation. If access fails, preserve the failure and try an independent public source; do not substitute model recollection for retrieval.",
       "A source investigation needs no candidate change or invented benchmark. Explain what changed your understanding, what remains uncertain, and the next useful question or concrete waiting condition. Do not claim a navigation improvement from a plausible story.",
+      ...(methodDevelopment ? [
+        "## METHOD_DEVELOPMENT_REQUIRED",
+        "Build and run the method appropriate to the question. A small diagnostic can precede a stronger study, but report its limited scope. Choose model, data, simulator and baselines for the claim rather than satisfying a fixed benchmark recipe. Preserve code, metrics and next steps; the lead will inspect the work before accepting a scientific conclusion.",
+      ] : []),
     ].join("\n\n") });
-    if (frame) store.db.prepare("UPDATE tasks SET task_kind=? WHERE task_id=?").run(frame.lane, taskId);
+    // A frame lane is an investigation label, not the task's scientific contract.
+    // Overwriting method-development here silently disabled its completion gate.
+    if (frame && !methodDevelopment) store.db.prepare("UPDATE tasks SET task_kind=? WHERE task_id=?").run(frame.lane, taskId);
     store.db.prepare("UPDATE investigation_plans SET state='dispatched',task_id=?,updated_at=? WHERE investigation_id=?")
       .run(taskId, now, plan.investigation_id);
     store.appendEvent(directionId, taskId, "investigation.dispatched", "runtime", `${plan.investigation_id}\n${taskId}`);
@@ -91,8 +101,9 @@ export function dispatchInvestigation(store: ResearchStore, directionId: string,
 
 export function investigationPlanContext(store: ResearchStore, directionId: string, full = false): string {
   const plans = exists(store) ? store.db.prepare(`SELECT p.*,t.state task_state FROM investigation_plans p
-    LEFT JOIN tasks t ON t.task_id=p.task_id WHERE p.direction_id=? ORDER BY p.updated_at DESC`)
-    .all(directionId) as Array<Plan & { task_state: string | null }> : [];
+    JOIN investigations i ON i.investigation_id=p.investigation_id
+    LEFT JOIN tasks t ON t.task_id=p.task_id WHERE p.direction_id=? AND i.created_at>=? ORDER BY p.updated_at DESC`)
+    .all(directionId, researchEpoch(store, directionId)) as Array<Plan & { task_state: string | null }> : [];
   const visible = full ? plans : [...plans.filter(plan => plan.state !== "closed"),
     ...plans.filter(plan => plan.state === "closed")].slice(0, 8);
   return ["## Investigation follow-ups",

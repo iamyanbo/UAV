@@ -1,0 +1,19 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "episodes": 300,
+  "windows": 22336,
+  "categories": {
+    "train": {
+      "positive": 2229,
+      "boundary_negative": 3008,
+      "far_negative": 15099
+    },
+    "validation": {
+      "positive": 243,
+      "boundary_negative": 312,
+      "far_negative": 1445
+    }
+  },
+  "manifest_sha256": "5e9ce77279b07e2965dd9c1f419fbf48e8818fd88f50921e1378dc87cab7c3b6"
+}

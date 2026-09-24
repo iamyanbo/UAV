@@ -1,0 +1,21 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260923T235856Z-projected-perception-package-277b11/source/package_navigation.py",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-r8/checkpoints-complete/goal.pt",
+    "--odometry",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-r8/checkpoints-complete/odometry.pt",
+    "--projection",
+    "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/projection/projection.pt",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/checkpoints",
+    "--goal-match-threshold",
+    "0.9968814849853516"
+  ],
+  "seconds": 600,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 2.0,
+  "status": "running"
+}

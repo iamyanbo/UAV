@@ -1,0 +1,23 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T012837Z-visual-pack-a145d8/source/package_navigation.py",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260923T235816Z-goal-corrective-training-03d6f1/visual-training/best.pt",
+    "--odometry",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T005426Z-motion-rate-training-d6d010/visual-training/best.pt",
+    "--projection",
+    "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/checkpoints/projection.pt",
+    "--goal-match-threshold",
+    "0.9",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r25/checkpoints"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 4.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 1.0136056151241064
+}

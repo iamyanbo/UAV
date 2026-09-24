@@ -1,0 +1,8 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "scored_training_negatives": 15099,
+  "mined_examples": 4290,
+  "windows": 15558,
+  "manifest_sha256": "948fad84c41a00a473f9cb6ba1e6c1744df5d3710f140784016d0b5700e701c9"
+}

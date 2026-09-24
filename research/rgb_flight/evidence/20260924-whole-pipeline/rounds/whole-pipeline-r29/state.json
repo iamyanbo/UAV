@@ -1,0 +1,1052 @@
+{
+  "schema": "training-round/v1",
+  "contract": {
+    "spec_sha256": "db1d3e0a669005678d3c90b58d1141b67c686ebeaf5ce0cf730790290b82ca7a",
+    "source_hashes": {
+      "MODEL_IMPLEMENTATION.json": "b79c4d1ecd2ec43fae1a671aafac65d7d074c1fdd85e7bbcc61c6ab900d8032f",
+      "acquire.py": "b95bb2f3e72d27a9e9766a1c6f9c3402c41e93767ada550cd0ee47899e6fdd13",
+      "acquire_reference_geometry.py": "7c46e9d141c88278abd763b9df8a39acb43c4ea4d87791437ff9362847632c8d",
+      "action_intervals.py": "8068c5918c4668e63ae7a5f5e93250b5fbcc6a8f94f89bcc797beafee7e73785",
+      "after_reference_survey.py": "fef6e3b39d7d58e842a881bb966d7e2f8671c2556b9afbe945b68f2b0b9e3b40",
+      "archive_video.py": "c2e87aad14dade7966b592c5bd9499a79c7144c4f74cb3ec4a8d9e15bbc89f28",
+      "async_mapping.py": "aa73b3114be8468d0aeb211ff632ae3b5f3d48198bac769dcbb84be2b46be825",
+      "async_video.py": "df4a42fb782011386f8d6602d5fee9842e6b268f257281deffb5bd504a464e0a",
+      "audit_obstacle_coverage.py": "29d7857dfee9175b055fb3e4d22f274ca2ee2b9870dee27791a3929fd9973bfd",
+      "broker.py": "76dbc7d5b6b506e8ab798f5a52aca69fa8a4f3822ad499655ced59ed1327d910",
+      "build_configuration_examples.py": "4706d6bcf6136709e78243b43765ff41d61a030a0db19732495fd0135d647fc7",
+      "build_dzn.py": "e66028973cddeb7133dfbbc8f0a6ed0364998a0354f80d046ba1e5ed3bf093be",
+      "build_goal_round.py": "0d685bd0f060993a029299344670dcb98d58a5d82b6800d3605891ed5094edac",
+      "build_model_stack.py": "b8e287bd9f326fad405418b77a2abed7ee120f1cca37060aff1418e4cc0c77d9",
+      "build_online_learning.py": "d18476eca05a829cc2d6c8058ac42dd88d460cfe36ece12b1afae752a8056db4",
+      "build_policy_sequences.py": "c9a87d0d0931975634dc7697bbb881acf25cd8d024d3ac135df70c945315561b",
+      "build_visual_dataset.py": "4cda396df43de6fdfa53fb35eb9ebe6c194699034fe776704898dd868f93457a",
+      "build_world_sequences.py": "4648c8af02879f873e37ae78cf9f0295df02e561cfedc63ed9fe78ebc487abe6",
+      "calibration.py": "df92730cc2f3f7d7b956b6191db47c4af0cd6e352ed265ea947c1ade007c0499",
+      "camera_profile.py": "5639f3f4d7b744cee70600e50e4d8297c00b943596cdba5ac001986004fd8308",
+      "campaign.json": "55b31fe0d50d86df8873df005926e451d34364ec8500f39304337b9aac5fe53d",
+      "capture_goal.py": "2bf4596e1c916e098e6b8f4e686e5a14c4928c02764c2c7a2689efccd8638619",
+      "capture_obstacle_field.py": "b69b223ea60af0a27c8fd4adf051d84a303d54741a110fbcee3f20a42c4151c8",
+      "causal-video-round.json": "8b2927b83432e4df8ea2b36a711209ff54a122102524ddd48c89b642202aa051",
+      "causal_mapper.py": "d3bda669c9225d15c6c35f9bfe52f9024fa9636cfbefcbfdf2afe31befef2e89",
+      "causal_pose.py": "e4930f4d695dfdf28ed5219ea6860759ed9d663891914aaa29c6ae04feafede9",
+      "collect_learning_round.py": "7555a1dea406d015babe35ac95d978f28db44e5736a9fab78877476bc6d4046c",
+      "collect_safety_profile.py": "737c6b87a8a96605506436fc0e5d9ae3b7cd618c36191ba0365803d59343c633",
+      "configurator.py": "a80c80b6cb3296e60003ec41cbff0633ab1cd77d578920234f36752010abbbfb",
+      "container_job.py": "21227d097672c2231545a1c559567d69c1c88602e512c2e4250143c1d0f4b8b8",
+      "contracts.py": "06293f73e7677ce6954d50bbeec0cb48cef342428d043787a1a99711f277229c",
+      "controller.py": "93fa5dfbf3cc9cec0b42d077bb4d1098420e64c45ea6bf30138e0ce147cff1be",
+      "dagger.py": "b606d9e72de98c712362c8868091ce69bfe26ff89311434254dfc918a946962f",
+      "download_models.py": "d4665f029e59da87a57d66221dbf0e9f157e98a1d68013282c6fa4b6b04763ef",
+      "dynamics_probe.py": "f31bb79f1e559915f9952fb6bea933011402f45a5f42400a6f78dbf8b124cabd",
+      "episode_generation.py": "3cf1c3da8c3db729c4192c5a3b0148ccfa7abe3a0eff25044f0897822f65b1dd",
+      "episode_store.py": "368cf2b1d5e0d18fe504157e9139c3c87075a03c47f0209251a1fc1e23d5fffd",
+      "evaluate_visual_goal.py": "68e26e0427cc0c0c5933621ee98a52f45e6ebd1abefbde419d6a571eeea2d80b",
+      "expanded-sequence-round.json": "dcdec9a2a3cbd73dd0c2f5ddb700e9d7463cd16972e166b246416956444aa05b",
+      "feature_cache.py": "0bbea9d9c9ab3ecb691d9600b014c3b4520789476698a109f526e3263995dcb3",
+      "fit_runtime_projection.py": "5b6b454e2d826b03c7d5cc6d793212644219f4eb0e3fe03648f6bc3d9cba3a7b",
+      "flight_evaluator.py": "f216e3d20d91f78f5827e95a21560c7193e91e397c741a3e9aaeba1b1e1b0879",
+      "fresh-sequence-round.json": "8fb8cb421e27d72b2c109885a9b6baab13abf477ab4693f1ec8514bcaed75539",
+      "goal-continuation-round.json": "a36b082beddcc1e02bb74ec027e90e815b3f39c85c5bb43cb39d5b52c315c776",
+      "goal-correction-round.json": "68b227b8ddc6f2042b9dbba3ac2c8322c7bfa41af95d6bfceb737470afaa57e5",
+      "goal-normalization-round.json": "4f7948186cb682845da989dfaac8edb9eb2593e805db659fa74e706201f0b355",
+      "goal_io.py": "945cbdcd19dab726b68eb6b8699512d106f12e61f0c3c5f0c115c5bcc1356300",
+      "goal_matching.py": "664369e29212074fe20942913654d01083db210071a6130d6c7094d044a310a3",
+      "graphics_probe.py": "32066a2a6128df2b64f663e6d2fe975cc9339136e4f46bb2b4d0eb2cea2b7eee",
+      "inspect_episode.py": "0d7d3777c8209fe090b4a66bebdd3c762045b59a773c3746087f6e248292c9d4",
+      "inspect_simulator.py": "10c577d0dfa6a5335234d48d1843ba1c5c8861022066891038235ec063024a39",
+      "install_mapping_runtime.py": "8f6ae9e7d43d2d509ae9ac44e0e83537e106f898ff0938d8a0889eec062d9eb7",
+      "install_swiftshader.py": "780d2e3e11219d759b88f6fa6d8909435a4e6c7abc81144947a179aa764345f7",
+      "integration-resume.json": "eeb6a68a69079d5301855fefebf7138b28da437b6912dbccd95bcdd99d723aae",
+      "integration-round.json": "98b45ae24d4f9d5d174f860bb6f63df492c2f49532a9906f1d74cfa070675e32",
+      "isolation.py": "53b80814fb18899cde24e6aa280ee4887d1bff17f9fd7ce06687490a567ffd84",
+      "isolation_client.py": "80ded5c2c3c3710b3cf23c5de62f28b2bf765d670839e1bd3dfed5fc0b23682c",
+      "learned_controller.py": "b167e954a7aebca9cc8d07a3a4e214cb41ef8a1dcdbce0a79b7b7c5dc5ce1c0a",
+      "learning_models.py": "dd67522e086aed64e5ee2e5e967222c721ecd834b847b9af0c2f454fcda005cf",
+      "linux_probe.py": "4dfb4ac3cd28254ae5d29097ac06adba37685a484b16476e3a6aaca2095cdff0",
+      "live_controller_process.py": "77b4b053da2c7f9ce57cb3255c7f5c4cc9129a5a1606388fbcb83da6f0d0dd0b",
+      "live_perception.py": "50623a91f6c32ce5b4d59bcd62d04a331fa7a1eae12000def6c2c58bcd564f92",
+      "live_visual.py": "1676db4d7d82c8fa51f61324b211b953fafacdc8b62446a3fc10b7c165edd5c4",
+      "long-context-round.json": "edf0eb159e7acd50cc2309ff6b8a3500fd2ddf8af5a72c8a1e335b826072da93",
+      "mapping-replay-round.json": "6fce61f09110ebce6136571f2652976a7657e2cabef131fa1e51dd5c40aa1d6c",
+      "mapping_worker.py": "3f53840ae67e3fa2762f5559da9e1ef6cebe92ea1628fe9e2609419275a26539",
+      "memory_snapshot.py": "a6a147919f3fa4f99d151bad6e0392cef7573421be7504636acf7c019a7ead25",
+      "metric_alignment.py": "df98f44e5d6e8b2ac81d162f8a8f5f1fa55ecb89c9c865c691ebaf223e439dbd",
+      "mine_goal_negatives.py": "6eef3082faa91d2726bafa55f337674d12795aea75dbe6304dd152d734760a4c",
+      "model_probe.py": "862cc4376bb9a545296d5076d8e26b2bfb527cd8d93ea213e864ba3a4b9814c9",
+      "motion-rate-round.json": "da2979a9364a5b32696406c2a1cd5836ef8dea4c534a202a5aac977dc6c734f4",
+      "native_cuda_check.py": "931ba324b9ab24ab183c2c4b6f3dab3bb1e7c6a881eaacf04b43be4d7e6c04a5",
+      "navigation_process.py": "f8e9a222bd6d880865f4e43ea4c423c3a8f58df06d6418983de4f7a79763a3e7",
+      "navigation_state.py": "9dc9bed880b938b1915ae031fac46a955213dbacc634a6674c4c8dfb532df15f",
+      "obstacle_field.py": "dfd48f8d5f89b4a3bcfd449aad631607d8e3643bc2558b441c13e870348a81aa",
+      "odometry-qualification-round.json": "bc3577a20bf327822e29d089a1aca2b51cabceb8beeeb44197ab12fad02ead91",
+      "package_navigation.py": "e69c11edaf56f8d93ea33e318d62108e5bb3ef509807d6cc1592d51ab4f3d120",
+      "parameter_evidence.py": "105ce904b0a4e28a5056706305809fa7f0fbcf362a806cecd717f1cc870e71e5",
+      "perception_metrics.py": "320aa3eea9a08c555fc099f24cf45e7281179ad3d60bb4b4dfc9f1e289ee78eb",
+      "perception_process.py": "ee85f4fff73831a9253d6d663e6fc7028f1fb857fb12c8ee8e8d377311b7fae3",
+      "port_splat.py": "7ea43b36b7772744ec927d7db18201d0a9a3e08b87a2cb152846abed98a4c835",
+      "ppo_learning.py": "db59c35a68639c6aa53406eaf5806f2b6a7a6034d11155c79d288ae68d97635f",
+      "predictive_planner.py": "70bbed9acd047aabbf46b7f9926920081692b20be9fa60a941e733944b2c6551",
+      "preflight.py": "941a3c65df2b31d825ea64f2ae9d73c11a1664166a6a54fe283529a3fade6800",
+      "prepare_scale_campaign.py": "34c2d5a2faa05460324121c78ea03bdb7a3c298019cafa9e4939e5d7e01b0ed1",
+      "probe_models.py": "7d67e47bb9cc80fa587ec5b0c39023ff1eac2117d99e90926e63a51c3064235c",
+      "program_scheduler.py": "6ae0e48b16d407299768d1a30b5dca3eb5c659b01016229419266d2faee507da",
+      "provision_models.py": "32aa9e0b18ed87faad91df1e46eba4d17c8265bca4cfaaa61b1dda2282b8ca14",
+      "qualify_goal.py": "19dce26e1b1a6666bc7512ca268cc0bb1838be44045686e3ea82e54548c7ad64",
+      "qualify_odometry.py": "60385430307b7e82e7645bb378ab2250e0f51fb828566e6ade1ad3e6b899a50b",
+      "reconstruct.py": "c62c5d631b0e5a8dd244737859ed58d4a714356704bdf12f76fd439666b2521c",
+      "recorded_broker.py": "43c0a417b3767f342fde8ae80c5b45345692aab88f04270f4955d36d17536263",
+      "reference_campaign.py": "b29476fc26e302db209c854c33097593b28d1823ad75497a85211646049efa0f",
+      "reference_flight.py": "6932eb853404c5158e02b12c7479b07e875be13304b4f4bfc11872ba6e28ca2f",
+      "reference_routes.py": "baec694570c5913bd224bc6d653445e220bfaf45f45c9afd9d88b5ae9fdfb72c",
+      "replay_collection.py": "65fdf1dc79f7e0d38a54e1abbc410f58270b4e291c06ae68fd87e60709f7908f",
+      "replay_navigation.py": "bb97deacdb5d01b879de322a51d166aae0af410c2838f27228a971fb39c1e032",
+      "resource_admission.py": "8d97457d0b3580dbfb2a9f084a1d585ec921c777334d184e91b4348215c84be6",
+      "rpc_probe.py": "25b095d1f584e4160b669969c68a524b31927de4cea702f8933b7da3a402730f",
+      "run.py": "683bd12f12f28c3e75fcd48246c6de067c3c959c06bb86688f4694a1e5defe2f",
+      "runtime-isolation-round.json": "791acc919ef89c7649ea7f9988aeced1dcbe94412b2810937f8b8054634084e1",
+      "scale-calibration.json": "af37b3b42ff13bc56b519ade73e75de1fdc1b9f79b6490b53338eed8bdf8e4f0",
+      "scale_data.py": "5d877d675006ccc07ac88bdb26269143f881ad16d85836733696044efeaa11bd",
+      "scale_features.py": "4fdcfb256aaa127a5392b4eb9dd5af80cca0922060c3b4752537d4681888b135",
+      "scale_runtime.py": "987fc6a8780a5cbd4b46574821f7a890f5a734066aec3dcb9a5d9b8117e859ce",
+      "simulator_gate.py": "a9039dc852a24d238d718594a0f4fe35ed8e111484fed8ffe8e8e262d5ac2d83",
+      "spark_guard.py": "2bf7479bc3d298a60ac8b39f868a1a4669006500921091e1dfa833ac30acc89d",
+      "spark_launch.py": "b3403597a89350d9d4c9631aa4f9f7e8de53f50def3fdeabfcb5d6544e18114b",
+      "spark_manage.py": "905da0202f0dd762b467f01da8a2e847bab258f3b8bde82850dc3e411a532b90",
+      "spark_remote.py": "627adb35ccde84f2f941df20432da0f3db7adffc935eecd4daa85d8718af0345",
+      "spark_setup.py": "3308c05e3fa79c4e7bd9dad0df5919bf2218f571c9c734fb51fbb59c4ad475fd",
+      "spatial_memory.py": "89381e94cecd7d9aebd6be9450cf67cd6b5ba3057f423d03ac02080a2a7b2cd4",
+      "splat_kernel_check.py": "dbc57e48d906dd02a14dd2a299f0505582dc0ef08968a2a8415c34c677dee3aa",
+      "splat_raster_check.py": "8e70cdad1ea22a622f9a9cb2b47407ef199a7873fbeecdb2e964f01121e2dad7",
+      "splat_tracking_probe.py": "67e9baab250e38c731571b444551b87aea783587b530c5b9b08aa88118910100",
+      "stage_worker.py": "42c475a8011be99c6c5bb933e8d7851ad753559d9c10b58ad241612d5727bb88",
+      "train_configurator.py": "0275075de10db2fcbbf806d7dcfaf120627fc9e702063862ea9e14d9b53cb509",
+      "train_models.py": "c2e7a0b0b249cc2c9f3e457c1909fa3910f9588dedd53d0264c54e5cf5a73675",
+      "train_odometry_sequences.py": "0eb4f60e7d14d0840c938789e8d77ad58e6ec485d67ccef6d2ca64a305b68e43",
+      "train_ppo.py": "c9c9e90d117f09bc994e459bfe40bfcf3bb942478502c4491872ad059d5fdc84",
+      "train_scale.py": "03d811cf4124b963743b8e349285b870ba56edd21fa84a86d2744fb2d3044202",
+      "train_visual_components.py": "e1e5161853ea35f2a0a95f597996009f460c0ade38c425b46c9b4d901ede1262",
+      "training_labels.py": "20ca0f3bf19a8584d28e8b6cf160b341351c698578464df96f4eac62ca8cbb6f",
+      "training_program.py": "650c50456c28652896e4e68a8877e90142aa29bb9168870a1313350e246ee35d",
+      "trajectory_bundle.py": "18b00a974173f63b299e33debff9c20e8aa4cd71291cdd637b6f9647651dd6dd",
+      "verify_reference_evidence.py": "30f4ec3b877e574bdffc8c349fc22eb8dc304ca28b3a563aace6762403c3dc4d",
+      "visual_contract_check.py": "41ec2ad8ccca2bc06bc23c5cae80840365cd51a093afba79d9f7abe60c065174",
+      "visual_encoder.py": "7ca46b22eb601d8b3db5bc6bfa57edc4ce14295c9e12360f1f3bb9fe708f1f79",
+      "visual_goal_campaign.py": "b8a142eaacea270d0fc7d5b95a18605e5917f7397f00ccc74dd64750691ab662",
+      "visual_goal_flight.py": "a8b9c1e61a64773095b92f3cb0fc692fd071980efd28e4e2b6110b6c424834d1",
+      "whole-pipeline-round.json": "db1d3e0a669005678d3c90b58d1141b67c686ebeaf5ce0cf730790290b82ca7a",
+      "wire.py": "bbe7c55d4edd8b1cb414cfcb848db25ecd56af6c5c98c91f7c1426670db844a2",
+      "world-view-round.json": "3f250bde844bbaf2820e69a9ea9dfccbe347cc3cd64b3a47798ba12510f6e51a"
+    },
+    "inputs": {}
+  },
+  "round_id": "whole-pipeline-r29",
+  "stages": {
+    "dagger-flight": {
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2488642,
+            "start_ticks": "131347882",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-flight-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2488642,
+        "start_ticks": "131347882",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-flight-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/spark_guard.py",
+        "--name",
+        "dagger-flight",
+        "--seconds",
+        "1200",
+        "--kind",
+        "flight",
+        "--peak-gib",
+        "64",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints"
+      ],
+      "started_unix": 1790214346.7011602,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T014546Z-dagger-flight-c09152",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T014546Z-dagger-flight-c09152/result.json",
+        "sha256": "4f6a9a47682560643ad06c564e7139531ae01173818421077f918d1f28d699c1"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T014546Z-dagger-flight-c09152/collection/result.json",
+        "sha256": "7007846e085b1ef3201bc31ba8d3408368efabeb2ce427cfb9175d65adf0f567"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T014546Z-dagger-flight-c09152/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T014546Z-dagger-flight-c09152/collection/flights.json",
+          "sha256": "03c77f813c7180571e93dcdc924195ea3122b70cee2a848ba8121f4631d51a08"
+        }
+      ]
+    },
+    "online-trajectories": {
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2489939,
+            "start_ticks": "131371003",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/online-trajectories-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2489939,
+        "start_ticks": "131371003",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/online-trajectories-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/spark_guard.py",
+        "--name",
+        "online-trajectories",
+        "--seconds",
+        "1800",
+        "--kind",
+        "cpu",
+        "--peak-gib",
+        "8",
+        "--",
+        "/home/iamyanbo/uav-rgb-flight/envs/airsim/bin/python",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/trajectory_bundle.py",
+        "--collection-root",
+        "/home/iamyanbo/uav-rgb-flight/launches",
+        "--output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/trajectory-bundle"
+      ],
+      "started_unix": 1790214577.908219,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T014937Z-online-trajectories-fe62fa",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T014937Z-online-trajectories-fe62fa/result.json",
+        "sha256": "c8d937741c8f0fb35128e9399ee3a177d5ebc74a4ace957de6aaa3516a21f9cb"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/trajectory-bundle/result.json",
+        "sha256": "e9113d427dee621f24200d52d65a52f303e73a9b3869e9792b47b6fbba4f89ee"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "attempts": 335,
+        "excluded": 0,
+        "unique_successful_episodes": 250,
+        "timing_passed_attempts": 9,
+        "manifest_sha256": "5a26bec74b8d026aa0d6f5443712f63fd8b6959f62535fd76a93c025eeb6f0e1"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/trajectory-bundle/manifest.json",
+          "sha256": "5a26bec74b8d026aa0d6f5443712f63fd8b6959f62535fd76a93c025eeb6f0e1"
+        }
+      ]
+    },
+    "dagger-data": {
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2490268,
+            "start_ticks": "131374407",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-data-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2490268,
+        "start_ticks": "131374407",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-data-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/spark_guard.py",
+        "--name",
+        "dagger-data",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "24",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/stage_worker.py",
+        "build-online-view",
+        "--learning-phase",
+        "dagger",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/trajectory-bundle",
+        "--navigation-pack",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints",
+        "--world-checkpoint",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T013218Z-world-update-05b7f9/training/final.pt",
+        "--collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T014546Z-dagger-flight-c09152/collection/flights.json",
+        "--base-policy-data",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r27/policy-data",
+        "--artifact-output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-data"
+      ],
+      "started_unix": 1790214611.945407,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015011Z-dagger-data-38d6f8",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015011Z-dagger-data-38d6f8/result.json",
+        "sha256": "89347ba9e66d7c683138f9c89c7f833b03189cc49ba009afeaaba602627dde7a"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-data/result.json",
+        "sha256": "1abb1799aa5a01da2c6ab79925038d2b7b02716379475e44ec8ef87ee87724f2"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "learner_states": 2090,
+        "corrections": 2090,
+        "aggregated_windows": 111,
+        "dataset": "/artifacts/dagger-data/dataset",
+        "scope": "Recovery DAgger; no privileged hidden-goal direction labels"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-data/dataset/manifest.json",
+          "sha256": "3166d1871a13bdaf521ce02a10ebba962f2eb1591f29eacd9a03dc086b2f302d"
+        }
+      ]
+    },
+    "dagger-update": {
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2490575,
+            "start_ticks": "131376009",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-update-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2490575,
+        "start_ticks": "131376009",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-update-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/spark_guard.py",
+        "--name",
+        "dagger-update",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "24",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/stage_worker.py",
+        "train-policy",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-data/dataset",
+        "--goal-checkpoint",
+        "goal.pt",
+        "--initialize-from",
+        "initial-policy.pt",
+        "--integration-only",
+        "--updates",
+        "1"
+      ],
+      "started_unix": 1790214627.968349,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015027Z-dagger-update-942627",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015027Z-dagger-update-942627/result.json",
+        "sha256": "ca3d90a2df2934660bf4364f83ba89e98998e99dfc901d230282163d120b78b2"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015027Z-dagger-update-942627/training/result.json",
+        "sha256": "41a6ba3f69f735c48283c6def9ec09ea6be4a92ed03078b0425f95595c84685a"
+      },
+      "progress": {
+        "status": "completed",
+        "updates": 1,
+        "accepted": false,
+        "integration_only": true,
+        "gradient_evidence": {
+          "model.log_std": {
+            "parameters": 1,
+            "trainable": 1,
+            "gradient_tensors": 0,
+            "nonzero_gradient_tensors": 0,
+            "changed_tensors": 0,
+            "frozen_changed": 0
+          },
+          "model.goal_pipeline": {
+            "parameters": 186,
+            "trainable": 0,
+            "gradient_tensors": 0,
+            "nonzero_gradient_tensors": 0,
+            "changed_tensors": 0,
+            "frozen_changed": 0
+          },
+          "model.gru": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "model.mean": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.value": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.collision_value": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.stop_head": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "critic.goal_attention": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "critic.net": {
+            "parameters": 6,
+            "trainable": 6,
+            "gradient_tensors": 6,
+            "nonzero_gradient_tensors": 6,
+            "changed_tensors": 6,
+            "frozen_changed": 0
+          }
+        },
+        "foundation_source": {
+          "accepted": false,
+          "visual_goal_runtime": true,
+          "valid_expert_episodes": 250
+        },
+        "dataset_manifest_sha256": "3166d1871a13bdaf521ce02a10ebba962f2eb1591f29eacd9a03dc086b2f302d",
+        "scope": "policy imitation and primitive critic; PPO not executed",
+        "initialization": {
+          "sha256": "f842388e2f94891cb1d36dac7dc4855eabb7a01a31999cf9c39db33198af1235",
+          "update": 1
+        },
+        "gradient_gate_passed": true
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015027Z-dagger-update-942627/training/final.pt",
+          "sha256": "68ecc034081458a11bc12c750f54bfecea29d3048dca46410514d9af8551d561"
+        }
+      ]
+    },
+    "dagger-pack": {
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2490859,
+            "start_ticks": "131376512",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-pack-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2490859,
+        "start_ticks": "131376512",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-pack-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/spark_guard.py",
+        "--name",
+        "dagger-pack",
+        "--seconds",
+        "1800",
+        "--kind",
+        "cpu",
+        "--peak-gib",
+        "4",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/goal.pt",
+        "--odometry",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/odometry.pt",
+        "--projection",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/projection.pt",
+        "--world",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/world.pt",
+        "--safety",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/safety.json",
+        "--policy",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T015027Z-dagger-update-942627/training/final.pt",
+        "--goal-match-threshold",
+        "0.9",
+        "--output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-pack"
+      ],
+      "started_unix": 1790214632.9980142,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015033Z-dagger-pack-f25a48",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015033Z-dagger-pack-f25a48/result.json",
+        "sha256": "f915d2e771218e74e3fc6ee2673b8f7b0b0d6a3be89ee1ac811ffc3bddd979c0"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-pack/checkpoints.json",
+        "sha256": "55b29eae5db640d33f424b3f4b29481a246fe87aa37852d46aa819c498294705"
+      },
+      "progress": {
+        "schema": "visual-navigation-checkpoints/v1",
+        "status": "completed",
+        "accepted": false,
+        "artifacts": {
+          "goal": {
+            "path": "goal.pt",
+            "sha256": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/goal.pt"
+          },
+          "odometry": {
+            "path": "odometry.pt",
+            "sha256": "05ece968b12db87b41137425d110067e9e3a71d0dba7f4c64174ae7f924a5434",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/odometry.pt"
+          },
+          "world": {
+            "path": "world.pt",
+            "sha256": "92e97a7a5c9e559b472d4d4aa17a6dfd5876cdd8690ba59c5c20c6e03788a3f9",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/world.pt"
+          },
+          "policy": {
+            "path": "policy.pt",
+            "sha256": "68ecc034081458a11bc12c750f54bfecea29d3048dca46410514d9af8551d561",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015027Z-dagger-update-942627/training/final.pt"
+          },
+          "projection": {
+            "path": "projection.pt",
+            "sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/projection.pt"
+          },
+          "safety": {
+            "path": "safety.json",
+            "sha256": "ad063b81b2ec32d9830e62f53fd75d9092600423003ae619f8159ee051cddf1d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/safety.json"
+          }
+        },
+        "goal_match_threshold": 0.9,
+        "scope": "Integration snapshot. Packaging does not establish model compatibility or acceptance."
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-pack/checkpoints.json",
+          "sha256": "55b29eae5db640d33f424b3f4b29481a246fe87aa37852d46aa819c498294705"
+        }
+      ]
+    },
+    "fresh-ppo-flight": {
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2490946,
+            "start_ticks": "131378917",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/fresh-ppo-flight-000.log"
+        }
+      ],
+      "reason": "Worker completed; acceptance not inferred",
+      "input_hashes": {},
+      "process": {
+        "pid": 2490946,
+        "start_ticks": "131378917",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/fresh-ppo-flight-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/spark_guard.py",
+        "--name",
+        "fresh-ppo-flight",
+        "--seconds",
+        "1200",
+        "--kind",
+        "flight",
+        "--peak-gib",
+        "64",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-pack",
+        "--sample-policy"
+      ],
+      "started_unix": 1790214657.0449166,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015057Z-fresh-ppo-flight-f15950",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015057Z-fresh-ppo-flight-f15950/result.json",
+        "sha256": "c9f4d8101145d57eec996648f4916f82b03fee18d5ccc0e0dc9ccbc982836f63"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015057Z-fresh-ppo-flight-f15950/collection/result.json",
+        "sha256": "26f7f4ad0665259b4d4cbc270bf56f81b6873012aeb9cf6cfc41ea35de890409"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015057Z-fresh-ppo-flight-f15950/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015057Z-fresh-ppo-flight-f15950/collection/flights.json",
+          "sha256": "b13d5446d4b8e9069c62391d19455dcafa829c60bfe4194872c5a29cb70fea5c"
+        }
+      ]
+    },
+    "ppo-data": {
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2492200,
+            "start_ticks": "131402146",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-data-000.log"
+        }
+      ],
+      "reason": "Worker completed; acceptance not inferred",
+      "input_hashes": {},
+      "process": {
+        "pid": 2492200,
+        "start_ticks": "131402146",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-data-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/spark_guard.py",
+        "--name",
+        "ppo-data",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "16",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/stage_worker.py",
+        "build-online-view",
+        "--learning-phase",
+        "ppo",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/trajectory-bundle",
+        "--navigation-pack",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-pack",
+        "--collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T015057Z-fresh-ppo-flight-f15950/collection/flights.json",
+        "--artifact-output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-data"
+      ],
+      "started_unix": 1790214889.3342216,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015449Z-ppo-data-0705cb",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015449Z-ppo-data-0705cb/result.json",
+        "sha256": "5db132ce05e7e6b14909da75917ea6e92e3cc89cd6b55861ba6fb17043af5aa4"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-data/result.json",
+        "sha256": "5d4aa0dd0c2b1d80605d87be66727ed7576f9fdb427508f45c51966849d7d6a6"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "unique_physics_transitions": 1693,
+        "shards": 43,
+        "collected_proposals": 1994
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-data/ppo.json",
+          "sha256": "eed87cea8313c42dcb3d8fa76f2f77df34065b5fb9a717a98aaf900a880d2d1c"
+        }
+      ]
+    },
+    "ppo-update": {
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2492677,
+            "start_ticks": "131402846",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-update-000.log"
+        }
+      ],
+      "reason": "Worker completed; acceptance not inferred",
+      "input_hashes": {},
+      "process": {
+        "pid": 2492677,
+        "start_ticks": "131402846",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-update-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/spark_guard.py",
+        "--name",
+        "ppo-update",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "24",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/stage_worker.py",
+        "ppo",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-data",
+        "--goal-checkpoint",
+        "goal.pt",
+        "--integration-only",
+        "--updates",
+        "1"
+      ],
+      "started_unix": 1790214896.3425894,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015456Z-ppo-update-9cfdf5",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015456Z-ppo-update-9cfdf5/result.json",
+        "sha256": "e68d8b576952ef340de94fe7063c8fd97d1ed86d6b627e92de6f713f2c580a0a"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015456Z-ppo-update-9cfdf5/ppo/result.json",
+        "sha256": "823da1eb1eeb37d43ce15ff75699c9e8dd369a5cbcb3782b873af8d752bf6c6b"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "integration_only": true,
+        "gradient_evidence": {
+          "policy.log_std": {
+            "parameters": 1,
+            "trainable": 1,
+            "gradient_tensors": 1,
+            "nonzero_gradient_tensors": 1,
+            "changed_tensors": 1,
+            "frozen_changed": 0
+          },
+          "policy.goal_pipeline": {
+            "parameters": 186,
+            "trainable": 0,
+            "gradient_tensors": 0,
+            "nonzero_gradient_tensors": 0,
+            "changed_tensors": 0,
+            "frozen_changed": 0
+          },
+          "policy.gru": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "policy.mean": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "policy.value": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "policy.collision_value": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "policy.stop_head": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          }
+        },
+        "unique_physics_transitions": 1693,
+        "optimizer_exposures": 40,
+        "updates": 1,
+        "max_epochs": 4,
+        "kl_early_stop": false,
+        "requires_fresh_physical_rollouts": true,
+        "completed_episode_collision_rate": 0.0,
+        "constrained_collision_cost": true
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015456Z-ppo-update-9cfdf5/ppo/final.pt",
+          "sha256": "e6d7bb694b75ec4067efc4ab90740ed60c9558771b44e5f51b3a6f3204f9d0c6"
+        }
+      ]
+    },
+    "ppo-pack": {
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2492984,
+            "start_ticks": "131403449",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack-000.log"
+        }
+      ],
+      "reason": "Worker completed; acceptance not inferred",
+      "input_hashes": {},
+      "process": {
+        "pid": 2492984,
+        "start_ticks": "131403449",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/spark_guard.py",
+        "--name",
+        "ppo-pack",
+        "--seconds",
+        "1800",
+        "--kind",
+        "cpu",
+        "--peak-gib",
+        "4",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/goal.pt",
+        "--odometry",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/odometry.pt",
+        "--projection",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/projection.pt",
+        "--world",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/world.pt",
+        "--safety",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/safety.json",
+        "--policy",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T015456Z-ppo-update-9cfdf5/ppo/final.pt",
+        "--goal-match-threshold",
+        "0.9",
+        "--output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack"
+      ],
+      "started_unix": 1790214902.3652503,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015502Z-ppo-pack-1ecea3",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015502Z-ppo-pack-1ecea3/result.json",
+        "sha256": "7a1346e0407d47b8330aa7e209659099ee22055de2029a5c8e361bf52a14db3f"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/checkpoints.json",
+        "sha256": "69649782711781d67509f0303bcd9be87accd9214c8f269415f9dde8d7dbd093"
+      },
+      "progress": {
+        "schema": "visual-navigation-checkpoints/v1",
+        "status": "completed",
+        "accepted": false,
+        "artifacts": {
+          "goal": {
+            "path": "goal.pt",
+            "sha256": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/goal.pt"
+          },
+          "odometry": {
+            "path": "odometry.pt",
+            "sha256": "05ece968b12db87b41137425d110067e9e3a71d0dba7f4c64174ae7f924a5434",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/odometry.pt"
+          },
+          "world": {
+            "path": "world.pt",
+            "sha256": "92e97a7a5c9e559b472d4d4aa17a6dfd5876cdd8690ba59c5c20c6e03788a3f9",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/world.pt"
+          },
+          "policy": {
+            "path": "policy.pt",
+            "sha256": "e6d7bb694b75ec4067efc4ab90740ed60c9558771b44e5f51b3a6f3204f9d0c6",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015456Z-ppo-update-9cfdf5/ppo/final.pt"
+          },
+          "projection": {
+            "path": "projection.pt",
+            "sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/projection.pt"
+          },
+          "safety": {
+            "path": "safety.json",
+            "sha256": "ad063b81b2ec32d9830e62f53fd75d9092600423003ae619f8159ee051cddf1d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/safety.json"
+          }
+        },
+        "goal_match_threshold": 0.9,
+        "scope": "Integration snapshot. Packaging does not establish model compatibility or acceptance."
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/checkpoints.json",
+          "sha256": "69649782711781d67509f0303bcd9be87accd9214c8f269415f9dde8d7dbd093"
+        }
+      ]
+    },
+    "updated-policy-flight": {
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2492996,
+            "start_ticks": "131403649",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/updated-policy-flight-000.log"
+        }
+      ],
+      "reason": "Worker completed; acceptance not inferred",
+      "input_hashes": {},
+      "process": {
+        "pid": 2492996,
+        "start_ticks": "131403649",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/updated-policy-flight-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/spark_guard.py",
+        "--name",
+        "updated-policy-flight",
+        "--seconds",
+        "1200",
+        "--kind",
+        "flight",
+        "--peak-gib",
+        "64",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/whole-pipeline-r29/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack"
+      ],
+      "started_unix": 1790214904.369596,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015504Z-updated-policy-flight-55a9f0",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015504Z-updated-policy-flight-55a9f0/result.json",
+        "sha256": "afffece4c6f7151b0d79b04594db82ac4a1eb19fbaf676fba92a103d951da355"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015504Z-updated-policy-flight-55a9f0/collection/result.json",
+        "sha256": "bddf5b4baff8b7cb9dc3df0bea13f5e240f32d94ef2b84983a26e416a2dceae5"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015504Z-updated-policy-flight-55a9f0/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T015504Z-updated-policy-flight-55a9f0/collection/flights.json",
+          "sha256": "af039f58bc195f0de10e4fb134c76195b3ab1f97f5b05da7e101e4013ec4098c"
+        }
+      ]
+    }
+  },
+  "updated_unix": 1790215136.6871026
+}

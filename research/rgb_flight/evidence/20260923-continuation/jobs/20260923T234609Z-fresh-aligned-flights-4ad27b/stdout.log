@@ -1,0 +1,12 @@
+{"status": "running", "processed": 0, "valid": 0, "next": "train-00000"}
+{"status": "running", "processed": 1, "valid": 1, "next": "train-00001"}
+{"status": "running", "processed": 2, "valid": 2, "next": "train-00002"}
+{"status": "running", "processed": 3, "valid": 3, "next": "train-00003"}
+{"status": "running", "processed": 4, "valid": 4, "next": "train-00004"}
+{"status": "running", "processed": 5, "valid": 5, "next": "train-00005"}
+{"status": "running", "processed": 6, "valid": 6, "next": "train-00006"}
+{"status": "running", "processed": 7, "valid": 7, "next": "train-00007"}
+{"status": "running", "processed": 8, "valid": 8, "next": "train-00008"}
+{"status": "running", "processed": 9, "valid": 9, "next": "train-00009"}
+{"status": "running", "processed": 10, "valid": 9, "next": null}
+{"status": "collection_complete", "processed": 10, "valid": 9, "next": null}

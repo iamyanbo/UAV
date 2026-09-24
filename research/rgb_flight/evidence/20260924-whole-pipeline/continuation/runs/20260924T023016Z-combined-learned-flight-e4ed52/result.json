@@ -1,0 +1,20 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T023016Z-combined-learned-flight-e4ed52/source/collect_learning_round.py",
+    "--controller-checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints",
+    "--episode-id",
+    "train-00000",
+    "--with-deliberation",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/launches/20260924T012523Z/episode/goal"
+  ],
+  "seconds": 1200,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "flight",
+  "peak_gib": 72.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 268.1521512910258
+}

@@ -1,0 +1,29 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T015502Z-ppo-pack-1ecea3/source/package_navigation.py",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/goal.pt",
+    "--odometry",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/odometry.pt",
+    "--projection",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/projection.pt",
+    "--world",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/world.pt",
+    "--safety",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r28/checkpoints/safety.json",
+    "--policy",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T015456Z-ppo-update-9cfdf5/ppo/final.pt",
+    "--goal-match-threshold",
+    "0.9",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 4.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 1.0111958379857242
+}

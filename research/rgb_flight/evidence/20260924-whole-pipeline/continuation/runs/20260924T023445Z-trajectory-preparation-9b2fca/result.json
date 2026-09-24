@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/home/iamyanbo/uav-rgb-flight/envs/airsim/bin/python",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T023445Z-trajectory-preparation-9b2fca/source/trajectory_bundle.py",
+    "--collection-root",
+    "/home/iamyanbo/uav-rgb-flight/launches",
+    "--initialization",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T005426Z-motion-rate-training-d6d010/visual-training/best.pt",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/hover-correction-r36/trajectory-bundle"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 8.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 43.047269604867324
+}

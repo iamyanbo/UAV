@@ -1,0 +1,9 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "complete_flights": 1,
+  "successes": 0,
+  "all_failures_retained": true,
+  "controller_frozen_during_collection": true,
+  "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T013809Z-learned-dagger-flight-4c5513/collection/flights.json"
+}

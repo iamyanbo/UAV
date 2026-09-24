@@ -1,0 +1,204 @@
+{
+  "schema": "training-round/v1",
+  "contract": {
+    "spec_sha256": "ba9e2bf6f7ad81bded625c8e627d0232420e39fcfdf57a7f9fff24f37b31a494",
+    "source_hashes": {
+      "acquire.py": "b95bb2f3e72d27a9e9766a1c6f9c3402c41e93767ada550cd0ee47899e6fdd13",
+      "acquire_reference_geometry.py": "7c46e9d141c88278abd763b9df8a39acb43c4ea4d87791437ff9362847632c8d",
+      "action_intervals.py": "d8b676acf8005e8725d2a3198a5e239b91b090ab2afeca7fc5d79ddbdf033170",
+      "after_reference_survey.py": "fef6e3b39d7d58e842a881bb966d7e2f8671c2556b9afbe945b68f2b0b9e3b40",
+      "archive_video.py": "c2e87aad14dade7966b592c5bd9499a79c7144c4f74cb3ec4a8d9e15bbc89f28",
+      "broker.py": "863ab9bd775cd886971d76ab83d6d0c24dcd808ecc86246b11163394c63f7973",
+      "build_dzn.py": "e66028973cddeb7133dfbbc8f0a6ed0364998a0354f80d046ba1e5ed3bf093be",
+      "build_model_stack.py": "b8e287bd9f326fad405418b77a2abed7ee120f1cca37060aff1418e4cc0c77d9",
+      "build_visual_dataset.py": "4cda396df43de6fdfa53fb35eb9ebe6c194699034fe776704898dd868f93457a",
+      "calibration.py": "df92730cc2f3f7d7b956b6191db47c4af0cd6e352ed265ea947c1ade007c0499",
+      "camera_profile.py": "5639f3f4d7b744cee70600e50e4d8297c00b943596cdba5ac001986004fd8308",
+      "capture_goal.py": "2bf4596e1c916e098e6b8f4e686e5a14c4928c02764c2c7a2689efccd8638619",
+      "capture_obstacle_field.py": "b69b223ea60af0a27c8fd4adf051d84a303d54741a110fbcee3f20a42c4151c8",
+      "causal_mapper.py": "d3bda669c9225d15c6c35f9bfe52f9024fa9636cfbefcbfdf2afe31befef2e89",
+      "causal_pose.py": "e4930f4d695dfdf28ed5219ea6860759ed9d663891914aaa29c6ae04feafede9",
+      "configurator.py": "4575dc2abf859a09ce722b15f47a7138a90ab18e179523057be79e77a6a038a2",
+      "container_job.py": "21227d097672c2231545a1c559567d69c1c88602e512c2e4250143c1d0f4b8b8",
+      "contracts.py": "06293f73e7677ce6954d50bbeec0cb48cef342428d043787a1a99711f277229c",
+      "controller.py": "b62d4148cfc1ea3e657adb6609e6a70b17ee3223e967b7641b28914f54cdcab2",
+      "dagger.py": "e32e517f3eb4b37126007f7b77783b1a528ed36d368bf0a9b1ccae72f85c30e9",
+      "download_models.py": "d4665f029e59da87a57d66221dbf0e9f157e98a1d68013282c6fa4b6b04763ef",
+      "dynamics_probe.py": "337f45d3b3ec2c0265ed8831ec195e49be36e55ede2a404f4866f30d7b1ab181",
+      "episode_generation.py": "3cf1c3da8c3db729c4192c5a3b0148ccfa7abe3a0eff25044f0897822f65b1dd",
+      "episode_store.py": "368cf2b1d5e0d18fe504157e9139c3c87075a03c47f0209251a1fc1e23d5fffd",
+      "evaluate_visual_goal.py": "68e26e0427cc0c0c5933621ee98a52f45e6ebd1abefbde419d6a571eeea2d80b",
+      "feature_cache.py": "0bbea9d9c9ab3ecb691d9600b014c3b4520789476698a109f526e3263995dcb3",
+      "flight_evaluator.py": "f216e3d20d91f78f5827e95a21560c7193e91e397c741a3e9aaeba1b1e1b0879",
+      "goal_io.py": "945cbdcd19dab726b68eb6b8699512d106f12e61f0c3c5f0c115c5bcc1356300",
+      "goal_matching.py": "1de3df9e4c9cdb1bd37ee28901ccbaae6037f6001cc7558641379d4b21cb96aa",
+      "graphics_probe.py": "32066a2a6128df2b64f663e6d2fe975cc9339136e4f46bb2b4d0eb2cea2b7eee",
+      "inspect_episode.py": "0d7d3777c8209fe090b4a66bebdd3c762045b59a773c3746087f6e248292c9d4",
+      "inspect_simulator.py": "10c577d0dfa6a5335234d48d1843ba1c5c8861022066891038235ec063024a39",
+      "install_mapping_runtime.py": "8f6ae9e7d43d2d509ae9ac44e0e83537e106f898ff0938d8a0889eec062d9eb7",
+      "install_swiftshader.py": "780d2e3e11219d759b88f6fa6d8909435a4e6c7abc81144947a179aa764345f7",
+      "isolation.py": "53b80814fb18899cde24e6aa280ee4887d1bff17f9fd7ce06687490a567ffd84",
+      "isolation_client.py": "80ded5c2c3c3710b3cf23c5de62f28b2bf765d670839e1bd3dfed5fc0b23682c",
+      "learning_models.py": "0005e75b638a9d76ed0c7ceb43dde92abf40de46eaafa33eb56f554067fef86f",
+      "linux_probe.py": "4dfb4ac3cd28254ae5d29097ac06adba37685a484b16476e3a6aaca2095cdff0",
+      "live_perception.py": "50623a91f6c32ce5b4d59bcd62d04a331fa7a1eae12000def6c2c58bcd564f92",
+      "live_visual.py": "1676db4d7d82c8fa51f61324b211b953fafacdc8b62446a3fc10b7c165edd5c4",
+      "mapping_worker.py": "3f53840ae67e3fa2762f5559da9e1ef6cebe92ea1628fe9e2609419275a26539",
+      "memory_snapshot.py": "daa6dbf5376f6caa313474a716f386ef9bb274e128085636fc00a3d72674b1b7",
+      "metric_alignment.py": "df98f44e5d6e8b2ac81d162f8a8f5f1fa55ecb89c9c865c691ebaf223e439dbd",
+      "model_probe.py": "862cc4376bb9a545296d5076d8e26b2bfb527cd8d93ea213e864ba3a4b9814c9",
+      "native_cuda_check.py": "931ba324b9ab24ab183c2c4b6f3dab3bb1e7c6a881eaacf04b43be4d7e6c04a5",
+      "obstacle_field.py": "dfd48f8d5f89b4a3bcfd449aad631607d8e3643bc2558b441c13e870348a81aa",
+      "perception_metrics.py": "320aa3eea9a08c555fc099f24cf45e7281179ad3d60bb4b4dfc9f1e289ee78eb",
+      "perception_process.py": "ee85f4fff73831a9253d6d663e6fc7028f1fb857fb12c8ee8e8d377311b7fae3",
+      "port_splat.py": "7ea43b36b7772744ec927d7db18201d0a9a3e08b87a2cb152846abed98a4c835",
+      "ppo_learning.py": "232397289f08c34527c8adedecc57d63d3638c13400363502bc861bfce4917d0",
+      "predictive_planner.py": "70bbed9acd047aabbf46b7f9926920081692b20be9fa60a941e733944b2c6551",
+      "preflight.py": "941a3c65df2b31d825ea64f2ae9d73c11a1664166a6a54fe283529a3fade6800",
+      "prepare_scale_campaign.py": "34c2d5a2faa05460324121c78ea03bdb7a3c298019cafa9e4939e5d7e01b0ed1",
+      "probe_models.py": "7d67e47bb9cc80fa587ec5b0c39023ff1eac2117d99e90926e63a51c3064235c",
+      "program_scheduler.py": "5c4c02da49075f12c517a460b6cbecaafc5d263fb0fc52370c395e5aaac3b07a",
+      "provision_models.py": "32aa9e0b18ed87faad91df1e46eba4d17c8265bca4cfaaa61b1dda2282b8ca14",
+      "qualify_goal.py": "e72c97ebd2e5ae2eca0b830eba89c89d59bbfde537cda27b7a8d1a29d693fb7c",
+      "reconstruct.py": "b0e580ea297dadc75ba7cc20cd783566d4d0b9f271e774213afafcef8dca3fa2",
+      "reference_campaign.py": "b29476fc26e302db209c854c33097593b28d1823ad75497a85211646049efa0f",
+      "reference_flight.py": "6932eb853404c5158e02b12c7479b07e875be13304b4f4bfc11872ba6e28ca2f",
+      "reference_routes.py": "baec694570c5913bd224bc6d653445e220bfaf45f45c9afd9d88b5ae9fdfb72c",
+      "resource_admission.py": "8d97457d0b3580dbfb2a9f084a1d585ec921c777334d184e91b4348215c84be6",
+      "rpc_probe.py": "25b095d1f584e4160b669969c68a524b31927de4cea702f8933b7da3a402730f",
+      "run.py": "683bd12f12f28c3e75fcd48246c6de067c3c959c06bb86688f4694a1e5defe2f",
+      "scale_data.py": "5d877d675006ccc07ac88bdb26269143f881ad16d85836733696044efeaa11bd",
+      "scale_features.py": "4fdcfb256aaa127a5392b4eb9dd5af80cca0922060c3b4752537d4681888b135",
+      "scale_runtime.py": "987fc6a8780a5cbd4b46574821f7a890f5a734066aec3dcb9a5d9b8117e859ce",
+      "simulator_gate.py": "a9039dc852a24d238d718594a0f4fe35ed8e111484fed8ffe8e8e262d5ac2d83",
+      "spark_guard.py": "2f7c52a222f369c51e4ad1046cbf1c8d1bfda330ee68d117a8798b08908f3941",
+      "spark_launch.py": "68520304a5bbbd625a4f3c57b0f3fb509c6377b6a470d9fefc788fbd4cd85a88",
+      "spark_manage.py": "905da0202f0dd762b467f01da8a2e847bab258f3b8bde82850dc3e411a532b90",
+      "spark_remote.py": "627adb35ccde84f2f941df20432da0f3db7adffc935eecd4daa85d8718af0345",
+      "spark_setup.py": "3308c05e3fa79c4e7bd9dad0df5919bf2218f571c9c734fb51fbb59c4ad475fd",
+      "spatial_memory.py": "1c20530ca2cd37b2904073708e09f46dc2cf0fb54d2191003d56aeee166b88a5",
+      "splat_kernel_check.py": "dbc57e48d906dd02a14dd2a299f0505582dc0ef08968a2a8415c34c677dee3aa",
+      "splat_raster_check.py": "8e70cdad1ea22a622f9a9cb2b47407ef199a7873fbeecdb2e964f01121e2dad7",
+      "splat_tracking_probe.py": "67e9baab250e38c731571b444551b87aea783587b530c5b9b08aa88118910100",
+      "stage_worker.py": "a0b20201b4a1aaa34eafd256a6f481413dfc265e785c828485c9834059df5ee3",
+      "train_configurator.py": "06b9ee1fa7f9c9948df069dc5e844606bf5de7e0465085631992820494d1b4ba",
+      "train_models.py": "74694d958a6aaf44a6801467fd68aa7756322ee93da0819355dde61966cac71a",
+      "train_odometry_sequences.py": "78126e291d690b11f8794c2f11ae9c50270e52195189d133dfb457ecab5907af",
+      "train_ppo.py": "bf672d27effaf4928e69615ad66ee9a2464a8f38f766e0911e994f85da346e7f",
+      "train_scale.py": "03d811cf4124b963743b8e349285b870ba56edd21fa84a86d2744fb2d3044202",
+      "train_visual_components.py": "bb23e1cb466363727e6d708fcc17b2b180303538565cb64583a191b84e1d3e0e",
+      "training_labels.py": "20ca0f3bf19a8584d28e8b6cf160b341351c698578464df96f4eac62ca8cbb6f",
+      "training_program.py": "f283e9655f52a0bb944e7213335073d0c5d6d796945f5bfe6b1558161b8ac87c",
+      "trajectory_bundle.py": "b3db0ce56b1c7bf10f1ea414af4902d6bcee9d31577fe7f1277b19e8e48d8a66",
+      "verify_reference_evidence.py": "30f4ec3b877e574bdffc8c349fc22eb8dc304ca28b3a563aace6762403c3dc4d",
+      "visual_contract_check.py": "41ec2ad8ccca2bc06bc23c5cae80840365cd51a093afba79d9f7abe60c065174",
+      "visual_encoder.py": "7ca46b22eb601d8b3db5bc6bfa57edc4ce14295c9e12360f1f3bb9fe708f1f79",
+      "visual_goal_campaign.py": "f95daccde90f8cefa8c630d42c684747660c4c4f1726b5a28f3f38dbf4cd198f",
+      "visual_goal_flight.py": "dfadf004eb0d84e796fc721bc35864a5921c2f0ae6e7cd60539b7c5fec073e71",
+      "wire.py": "bbe7c55d4edd8b1cb414cfcb848db25ecd56af6c5c98c91f7c1426670db844a2"
+    },
+    "inputs": {
+      "/home/iamyanbo/uav-rgb-flight/rounds/integration-r3/trajectory-bundle/manifest.json": "8500e1e8fcd132fa8767106095932566e7cf423e224031d20a9e633ca9a63d96",
+      "/home/iamyanbo/uav-rgb-flight/rounds/integration-r3/trajectory-bundle/resume-update-2.pt": "26557b158a5a8b20311a207fcc8c489e2c6f9b8073fd50b17b791778950ce647"
+    }
+  },
+  "round_id": "continuity-r4",
+  "stages": {
+    "odometry-checkpoint-continuity": {
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2449108,
+            "start_ticks": "130424333",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/continuity-r4/odometry-checkpoint-continuity-000.log"
+        }
+      ],
+      "process": {
+        "pid": 2449108,
+        "start_ticks": "130424333",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/continuity-r4/odometry-checkpoint-continuity-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/rgb-pipeline-r4/spark_guard.py",
+        "--name",
+        "odometry-checkpoint-continuity",
+        "--seconds",
+        "1799",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "24",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/rgb-pipeline-r4/stage_worker.py",
+        "train-odometry",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/integration-r3/trajectory-bundle",
+        "--resume",
+        "resume-update-2.pt",
+        "--updates",
+        "3"
+      ],
+      "started_unix": 1790205111.2119305,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260923T231151Z-odometry-checkpoint-continuity-52a193",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260923T231151Z-odometry-checkpoint-continuity-52a193/result.json",
+        "sha256": "63cb6f053a01d0498ce6abc4c6c1b816bd7f9a2fb84f8b6d09e628a5f0650c46"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260923T231151Z-odometry-checkpoint-continuity-52a193/visual-training/result.json",
+        "sha256": "381efcfca578560a4230b218d1746988254683e1e82021c86715f208217df657"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "updates": 3,
+        "resumed_from_update": 2,
+        "objective_version": "metric-sequence-nll-se3/v1",
+        "manifest_sha256": "8500e1e8fcd132fa8767106095932566e7cf423e224031d20a9e633ca9a63d96",
+        "resume_evidence": {
+          "checkpoint_sha256": "26557b158a5a8b20311a207fcc8c489e2c6f9b8073fd50b17b791778950ce647",
+          "restored_update": 2,
+          "optimizer_states": 178,
+          "optimizer_step_min": 2.0,
+          "optimizer_step_max": 2.0
+        },
+        "gradient_evidence": {
+          "encoder": {
+            "finite_gradients": true,
+            "changed": true
+          },
+          "temporal": {
+            "finite_gradients": true,
+            "changed": true
+          },
+          "motion": {
+            "finite_gradients": true,
+            "changed": true
+          },
+          "motion_uncertainty": {
+            "finite_gradients": true,
+            "changed": true
+          }
+        },
+        "train_windows": 11,
+        "development_windows": 180,
+        "elapsed_seconds": 2.8517650079447776,
+        "reason": "Full held-out trajectory drift and uncertainty qualification still required"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260923T231151Z-odometry-checkpoint-continuity-52a193/visual-training/latest.pt",
+          "sha256": "a7c019499461f73db81a69f5e05f4ebf79adf6df99be462061ad60224e0049a1"
+        }
+      ]
+    }
+  },
+  "updated_unix": 1790205128.2501693
+}

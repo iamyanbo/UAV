@@ -1,0 +1,8 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "windows": 98,
+  "timing_qualified_windows": 0,
+  "observation_grid": "all original timestamps; no duplication; gaps <=250 ms match live recurrent reset; 75 ms acceptance unchanged",
+  "scope": "Mandatory-brake recovery initialization; directional search imitation remains unqualified"
+}

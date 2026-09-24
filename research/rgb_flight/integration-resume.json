@@ -1,0 +1,21 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Real optimizer continuity verification on the unchanged sequence objective and dataset",
+  "stages": [{
+    "id": "odometry-checkpoint-continuity",
+    "kind": "gpu", "peak_gib": 24, "seconds": 1800,
+    "depends_on": [],
+    "inputs": [
+      "/home/iamyanbo/uav-rgb-flight/rounds/integration-r3/trajectory-bundle/manifest.json",
+      "/home/iamyanbo/uav-rgb-flight/rounds/integration-r3/trajectory-bundle/resume-update-2.pt"
+    ],
+    "command": [
+      "python3", "{source}/stage_worker.py",
+      "train-odometry", "--dataset", "/home/iamyanbo/uav-rgb-flight/rounds/integration-r3/trajectory-bundle",
+      "--resume", "resume-update-2.pt", "--updates", "3"
+    ],
+    "receipt": "{job}/visual-training/result.json",
+    "outputs": ["{job}/visual-training/latest.pt"]
+  }]
+}
+

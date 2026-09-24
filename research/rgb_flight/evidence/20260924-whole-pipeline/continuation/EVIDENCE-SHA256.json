@@ -1,0 +1,20 @@
+{
+  "rounds/hover-correction-r36/state.json": "d4df298b7b6617548d0ce47eb8b186f965a3560fd34ad59b6a5d140f941a2a6e",
+  "runs/20260924T023445Z-trajectory-preparation-9b2fca/result.json": "c61cab01e223a48b543910939fe7de85dd044d59c5da0f6e71c5948ba4d95cc7",
+  "runs/20260924T023529Z-motion-rate-pilot-b969a3/visual-training/metrics.jsonl": "f9b43fb43856e45f13d5ad2d26c51aefb31a616df0eede0d1df87bf763e691e2",
+  "runs/20260924T023529Z-motion-rate-pilot-b969a3/visual-training/result.json": "b2de08c59aca43f67d5fe041d88e7111eb01d955d4de44883a7abea7c7bd94a5",
+  "runs/20260924T023529Z-motion-rate-pilot-b969a3/result.json": "46c16b4a6bdfd1991149b3126818ffc8597b85e7ad1cc9574853e371b2310560",
+  "runs/20260924T023623Z-motion-rate-training-e01e5e/visual-training/metrics.jsonl": "364eea0c76f69fc6e40866ceefa421c7aded01ff7f994736ac01474a0ce76344",
+  "rounds/goal-continuation-r21/state.json": "ecc1c0205934b31f6522f65f742f93842eb83fb94a34488b436fbb6a1bef4065",
+  "runs/20260924T023445Z-goal-corrective-training-d4f310/visual-training/metrics.jsonl": "3768fd643536b6e00e302913d31060f6a9ac37006f79f727ceedd34454abf4f0",
+  "rounds/whole-pipeline-r35/state.json": "2016d13b2d13025c2ae8a5db5af3e538df2418b2d6e60b54962bbf33344df536",
+  "runs/20260924T022858Z-compact-data-f60a1d/result.json": "13a9c02d6a3bf95204fba5501b420eaa18a47787ccd71d40f9030232710de3fd",
+  "runs/20260924T022900Z-qwen-supervised-update-702d17/configurator/result.json": "113aa3f81e72040a32a08c2c90db95bdbfa212db6f8d8257756e8baed9b0cfd0",
+  "runs/20260924T022900Z-qwen-supervised-update-702d17/result.json": "19014789679d319d212a77ab5738bff7d2d7549654e1a2cb65674836a54a92b0",
+  "runs/20260924T023014Z-combined-pack-d2baad/result.json": "86d07dcde1c2159fea215ab81b00ff33f13574e945e65b2da7ed665f99938bbe",
+  "runs/20260924T023016Z-combined-learned-flight-e4ed52/collection/result.json": "5bfc1bbb25bfe00baab0bfe3959bd5fd06356d9a95a8d5462f3057e3f11a8340",
+  "runs/20260924T023016Z-combined-learned-flight-e4ed52/result.json": "4ad81b12be4d634775f5e56b91c59755c931da9710790ff2c2d56757ca23c64f",
+  "rounds/hover-correction-r36/trajectory-bundle/result.json": "8c283c26900fc175536447b61bb01b2669791241d6dcb9e9484a68f4d2efb27d",
+  "rounds/hover-correction-r36/trajectory-bundle/manifest.json": "2b04bf3cbf67b1f5eb576034e4f016a50e5e54688d589e4cb2fcc9f5bd081842",
+  "remote-status.json": "d131be845d1b55a2970a288666059e8fca39a1828c726d320a715843975b3137"
+}

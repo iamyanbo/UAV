@@ -1,0 +1,132 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Measured asynchronous video replay, training-only PCA and shared causal memory replay",
+  "stages": [
+    {
+      "id": "async-video-replay",
+      "kind": "gpu",
+      "peak_gib": 24,
+      "seconds": 1800,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-r8/checkpoints-complete/checkpoints.json",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/observations/storage.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/navigation_process.py",
+        "--observations",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/observations",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/goal",
+        "--integration-only",
+        "--video",
+        "--frames",
+        "400",
+        "--checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-r8/checkpoints-complete"
+      ],
+      "receipt": "{job}/navigation-replay/result.json",
+      "outputs": [
+        "{job}/navigation-replay/manifest.json",
+        "{job}/navigation-replay/video/outputs.jsonl"
+      ]
+    },
+    {
+      "id": "training-projection",
+      "kind": "gpu",
+      "peak_gib": 8,
+      "seconds": 600,
+      "depends_on": [
+        {
+          "stage": "async-video-replay",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{stage:async-video-replay:job}/navigation-replay/manifest.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "fit-projection",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/integration-r3/trajectory-bundle",
+        "--runtime-replay",
+        "{stage:async-video-replay:job}/navigation-replay",
+        "--artifact-output",
+        "{round}/projection"
+      ],
+      "receipt": "{round}/projection/result.json",
+      "outputs": [
+        "{round}/projection/projection.pt"
+      ]
+    },
+    {
+      "id": "projected-perception-package",
+      "kind": "cpu",
+      "peak_gib": 2,
+      "seconds": 600,
+      "depends_on": [
+        {
+          "stage": "training-projection",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/projection/projection.pt"
+      ],
+      "command": [
+        "python3",
+        "{source}/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-r8/checkpoints-complete/goal.pt",
+        "--odometry",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-r8/checkpoints-complete/odometry.pt",
+        "--projection",
+        "{round}/projection/projection.pt",
+        "--output",
+        "{round}/checkpoints",
+        "--goal-match-threshold",
+        "0.9968814849853516"
+      ],
+      "receipt": "{round}/checkpoints/checkpoints.json",
+      "outputs": [
+        "{round}/checkpoints/checkpoints.json"
+      ]
+    },
+    {
+      "id": "projected-causal-replay",
+      "kind": "gpu",
+      "peak_gib": 24,
+      "seconds": 1800,
+      "depends_on": [
+        {
+          "stage": "projected-perception-package",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/checkpoints/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/navigation_process.py",
+        "--observations",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/observations",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/goal",
+        "--integration-only",
+        "--video",
+        "--frames",
+        "400",
+        "--checkpoints",
+        "{round}/checkpoints"
+      ],
+      "receipt": "{job}/navigation-replay/result.json",
+      "outputs": [
+        "{job}/navigation-replay/manifest.json"
+      ]
+    }
+  ]
+}

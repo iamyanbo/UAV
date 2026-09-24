@@ -14,6 +14,7 @@ import { statePath } from "./paths.js";
 import type { ResearchStore } from "./store.js";
 import { attemptDirectory } from "./trace.js";
 import type { LeanDirection } from "./types.js";
+import { researchEpoch } from "./model-research.js";
 
 const HOUR = 3_600_000;
 const FINISHED = new Set(["concluded", "blocked", "cancelled"]);
@@ -26,15 +27,17 @@ function inside(root: string, path: string): boolean {
 /** Remove worktrees of finished tasks once their evidence bundle is sealed. */
 export function pruneFinishedWorktrees(store: ResearchStore, projectRoot: string, directionId: string, now = Date.now()): string[] {
   const root = statePath(projectRoot, "worktrees");
-  const tasks = store.db.prepare(`SELECT task_id,state,workspace_path,updated_at FROM tasks
+  const tasks = store.db.prepare(`SELECT task_id,state,workspace_path,created_at,updated_at FROM tasks
     WHERE direction_id=? AND workspace_path IS NOT NULL`).all(directionId) as
-    Array<{ task_id: string; state: string; workspace_path: string; updated_at: string }>;
+    Array<{ task_id: string; state: string; workspace_path: string; created_at: string; updated_at: string }>;
   const removed: string[] = [];
   for (const task of tasks) {
+    if (task.created_at < researchEpoch(store, directionId)) continue; // Operator archive: preserve unreviewed raw work.
     if (!FINISHED.has(task.state) || !inside(root, task.workspace_path) || !existsSync(task.workspace_path)) continue;
     if (now - Date.parse(task.updated_at) < HOUR) continue;
     const sealed = store.db.prepare("SELECT 1 FROM evidence_bundles WHERE task_id=? LIMIT 1").get(task.task_id);
-    if (!sealed && task.state !== "cancelled") continue;
+    // Interrupted work may contain the only trained weights before handoff.
+    if (!sealed) continue;
     removeWorktree(projectRoot, task.workspace_path);
     if (existsSync(task.workspace_path)) rmSync(task.workspace_path, { recursive: true, force: true });
     removed.push(task.task_id);

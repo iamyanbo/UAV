@@ -4,6 +4,7 @@ import { researchId, researchNow, type ResearchStore } from "./store.js";
 import { recordInvestigation } from "./investigations.js";
 import { planInvestigation } from "./investigation-plans.js";
 import { researchPolicy, researchReadiness } from "./agenda.js";
+import { researchEpoch } from "./model-research.js";
 export { researchPolicy, researchReadiness } from "./agenda.js";
 export type { ResearchLane, ResearchPolicy, CoverageTopic } from "./agenda.js";
 
@@ -85,8 +86,8 @@ export function resolveForecast(store: ResearchStore, directionId: string, markd
 }
 
 export function forecastScores(store: ResearchStore, directionId: string) {
-  const rows = store.db.prepare("SELECT f.*,r.outcome,r.source_id,r.observed_at FROM research_forecasts f LEFT JOIN forecast_resolutions r ON r.forecast_id=f.forecast_id WHERE f.direction_id=? ORDER BY f.created_at")
-    .all(directionId) as Array<{ forecast_id: string; probability: number; baseline_probability: number; outcome: number | null; target: string; resolve_after: string }>;
+  const rows = store.db.prepare("SELECT f.*,r.outcome,r.source_id,r.observed_at FROM research_forecasts f LEFT JOIN forecast_resolutions r ON r.forecast_id=f.forecast_id WHERE f.direction_id=? AND f.created_at>=? ORDER BY f.created_at")
+    .all(directionId, researchEpoch(store, directionId)) as Array<{ forecast_id: string; probability: number; baseline_probability: number; outcome: number | null; target: string; resolve_after: string }>;
   const resolved = rows.filter(r => r.outcome !== null);
   const average = (fn: (r: typeof rows[number]) => number) => resolved.length ? resolved.reduce((sum, r) => sum + fn(r), 0) / resolved.length : null;
   const brier = average(r => (r.probability - r.outcome!) ** 2);
@@ -104,8 +105,8 @@ export function forecastScores(store: ResearchStore, directionId: string) {
 
 export function lifecycleContext(store: ResearchStore, directionId: string): string {
   const readiness = researchReadiness(store, directionId);
-  const frames = store.db.prepare("SELECT f.*,p.state,p.review_after FROM research_frames f LEFT JOIN investigation_plans p ON p.investigation_id=f.investigation_id WHERE f.direction_id=? ORDER BY f.priority DESC,f.updated_at DESC")
-    .all(directionId) as Array<{ investigation_id: string; lane: string; body_md: string; state: string; review_after: string | null }>;
+  const frames = store.db.prepare("SELECT f.*,p.state,p.review_after FROM research_frames f JOIN investigations i ON i.investigation_id=f.investigation_id LEFT JOIN investigation_plans p ON p.investigation_id=f.investigation_id WHERE f.direction_id=? AND i.created_at>=? ORDER BY f.priority DESC,f.updated_at DESC")
+    .all(directionId, researchEpoch(store, directionId)) as Array<{ investigation_id: string; lane: string; body_md: string; state: string; review_after: string | null }>;
   const scores = forecastScores(store, directionId);
   return ["## Research lifecycle", "Discovery, validation and prospective observation have independent waits. A closed case is not proof of global coverage.",
     "Lane state: " + JSON.stringify(readiness.lanes),

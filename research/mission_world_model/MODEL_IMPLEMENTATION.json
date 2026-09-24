@@ -1,0 +1,51 @@
+{
+  "program": "mission_world_model",
+  "status": "end_to_end_validated_overnight_study_running",
+  "active_run": "D:/uav-research/idea1/runs/overnight-20260921T072112Z-3ea651",
+  "validation_run": "D:/uav-research/idea1/runs/20260921T070709Z",
+  "validated_implementation_sha256": "b02ce28018a8e18b269bddd643edbd5593ba150a77256a5b74ec5c812f3b569b",
+  "tests_passed": 27,
+  "paper_result": false,
+  "artifacts": {
+    "source": "src/mission_world",
+    "windows_supervisor": "overnight.py",
+    "detached_launcher": "start-overnight.ps1",
+    "tests": "tests",
+    "data_root_windows": "D:/uav-research/idea1",
+    "data_root_wsl": "/mnt/d/uav-research/idea1",
+    "weights": "D:/uav-research/idea1/weights",
+    "raw_dataset": "D:/uav-research/idea1/experiment/dataset.json",
+    "checkpoints": "D:/uav-research/idea1/experiment/models/<implementation_sha256_prefix>/<arm>/checkpoint.pt",
+    "stage_receipts": "D:/uav-research/idea1/gates",
+    "run_reports": "D:/uav-research/idea1/runs/<run_id>/REPORT.md",
+    "environment_inventories": "D:/uav-research/idea1/environment-receipts"
+  },
+  "backbone": {
+    "name": "facebookresearch/dinov2_vitb14",
+    "pretrained": true,
+    "checkpoint_sha256": "0b8b82f85de91b424aded121c7e1dcc2b7bc6d0adeea651bf73a13307fad8c73",
+    "input": [448, 448],
+    "patch_features": [1024, 768],
+    "strict_load": true,
+    "frozen": true
+  },
+  "dynamics": {
+    "source": "gaoyuezhou/dino_wm/models/vit.py",
+    "revision": "0a9492fa12044b852ae9e001cc74604b79c8bb0c",
+    "layers": 6,
+    "heads": 16,
+    "head_dim": 64,
+    "width": 768,
+    "mlp_width": 2048,
+    "pretrained_uav_dynamics": false,
+    "adaptations": ["portable causal-mask allocation", "equivalent SDPA attention", "observation-map tokens", "disabled image-grid positions for unordered map", "UAV actions and camera motion", "calibrated geometry-biased 1024-patch readout"]
+  },
+  "configurator": {"layers": 4, "heads": 12, "width": 768, "budgets": [256, 512], "reserved_coarse_tokens_maximum": 64, "pretrained": false, "model_parameter_count_k256": 84581124},
+  "language": {"name": "Qwen/Qwen2.5-VL-3B-Instruct-AWQ", "revision": "e7b623934290c5a4da0ee3c6e1e57bfb6b5abbf2", "status": "strict_load_and_real_image_grounding_verified", "visual_execution": "cpu_float32", "language_execution": "cuda_awq_float16", "grounding_embedding_width": 2048},
+  "scene": {"name": "MatrixCityAerial", "revision": "4f73714cf50bdefe47ff8012e5c7ec71246adb9a", "provenance": "synthetic Unreal Engine 5 City Sample reconstruction, not real-world capture", "provenance_url": "https://city-super.github.io/matrixcity/", "published_pruning_percent": 75, "crop": false, "render_resolution": [960, 540]},
+  "physical_dynamics": {"source": "StanfordMSL/FiGS", "revision": "11ad36ccf294c8423b54e4e7263a03e6a246f1b1", "native_equations": true, "integrator": "RK4 adapter", "native_controller_validated": false},
+  "mapping": {"source": "spla-tam/SplaTAM", "revision": "da6bbcd24c248dc884ac7f49d62e91b841b26ccc", "status": "adaptation_not_native_reproduction", "observation_built": true, "oracle_map_access": false},
+  "sensor_track": {"pose": "privileged_simulator_pose", "depth": "privileged_reconstructed_expected_depth", "collision_mesh": false},
+  "experiment": {"episodes": 16, "training_episodes": 12, "heldout_episodes": 4, "executed_frames": 640, "prefixes": 64, "counterfactual_views": 768, "seeds": [0, 1, 2], "diagnostic_seed_excluded_from_study": 997, "steps_per_arm": 2000, "step_budget_basis": "fixed before study execution using measured diagnostic throughput and the eight-hour wall limit", "same_city": true, "possible_cross_split_visual_overlap": true},
+  "claims_prohibited_until_evaluated": ["mission improvement", "collision safety", "native-paper reproduction", "novelty", "dynamic-world robustness", "real-world transfer"]
+}

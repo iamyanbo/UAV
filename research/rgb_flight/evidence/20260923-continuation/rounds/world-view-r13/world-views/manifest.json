@@ -1,0 +1,75 @@
+{
+  "schema": "world-sequence-views/v2",
+  "foundation": {
+    "accepted": false,
+    "valid_expert_episodes": 250,
+    "visual_goal_runtime": true
+  },
+  "goal_encoder_checkpoint_sha256": "745571516170defbd395ef186f7b362bf7ffcd8889099f288333bfa23d9f3abb",
+  "projection_sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+  "navigation_checkpoint_set_sha256": "01a0afdd1ed3f04d405cd399be7047d72e9c87330f81b3203ba2a26ad9111762",
+  "source_bundle_sha256": "d5df5c5faf566900d317912d37011a61316bcd47f05d05f7f04e1caa9e2b4d9e",
+  "episodes": [
+    {
+      "episode_id": "train-00000",
+      "split": "train",
+      "goal_region_id": "20:-17:0",
+      "start_goal_pair_id": "train-00000",
+      "simulated_seconds": 14.106300928
+    }
+  ],
+  "windows": [
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000000.pt",
+      "sha256": "2b4b2a5e6b56cd48045e528e86c532640ecd4b8c7df90c67fc9bb2c601b67a70",
+      "action_timing_valid": false
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000001.pt",
+      "sha256": "c1c890cc6657a3e7129ec85033adc1eaa2bf67e384a14a792002b9894d3fc864",
+      "action_timing_valid": false
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000002.pt",
+      "sha256": "d195070fb075c8c2370b1da1fd081722c85ab781a4c74522160cf8da11edb2cb",
+      "action_timing_valid": false
+    },
+    {
+      "module": "world",
+      "episode_id": "train-00000",
+      "path": "windows/world-000003.pt",
+      "sha256": "3056bb5bf68ba9f29c33a63c680fe6e632ab7bbf24a7b6a73350ba89360bdaa6",
+      "action_timing_valid": false
+    }
+  ],
+  "normalization": {
+    "path": "normalization.pt",
+    "sha256": "aae36d6fdc9747764f48f41da5533d351647e47e725381101cc30d6a46f39428"
+  },
+  "provenance": [
+    {
+      "attempt_id": "20260923T234610Z-train-00000",
+      "replay_manifest_sha256": "ce420ae2ad44963e507d4b36f6e8da9f82644c9e7071779a590d314d65de2602",
+      "result_sha256": "4678dfe8f21fcecc0e3a7354f317fe38c8be9185a8ecb780d822fd43deae5e55"
+    }
+  ],
+  "readiness": {
+    "status": "completed",
+    "accepted": false,
+    "candidate_windows": 4,
+    "timing_valid_windows": 0,
+    "training_ready": false,
+    "blocking_reasons": [
+      "visual_checkpoints_unqualified",
+      "command_application_times_unobserved",
+      "development_replay_missing"
+    ]
+  },
+  "clock_alignment": "ClockSpeed 1 paced-replay wall intervals anchored at first RGB availability; no original-flight feature availability claimed"
+}

@@ -1,0 +1,96 @@
+{
+  "schema": "causal-navigation-replay/v1",
+  "episode_id": "train-00000",
+  "checkpoint_set_sha256": "01a0afdd1ed3f04d405cd399be7047d72e9c87330f81b3203ba2a26ad9111762",
+  "source_rgb_sha256": "d8441a1dfdb62064b06bb9476e1d60b6fdb044b56a12a9570dd76e67e0ff00a7",
+  "goal_sha256": "1c651e3d721deb9a4bc7e5bedd2d2c6aa0f5f6066497f0ef2b6255ba62acfe29",
+  "runtime_source_sha256": "e9e7b1b1f64c74e4fef46109f0e8c9f397d797f9acc75f7da4bcd96337421ed1",
+  "observation_time_grid": "original exposure timestamps; no duplicated images",
+  "slow_feature_mode": "measured paced replay with actual asynchronous video completion",
+  "availability_clock": "replay monotonic; original image exposure timestamps preserved",
+  "goal_tokens": {
+    "path": "goal-tokens.pt",
+    "sha256": "b50a2698964d18d7da1493b80de591540498e5cb97167d2241e11ffea70be603"
+  },
+  "video": {
+    "status": "completed",
+    "accepted": false,
+    "episode_id": "train-00000",
+    "outputs": 50,
+    "unavailable_windows": 46,
+    "busy_requests": 8,
+    "frozen_encoder": true,
+    "publication_clock": "actual completion in this replay/live process"
+  },
+  "mapping": {
+    "status": "live_observed_stream_reconstructed",
+    "frames": 36,
+    "memory_versions": 2,
+    "elapsed_wall_seconds": 31.61930642114021,
+    "peak_allocated_bytes": 8141632512,
+    "peak_reserved_bytes": 9439281152,
+    "metric_scale_established": false,
+    "live_async_execution": true,
+    "foundation_passed": false,
+    "tracking_initialized_frames": 21,
+    "sampling_skipped_frames": 0,
+    "current_pose_method": "past_anchor_pose_only",
+    "coordinate_gauge": "causal_common_camera_similarity; arbitrary_scale",
+    "gauge_changes": 0,
+    "tracking_optimizer": "DSPO",
+    "gauge_rejected_frames": 0,
+    "mapping_execution": "asynchronous_bounded_worker",
+    "mapping_requests_superseded": 1
+  },
+  "shards": [
+    {
+      "path": "runtime-000000.pt",
+      "sha256": "05411c124da78c7fc810b413489a9cf604713eac2e521c6334fb495612d79d1c",
+      "samples": 64,
+      "first_ns": 1790207196389236736,
+      "last_ns": 1790207200136316672
+    },
+    {
+      "path": "runtime-000001.pt",
+      "sha256": "265c399344fa91a5508004cbd0089cb3a1d8cb0eff577e02a34b70ce9163e5d8",
+      "samples": 64,
+      "first_ns": 1790207200166317312,
+      "last_ns": 1790207202233361408
+    },
+    {
+      "path": "runtime-000002.pt",
+      "sha256": "412a8c9a67c73be7e6f32f872c7a5111b286d7675da1bb8784222acac2245a3b",
+      "samples": 64,
+      "first_ns": 1790207202260361984,
+      "last_ns": 1790207204030399744
+    },
+    {
+      "path": "runtime-000003.pt",
+      "sha256": "4451de7c99310f5f16496b48e0c4fcf36a5d3ee4a16a4cca5830553a2e573fdb",
+      "samples": 64,
+      "first_ns": 1790207204060400384,
+      "last_ns": 1790207206019442176
+    },
+    {
+      "path": "runtime-000004.pt",
+      "sha256": "e8422209db137d72b7c5bee1ad273a54b7950f5675d8986ab7c650d49d34613a",
+      "samples": 64,
+      "first_ns": 1790207206052442880,
+      "last_ns": 1790207207897482240
+    },
+    {
+      "path": "runtime-000005.pt",
+      "sha256": "cbcf6d72b4f0e4660d1d44e6eb9cd19a2240818228583dc30962472491a47a35",
+      "samples": 64,
+      "first_ns": 1790207207927482880,
+      "last_ns": 1790207210000527104
+    },
+    {
+      "path": "runtime-000006.pt",
+      "sha256": "e52b85ede97f2626da57a7f86b30930c4d59600d74d99fdd51fe130adbfeea30",
+      "samples": 16,
+      "first_ns": 1790207210030527744,
+      "last_ns": 1790207210495537664
+    }
+  ]
+}

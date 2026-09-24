@@ -10,6 +10,8 @@ import Database from "better-sqlite3";
 
 import {
   antiHillClimbInvariantSource, applyOrchestratorActions, leadSessionPrompt, orchestratorDeltaContext, renderDomainContract,
+  autoApproveExploratoryPreflight, methodAuditGaps, methodDesignReviewGaps, representativeValidationGaps,
+  runNextExecutorTask, taskPreflightApproved, taskPreflightGaps,
 } from "../src/research/orchestrator.js";
 import { createWorktree, ensureRepo, git, removeWorktree } from "../src/core/workspace.js";
 import {
@@ -28,6 +30,60 @@ function fixture() {
     constraintsMarkdown: "- preserve correctness", domainPath: join(root, "domain.json") });
   return { root, store };
 }
+
+test("method development cannot pass representative validation with a toy report", () => {
+  const root = mkdtempSync(join(tmpdir(), "curi-representative-contract-"));
+  try {
+    writeFileSync(join(root, "REPRESENTATIVE_RESULT.md"), "toy feature test only");
+    assert.ok(representativeValidationGaps(root).length > 0);
+    writeFileSync(join(root, "REPRESENTATIVE_RESULT.md"), [
+      "REPRESENTATIVE_VALIDATION: COMPLETE",
+      "RGB and depth from a visual encoder in a rendered 3D simulator.",
+      "Continuous physics advances while inference is pending.",
+      "Capture-to-command latency and action age are measured.",
+      "Mission goal success and collision rate are reported.",
+      "Compared against replay, memory and an ablation baseline.",
+      "Oracle-leakage probe: perturb hidden object positions while preserving visible pixels and compare actions.",
+      "Environment fidelity: finite camera range, clutter, occlusion and vehicle braking are represented.",
+      "Slow-path realism: measured asynchronous model runtime determines the packet delay distribution.",
+      "Discrimination: the mission creates delayed-information decisions where baseline actions differ.",
+      "Code: method.py",
+      "Metrics: metrics.json",
+    ].join("\n"));
+    writeFileSync(join(root, "method.py"), "# executable method\n");
+    writeFileSync(join(root, "metrics.json"), "{}");
+    assert.deepEqual(representativeValidationGaps(root), []);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test("method audit distinguishes invalid pilots from valid research evidence", () => {
+  const root = mkdtempSync(join(tmpdir(), "curi-method-audit-"));
+  try {
+    writeFileSync(join(root, "method.py"), "# method\n");
+    writeFileSync(join(root, "metrics.json"), "{}");
+    const audit = ["TASK-abc", "METHOD_AUDIT: INVALID", "Code: method.py", "Metrics: metrics.json",
+      "Information flow: the controller receives oracle positions for unseen landmarks.",
+      "Oracle-leakage probe: an unseen target can still be followed using hidden coordinates.",
+      "Environment fidelity: the world has only colored spheres and no occluding structure.",
+      "Slow-path realism: a tiny local MLP is held for an artificial delay interval.",
+      "Baseline discrimination: all variants have identical mission success rates.",
+      "Causal interpretation: this pilot cannot establish the proposed transport method improves navigation."].join("\n");
+    assert.deepEqual(methodAuditGaps(audit, root), []);
+    assert.ok(methodDesignReviewGaps("Prior art: only").length > 0);
+    const store = ResearchStore.open(join(root, "research.sqlite"));
+    try {
+      store.createDirection({ id: "d", title: "UAV", briefMarkdown: "Methods", constraintsMarkdown: "",
+        domainPath: root, engineVersion: "adaptive-v2" });
+      const taskId = store.delegateTask({ directionId: "d", mode: "exploration", taskKind: "method-development",
+        markdown: "METHOD_DEVELOPMENT_REQUIRED" });
+      assert.equal(autoApproveExploratoryPreflight(store, "d", store.context("d").tasks[0]!), false);
+      assert.throws(() => store.recordOutcome({ directionId: "d", taskId, verdict: "supported", markdown: "Looks good" }), /method audit/);
+      store.appendEvent("d", taskId, "task.method_audit_invalid", "orchestrator", audit.replace("TASK-abc", taskId));
+      assert.throws(() => store.recordOutcome({ directionId: "d", taskId, verdict: "refuted", markdown: "Failed" }), /invalid method experiment/);
+      assert.ok(store.recordOutcome({ directionId: "d", taskId, verdict: "inconclusive", markdown: "Invalid pilot; repair or pivot." }));
+    } finally { store.close(); }
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
 
 test("daemon PID ownership cannot be stolen or released by an older process", () => {
   const root = mkdtempSync(join(tmpdir(), "daemon-pid-"));
@@ -538,6 +594,52 @@ test("a schema migration refuses to run while other daemons are live", () => {
   rmSync(root, { recursive: true, force: true });
 });
 
+test("incomplete adaptive tasks remain reviewable without blocking complete exploration", async () => {
+  const root = mkdtempSync(join(tmpdir(), "curi-task-preflight-"));
+  const store = ResearchStore.open(join(root, "research.sqlite"));
+  try {
+    store.createDirection({ id: "d", title: "UAV", briefMarkdown: "Research UAV navigation", constraintsMarkdown: "",
+      domainPath: root, engineVersion: "adaptive-v2" });
+    const taskId = store.delegateTask({ directionId: "d", mode: "exploration", markdown: "Test a visual decision head" });
+    assert.deepEqual(taskPreflightGaps("prior art"), ["the question or motivation", "source provenance", "implementation or method",
+      "baselines, ablations, or comparison", "evaluation or falsifier", "limitations and uncertainty"]);
+    assert.equal(taskPreflightApproved(store, "d", taskId), false);
+    assert.equal(await runNextExecutorTask({ store, projectRoot: root, directionId: "d" }), null);
+    assert.ok(store.db.prepare("SELECT 1 FROM events WHERE task_id=? AND event_type='task.preflight_deferred'").get(taskId));
+    const runId = store.beginRun({ directionId: "d", role: "orchestrator", inputMarkdown: "review" });
+    applyOrchestratorActions(store, "d", runId, [{ name: "approve_task", markdown: [
+      `TASK-${taskId.slice(5)}`, "Why: test a documented UAV failure.",
+      "Prior art and functional equivalents: sources are verified or explicitly marked unverified.",
+      "Implementation and model/data path are specified.", "Baselines and ablations are fixed.",
+      "Evaluation metrics and kill/falsifier criteria are fixed.", "Limitations and uncertainty are recorded.",
+      "Latency, action age, braking and speed assumptions are explicit; compute and 3060 Ti hardware budget are checked.",
+    ].join("\n"), atMs: 0 }], root);
+    assert.equal(taskPreflightApproved(store, "d", taskId), true);
+  } finally { store.close(); rmSync(root, { recursive: true, force: true }); }
+});
+
+test("complete exploratory tasks pass bounded runtime preflight without a lead-turn deadlock", () => {
+  const root = mkdtempSync(join(tmpdir(), "curi-auto-preflight-"));
+  const store = ResearchStore.open(join(root, "research.sqlite"));
+  try {
+    store.createDirection({ id: "d", title: "UAV", briefMarkdown: "Research UAV navigation", constraintsMarkdown: "",
+      domainPath: root, engineVersion: "adaptive-v2" });
+    const taskId = store.delegateTask({ directionId: "d", mode: "exploration", markdown: [
+      "Why: investigate a documented UAV latency failure.",
+      "Prior art and functional equivalents: source and paper URLs are recorded and the closest methods will be checked.",
+      "Implementation: use a small model/data pipeline with a fixed controller.",
+      "Baselines and ablations: compare fixed refresh, scalar head and the proposed method.",
+      "Evaluation and falsifier: test collision, progress, latency and drop the idea if it does not improve.",
+      "Limitations and uncertainty: simulation and transfer limits are explicit.",
+      "UAV timing, action age, braking, speed, compute, GPU, 3060 Ti and VRAM assumptions are recorded.",
+    ].join("\n") });
+    const task = store.db.prepare("SELECT * FROM tasks WHERE task_id=?").get(taskId) as Parameters<typeof autoApproveExploratoryPreflight>[2];
+    assert.equal(autoApproveExploratoryPreflight(store, "d", task), true);
+    assert.equal(taskPreflightApproved(store, "d", taskId), true);
+    assert.equal((store.db.prepare("SELECT actor FROM events WHERE task_id=? AND event_type='task.preflight_approved'").get(taskId) as { actor: string }).actor, "runtime");
+  } finally { store.close(); rmSync(root, { recursive: true, force: true }); }
+});
+
 test("an older runtime rejects a newer database without attempting migration", () => {
   const root = mkdtempSync(join(tmpdir(), "lean-research-newer-"));
   const path = join(root, "research.sqlite");
@@ -645,6 +747,8 @@ test("lead sees action refusals and current policy even when the watermark alrea
     assert.match(context, /No material ledger changes/);
     assert.ok(context.includes(refusal), "the next wake must receive the refusal result despite the advanced cursor");
     const session = leadSessionPrompt(root, store, "direction", "Lead instructions.");
+    assert.ok(session.includes(`## Canonical operator repository\n${root}`));
+    assert.ok(session.includes("Keep your edits in the isolated workspace"));
     assert.ok(session.includes("Explore independent questions while paper observation continues."), "domain rules arrive once per session");
     assert.ok(session.includes("preserve correctness"));
     assert.ok(!context.includes("Explore independent questions while paper observation continues."), "rules are not repeated on every wake");

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "batchId": "uav-2026-09-19-invention-reboot",
+  "directionId": "uav-navigation",
+  "contractFile": "presearch/injections/2026-09-19-invention-reboot/execution-contract.md",
+  "ideas": [
+    {
+      "key": "transported-semantic-corrections",
+      "title": "Develop a visual policy that transports late semantic corrections into current memory",
+      "file": "presearch/injections/2026-09-19-invention-reboot/01-semantic-corrections.md",
+      "nextStep": "DESIGN AND IMPLEMENT METHOD 1. Read the full investigation, prior-art.md and research/methods_2026_09_19/. Motivation: useful semantic corrections describe an earlier state. Extend the differentiable transport/replay components into a trained visual recurrent policy and slow semantic adapter with executed-history conditioning. Check CloudEdgeVLA, SPARK-VLN, ReMem-VLA and out-of-sequence filtering primary sources; define the residual against exact replay and history-aware fusion. Produce METHOD.md, actual training code/checkpoint, integrated rendered demonstration, baselines, ablations and raw results with latency/speed/VRAM. Use the 3060 Ti below the 60% preference. Novelty remains uncertain. A scalar delay sweep or kernel smoke test alone does not complete this method-development assignment. Adapt the proposed architecture if evidence supports a better implementation."
+    },
+    {
+      "key": "observation-branch-predictive-model",
+      "title": "Develop a geometric predictive model with an explicit observation-to-belief transition",
+      "file": "presearch/injections/2026-09-19-invention-reboot/02-observation-branches.md",
+      "nextStep": "DESIGN AND IMPLEMENT METHOD 2. Read the full card and prior-art.md. Motivation: imagined futures must not become received evidence. Extend ObservationBranchModel into a trained action-conditioned geometric/visual predictor with latent observation branches and likelihood-coupled posteriors. Check Branch-JEPA, UWM-JEPA, predictive-state/Bayesian planning and related primary sources; Bayes' rule itself is established. Implement actual visual training plus a planner that uses possible future observations before choosing continuation actions. Compare unconstrained latent mixtures and learned Bayes-filter baselines; evaluate unseen geometry, occlusion, speed and measured latency. Preserve METHOD.md, checkpoint, ablations and limitations. CPU/small model or RTX 3060 Ti within 60% VRAM. Novelty and usefulness are uncertain; a confidence calibration table is not the requested final artifact."
+    },
+    {
+      "key": "capture-constrained-curriculum",
+      "title": "Develop a reconstruction-conditioned generator that co-trains a sensing policy",
+      "file": "presearch/injections/2026-09-19-invention-reboot/03-capture-curriculum.md",
+      "nextStep": "DESIGN AND IMPLEMENT METHOD 3. Motivation: a partial real-to-sim reconstruction represents several possible worlds. Read the full card, prior-art.md and starter constraints/regret functions. Build an alternating capture-constrained completion generator and recurrent policy learner with an information-matched teacher and explicit reveal actions. Audit ReMiDi/PAIRED, adversarial neural rendering, Vid2Sim and existing Gaussian navigation sources. Compare fixed completion, randomization and a capture-constrained ReMiDi-style baseline; isolate the proposed joint training signal. Deliver generator, actual policy training/checkpoint and visual closed-loop results, recording physics, latency and 60% VRAM limits on the 3060 Ti. Novelty is uncertain. The contribution cannot stop at another environment or oracle capture selector; partial reconstructions may initially be procedurally rendered if labelled honestly."
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "updates": 1000,
+  "resumed_from_update": 0,
+  "objective_version": "metric-sequence-nll-se3/v1",
+  "manifest_sha256": "d5df5c5faf566900d317912d37011a61316bcd47f05d05f7f04e1caa9e2b4d9e",
+  "resume_evidence": null,
+  "gradient_evidence": {
+    "encoder": {
+      "finite_gradients": true,
+      "changed": true
+    },
+    "temporal": {
+      "finite_gradients": true,
+      "changed": true
+    },
+    "motion": {
+      "finite_gradients": true,
+      "changed": true
+    },
+    "motion_uncertainty": {
+      "finite_gradients": true,
+      "changed": true
+    }
+  },
+  "train_windows": 915,
+  "development_windows": 268,
+  "elapsed_seconds": 255.07350395899266,
+  "reason": "Full held-out trajectory drift and uncertainty qualification still required"
+}

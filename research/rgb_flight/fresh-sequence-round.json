@@ -1,0 +1,193 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Actual fresh flights to aligned recurrent training and updated observation-only replay; explicit import of preserved r9 flight collection",
+  "stages": [
+    {
+      "id": "fresh-aligned-flights",
+      "kind": "flight",
+      "peak_gib": 64,
+      "seconds": 5400,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/launches/20260922T002848Z/manifests/evaluator_labels/train.json",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260922T002848Z/obstacle-field.npz"
+      ],
+      "command": [
+        "python3",
+        "{source}/visual_goal_campaign.py",
+        "--evaluator-labels",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260922T002848Z/manifests/evaluator_labels/train.json",
+        "--obstacle-field",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260922T002848Z/obstacle-field.npz",
+        "--maximum-speed-mps",
+        "3.0",
+        "--episode-id",
+        "train-00000",
+        "--episode-id",
+        "train-00001",
+        "--episode-id",
+        "train-00002",
+        "--episode-id",
+        "train-00003",
+        "--episode-id",
+        "train-00004",
+        "--episode-id",
+        "train-00005",
+        "--episode-id",
+        "train-00006",
+        "--episode-id",
+        "train-00007",
+        "--episode-id",
+        "train-00008",
+        "--episode-id",
+        "train-00009",
+        "--import-campaign",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260923T234609Z-fresh-aligned-flights-4ad27b/visual-goal-campaign"
+      ],
+      "receipt": "{job}/visual-goal-campaign/state.json",
+      "outputs": [
+        "{job}/visual-goal-campaign/state.json"
+      ],
+      "completed_statuses": [
+        "collection_complete"
+      ]
+    },
+    {
+      "id": "aligned-trajectories",
+      "kind": "cpu",
+      "peak_gib": 8,
+      "seconds": 1800,
+      "depends_on": [
+        {
+          "stage": "fresh-aligned-flights",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{stage:fresh-aligned-flights:job}/visual-goal-campaign/state.json"
+      ],
+      "command": [
+        "/home/iamyanbo/uav-rgb-flight/envs/airsim/bin/python",
+        "{source}/trajectory_bundle.py",
+        "--collection-root",
+        "/home/iamyanbo/uav-rgb-flight/launches",
+        "--initialization",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260923T231151Z-odometry-checkpoint-continuity-52a193/visual-training/latest.pt",
+        "--output",
+        "{round}/trajectory-bundle"
+      ],
+      "receipt": "{round}/trajectory-bundle/result.json",
+      "outputs": [
+        "{round}/trajectory-bundle/manifest.json"
+      ]
+    },
+    {
+      "id": "recurrent-odometry",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 14400,
+      "depends_on": [
+        {
+          "stage": "aligned-trajectories",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/trajectory-bundle/manifest.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-odometry",
+        "--dataset",
+        "{round}/trajectory-bundle",
+        "--initialize-from",
+        "initialization.pt",
+        "--updates",
+        "1000",
+        "--validation-every",
+        "250"
+      ],
+      "resume_command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-odometry",
+        "--dataset",
+        "{round}/trajectory-bundle",
+        "--resume",
+        "{checkpoint}",
+        "--updates",
+        "1000",
+        "--validation-every",
+        "250"
+      ],
+      "checkpoint": "{job}/visual-training/latest.pt",
+      "receipt": "{job}/visual-training/result.json",
+      "outputs": [
+        "{job}/visual-training/best.pt",
+        "{job}/visual-training/latest.pt"
+      ]
+    },
+    {
+      "id": "package-updated-perception",
+      "kind": "cpu",
+      "peak_gib": 2,
+      "seconds": 600,
+      "depends_on": [
+        {
+          "stage": "recurrent-odometry",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{stage:recurrent-odometry:job}/visual-training/best.pt"
+      ],
+      "command": [
+        "python3",
+        "{source}/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/launches/training-checkpoints/goal-best-100000.pt",
+        "--odometry",
+        "{stage:recurrent-odometry:job}/visual-training/best.pt",
+        "--output",
+        "{round}/navigation-checkpoints",
+        "--goal-match-threshold",
+        "0.9968814849853516"
+      ],
+      "receipt": "{round}/navigation-checkpoints/checkpoints.json",
+      "outputs": [
+        "{round}/navigation-checkpoints/checkpoints.json"
+      ]
+    },
+    {
+      "id": "updated-perception-replay",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 1800,
+      "depends_on": [
+        {
+          "stage": "package-updated-perception",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/navigation-checkpoints/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/navigation_process.py",
+        "--observations",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260923T231308Z/episode/observations",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260923T231308Z/episode/goal",
+        "--checkpoints",
+        "{round}/navigation-checkpoints",
+        "--integration-only"
+      ],
+      "receipt": "{job}/navigation-replay/result.json",
+      "outputs": [
+        "{job}/navigation-replay/manifest.json"
+      ]
+    }
+  ]
+}

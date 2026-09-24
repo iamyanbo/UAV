@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/home/iamyanbo/uav-rgb-flight/envs/airsim/bin/python",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T002434Z-long-context-trajectories-29c622/source/trajectory_bundle.py",
+    "--collection-root",
+    "/home/iamyanbo/uav-rgb-flight/launches",
+    "--initialization",
+    "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/navigation-checkpoints/odometry.pt",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/trajectory-bundle"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 8.0,
+  "status": "running"
+}

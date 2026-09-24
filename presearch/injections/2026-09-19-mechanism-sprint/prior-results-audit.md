@@ -1,0 +1,11 @@
+# Operator evidence audit: interpret existing pilots conservatively
+
+September 19, 2026. This is an exploratory audit note, not a verified outcome and not a request to cancel an executing task.
+
+Inspected TASK-00c68c9f-c56 saved `experiments/recover_jepa_results.json` and Python in its task worktree; recomputed means of saved per-seed metrics, without retraining or certifying labels. In the forward-distance setting, A/B/C F1 are 0.98331/0.98396/0.98411, while the constant all-feasible baseline is 0.98868. The code names this feasibility score collision_F1; inspect semantics before interpreting safety. A/B/C ECE are 0.02597/0.01810/0.02024 and ranking accuracy 0.70021/0.67867/0.70795. A/B have 63,744 parameters, C 72,000. Thus joint loss improves that calibration statistic (~30%, not 43%) but worsens ranking versus A and C. C is a larger-head, not capacity-matched control. Inputs were numeric state, not camera/Qwen features. The appropriate conclusion is limited calibration evidence, not demonstrated visual-navigation progress. A weak pilot does not refute every recoverability-aware representation.
+
+For TASK-60aa385c-8fb, inspect censoring/label/evaluation and candidate diversity before trusting inherited horizon findings. Earlier candidate differences were extremely rare. Do not treat old narrative summaries as verified measurements.
+
+TASK-6d7e7804-b39 was running at preparation. Its brief's capture score uses the action preferred with a full map. If actual evaluation uses that score with hidden scene state, call it an oracle upper bound. A deployable acquisition scorer needs training-only privileged labels and observation-only inference. Do not report oracle capture selection as evidence that a learned policy-regret scorer works. Preserve and interpret the executor's actual result before moving to the new batch.
+
+Source identity correction: https://arxiv.org/abs/2403.16369 is Learning Action-based Representations Using Invariance, not I-JEPA. New hypotheses are in the finite `uav-2026-09-19-mechanism-sprint` batch. Their shared contract requires real mechanism tests, separate novelty/usefulness labels, appropriate trainable models, and documented results. Keep Spark and the normal continuous pipeline. This audit adds no blocking gate or extra task.

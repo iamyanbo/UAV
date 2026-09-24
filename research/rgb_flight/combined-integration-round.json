@@ -1,0 +1,73 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Full trained controller with direct asynchronous Qwen publication, planner validity and independent safety",
+  "stages": [
+    {
+      "id": "combined-pack",
+      "kind": "cpu",
+      "peak_gib": 4,
+      "seconds": 300,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/checkpoints.json",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T014938Z-qwen-supervised-update-bee1ad/configurator/latest.pt"
+      ],
+      "command": [
+        "python3",
+        "{source}/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/goal.pt",
+        "--odometry",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/odometry.pt",
+        "--world",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/world.pt",
+        "--policy",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/policy.pt",
+        "--projection",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/projection.pt",
+        "--safety",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/safety.json",
+        "--qwen",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T014938Z-qwen-supervised-update-bee1ad/configurator/latest.pt",
+        "--goal-match-threshold",
+        "0.9",
+        "--output",
+        "{round}/checkpoints"
+      ],
+      "receipt": "{round}/checkpoints/checkpoints.json",
+      "outputs": [
+        "{round}/checkpoints/checkpoints.json"
+      ]
+    },
+    {
+      "id": "combined-learned-flight",
+      "kind": "flight",
+      "peak_gib": 72,
+      "seconds": 1200,
+      "depends_on": [
+        {
+          "stage": "combined-pack",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/checkpoints/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/collect_learning_round.py",
+        "--controller-checkpoints",
+        "{round}/checkpoints",
+        "--episode-id",
+        "train-00000",
+        "--with-deliberation",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260924T012523Z/episode/goal"
+      ],
+      "receipt": "{job}/collection/result.json",
+      "outputs": [
+        "{job}/collection/flights.json"
+      ]
+    }
+  ]
+}

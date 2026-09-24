@@ -1,0 +1,18 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T001108Z-held-out-odometry-qualification-bd949a/source/stage_worker.py",
+    "qualify-odometry",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/trajectory-bundle",
+    "--navigation-pack",
+    "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/navigation-checkpoints"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 16.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 162.10005354695022
+}

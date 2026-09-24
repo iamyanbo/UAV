@@ -1,0 +1,62 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Actual contact coverage audit and replay without evaluator/collector source or guard workspace mounted",
+  "stages": [
+    {
+      "id": "physical-field-coverage",
+      "kind": "cpu",
+      "peak_gib": 2,
+      "seconds": 600,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/trajectory-bundle/manifest.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/audit_obstacle_coverage.py",
+        "--bundle",
+        "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/trajectory-bundle/manifest.json",
+        "--output",
+        "{job}/field-coverage"
+      ],
+      "receipt": "{job}/field-coverage/result.json",
+      "outputs": [
+        "{job}/field-coverage/comparisons.jsonl"
+      ]
+    },
+    {
+      "id": "restricted-runtime-replay",
+      "kind": "gpu",
+      "peak_gib": 24,
+      "seconds": 600,
+      "depends_on": [
+        {
+          "stage": "physical-field-coverage",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/checkpoints/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/navigation_process.py",
+        "--observations",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/observations",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/goal",
+        "--checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/checkpoints",
+        "--integration-only",
+        "--video",
+        "--frames",
+        "200"
+      ],
+      "receipt": "{job}/navigation-replay/result.json",
+      "outputs": [
+        "{job}/navigation-replay/manifest.json",
+        "{job}/inference-source-hashes.json"
+      ]
+    }
+  ]
+}

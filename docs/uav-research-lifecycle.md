@@ -2,6 +2,8 @@
 
 CURI-UAV uses a divergent-to-convergent loop. The lead may explore broadly, but the ledger only promotes a narrow claim when its evidence is traceable.
 
+Current model-development policy: docs/uav-scientific-contract.md takes precedence. Literature review, faithful baseline construction, neural design, training and integrated evaluation iterate inside a persistent program. Stages below are useful activities, not mandatory sequential approval ceremonies. Begin implementation while originality is unresolved; partial capabilities can be checkpointed and continued without claiming representative completion.
+
 ## Stages
 
 ### 0. Technology-frontier presearch
@@ -18,7 +20,7 @@ Each limitation must be tied to an observed result, missing ablation, implementa
 
 ### 3. Divergent idea generation
 
-Ideas are generated from documented limitations and verified frontier mechanisms. The invention pass is explicit: failure → enabling mechanism → UAV-specific interaction → falsifiable prediction → smallest experiment. The lead records ideas as investigations before calling them contributions. An idea must predict which failure mode changes and why.
+Ideas are generated from documented limitations and verified frontier mechanisms. Specify the existing model computation, unresolved failure, proposed representation/dynamics/action-learning change, learning objective and a faithful implementation milestone. Prefer model-level depth to another scalar wrapper. The lead records hypotheses before calling them contributions; an idea must predict which failure mode changes and why.
 
 ### 4. Adversarial novelty review
 
@@ -26,7 +28,7 @@ An independent worker searches for exact, functional, component-level, and adjac
 
 ### 5. Sealed experiment design
 
-Only a surviving idea becomes a delegated implementation task. The task fixes the question, baselines, metrics, data/simulator split, ablations, latency instrumentation, resource budget, failure injection, and stopping conditions before protected evaluation.
+An implementable, falsifiable question can become an exploratory task while novelty remains uncertain. Fix the question, baselines, metrics, data/simulator split, ablations, latency instrumentation, resource budget, failure injection, and stopping conditions before protected evaluation. Complete ordinary exploratory handoffs use automatic preflight. Method-development handoffs require an explicit lead design review, and returned method work requires a code/metrics audit before a scientific outcome. Higher-risk claim/program tasks keep their explicit review. The full-system experiment must distinguish semantic decision deadlines from geometric reaction and keep simulated physics advancing while inference is pending.
 
 ### 6. Evidence and independent verification
 

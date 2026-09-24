@@ -1,0 +1,19 @@
+# WSL Python 3.10; torch2.1.0+cu118 is inherited read-only from the existing base.
+# Pin packages; stage startup records the full installed-package inventory.
+numpy==1.26.4
+einops==0.8.1
+omegaconf==2.3.0
+plyfile==1.1
+scipy==1.14.1
+pillow==10.4.0
+imageio==2.37.0
+imageio-ffmpeg==0.6.0
+gsplat @ https://github.com/nerfstudio-project/gsplat/releases/download/v1.4.0/gsplat-1.4.0%2Bpt21cu118-cp310-cp310-linux_x86_64.whl
+casadi==3.6.7
+pytest==8.3.5
+huggingface_hub==0.30.2
+rich==13.9.4
+jaxtyping==0.2.36
+transforms3d==0.4.2
+pyyaml==6.0.2
+future-fstrings==1.2.0

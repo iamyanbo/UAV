@@ -9,8 +9,11 @@ import { AuthStorage, createAgentSession, DefaultResourceLoader, ModelRegistry,
 export interface PiHostConfig {
   cwd: string; agentDir: string; sessionDir: string; persistent: boolean;
   provider: string; model: string; tools: string[]; extensions: string[];
+  modelsFile?: string;
+  thinkingLevel?: "off" | "minimal" | "low" | "medium" | "high" | "xhigh";
   systemPrompt?: string;
   yieldOnTools?: string[];
+  workBudget?: { maxModelRequests?: number; maxToolCalls?: number; maxDurationMs?: number };
 }
 
 const configPath = process.argv[process.argv.indexOf("--config") + 1];
@@ -21,7 +24,7 @@ const output = (value: unknown) => process.stdout.write(`${JSON.stringify(value)
 console.log = (...values: unknown[]) => process.stderr.write(`${values.map(String).join(" ")}\n`);
 const settingsManager = SettingsManager.create(config.cwd, config.agentDir);
 const authStorage = AuthStorage.create(join(config.agentDir, "auth.json"));
-const modelRegistry = ModelRegistry.create(authStorage, join(config.agentDir, "models.json"));
+const modelRegistry = ModelRegistry.create(authStorage, config.modelsFile ?? join(config.agentDir, "models.json"));
 const resourceLoader = new DefaultResourceLoader({ cwd: config.cwd, agentDir: config.agentDir, settingsManager,
   additionalExtensionPaths: config.extensions, noExtensions: true, noSkills: true,
   noPromptTemplates: true, noThemes: true, noContextFiles: true, systemPrompt: config.systemPrompt });
@@ -31,11 +34,15 @@ if (!model) throw new Error(`Unknown model ${config.provider}/${config.model}`);
 const sessionManager = config.persistent ? SessionManager.continueRecent(config.cwd, config.sessionDir)
   : SessionManager.create(config.cwd, config.sessionDir);
 const { session } = await createAgentSession({ cwd: config.cwd, agentDir: config.agentDir,
-  authStorage, modelRegistry, model, settingsManager, resourceLoader, sessionManager, tools: config.tools });
+  authStorage, modelRegistry, model, settingsManager, resourceLoader, sessionManager, tools: config.tools,
+  thinkingLevel: config.thinkingLevel });
 await session.bindExtensions({ onError: error => process.stderr.write(`${JSON.stringify(error)}\n`) });
 session.subscribe(output);
 let handoffReady = false;
+let modelRequests = 0;
+const budgetStarted = Date.now();
 session.subscribe(event => {
+  if (event.type === "message_start" && event.message.role === "assistant") modelRequests++;
   if (event.type === "tool_execution_end" && !event.isError && config.yieldOnTools?.includes(event.toolName)) handoffReady = true;
 });
 session.agent.subscribe(event => {
@@ -43,6 +50,12 @@ session.agent.subscribe(event => {
   // its current batch, then yield the slot without asking for another model
   // request that could only wait for the researcher it is preventing from running.
   if (event.type === "turn_end" && handoffReady) session.agent.abort();
+  if (event.type === "turn_end" && config.workBudget
+    && ((config.workBudget.maxModelRequests && modelRequests >= config.workBudget.maxModelRequests)
+      || (config.workBudget.maxDurationMs && Date.now() - budgetStarted >= config.workBudget.maxDurationMs))) {
+    process.stderr.write("CAMPAIGN_WORK_BUDGET_REACHED\n");
+    session.agent.abort();
+  }
 });
 let busy = false;
 createInterface({ input: process.stdin }).on("line", line => {

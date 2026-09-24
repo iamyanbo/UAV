@@ -1,0 +1,524 @@
+<title>Drone Cognition Briefing</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#0a0f1a;
+    --panel:#121b2c;
+    --panel-2:#0e1524;
+    --line:#243149;
+    --line-soft:#1a2438;
+    --fg:#e9eefb;
+    --muted:#8fa0bd;
+    --muted-2:#5f7194;
+    --amber:#ffb454;
+    --cyan:#5ce1e6;
+    --green:#7ee787;
+    --red:#ff7b7b;
+    --grid: rgba(140,170,220,0.06);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{background:var(--ink);}
+  body{
+    margin:0;
+    color:var(--fg);
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    background:
+      radial-gradient(1100px 600px at 85% -10%, rgba(92,225,230,0.09), transparent 60%),
+      radial-gradient(900px 500px at -10% 20%, rgba(255,180,84,0.07), transparent 55%),
+      repeating-linear-gradient(0deg, var(--grid) 0px, var(--grid) 1px, transparent 1px, transparent 42px),
+      repeating-linear-gradient(90deg, var(--grid) 0px, var(--grid) 1px, transparent 1px, transparent 42px),
+      var(--ink);
+    padding-inline:16px;
+  }
+  .wrap{max-width:1080px; margin:0 auto;}
+
+  h1,h2,h3{font-family:'Chakra Petch',system-ui,sans-serif; letter-spacing:0.01em; text-wrap:balance; margin:0;}
+  code, .mono, .stat-num, .badge, .tag, th, .legend-item span.k{font-family:'IBM Plex Mono',monospace;}
+  a{color:var(--cyan);}
+  p{color:var(--muted); line-height:1.55; margin:0;}
+
+  /* ---------- top nav ---------- */
+  .topnav{
+    position:sticky; top:env(safe-area-inset-top,0px);
+    z-index:50; display:flex; gap:6px; overflow-x:auto;
+    padding:10px 0; margin-bottom:8px;
+    background:linear-gradient(var(--ink) 78%, transparent);
+    backdrop-filter:blur(2px);
+  }
+  .topnav a{
+    flex:0 0 auto; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.04em;
+    color:var(--muted); text-decoration:none; text-transform:uppercase;
+    border:1px solid var(--line); border-radius:999px; padding:6px 12px;
+    white-space:nowrap;
+  }
+  .topnav a:hover{color:var(--cyan); border-color:var(--cyan);}
+
+  section{padding-block:36px; border-bottom:1px solid var(--line-soft);}
+  section:last-of-type{border-bottom:none;}
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--cyan); margin-bottom:10px;
+  }
+  .eyebrow::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan);}
+  h2{font-size:clamp(22px,4vw,30px); margin-bottom:6px;}
+  .lede{max-width:62ch; margin-top:8px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding-top:28px;}
+  .hero-top{display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap;}
+  .hero h1{font-size:clamp(30px,6vw,46px); line-height:1.08;}
+  .hero .sub{margin-top:14px; max-width:60ch; font-size:15px;}
+  .radar{width:104px; height:104px; flex:0 0 auto;}
+  .stat-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-top:26px;}
+  .stat-tile{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 16px;
+  }
+  .stat-num{font-size:26px; font-weight:600; color:var(--cyan);}
+  .stat-label{font-size:11px; color:var(--muted-2); text-transform:uppercase; letter-spacing:.06em; margin-top:4px;}
+
+  /* ---------- badges ---------- */
+  .badge{
+    display:inline-block; font-size:10px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+    padding:3px 9px; border-radius:999px; border:1px solid transparent;
+  }
+  .b-ok{color:var(--green); background:rgba(126,231,135,.1); border-color:rgba(126,231,135,.35);}
+  .b-warn{color:var(--amber); background:rgba(255,180,84,.1); border-color:rgba(255,180,84,.35);}
+  .b-off{color:var(--red); background:rgba(255,123,123,.1); border-color:rgba(255,123,123,.35);}
+  .b-info{color:var(--cyan); background:rgba(92,225,230,.1); border-color:rgba(92,225,230,.35);}
+
+  /* ---------- paper cards ---------- */
+  .grid{display:grid; gap:14px;}
+  .grid-2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));}
+  .grid-3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .card .top-row{display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;}
+  .card h3{font-size:16px; color:var(--fg);}
+  .card .was{font-size:11px; color:var(--muted-2);}
+  .card .id{font-size:11px; color:var(--muted-2);}
+  .card ul{margin:0; padding-left:18px; color:var(--muted); font-size:13.5px; line-height:1.55;}
+  .card ul li{margin-bottom:3px;}
+  .kv{display:flex; gap:6px; flex-wrap:wrap; margin-top:2px;}
+  .kv .tag{font-size:10.5px; color:var(--muted); border:1px solid var(--line); border-radius:6px; padding:2px 7px;}
+
+  /* ---------- pipeline diagram ---------- */
+  .pipeline{display:flex; flex-wrap:wrap; align-items:stretch; gap:0; margin-top:18px;}
+  .pstep{
+    flex:1 1 190px; background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:14px 16px; position:relative; min-width:180px;
+  }
+  .pstep .n{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--cyan); margin-bottom:6px;}
+  .pstep h4{margin:0 0 6px 0; font-family:'Chakra Petch'; font-size:14.5px; color:var(--fg);}
+  .pstep p{font-size:12.5px; color:var(--muted);}
+  .arrow{
+    flex:0 0 34px; display:flex; align-items:center; justify-content:center; color:var(--muted-2); font-size:20px;
+  }
+  @media (max-width:760px){ .arrow{transform:rotate(90deg); flex-basis:24px;} }
+
+  .split-wrap{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;}
+  @media (max-width:700px){ .split-wrap{grid-template-columns:1fr;} }
+  .split{border-radius:12px; padding:18px; border:1px solid var(--line);}
+  .split.yes{background:rgba(126,231,135,0.05); border-color:rgba(126,231,135,0.3);}
+  .split.no{background:rgba(255,123,123,0.05); border-color:rgba(255,123,123,0.3);}
+  .split h4{font-family:'Chakra Petch'; font-size:15px; margin-bottom:8px;}
+  .split.yes h4{color:var(--green);}
+  .split.no h4{color:var(--red);}
+  .split ul{margin:0; padding-left:18px; color:var(--muted); font-size:13px; line-height:1.6;}
+
+  /* ---------- challenge cards ---------- */
+  .chal{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px 18px;
+    display:flex; gap:14px; align-items:flex-start;
+  }
+  .chal .num{
+    font-family:'Chakra Petch'; font-size:22px; color:var(--amber); flex:0 0 auto; opacity:.85;
+    min-width:34px;
+  }
+  .chal h3{font-size:15px; margin-bottom:4px;}
+  .chal p{font-size:13px;}
+  .chal .stat{color:var(--fg); font-family:'IBM Plex Mono',monospace; font-size:12.5px; margin-top:6px; display:block;}
+
+  /* ---------- latency ladder ---------- */
+  .ladder{margin-top:20px; display:flex; flex-direction:column; gap:10px;}
+  .lrow{display:grid; grid-template-columns:170px 1fr 90px; align-items:center; gap:12px;}
+  @media (max-width:640px){ .lrow{grid-template-columns:110px 1fr 66px; font-size:12px;} }
+  .lrow .label{font-size:13px; color:var(--fg);}
+  .lrow .sub{display:block; font-size:11px; color:var(--muted-2);}
+  .ltrack{background:var(--panel-2); border:1px solid var(--line); border-radius:6px; height:16px; position:relative; overflow:hidden;}
+  .lbar{height:100%; border-radius:6px 0 0 6px;}
+  .lbar.cloud{background:linear-gradient(90deg, var(--red), var(--amber));}
+  .lbar.edge{background:linear-gradient(90deg, var(--cyan), var(--green));}
+  .lval{font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:right; color:var(--muted);}
+  .axis-note{font-size:11px; color:var(--muted-2); margin-top:10px;}
+
+  /* ---------- ranked ideas ---------- */
+  .rank-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:20px;
+    display:flex; flex-direction:column; gap:10px; position:relative;
+  }
+  .rank-card.top{border-color:rgba(126,231,135,.55); background:linear-gradient(180deg, rgba(126,231,135,0.07), var(--panel) 40%);}
+  .rank-card.excluded{opacity:.72;}
+  .rank-head{display:flex; align-items:center; gap:12px;}
+  .rank-pos{
+    font-family:'Chakra Petch'; font-size:20px; font-weight:700; color:var(--ink);
+    background:var(--muted); width:34px; height:34px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+  }
+  .rank-card.top .rank-pos{background:var(--green);}
+  .rank-card.excluded .rank-pos{background:var(--red); color:#2a0d0d;}
+  .rank-title{font-size:16px; font-family:'Chakra Petch';}
+  .rank-card p{font-size:13.5px;}
+  .rank-meta{display:flex; gap:8px; flex-wrap:wrap; margin-top:2px;}
+
+  .fusion-box{
+    margin-top:22px; border:1px dashed rgba(126,231,135,.5); border-radius:14px; padding:22px;
+    background:rgba(126,231,135,0.04);
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .fusion-row{display:flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:center;}
+  .fpill{
+    font-family:'Chakra Petch'; font-size:14px; padding:10px 16px; border-radius:10px;
+    border:1px solid var(--line); background:var(--panel-2); color:var(--fg);
+  }
+  .fplus{font-family:'Chakra Petch'; font-size:20px; color:var(--muted-2);}
+  .feq{font-family:'Chakra Petch'; font-size:20px; color:var(--green);}
+  .fresult{
+    font-family:'Chakra Petch'; font-size:16px; color:var(--green); text-align:center;
+    border:1px solid rgba(126,231,135,.5); border-radius:10px; padding:12px 18px; background:rgba(126,231,135,0.08);
+  }
+
+  table{width:100%; border-collapse:collapse; font-size:13px; margin-top:16px;}
+  .tbl-wrap{overflow-x:auto;}
+  th,td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--line-soft);}
+  th{color:var(--muted-2); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; font-weight:600;}
+  td{color:var(--muted);}
+  td.fg{color:var(--fg);}
+
+  footer{padding:30px 0 50px; color:var(--muted-2); font-size:12px; line-height:1.7;}
+  footer a{color:var(--muted-2); text-decoration:underline;}
+</style>
+
+<div class="wrap">
+
+  <nav class="topnav">
+    <a href="#verify">Verified papers</a>
+    <a href="#arch">Architecture</a>
+    <a href="#gs">3DGS split</a>
+    <a href="#challenges">Challenges</a>
+    <a href="#latency">Latency</a>
+    <a href="#ideas">Research bets</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Literature review &middot; Sept 2026</div>
+        <h1>Drone Cognition Briefing</h1>
+        <p class="sub">VLM and world-model methods for UAV navigation &mdash; what's verified, what's still broken,
+          and four research bets scored for novelty and risk.</p>
+      </div>
+      <svg class="radar" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="46" stroke="#243149" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="31" stroke="#243149" stroke-width="1"/>
+        <circle cx="50" cy="50" r="16" stroke="#243149" stroke-width="1"/>
+        <line x1="50" y1="4" x2="50" y2="96" stroke="#1a2438"/>
+        <line x1="4" y1="50" x2="96" y2="50" stroke="#1a2438"/>
+        <path d="M50 50 L50 4 A46 46 0 0 1 88 28 Z" fill="#5ce1e6" opacity="0.16"/>
+        <line x1="50" y1="50" x2="86" y2="26" stroke="#5ce1e6" stroke-width="2"/>
+        <circle cx="50" cy="50" r="3" fill="#5ce1e6"/>
+        <circle cx="30" cy="65" r="2.4" fill="#ffb454"/>
+        <circle cx="66" cy="70" r="2.4" fill="#7ee787"/>
+      </svg>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-tile"><div class="stat-num">6 / 6</div><div class="stat-label">named papers checked</div></div>
+      <div class="stat-tile"><div class="stat-num">3</div><div class="stat-label">architecture tiers</div></div>
+      <div class="stat-tile"><div class="stat-num">8</div><div class="stat-label">open challenges</div></div>
+      <div class="stat-tile"><div class="stat-num">1&ndash;22s</div><div class="stat-label">cloud VLM latency</div></div>
+      <div class="stat-tile"><div class="stat-num">0</div><div class="stat-label">papers fusing 3DGS + world model + VLM</div></div>
+    </div>
+  </section>
+
+  <!-- ================= VERIFIED PAPERS ================= -->
+  <section id="verify">
+    <div class="eyebrow">Fact check</div>
+    <h2>Your six papers, verified</h2>
+    <p class="lede">Every name was checked against arXiv/journal sources independently. Four match almost exactly with a spelling fix; two point somewhere you didn't expect.</p>
+
+    <div class="grid grid-2" style="margin-top:20px;">
+
+      <div class="card">
+        <div class="top-row"><h3>VLM-Nav</h3><span class="badge b-ok">verified</span></div>
+        <div class="was">you said: VLM-NAV &middot; PLOS ONE, 2026</div>
+        <ul>
+          <li>Mapless navigation: GPT-4o / Gemini fused with monocular depth (DepthAnything-V2)</li>
+          <li>0.98 task-completion rate in AirSim Blocks / Downtown West</li>
+        </ul>
+        <div class="kv"><span class="tag">VLM-as-perception</span></div>
+      </div>
+
+      <div class="card">
+        <div class="top-row"><h3>FlightGPT</h3><span class="badge b-ok">verified</span></div>
+        <div class="was">arXiv:2505.12835 &middot; EMNLP 2025</div>
+        <ul>
+          <li>SFT + GRPO training with chain-of-thought reasoning</li>
+          <li>+9.22% success rate over strongest baseline, CityNav unseen split</li>
+          <li>Authors admit: <em>no hierarchical/staged planning mechanism</em></li>
+        </ul>
+        <div class="kv"><span class="tag">End-to-end VLA</span></div>
+      </div>
+
+      <div class="card">
+        <div class="top-row"><h3>AirDreamer</h3><span class="badge b-ok">verified</span></div>
+        <div class="was">you said: AIRDreamer &middot; arXiv:2606.03252</div>
+        <ul>
+          <li>DreamerV3-based world model for generalist drone navigation</li>
+          <li>+5.3% success rate gain; real flight deployment at 1.8 m/s</li>
+          <li>Emergent yaw-scanning behavior from sparse reward only</li>
+        </ul>
+        <div class="kv"><span class="tag">Dreamer-style world model</span></div>
+      </div>
+
+      <div class="card">
+        <div class="top-row"><h3>WorldFly</h3><span class="badge b-ok">verified</span></div>
+        <div class="was">you said: WorldFLY &middot; arXiv:2606.06147</div>
+        <ul>
+          <li>Dual-branch flow matching: predicts future video + action jointly</li>
+          <li><strong>87% / 31%</strong> success (seen/unseen) vs OpenFly's 72%/16%</li>
+          <li>Own limitation, verbatim: "unavoidable computational cost of future frame prediction"</li>
+        </ul>
+        <div class="kv"><span class="tag">World-model VLA</span></div>
+      </div>
+
+      <div class="card">
+        <div class="top-row"><h3>Qwen-Drive</h3><span class="badge b-off">wrong domain</span></div>
+        <div class="was">arXiv:2609.00111 &middot; real, but ground vehicles</div>
+        <ul>
+          <li>VLM for autonomous <strong>driving</strong>, not UAVs</li>
+          <li>Qwen3.5-4B + BEV perception + flow-matching planner</li>
+          <li>Cite only as a methodological analog, not aerial literature</li>
+        </ul>
+        <div class="kv"><span class="tag">Autonomous driving</span></div>
+      </div>
+
+      <div class="card">
+        <div class="top-row"><h3>CoDrone</h3><span class="badge b-off">dead end</span></div>
+        <div class="was">closest match: CODrone, arXiv:2504.20032</div>
+        <ul>
+          <li>Object-detection dataset (590k+ oriented boxes), not navigation</li>
+          <li>Separate unrelated toy-drone SDK also shares the name</li>
+          <li>No VLM/world-model UAV paper exists under this name</li>
+        </ul>
+        <div class="kv"><span class="tag">Perception dataset</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= ARCHITECTURE ================= -->
+  <section id="arch">
+    <div class="eyebrow">Field map</div>
+    <h2>Four architecture tiers, 2023 &rarr; 2026</h2>
+    <p class="lede">The field's evolution reads as a straight line: the VLM's role moves from labeling pixels to steering the drone directly, then finally to imagining what happens next.</p>
+
+    <div class="pipeline">
+      <div class="pstep">
+        <div class="n">01 &middot; perception</div>
+        <h4>VLM-as-Perception</h4>
+        <p>VLM captions/labels the scene; a separate policy navigates. <em>UAV-ON</em> (Qwen-VL).</p>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="pstep">
+        <div class="n">02 &middot; planning</div>
+        <h4>VLM-as-Planner</h4>
+        <p>VLM reasons over waypoints; classical control executes. <em>SkyVLN</em> + NMPC.</p>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="pstep">
+        <div class="n">03 &middot; action</div>
+        <h4>End-to-End VLA</h4>
+        <p>Model outputs flight actions directly. <em>FlightGPT</em>, SFT+GRPO.</p>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="pstep" style="border-color:rgba(126,231,135,.4); background:rgba(126,231,135,0.05);">
+        <div class="n" style="color:var(--green);">04 &middot; 2026 wave</div>
+        <h4>World-Model VLA</h4>
+        <p>Imagines the future, then acts. <em>WorldFly, ImagineUAV, WorldVLN.</em></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3DGS SPLIT ================= -->
+  <section id="gs">
+    <div class="eyebrow">The structural gap</div>
+    <h2>3D Gaussian Splatting: mature simulator, absent world model</h2>
+    <p class="lede">This is the finding that matters most for a SLAM/3DGS background &mdash; the geometric and generative threads of this literature have not merged.</p>
+
+    <div class="split-wrap">
+      <div class="split yes">
+        <h4>&#10003; 3DGS as differentiable simulator &mdash; mature</h4>
+        <ul>
+          <li><strong>Splat-Nav</strong> &mdash; safe corridors + pose replanning, 126 real flights</li>
+          <li><strong>SOUS VIDE / FiGS</strong> &mdash; policy trained purely in a 130fps GS sim, zero-shot to 105 real flights</li>
+          <li><strong>GRaD-Nav</strong> &mdash; gradients flow through renderer + dynamics</li>
+          <li><strong>ActiveGS, VISTA</strong> &mdash; active reconstruction, 6x success on real quadrotor</li>
+        </ul>
+      </div>
+      <div class="split no">
+        <h4>&#10007; 3DGS as generative world model / VLM input &mdash; absent in air</h4>
+        <ul>
+          <li><strong>GST-VLA, ManiGaussian</strong> &mdash; Gaussians tokenized directly into a policy &mdash; <span class="mono">manipulation only</span></li>
+          <li><strong>GWM, GAF, GEM</strong> &mdash; "Gaussian world models" predicting future Gaussian states &mdash; <span class="mono">manipulation / driving only</span></li>
+          <li>WorldFly / WorldVLN / ImagineUAV world models run on raw pixels or video latents &mdash; <strong>never</strong> explicit Gaussians</li>
+          <li>Zero aerial instances of either pattern found</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CHALLENGES ================= -->
+  <section id="challenges">
+    <div class="eyebrow">Reality check</div>
+    <h2>8 open challenges</h2>
+    <p class="lede">Two independent 2026 aerial-VLN surveys (arXiv:2604.13654, arXiv:2604.07705) converge on the same short list. Capability has outrun infrastructure.</p>
+
+    <div class="grid grid-2" style="margin-top:20px;">
+      <div class="chal"><div class="num">01</div><div><h3>Latency & onboard compute</h3><p>Cloud planners vs. onboard VLAs live in incompatible speed regimes.</p><span class="stat">1&ndash;22s cloud &middot; FlightGPT/SkyVLN report zero latency numbers</span></div></div>
+
+      <div class="chal"><div class="num">02</div><div><h3>Generalization / sim-to-real</h3><p>Named the #1 problem by both surveys, and visible in the best system's own numbers.</p><span class="stat">46.8% &rarr; 22.5% success when the map is removed</span></div></div>
+
+      <div class="chal"><div class="num">03</div><div><h3>Safety & formal verification</h3><p>Reachability/verification work exists for general robots &mdash; never for a VLM/world-model UAV policy.</p><span class="stat">Listed as future work, not solved work</span></div></div>
+
+      <div class="chal"><div class="num">04</div><div><h3>Data scarcity & evaluation</h3><p>Benchmarks don't agree on what "success" means.</p><span class="stat">15m vs 20m thresholds &middot; CityNav 32K vs OpenFly 100K+ traj.</span></div></div>
+
+      <div class="chal"><div class="num">05</div><div><h3>Multi-agent / swarm navigation</h3><p>Nascent. Authors themselves doubt early results.</p><span class="stat">"...architecture itself, or just more model capacity?"</span></div></div>
+
+      <div class="chal"><div class="num">06</div><div><h3>Long-horizon memory</h3><p>The challenge closest to a SLAM background &mdash; cross-view alignment is brittle.</p><span class="stat">Same landmark looks different frame-to-frame in flight</span></div></div>
+
+      <div class="chal"><div class="num">07</div><div><h3>Regulatory / BVLOS barriers</h3><p>Active FAA rulemaking, almost uncited in the technical literature.</p><span class="stat">FAA Part 108 / EO 14,307 &mdash; near-zero engagement</span></div></div>
+
+      <div class="chal"><div class="num">08</div><div><h3>3DGS: simulator, not world model</h3><p>The gap from the section above &mdash; still unclaimed as of this review.</p><span class="stat">0 systems fuse 3DGS + generative imagination + language</span></div></div>
+    </div>
+  </section>
+
+  <!-- ================= LATENCY ================= -->
+  <section id="latency">
+    <div class="eyebrow">Your flagged gap, quantified</div>
+    <h2>Two incompatible speed regimes</h2>
+    <p class="lede">Cloud semantic planners and onboard reactive controllers are not on the same axis. Bars are log-scaled &mdash; read the numbers, not just the lengths.</p>
+
+    <div class="ladder">
+      <div class="lrow">
+        <div class="label">GPT-5 Nano<span class="sub">cloud VLM planner</span></div>
+        <div class="ltrack"><div class="lbar cloud" style="width:100%"></div></div>
+        <div class="lval">22.0 s</div>
+      </div>
+      <div class="lrow">
+        <div class="label">4G round trip<span class="sub">typical network</span></div>
+        <div class="ltrack"><div class="lbar cloud" style="width:66%"></div></div>
+        <div class="lval">1.5&ndash;3.0 s</div>
+      </div>
+      <div class="lrow">
+        <div class="label">Gemini 2.5 Flash Lite<span class="sub">cloud VLM planner</span></div>
+        <div class="ltrack"><div class="lbar cloud" style="width:58%"></div></div>
+        <div class="lval">1.7 s</div>
+      </div>
+      <div class="lrow">
+        <div class="label">CognitiveDrone<span class="sub">onboard reasoning layer</span></div>
+        <div class="ltrack"><div class="lbar edge" style="width:22%"></div></div>
+        <div class="lval">~2 Hz</div>
+      </div>
+      <div class="lrow">
+        <div class="label">OnFly<span class="sub">Jetson Orin NX, KV-cache</span></div>
+        <div class="ltrack"><div class="lbar edge" style="width:14%"></div></div>
+        <div class="lval">6.5&times; faster</div>
+      </div>
+      <div class="lrow">
+        <div class="label">LiteVLA-H<span class="sub">Jetson AGX Orin, fast branch</span></div>
+        <div class="ltrack"><div class="lbar edge" style="width:6%"></div></div>
+        <div class="lval">50.6 ms / 19.7 Hz</div>
+      </div>
+    </div>
+    <p class="axis-note">Bars sized on a log scale for visual comparison only. No paper documents an actual latency-caused safety incident in flight &mdash; the safety case here is architectural, not evidence-based.</p>
+  </section>
+
+  <!-- ================= RESEARCH IDEAS ================= -->
+  <section id="ideas">
+    <div class="eyebrow">Where to build</div>
+    <h2>Four research bets, ranked</h2>
+    <p class="lede">Each idea was checked against prior art. Verdicts: genuinely open, open-but-risky, or already crowded.</p>
+
+    <div class="grid grid-2" style="margin-top:20px;">
+
+      <div class="rank-card top">
+        <div class="rank-head"><div class="rank-pos">1</div><div class="rank-title">JEPA over compressed Gaussians</div></div>
+        <div class="rank-meta"><span class="badge b-ok">highest novelty</span><span class="badge b-ok">two passes confirm gap</span></div>
+        <p>Predict future <em>latent Gaussian scene state</em> instead of pixels or raw video. Inherits SkyJEPA's control architecture + a mature Gaussian-compression toolkit (LightGaussian, 15&ndash;100&times;). No paper occupies this intersection.</p>
+      </div>
+
+      <div class="rank-card">
+        <div class="rank-head"><div class="rank-pos">2</div><div class="rank-title">Language-conditioned JEPA for UAVs</div></div>
+        <div class="rank-meta"><span class="badge b-ok">genuinely open</span></div>
+        <p>Language+JEPA exists (ground robots). JEPA+control exists (SkyJEPA, drones). Language+world-model exists (WorldFly, but generative). The three-way combo doesn't &mdash; yet.</p>
+      </div>
+
+      <div class="rank-card">
+        <div class="rank-head"><div class="rank-pos">3</div><div class="rank-title">Gaussian-native policies for UAVs</div></div>
+        <div class="rank-meta"><span class="badge b-ok">open, aerial-specific</span></div>
+        <p>GST-VLA and ManiGaussian tokenize Gaussians directly into a policy &mdash; thriving in manipulation. Zero instances in free-flight navigation. De-risked by mature compression research.</p>
+      </div>
+
+      <div class="rank-card">
+        <div class="rank-head"><div class="rank-pos">4</div><div class="rank-title">Matryoshka VLM/VLA unification</div></div>
+        <div class="rank-meta"><span class="badge b-warn">open but risky</span></div>
+        <p>Nested-weight training has never touched an action head. But co-training evidence is grim: OpenVLA scores near-zero on VQA benchmarks after action fine-tuning, even with dedicated anti-forgetting engineering.</p>
+      </div>
+
+      <div class="rank-card excluded" style="grid-column:1/-1;">
+        <div class="rank-head"><div class="rank-pos">&times;</div><div class="rank-title">JEV (TypeSafe AI)</div></div>
+        <div class="rank-meta"><span class="badge b-off">not viable foundation</span></div>
+        <p>One day old at time of research, no architecture paper, cloud/API-only (defeats "onboard" framing), outputs limited to discrete choices/scalars &mdash; not continuous flight control. The one existing drone demo is a single-run, author-disclaimed hobbyist project in simulation only. Useful as a citation showing the trend, not as infrastructure.</p>
+      </div>
+
+    </div>
+
+    <div class="fusion-box">
+      <div class="eyebrow" style="color:var(--green);">Strongest single project</div>
+      <div class="fusion-row">
+        <div class="fpill">JEPA-style latent prediction</div>
+        <div class="fplus">+</div>
+        <div class="fpill">Compressed / tokenized 3DGS scene state</div>
+        <div class="feq">=</div>
+      </div>
+      <div class="fresult">A language-conditioned world model that imagines future geometry &mdash; not future pixels &mdash; for real-time UAV navigation</div>
+      <p style="text-align:center; max-width:64ch; margin:8px auto 0;">Two independent research passes flagged this exact intersection from opposite directions. It's the one direction that specifically rewards a SLAM/3DGS background over a language-model-only or robotics-only one.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Confidence key</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Marker</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge b-ok">verified</span></td><td class="fg">Confirmed via full-text reading of the primary source</td></tr>
+          <tr><td><span class="badge b-info">confirmed gap</span></td><td class="fg">Absence explicitly checked for and not found &mdash; not just unsearched</td></tr>
+          <tr><td><span class="badge b-warn">caution</span></td><td class="fg">Real but carries a documented technical risk or limitation</td></tr>
+          <tr><td><span class="badge b-off">off-target / excluded</span></td><td class="fg">Real, but not what it first appears to be, or too immature to build on</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Synthesized from three research passes (Sept 2026): the initial literature review, the latency &amp; challenges deep dive, and the research-ideas feasibility check. Full markdown reports with inline citations remain in <span class="mono">C:\Users\yanbo\downloads\reports\</span>. A few figures (e.g. GEM-VLA's manipulation numbers, one CognitiveDrone Hz figure) are flagged in the source reports as search-snippet-sourced rather than full-text verified &mdash; treat those as directional, not load-bearing.
+  </footer>
+
+</div>

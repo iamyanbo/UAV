@@ -1,0 +1,18 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T000759Z-updated-perception-replay-23333f/source/navigation_process.py",
+    "--observations",
+    "/home/iamyanbo/uav-rgb-flight/launches/20260923T231308Z/episode/observations",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/launches/20260923T231308Z/episode/goal",
+    "--checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/navigation-checkpoints",
+    "--integration-only"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 16.0,
+  "status": "running"
+}

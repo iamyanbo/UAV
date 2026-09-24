@@ -1,0 +1,19 @@
+{
+  "status": "failed",
+  "accepted": false,
+  "frames": 47,
+  "error": {
+    "type": "ValueError",
+    "message": "Ungrounded, cross-episode or expired configuration"
+  },
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "2bbc4a816a61fa9db3b0b383eca682d22096c1cda11912ce41fd82984bfaf83e",
+      "samples": 47
+    }
+  ],
+  "scope": "Mode 1, Qwen and frozen predictive planning",
+  "sampled_policy": false,
+  "slow_planner_enabled": true
+}

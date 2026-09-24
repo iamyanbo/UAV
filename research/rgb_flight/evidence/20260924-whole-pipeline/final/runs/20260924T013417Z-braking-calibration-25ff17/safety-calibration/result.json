@@ -1,0 +1,42 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "measurement": "/home/iamyanbo/uav-rgb-flight/launches/20260924T013417Z/engineering_only",
+  "dynamics": {
+    "scope": "engineering only: short physical motion, braking and deliberate ground contact; not navigation",
+    "status": "engineering_dynamics_checks_passed",
+    "pose_setting_calls": 0,
+    "pause_calls": 0,
+    "clock_speed": 1.0,
+    "startup_collision_samples": 3,
+    "measurement_start_sim_ns": 1790213684421203712,
+    "braking": {
+      "start_speed_mps": 2.938639581057449,
+      "time_to_below_05_sim_seconds": 1.467031296,
+      "distance_to_below_05_m": 2.2584191377156966,
+      "max_excursion_m": 2.576863596765168
+    },
+    "ground_contact": {
+      "phase": "deliberate_ground_contact",
+      "wall_monotonic": 1312832.100598197,
+      "sim_ns": 1790213699742530560,
+      "position": [
+        11.730817794799805,
+        -1.2063928807037883e-06,
+        0.6095638871192932
+      ],
+      "velocity": [
+        2.9842755111531005e-07,
+        -9.000409306736401e-08,
+        1.0027567148208618
+      ],
+      "collision": true,
+      "collision_ns": 1790213699739530496
+    },
+    "frame_count": 593,
+    "capture_sim_interval_p95_seconds": 0.048001024,
+    "capture_20hz_check": true,
+    "video_timing": "20-fps engineering preview; frames.json holds actual per-frame times; not a final full-flight video"
+  },
+  "launcher_return_code": 0
+}

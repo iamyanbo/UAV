@@ -1,0 +1,178 @@
+{
+  "program": "random-visual-goal-continuous-flight",
+  "status": "real_learning_loop_executed; preference_update_blocked_by_tie; navigation_and_timing_unqualified; corrective_visual_training_active",
+  "current_evidence": "INTEGRATION_2026-09-24.md",
+  "evidence_directory": "evidence/20260924-whole-pipeline/final",
+  "paper_result": false,
+  "trained_integrated_system_complete": false,
+  "legacy_language_survey": {
+    "status": "checkpointed_between_episodes",
+    "complete_routes": 9,
+    "next_route_not_started": "proposal-009",
+    "remote_state": "/home/iamyanbo/uav-rgb-flight/runs/20260921T220716Z-reference-campaign-gate-6bb7a9/reference-campaign/state.json",
+    "training_gate": false,
+    "evidence_preserved": true,
+    "scale_followup": "stopped_without_starting_calibration"
+  },
+  "visual_goal": {
+    "runtime_contract": "contracts.py",
+    "obstacle_field": [
+      "capture_obstacle_field.py",
+      "obstacle_field.py"
+    ],
+    "manifest_generation": "episode_generation.py",
+    "goal_capture": [
+      "capture_goal.py",
+      "goal_io.py"
+    ],
+    "expert_flight": "visual_goal_flight.py",
+    "resumable_collection": "visual_goal_campaign.py",
+    "goal_matching": "goal_matching.py",
+    "odometry_world_policy_critic": "learning_models.py",
+    "planner": "predictive_planner.py",
+    "coordinator_and_safety": "controller.py",
+    "episode_memory": "spatial_memory.py",
+    "qwen": [
+      "configurator.py",
+      "train_configurator.py"
+    ],
+    "visual_training": "train_visual_components.py",
+    "recurrent_odometry_training": "train_odometry_sequences.py",
+    "trajectory_bundle": "trajectory_bundle.py",
+    "remote_scheduler": "program_scheduler.py",
+    "goal_qualification": "qualify_goal.py",
+    "metric_alignment": "metric_alignment.py",
+    "world_and_imitation_training": "train_models.py",
+    "constrained_ppo": "ppo_learning.py",
+    "curriculum": "training_program.py",
+    "sealed_evaluation": "evaluate_visual_goal.py",
+    "causal_runtime": "navigation_state.py",
+    "restricted_runtime_launcher": "navigation_process.py",
+    "runtime_replay": "replay_navigation.py",
+    "asynchronous_video": "async_video.py",
+    "asynchronous_mapping": "async_mapping.py",
+    "world_sequence_builder": "build_world_sequences.py",
+    "odometry_qualification": "qualify_odometry.py",
+    "obstacle_coverage_audit": "audit_obstacle_coverage.py",
+    "live_mode1_controller": [
+      "learned_controller.py",
+      "live_controller_process.py"
+    ],
+    "connected_cycle_launcher": "run_connected_cycle.py",
+    "policy_sequence_builder": "build_policy_sequences.py",
+    "online_learning_data": "build_online_learning.py",
+    "fresh_physical_collection": "collect_learning_round.py",
+    "matched_preferences": "collect_configuration_preferences.py",
+    "preference_dataset": "build_preference_examples.py",
+    "live_deliberation": "live_deliberation.py"
+  },
+  "historical_field_job": {
+    "local_run": "D:/uav-research/idea1/runs/visual-goal-field-20260921-200956",
+    "remote_guard": "/home/iamyanbo/uav-rgb-flight/runs/20260922T001001Z-field-survey-gate-5a2a08",
+    "clock_speed": 1.0
+  },
+  "counts": {
+    "random_visual_goal_expert_episodes": 250,
+    "indexed_recorded_attempts": 343,
+    "legacy_odometry_updates_preserved": 19316,
+    "goal_run_updates_completed": 100000,
+    "evaluated_goal_checkpoint_update": 6000,
+    "new_recurrent_odometry_updates": 1000,
+    "world_updates": 1,
+    "imitation_updates": 2,
+    "ppo_physics_transitions": 1693,
+    "qwen_configuration_examples": 1,
+    "matched_configuration_pairs": 1,
+    "additional_physical_expert_flights": 10,
+    "additional_physical_expert_successes": 9,
+    "additional_physical_expert_collisions": 1,
+    "corrective_goal_rounds_completed_updates": [
+      2000,
+      500
+    ],
+    "evaluated_corrective_goal_checkpoint_update": 250,
+    "dagger_learner_states": 2090,
+    "dagger_update_rounds": 1,
+    "ppo_optimizer_updates": 1,
+    "ppo_optimizer_transition_exposure": 40,
+    "qwen_supervised_updates": 2,
+    "qwen_preference_updates": 0,
+    "strict_preference_pairs": 0,
+    "count_semantics": "World count is the verified selected update; an earlier gradient-invalid world update remains excluded and preserved. Imitation includes initial and DAgger updates. Qwen updates are separate verbose and compact encoding rounds of the same source example. Unique PPO transitions differ from optimization exposure."
+  },
+  "verification": {
+    "new_test_files_written": 0,
+    "python_compilation": "passed",
+    "executed_imports": "actual collection, causal replay, world, imitation, DAgger, Qwen supervised, PPO, planner, matched preferences and empty-preference gate",
+    "campaign_json_parse": "passed",
+    "real_field_acquisition": "completed; coverage_not_qualified",
+    "random_complete_physical_episode": "expert and complete learned flights executed; learned navigation success not established",
+    "automatic_preparation_training_qualification": "completed",
+    "optimizer_resume": "2_to_3_with_178_optimizer_states_restored",
+    "collector_capture_control_timing": "passed_on_one_repeated_training_route",
+    "learned_safety_timing": "combined final: command-spacing p95 45.44 ms; fresh RGB 10.80 Hz and p95 153.00 ms fails",
+    "goal_development_false_positive_rate": 0.30449630051223675,
+    "sealed_test_episodes_opened": 0,
+    "final_clock_speed_required": 1.0,
+    "goal_development_precision": 0.28856382978723405,
+    "goal_development_recall": 0.8930041152263375,
+    "goal_development_examples": 2000,
+    "goal_development_tasks": 27,
+    "full_odometry_development_motion_pairs": 5949,
+    "full_odometry_translation_rmse_m": 0.1399054,
+    "full_odometry_rotation_rmse_rad": 0.0415174,
+    "full_odometry_marginal_95pct_coverage": 0.2790385,
+    "field_contact_attempts": 13,
+    "field_missed_contact_attempts": 9,
+    "world_candidate_windows": 11,
+    "world_timing_valid_windows": 8,
+    "inference_namespace": "200-frame actual replay completed with whitelisted runtime source and separate writable output",
+    "native_mapping": "actual released tracking and Gaussian publication executed; metric scale unqualified",
+    "goal_conditioning_without_frontier": "400 real replay frames verified after correction",
+    "live_mode1_controller": "loaded trained snapshots and completed real flights; mandatory braking prevents translation",
+    "automatic_learning_redeployment_cycle": "whole-pipeline-r29 completed; DAgger collection through PPO updated-checkpoint flight",
+    "world_and_policy_gradient_gate": "passed after cache_enabled=False recurrent correction",
+    "qwen_supervised_gradient_gate": "all 288 adapter tensors changed; frozen base unchanged",
+    "ppo_gradient_gate": "actor, stop, log_std, reward and collision critics changed; goal backbone unchanged",
+    "preference_optimizer_gate": "blocked: matched full timeouts tie; zero winning labels; zero updates",
+    "full_combined_planner_calls": 16,
+    "full_combined_selected_planner_actions": 0,
+    "full_combined_published_qwen_configurations": 0,
+    "full_combined_rgb_hz": 10.799324698604158,
+    "full_combined_rgb_p95_seconds": 0.153003264,
+    "compact_qwen_median_processing_seconds": 5.1192337109241635,
+    "planner_median_processing_seconds": 8.100565392989665
+  },
+  "next_milestone": "Qualify metric odometry including hover and goal recognition; resolve RGB-only map/safety startup; meet observation and deliberation timing; obtain moving search flights and a non-tied complete-flight preference before expanded navigation training.",
+  "active_rounds_at_last_inspection": [
+    {
+      "round": "hover-correction-r36",
+      "state": "pilot_completed_and_exact_continuation_running",
+      "objective": "metric-long-sequence-motion-rate/v3",
+      "target_updates": 1000,
+      "next_automatic_stages": [
+        "exact_checkpoint_continuation",
+        "selected_checkpoint_packaging",
+        "full_held_out_qualification"
+      ],
+      "pilot_updates_completed": 2,
+      "last_observed_update": 13
+    },
+    {
+      "round": "goal-continuation-r21",
+      "state": "running",
+      "resumed_from_update": 500,
+      "target_updates": 2500,
+      "next_automatic_stages": [
+        "selected_checkpoint_qualification"
+      ],
+      "last_observed_update": 999
+    }
+  ],
+  "remote_status_snapshot": "evidence/20260924-whole-pipeline/continuation/remote-status.json",
+  "held_rounds": [
+    "long-context-r15",
+    "motion-rate-r20",
+    "fresh-motion-r23"
+  ]
+}

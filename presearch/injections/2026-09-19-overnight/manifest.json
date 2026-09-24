@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "batchId": "uav-2026-09-19-overnight",
+  "directionId": "uav-navigation",
+  "contractFile": "presearch/injections/2026-09-19-overnight/execution-contract.md",
+  "ideas": [
+    {
+      "key": "action-validity-horizon",
+      "title": "Candidate-specific maneuver validity horizons",
+      "file": "presearch/injections/2026-09-19-overnight/01-action-validity-horizon.md",
+      "nextStep": "Check DEHP/AAC/AutoHorizon, A2C2 and ActProbe for functional equivalence, then test a counterfactual survival-target head against a same-input scalar horizon branch and geometric deadlines if the distinction survives. This is not a repeat of the earlier binary action-age head."
+    },
+    {
+      "key": "recoverability-jepa",
+      "title": "JEPA training that preserves future escape options",
+      "file": "presearch/injections/2026-09-19-overnight/02-recoverability-jepa.md",
+      "nextStep": "Audit action-conditioned JEPA safety, bisimulation and viability-aware representations, then test recoverable-set/margin gradients into a small predictive representation against an unchanged JEPA plus safety head. Do not repeat the already planned OPF architecture comparison."
+    },
+    {
+      "key": "capture-for-control",
+      "title": "Policy-regret-supervised real-to-sim capture",
+      "file": "presearch/injections/2026-09-19-overnight/03-capture-for-control.md",
+      "nextStep": "Audit SemSafe-3DGS/VISTA/ATLAS and decision-focused acquisition, then test counterfactual downstream decision-regret supervision for capture selection at matched view/update cost. Use a clearly labelled synthetic mechanism pilot only if real calibrated scene tooling is unavailable."
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Actual world sequence preparation with masked unavailable action timing; isolated asynchronous inference measurement",
+  "stages": [
+    {
+      "id": "world-sequence-views",
+      "kind": "cpu",
+      "peak_gib": 8,
+      "seconds": 1200,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/runs/20260923T235858Z-projected-causal-replay-ec8e92/navigation-replay/manifest.json",
+        "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/checkpoints/checkpoints.json",
+        "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/trajectory-bundle/manifest.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "build-world-view",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/fresh-sequence-r10/trajectory-bundle",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260923T235858Z-projected-causal-replay-ec8e92/navigation-replay",
+        "--navigation-pack",
+        "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/checkpoints",
+        "--artifact-output",
+        "{round}/world-views"
+      ],
+      "receipt": "{round}/world-views/result.json",
+      "outputs": [
+        "{round}/world-views/manifest.json"
+      ]
+    },
+    {
+      "id": "isolated-async-replay",
+      "kind": "exclusive",
+      "peak_gib": 24,
+      "seconds": 1800,
+      "depends_on": [
+        {
+          "stage": "world-sequence-views",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/checkpoints/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/navigation_process.py",
+        "--observations",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/observations",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/launches/20260923T234610Z/episode/goal",
+        "--checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/checkpoints",
+        "--integration-only",
+        "--video",
+        "--frames",
+        "400"
+      ],
+      "receipt": "{job}/navigation-replay/result.json",
+      "outputs": [
+        "{job}/navigation-replay/manifest.json"
+      ]
+    }
+  ]
+}

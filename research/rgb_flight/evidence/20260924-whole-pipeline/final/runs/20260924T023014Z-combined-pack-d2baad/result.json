@@ -1,0 +1,31 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T023014Z-combined-pack-d2baad/source/package_navigation.py",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/goal.pt",
+    "--odometry",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/odometry.pt",
+    "--world",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/world.pt",
+    "--policy",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/policy.pt",
+    "--projection",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/projection.pt",
+    "--safety",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/ppo-pack/safety.json",
+    "--qwen",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T022900Z-qwen-supervised-update-702d17/configurator/latest.pt",
+    "--goal-match-threshold",
+    "0.9",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints"
+  ],
+  "seconds": 300,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 4.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 1.0130250758957118
+}

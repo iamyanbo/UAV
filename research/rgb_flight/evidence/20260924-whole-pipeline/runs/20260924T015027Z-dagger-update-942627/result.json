@@ -1,0 +1,23 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T015027Z-dagger-update-942627/source/stage_worker.py",
+    "train-policy",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r29/dagger-data/dataset",
+    "--goal-checkpoint",
+    "goal.pt",
+    "--initialize-from",
+    "initial-policy.pt",
+    "--integration-only",
+    "--updates",
+    "1"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 24.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 4.012453377945349
+}

@@ -1,0 +1,18 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260923T235851Z-training-projection-a10b72/source/stage_worker.py",
+    "fit-projection",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/integration-r3/trajectory-bundle",
+    "--runtime-replay",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260923T235815Z-async-video-replay-10264b/navigation-replay",
+    "--artifact-output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/causal-video-r12/projection"
+  ],
+  "seconds": 600,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 8.0,
+  "status": "running"
+}

@@ -1,0 +1,142 @@
+{
+  "schema": "training-dependencies/v1",
+  "scope": "Corrective motion-rate odometry: direct bias supervision, actual intervals, uncertainty-independent checkpoint choice, exact continuation, held-out full trajectories",
+  "stages": [
+    {
+      "id": "motion-rate-pilot",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 1800,
+      "depends_on": [],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/trajectory-bundle/manifest.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-odometry",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/trajectory-bundle",
+        "--initialize-from",
+        "initialization.pt",
+        "--updates",
+        "2",
+        "--validation-every",
+        "2"
+      ],
+      "receipt": "{job}/visual-training/result.json",
+      "outputs": [
+        "{job}/visual-training/latest.pt",
+        "{job}/visual-training/best.pt"
+      ]
+    },
+    {
+      "id": "motion-rate-training",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 18000,
+      "depends_on": [
+        {
+          "stage": "motion-rate-pilot",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/trajectory-bundle/manifest.json",
+        "{stage:motion-rate-pilot:job}/visual-training/latest.pt"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-odometry",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/trajectory-bundle",
+        "--resume",
+        "{stage:motion-rate-pilot:job}/visual-training/latest.pt",
+        "--updates",
+        "1000",
+        "--validation-every",
+        "100"
+      ],
+      "resume_command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "train-odometry",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/trajectory-bundle",
+        "--resume",
+        "{checkpoint}",
+        "--updates",
+        "1000",
+        "--validation-every",
+        "100"
+      ],
+      "checkpoint": "{job}/visual-training/latest.pt",
+      "receipt": "{job}/visual-training/result.json",
+      "outputs": [
+        "{job}/visual-training/latest.pt",
+        "{job}/visual-training/best.pt"
+      ]
+    },
+    {
+      "id": "motion-rate-pack",
+      "kind": "cpu",
+      "peak_gib": 2,
+      "seconds": 600,
+      "depends_on": [
+        {
+          "stage": "motion-rate-training",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{stage:motion-rate-training:job}/visual-training/best.pt"
+      ],
+      "command": [
+        "python3",
+        "{source}/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260923T235816Z-goal-corrective-training-03d6f1/visual-training/best.pt",
+        "--odometry",
+        "{stage:motion-rate-training:job}/visual-training/best.pt",
+        "--output",
+        "{round}/checkpoints",
+        "--goal-match-threshold",
+        "1.0"
+      ],
+      "receipt": "{round}/checkpoints/checkpoints.json",
+      "outputs": [
+        "{round}/checkpoints/checkpoints.json"
+      ]
+    },
+    {
+      "id": "motion-rate-qualification",
+      "kind": "gpu",
+      "peak_gib": 16,
+      "seconds": 1800,
+      "depends_on": [
+        {
+          "stage": "motion-rate-pack",
+          "status": "completed"
+        }
+      ],
+      "inputs": [
+        "{round}/checkpoints/checkpoints.json"
+      ],
+      "command": [
+        "python3",
+        "{source}/stage_worker.py",
+        "qualify-odometry",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/long-context-r15/trajectory-bundle",
+        "--navigation-pack",
+        "{round}/checkpoints"
+      ],
+      "receipt": "{job}/odometry-qualification/result.json",
+      "outputs": [
+        "{job}/odometry-qualification/episodes.jsonl",
+        "{job}/odometry-qualification/horizons.json"
+      ]
+    }
+  ]
+}

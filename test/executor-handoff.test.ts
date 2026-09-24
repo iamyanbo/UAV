@@ -6,7 +6,7 @@ import test from "node:test";
 import { git } from "../src/core/workspace.js";
 import { ResearchStore } from "../src/research/store.js";
 import { finalizeExecutorHandoff, runNextExecutorTask } from "../src/research/orchestrator.js";
-import { runProcess, validateProcess } from "../src/worker/process.js";
+import { runProcess, validateProcess, withCudaMemoryGuard } from "../src/worker/process.js";
 import type { WorkerResult } from "../src/worker/types.js";
 
 function fixture() {
@@ -19,6 +19,8 @@ function fixture() {
   store.createDirection({ id: "d", title: "Research", briefMarkdown: "Investigate", constraintsMarkdown: "",
     domainPath: join(root, "unused-domain.json"), engineVersion: "adaptive-v2" });
   const taskId = store.delegateTask({ directionId: "d", mode: "exploration", markdown: "Investigate a source" });
+  store.appendEvent("d", taskId, "task.preflight_approved", "test",
+    "Question and motivation, prior art, provenance, implementation, baselines, evaluation, limitations, compute, and latency review completed.");
   store.db.prepare("UPDATE tasks SET workspace_path=? WHERE task_id=?").run(workspace, taskId);
   const attemptDir = join(root, "attempt"); mkdirSync(attemptDir);
   const runId = store.beginRun({ directionId: "d", taskId, role: "executor", inputMarkdown: "Task", attemptDir });
@@ -53,6 +55,13 @@ test("normal inline/module checks work; rejected checks return failure and broke
     if (previous === undefined) delete process.env.APCA_API_SECRET_KEY; else process.env.APCA_API_SECRET_KEY = previous;
     rmSync(root, { recursive: true, force: true });
   }
+});
+
+test("Pi-host environment carries the local CUDA guard", () => {
+  const env = withCudaMemoryGuard({ PATH: "test-path" });
+  assert.equal(env.CURI_GPU_MEMORY_GUARD, "1");
+  assert.equal(env.CURI_MAX_VRAM_FRACTION, "0.6");
+  assert.match(env.PYTHONPATH ?? "", /cuda-memory-guard/);
 });
 
 test("a completed executor resumes handoff without another model call and sealed replay is idempotent", async () => {

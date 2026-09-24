@@ -1,0 +1,14 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "module": "goal",
+  "updates": 2000,
+  "manifest_sha256": "948fad84c41a00a473f9cb6ba1e6c1744df5d3710f140784016d0b5700e701c9",
+  "objective_version": "goal-recognition-calibration/v3",
+  "checkpoint_selection": "development recognition Brier score",
+  "initialization": {
+    "sha256": "745571516170defbd395ef186f7b362bf7ffcd8889099f288333bfa23d9f3abb",
+    "update": 6000,
+    "optimizer_reset": true
+  }
+}

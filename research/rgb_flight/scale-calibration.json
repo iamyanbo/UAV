@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "scope": "engineering_scale_calibration",
+  "split_declared_before_window_extraction": true,
+  "route_file_sha256": "94048b339ab9d4a682bd1957ddaf680b1877be53d8076528db71047f74c1324c",
+  "source_survey": "/home/iamyanbo/uav-rgb-flight/runs/20260921T220716Z-reference-campaign-gate-6bb7a9/reference-campaign",
+  "episodes": [
+    {
+      "route_id": "proposal-000",
+      "split": "train",
+      "prepared": "episodes/proposal-000"
+    },
+    {
+      "route_id": "proposal-001",
+      "split": "train",
+      "prepared": "episodes/proposal-001"
+    },
+    {
+      "route_id": "proposal-002",
+      "split": "train",
+      "prepared": "episodes/proposal-002"
+    },
+    {
+      "route_id": "proposal-003",
+      "split": "train",
+      "prepared": "episodes/proposal-003"
+    },
+    {
+      "route_id": "proposal-004",
+      "split": "train",
+      "prepared": "episodes/proposal-004"
+    },
+    {
+      "route_id": "proposal-005",
+      "split": "train",
+      "prepared": "episodes/proposal-005"
+    },
+    {
+      "route_id": "proposal-006",
+      "split": "train",
+      "prepared": "episodes/proposal-006"
+    },
+    {
+      "route_id": "proposal-007",
+      "split": "train",
+      "prepared": "episodes/proposal-007"
+    },
+    {
+      "route_id": "proposal-008",
+      "split": "train",
+      "prepared": "episodes/proposal-008"
+    },
+    {
+      "route_id": "proposal-009",
+      "split": "train",
+      "prepared": "episodes/proposal-009"
+    },
+    {
+      "route_id": "proposal-010",
+      "split": "train",
+      "prepared": "episodes/proposal-010"
+    },
+    {
+      "route_id": "proposal-011",
+      "split": "train",
+      "prepared": "episodes/proposal-011"
+    },
+    {
+      "route_id": "proposal-012",
+      "split": "validation",
+      "prepared": "episodes/proposal-012"
+    },
+    {
+      "route_id": "proposal-013",
+      "split": "validation",
+      "prepared": "episodes/proposal-013"
+    },
+    {
+      "route_id": "proposal-014",
+      "split": "validation",
+      "prepared": "episodes/proposal-014"
+    },
+    {
+      "route_id": "proposal-015",
+      "split": "validation",
+      "prepared": "episodes/proposal-015"
+    },
+    {
+      "route_id": "proposal-016",
+      "split": "calibration",
+      "prepared": "episodes/proposal-016"
+    },
+    {
+      "route_id": "proposal-017",
+      "split": "calibration",
+      "prepared": "episodes/proposal-017"
+    },
+    {
+      "route_id": "proposal-018",
+      "split": "calibration",
+      "prepared": "episodes/proposal-018"
+    },
+    {
+      "route_id": "proposal-019",
+      "split": "calibration",
+      "prepared": "episodes/proposal-019"
+    }
+  ],
+  "acceptance": {
+    "minimum_usable_probability": 0.95,
+    "maximum_log_scale_radius": 0.25,
+    "maximum_tracking_age_seconds": 0.3,
+    "maximum_feature_age_seconds": 2.0
+  },
+  "note": "Calibration is a separate held-out portion of development data. No sealed navigation test routes are consumed; no pilot projection or calibration artifact authorizes main navigation."
+}

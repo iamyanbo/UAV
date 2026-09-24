@@ -1,0 +1,39 @@
+{
+  "schema": "visual-navigation-checkpoints/v1",
+  "status": "completed",
+  "accepted": false,
+  "artifacts": {
+    "goal": {
+      "path": "goal.pt",
+      "sha256": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r25/checkpoints/goal.pt"
+    },
+    "odometry": {
+      "path": "odometry.pt",
+      "sha256": "05ece968b12db87b41137425d110067e9e3a71d0dba7f4c64174ae7f924a5434",
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r25/checkpoints/odometry.pt"
+    },
+    "world": {
+      "path": "world.pt",
+      "sha256": "92e97a7a5c9e559b472d4d4aa17a6dfd5876cdd8690ba59c5c20c6e03788a3f9",
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T013218Z-world-update-05b7f9/training/final.pt"
+    },
+    "policy": {
+      "path": "policy.pt",
+      "sha256": "f842388e2f94891cb1d36dac7dc4855eabb7a01a31999cf9c39db33198af1235",
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T013412Z-policy-update-a83c93/training/final.pt"
+    },
+    "projection": {
+      "path": "projection.pt",
+      "sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r25/checkpoints/projection.pt"
+    },
+    "safety": {
+      "path": "safety.json",
+      "sha256": "ad063b81b2ec32d9830e62f53fd75d9092600423003ae619f8159ee051cddf1d",
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T013417Z-braking-calibration-25ff17/safety-calibration/safety-profile.json"
+    }
+  },
+  "goal_match_threshold": 0.9,
+  "scope": "Integration snapshot. Packaging does not establish model compatibility or acceptance."
+}

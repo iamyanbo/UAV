@@ -8,10 +8,16 @@
     "node": ">=22.19"
   },
   "scripts": {
+    "idea1:check": "py -3.10 research/rgb_flight/run.py --stage preflight --hours 1",
+    "idea1:overnight": "py -3.10 research/rgb_flight/run.py --stage all --hours 8",
+    "idea1:test": "py -3.10 -m unittest discover -s research/rgb_flight/tests -v",
+    "idea1:start": "powershell -NoProfile -ExecutionPolicy Bypass -File research/mission_world_model/start-overnight.ps1",
     "test:py": "py -3.10 -m unittest discover -s test -p \"test_*.py\"",
-    "uav:init": "node --import tsx src/cli.ts research init --direction uav-navigation --title \"UAV navigation research\" --brief-file missions/uav-navigation.md --domain domains/uav-navigation.domain.json --engine adaptive-v2 --topic \"JEPA action-conditioned latent world model\" --topic \"predictive representation world model planning\" --topic \"fast uncertainty confidence head asynchronous VLM\" --topic \"memory action chunking embodied navigation\" --topic \"MPC MPPI VLA safety shield\" --topic \"3DGS real-to-sim live environment\" --topic \"UAV VLM VLA navigation sim2real latency\"",
+    "uav:init": "node --import tsx src/cli.ts research init --direction uav-navigation --title \"UAV navigation research\" --brief-file missions/uav-navigation.md --domain domains/uav-navigation.domain.json --engine adaptive-v2 --topic \"JEPA action-conditioned latent world model\" --topic \"predictive representation world model planning\" --topic \"Jev-like local visual Qwen decision head\" --topic \"fast uncertainty confidence head asynchronous VLM\" --topic \"memory action chunking embodied navigation\" --topic \"MPC MPPI VLA safety shield\" --topic \"3DGS real-to-sim live environment\" --topic \"UAV VLM VLA navigation sim2real latency\"",
     "uav:turn": "node --import tsx src/cli.ts research turn --direction uav-navigation",
     "uav:run": "node --import tsx src/cli.ts research run --direction uav-navigation",
+    "uav:start": "node --import tsx src/cli.ts research supervisor start --direction uav-navigation",
+    "uav:stop": "node --import tsx src/cli.ts research stop --all --direction uav-navigation --reason \"operator requested\"",
     "uav:status": "node --import tsx src/cli.ts research status --direction uav-navigation",
     "uav:preflight": "node --import tsx src/cli.ts research preflight",
     "build": "tsc -p tsconfig.build.json && node scripts/build-assets.mjs",

@@ -2,6 +2,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { researchHash, researchId, researchNow, type ResearchStore } from "./store.js";
+import { currentResearchRecords } from "./model-research.js";
 
 interface Investigation {
   investigation_id: string;
@@ -31,8 +32,8 @@ export function ensureInvestigations(store: ResearchStore): void {
 
 function rows(store: ResearchStore, directionId: string): Investigation[] {
   if (!store.db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='investigations'").get()) return [];
-  return store.db.prepare("SELECT * FROM investigations WHERE direction_id=? ORDER BY created_at DESC,rowid DESC")
-    .all(directionId) as Investigation[];
+  return currentResearchRecords(store, directionId, store.db.prepare("SELECT * FROM investigations WHERE direction_id=? ORDER BY created_at DESC,rowid DESC")
+    .all(directionId) as Investigation[]);
 }
 
 export function recordInvestigation(store: ResearchStore, directionId: string, runId: string | null,
@@ -86,6 +87,7 @@ export function stageInvestigations(store: ResearchStore, directionId: string, w
   if (!all.length) return;
   const directory = join(workspace, ".research-investigations");
   mkdirSync(directory, { recursive: true });
+  writeFileSync(join(directory, ".gitignore"), "*\n");
   for (const row of all) {
     if (!/^INV-[a-z0-9-]+$/i.test(row.investigation_id)) throw new Error("invalid investigation ID");
     if (researchHash(row.body_md) !== row.body_hash) throw new Error("investigation integrity failure");
