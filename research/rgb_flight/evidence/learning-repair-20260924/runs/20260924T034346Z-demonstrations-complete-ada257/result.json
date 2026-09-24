@@ -1,0 +1,15 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T034346Z-demonstrations-complete-ada257/source/await_demonstrations.py",
+    "--collection",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T034035Z-exploration-demonstrations-0ec7d6/collection/flights.json"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 1.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 1.0129440068267286
+}

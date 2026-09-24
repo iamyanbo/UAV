@@ -65,6 +65,13 @@ class MemorySnapshot:
             chunks.append(dict(points=points[valid],extent=extent[valid],observation_count=count[valid],
                 observed_ns=stamps[valid],source=dict(camera['source']),
                 covariance_packed=g['spatial_covariance_packed'][selected][valid]))
+        for historical in self.historical_points(calibration):
+            valid=historical['geometry_supported']&(historical['observation_count']>=2)
+            valid &= (historical['source_timestamps']>0)&(historical['source_timestamps']<=self.state['latest_observation_ns'])
+            if not valid.any():continue
+            chunks.append(dict(points=historical['position'][valid],extent=historical['extent'][valid],
+                observation_count=historical['observation_count'][valid],observed_ns=historical['source_timestamps'][valid],
+                source=historical['source']))
         return chunks
 
     def historical_points(self, calibration):
@@ -92,6 +99,10 @@ class MemorySnapshot:
             c2w = anchor['w2c'].float().inverse()
             corrected = corrected @ c2w[:3, :3].T + c2w[:3, 3]
             chunks.append(dict(position=corrected, geometry_supported=valid,
+                               extent=3*archive['gaussians']['_scaling'].float().exp().max(-1).values*torch.where(valid,factor,torch.ones_like(factor)),
+                               observation_count=archive['gaussians']['observed_active_views'],
+                               source_timestamps=archive['gaussians']['last_observed_sim_ns'],
+                               source=dict(archive['keyframe_source']),
                                source_frame=archive['keyframe_source']['frame_id'],
                                observed_ns=archive['keyframe_source']['sim_ns']))
         return chunks

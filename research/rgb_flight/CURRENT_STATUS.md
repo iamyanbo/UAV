@@ -1,8 +1,10 @@
-# Learning-loop repair ? September 24 UTC / September 23 Toronto
+# Learning-loop repair - September 24 UTC / September 23 Toronto
 
 See [the failure postmortem](POSTMORTEM_LEARNING_LOOP_2026-09-24.md). Bounded exploration, dispatched-command learning, explicit masked belief inputs, optimized Gaussian publication, separate Qwen/planning workers and ten-demonstration preparation are implemented. Verification is in progress; this is not deployment acceptance.
 
-The first repaired physical flight moved 9.588 m and ended at the 30-second initialization timeout without a recorded collision. Metric-map and RGB timing gates failed. Four further completed demonstrations moved about 9.5?9.7 m each. A fifth batch attempt failed mapper cleanup with a CUDA error; it remains preserved. Collection resumes with an empty-tensor optimizer repair. No new learning-loop update is yet claimed here.
+Ten moving demonstrations are complete: eight internal training episodes and two disjoint internal development episodes from the campaign training manifest. Actual paths span 9.55 to 9.69 m. All ended at initialization timeout; none passed the complete RGB/control timing gate. Failed infrastructure attempts are preserved separately.
+
+Round r46 completed new world, policy/critic, Qwen supervised, DAgger and fresh PPO updates. Gradient checks passed; world/imitation checkpoint reload checks passed and frozen parameters remained unchanged. The world action gradient is finite and nonzero. Learned DAgger and sampled PPO flights moved 14.29 m and 11.26 m; both timed out during initialization. The post-PPO simulator launch crashed before an episode began. Round r47 preserves that failure and continues from verified training artifacts with bounded infrastructure retries. See [the repair evidence](evidence/learning-repair-20260924/archive.json); its snapshot may precede the live scheduler state.
 
 Literature documents are available in [docs/literature](../../docs/literature/README.md).
 

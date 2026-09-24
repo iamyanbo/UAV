@@ -1,0 +1,88 @@
+{
+  "status": "failed",
+  "episode_id": "train-00010",
+  "split": "train",
+  "phase": 2,
+  "runtime_goal_sha256": "73f4dd29a6760b14e99c4c04c3d1e1ec35f1c5ba251b84c79b699e4141296463",
+  "pose_setting_calls_before_recording": 1,
+  "pre_episode_goal_pose_setting_calls": 4,
+  "pose_setting_calls_after_recording": 0,
+  "clock_speed": 1.0,
+  "maximum_speed_mps": 3.0,
+  "controller_kind": "learned_mode_1",
+  "runtime_isolation": {
+    "status": "live_inference_boundary_passed",
+    "episode_id": "train-00010",
+    "rgb_bytes": 921600,
+    "first_sim_ns": 1790220974693496064,
+    "last_sim_ns": 1790220974990502400,
+    "goal_views": 4,
+    "denied_operations": 5,
+    "simulator_rpc_inaccessible": true,
+    "privileged_files_inaccessible": true
+  },
+  "controller_checkpoint_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+  "error_type": "RuntimeError",
+  "error": "Live controller exited; inspect preserved inference receipt/log",
+  "learned_controller": {
+    "status": "failed",
+    "accepted": false,
+    "frames": 0,
+    "error": {
+      "type": "RuntimeError",
+      "message": "RGB unavailable"
+    },
+    "shards": [],
+    "scope": "Live Mode 1 only; no planner or Qwen configuration",
+    "sampled_policy": false,
+    "slow_planner_enabled": false,
+    "teacher_provenance": "observed-exploration/v3",
+    "final_map_status": "initializing",
+    "map_version": -1,
+    "handover_sim_ns": null,
+    "control_safety_p95_seconds": null,
+    "control_safety_missed_deadlines": 0,
+    "safety_interventions": 0
+  },
+  "broker_errors": [
+    "capture: Full: "
+  ],
+  "commands": 625,
+  "control_latency_p95_seconds": 0.1698036224,
+  "capture_interval_p95_sim_seconds": 0.027000576,
+  "fresh_rgb_hz": 44.633934436786646,
+  "control_work_p95_seconds": 0.0008896927349269388,
+  "control_missed_deadlines": 0,
+  "control_interval_p95_seconds": 0.04521970567293465,
+  "control_interval_max_seconds": 0.06296543404459953,
+  "control_schedule_missed_deadlines": 1,
+  "timing_gate": {
+    "accepted": false,
+    "capture_control_passed": true,
+    "requirements": {
+      "fresh_rgb_hz_min": 19,
+      "rgb_interval_p95_max": 0.075,
+      "control_p95_max": 0.05
+    },
+    "reason": "RGB/control acceptance is measured; application delay belongs to dispatched-command dynamics",
+    "application_timestamps_available": false
+  },
+  "depth_label_index": "training_labels/depth/index.jsonl",
+  "depth_label_samples": 0,
+  "storage": {
+    "frames": 250,
+    "stream_sha256": "567abd07bc9703ea5d5041db4288d6c54f044db65193601c4f4feabf49ed2e2e",
+    "complete": false,
+    "codec": "per-frame zlib level 1, lossless RGB24",
+    "timestamps": "original AirSim image nanoseconds",
+    "pixel_format": "RGB24",
+    "color_calibration_sha256": "80e6766cc9c8a4c40d17a5f3de0d7a7f4a18e387b45f120bb7624959735346d5"
+  },
+  "training_label_frames": 45,
+  "teacher_provenance": "observed-exploration/v3",
+  "actual_displacement_m": 0.006659030914306641,
+  "actual_path_length_m": 0.006659030914306641,
+  "mean_actual_velocity_mps": 0.0030089858298500377,
+  "maximum_actual_velocity_mps": 0.003009012434631586,
+  "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+}

@@ -1,7 +1,7 @@
 """Join causal replay with separately stored labels on the world-model grid.
 
-Missing application timing is retained as an invalid action mask. Such windows
-are inspectable candidates, and the trainer rejects them until timing is known.
+Missing dispatch coverage is retained as an invalid action mask. Application
+delay remains part of the dynamics; no application timestamp is fabricated.
 """
 import argparse
 import bisect

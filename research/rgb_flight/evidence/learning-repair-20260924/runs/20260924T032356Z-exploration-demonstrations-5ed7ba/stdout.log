@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/iamyanbo/uav-rgb-flight/runs/20260924T032356Z-exploration-demonstrations-5ed7ba/source/collect_learning_round.py", line 95, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/iamyanbo/uav-rgb-flight/runs/20260924T032356Z-exploration-demonstrations-5ed7ba/source/collect_learning_round.py", line 84, in main
+    raise RuntimeError('Physical collection infrastructure failed; outcome retained')
+RuntimeError: Physical collection infrastructure failed; outcome retained

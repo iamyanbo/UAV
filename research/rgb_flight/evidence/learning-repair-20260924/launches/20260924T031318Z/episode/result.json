@@ -1,0 +1,117 @@
+{
+  "status": "learned_flight_finished",
+  "episode_id": "train-00001",
+  "split": "train",
+  "phase": 2,
+  "runtime_goal_sha256": "15b2f1df4e18a5789783f5891d26f0fbd89893cc0a48fc0b522ddea8669e436a",
+  "pose_setting_calls_before_recording": 1,
+  "pre_episode_goal_pose_setting_calls": 4,
+  "pose_setting_calls_after_recording": 0,
+  "clock_speed": 1.0,
+  "maximum_speed_mps": 3.0,
+  "controller_kind": "learned_mode_1",
+  "runtime_isolation": {
+    "status": "live_inference_boundary_passed",
+    "episode_id": "train-00001",
+    "rgb_bytes": 921600,
+    "first_sim_ns": 1790219627664040960,
+    "last_sim_ns": 1790219627976047616,
+    "goal_views": 4,
+    "denied_operations": 5,
+    "simulator_rpc_inaccessible": true,
+    "privileged_files_inaccessible": true
+  },
+  "controller_checkpoint_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+  "termination": "initialization_timeout",
+  "success": false,
+  "elapsed_sim_seconds": 30.087641716003418,
+  "learned_controller": {
+    "status": "completed",
+    "accepted": false,
+    "frames": 390,
+    "error": null,
+    "shards": [
+      {
+        "path": "controller-000000.pt",
+        "sha256": "f6c60c62a5dcd15c7cdf345cc32d26cf391b8d8b1ae130857dad212fbcca5481",
+        "samples": 64
+      },
+      {
+        "path": "controller-000001.pt",
+        "sha256": "e0ce04b26e2b8536e985d6ac2022de45c2252bb5a200ae9fbfea68d97ed58825",
+        "samples": 64
+      },
+      {
+        "path": "controller-000002.pt",
+        "sha256": "1f1999f2a9d355c186f99537c9d8899a56995df3909ba3cb840668e13011cddd",
+        "samples": 64
+      },
+      {
+        "path": "controller-000003.pt",
+        "sha256": "7c2ba2efe1ed9ef352dcd8ccf8ec8b0c40d36744a538b5734179b5468b3ba885",
+        "samples": 64
+      },
+      {
+        "path": "controller-000004.pt",
+        "sha256": "cc2a1ef3e675699521abba8e62fe3520e37ccfe7aa6ae2c2b2bf92265bec90ac",
+        "samples": 64
+      },
+      {
+        "path": "controller-000005.pt",
+        "sha256": "78d94eee18177884a1b6c6b7b4162ac65005c11e5661b746142e91f2c29d21c7",
+        "samples": 64
+      },
+      {
+        "path": "controller-000006.pt",
+        "sha256": "05b25521260b62abbc9132e2d87120b7c95b1f15b40344133f71207e2e3230ec",
+        "samples": 6
+      }
+    ],
+    "scope": "Live Mode 1 only; no planner or Qwen configuration",
+    "sampled_policy": false,
+    "slow_planner_enabled": false,
+    "teacher_provenance": "observed-exploration/v3",
+    "final_map_status": "terminated",
+    "map_version": -1,
+    "handover_sim_ns": null
+  },
+  "broker_errors": [],
+  "commands": 1245,
+  "control_latency_p95_seconds": 0.189004032,
+  "capture_interval_p95_sim_seconds": 0.108002304,
+  "fresh_rgb_hz": 20.438894142687392,
+  "control_work_p95_seconds": 0.0013759470079094166,
+  "control_missed_deadlines": 0,
+  "control_interval_p95_seconds": 0.04569034355226904,
+  "control_interval_max_seconds": 0.05136186606250703,
+  "control_schedule_missed_deadlines": 1,
+  "timing_gate": {
+    "accepted": false,
+    "capture_control_passed": false,
+    "requirements": {
+      "fresh_rgb_hz_min": 19,
+      "rgb_interval_p95_max": 0.075,
+      "control_p95_max": 0.05
+    },
+    "reason": "Learned safety inference latency and command-application timestamps not yet qualified",
+    "application_timestamps_available": false
+  },
+  "depth_label_index": "training_labels/depth/index.jsonl",
+  "depth_label_samples": 0,
+  "storage": {
+    "frames": 1152,
+    "stream_sha256": "35a212fa5dddeab13d4acc9bbf96d6caf909beca2d54a72d3ad29c92e5aabd15",
+    "complete": true,
+    "codec": "per-frame zlib level 1, lossless RGB24",
+    "timestamps": "original AirSim image nanoseconds",
+    "pixel_format": "RGB24",
+    "color_calibration_sha256": "1c20c08f10ebb0f7607ff9bc95930b49bd4f7a90a6e74c6c6e1e2a2554c7f7e0"
+  },
+  "training_label_frames": 600,
+  "teacher_provenance": "observed-exploration/v3",
+  "actual_displacement_m": 8.369489810927583,
+  "actual_path_length_m": 9.559216910024443,
+  "mean_actual_velocity_mps": 0.3174432963591692,
+  "maximum_actual_velocity_mps": 0.42495703556739267,
+  "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+}

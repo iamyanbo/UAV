@@ -321,7 +321,7 @@ def main():
                 result.get('control_interval_p95_seconds',math.inf)<=.05 and
                 result.get('control_work_p95_seconds',math.inf)<=.05),
                 requirements=dict(fresh_rgb_hz_min=19,rgb_interval_p95_max=.075,control_p95_max=.05),
-                reason='Learned safety inference latency and command-application timestamps not yet qualified',
+                reason='RGB/control acceptance is measured; application delay belongs to dispatched-command dynamics',
                 application_timestamps_available=False)
         if depth_future is not None:
             try:

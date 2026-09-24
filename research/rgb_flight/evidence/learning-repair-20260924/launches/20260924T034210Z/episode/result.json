@@ -1,0 +1,120 @@
+{
+  "status": "learned_flight_finished",
+  "episode_id": "train-00012",
+  "split": "train",
+  "phase": 1,
+  "runtime_goal_sha256": "14979d1b8e5fccc335c7679ab370afdb1c1f775c56b3558a122e6ca229932d4e",
+  "pose_setting_calls_before_recording": 1,
+  "pre_episode_goal_pose_setting_calls": 4,
+  "pose_setting_calls_after_recording": 0,
+  "clock_speed": 1.0,
+  "maximum_speed_mps": 3.0,
+  "controller_kind": "learned_mode_1",
+  "runtime_isolation": {
+    "status": "live_inference_boundary_passed",
+    "episode_id": "train-00012",
+    "rgb_bytes": 921600,
+    "first_sim_ns": 1790221357425113088,
+    "last_sim_ns": 1790221357743119872,
+    "goal_views": 4,
+    "denied_operations": 5,
+    "simulator_rpc_inaccessible": true,
+    "privileged_files_inaccessible": true
+  },
+  "controller_checkpoint_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+  "termination": "initialization_timeout",
+  "success": false,
+  "elapsed_sim_seconds": 30.02764058113098,
+  "learned_controller": {
+    "status": "completed",
+    "accepted": false,
+    "frames": 393,
+    "error": null,
+    "shards": [
+      {
+        "path": "controller-000000.pt",
+        "sha256": "062a1222c0f4ebaaa29bd4293a84fcb43f3a36126414e76a921e23a5527464e6",
+        "samples": 64
+      },
+      {
+        "path": "controller-000001.pt",
+        "sha256": "30ea68f7dda2a2bb5c58a8fb6ffee7027b1b37c772d9c82a1c95965660e721a4",
+        "samples": 64
+      },
+      {
+        "path": "controller-000002.pt",
+        "sha256": "93e2d77a1de63d06aed0b21cb9f540a5b08d24fd87735f642cb651715c7b6a28",
+        "samples": 64
+      },
+      {
+        "path": "controller-000003.pt",
+        "sha256": "6633b0700acfbcf2fe0c0d282b5212b38545a024ccb4e2ab6c3d459da75ea818",
+        "samples": 64
+      },
+      {
+        "path": "controller-000004.pt",
+        "sha256": "cb8dbe355751cec2f8f4fefb94e0644fc68200791e1c6386277224d5cb9da598",
+        "samples": 64
+      },
+      {
+        "path": "controller-000005.pt",
+        "sha256": "490d6c57b1cc1d208423eca200986ebc538e74089ff1b9e7d9379bbf39ffd851",
+        "samples": 64
+      },
+      {
+        "path": "controller-000006.pt",
+        "sha256": "e62bb9c73ac0f1990dcb968fb7b910289875aa17e079caa8d97c5448036a354c",
+        "samples": 9
+      }
+    ],
+    "scope": "Live Mode 1 only; no planner or Qwen configuration",
+    "sampled_policy": false,
+    "slow_planner_enabled": false,
+    "teacher_provenance": "observed-exploration/v3",
+    "final_map_status": "terminated",
+    "map_version": -1,
+    "handover_sim_ns": null,
+    "control_safety_p95_seconds": 0.09861292811110615,
+    "control_safety_missed_deadlines": 257,
+    "safety_interventions": 0
+  },
+  "broker_errors": [],
+  "commands": 1246,
+  "control_latency_p95_seconds": 0.198004224,
+  "capture_interval_p95_sim_seconds": 0.108002304,
+  "fresh_rgb_hz": 24.891243878572148,
+  "control_work_p95_seconds": 0.00136528693838045,
+  "control_missed_deadlines": 0,
+  "control_interval_p95_seconds": 0.046067604282870885,
+  "control_interval_max_seconds": 0.06575520196929574,
+  "control_schedule_missed_deadlines": 1,
+  "timing_gate": {
+    "accepted": false,
+    "capture_control_passed": false,
+    "requirements": {
+      "fresh_rgb_hz_min": 19,
+      "rgb_interval_p95_max": 0.075,
+      "control_p95_max": 0.05
+    },
+    "reason": "RGB/control acceptance is measured; application delay belongs to dispatched-command dynamics",
+    "application_timestamps_available": false
+  },
+  "depth_label_index": "training_labels/depth/index.jsonl",
+  "depth_label_samples": 0,
+  "storage": {
+    "frames": 1404,
+    "stream_sha256": "639966c12009a8fb2dea5838447eb787881e303c1a5fb716f848701856c55136",
+    "complete": true,
+    "codec": "per-frame zlib level 1, lossless RGB24",
+    "timestamps": "original AirSim image nanoseconds",
+    "pixel_format": "RGB24",
+    "color_calibration_sha256": "fd6b530017442bc62359a382bb6ea93becdd9d2fa6c288ab34d123ee077c9a6b"
+  },
+  "training_label_frames": 599,
+  "teacher_provenance": "observed-exploration/v3",
+  "actual_displacement_m": 8.358791339223052,
+  "actual_path_length_m": 9.571851154686701,
+  "mean_actual_velocity_mps": 0.3184189511470302,
+  "maximum_actual_velocity_mps": 0.4249447354785636,
+  "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+}

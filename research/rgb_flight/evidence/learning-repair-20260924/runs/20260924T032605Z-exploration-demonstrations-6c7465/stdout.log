@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/iamyanbo/uav-rgb-flight/runs/20260924T032605Z-exploration-demonstrations-6c7465/source/collect_learning_round.py", line 95, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/iamyanbo/uav-rgb-flight/runs/20260924T032605Z-exploration-demonstrations-6c7465/source/collect_learning_round.py", line 86, in main
+    raise RuntimeError('Learned runtime failed during flight or shutdown; physical outcome retained')
+RuntimeError: Learned runtime failed during flight or shutdown; physical outcome retained

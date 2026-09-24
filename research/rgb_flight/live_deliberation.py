@@ -14,6 +14,7 @@ from configurator import Configurator
 from runtime_capacity import slow_worker
 from contracts import VisualTaskConfig
 from learning_models import WorldModel,PrimitiveCritic
+from action_intervals import executed_slots
 from predictive_planner import CostScales,PredictivePlanner
 
 
@@ -57,7 +58,11 @@ class LiveDeliberation:
         hidden=torch.zeros(1,256,device='cuda')
         with torch.no_grad():
             for historical in request['history'][:-1]:
-                action=tensor(historical['previous_command'])[None,None].expand(1,4,4)
+                slots=historical.get('dispatched_slots')
+                if slots is None:
+                    hidden.zero_()
+                    continue
+                action=torch.tensor(slots,device='cuda',dtype=torch.float32)[None]
                 prediction=self.planner.model(tensor(historical['z'])[None],tensor(historical['state'])[None],hidden,
                     tensor(historical['memory'])[None],tensor(historical['memory_valid'])[None],action,
                     tensor(historical['task'])[None],tensor(self.core.goal_tokens),tensor(historical['target_context'])[None])
@@ -127,8 +132,12 @@ class LiveDeliberation:
             config=VisualTaskConfig(episode_id=self.core.episode_id,valid_until_sim_seconds=ns/1e9+horizon,**parsed)
             config.validate_grounding(self.core.episode_id,[x['id'] for x in observed],ns/1e9)
             self.core.configuration=config
+        for historical in self.history:
+            if historical['dispatched_slots'] is None:
+                slots=executed_slots(metadata['command_history'],historical['sim_ns'])
+                if all(slots['valid']):historical['dispatched_slots']=slots['values']
         if ns-self.last_history_ns>=200000000:
-            self.history.append(value);self.last_history_ns=ns
+            self.history.append(dict(value,dispatched_slots=None));self.last_history_ns=ns
         if self.pending is not None and self.pending.done():
             try:
                 self.active=self.pending.result();self.completed+=1
@@ -138,16 +147,17 @@ class LiveDeliberation:
             except Exception as error:
                 self.errors.append(type(error).__name__+': '+str(error));self._event(dict(status='failed',error=self.errors[-1]))
             self.pending=None
-        if not self.errors and self.pending is None and value['visual_available'] and len(self.history)>=10 and ns-self.last_ns>=3000000000:
+        if not self.errors and self.pending is None and value['map_status'] in ('initializing','mapped') and value['visual_available'] and len(self.history)>=10 and ns-self.last_ns>=3000000000:
             self.version+=1;self.last_ns=ns
             image=Image.frombytes('RGB',(640,480),rgb)
             request=dict(value=value,observed=observed,image=image,config=config,version=self.version,
-                geometry=copy.deepcopy(self.core.geometry),history=list(self.history),available=metadata['received_monotonic'])
+                geometry=copy.deepcopy(self.core.geometry),history=[dict(row) for row in self.history],available=metadata['received_monotonic'])
             self.pending=self.executor.submit(self._work,request)
         active=self.active
         if active is None:return None
         elapsed=(ns-active['observation_ns'])/1e9;index=int(elapsed/.2)
         reasons=[]
+        if value['map_status']!='mapped':reasons.append('startup_or_recovery_mode1_active')
         if active['episode_id']!=self.core.episode_id:reasons.append('wrong_episode')
         if active['hazard_version']!=value['hazard_version']:reasons.append('new_observed_hazard')
         if active['gauge_version']!=value['gauge_version']:reasons.append('map_gauge_changed')

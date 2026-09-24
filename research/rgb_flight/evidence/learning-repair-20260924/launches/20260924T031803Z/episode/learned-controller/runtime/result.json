@@ -1,0 +1,43 @@
+{
+  "status": "failed",
+  "accepted": false,
+  "frames": 275,
+  "error": {
+    "type": "RuntimeError",
+    "message": "RGB mapper did not finish cleanly; retained reconstruction log"
+  },
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "48f7bc91113848a9952b26bb4437419cd76cd24aebea6cd353c4beaf7e2ebdaa",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "0dcaf1d43f73e3981f6f879e7090dd5bc1a1a7a43b1d06473051330c1b3dff24",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "14332ac6423536f61c99fc8215b64cf6e7634b0c2bc776628012b1e8906e672f",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "8f78edb158d1fb641233760f8f4c78536406dbb4a73bc6336e67b91e35540997",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "f0617e9c69009145f1667d49e3d7f18b1d0d8465d7120508cfaf354568458f5d",
+      "samples": 19
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": "observed-exploration/v3",
+  "final_map_status": "terminated",
+  "map_version": -1,
+  "handover_sim_ns": null
+}

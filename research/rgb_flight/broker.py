@@ -212,7 +212,12 @@ class RGBBroker:
                         self.capture_intervals.append((image.time_stamp - previous_ns) / 1e9)
                         self.capture_wall_intervals.append(received - previous_wall)
                     if self.writer:
-                        self.write_queue.put_nowait((metadata, rgb))
+                        # Preserve every published RGB frame. Brief recorder
+                        # backlog applies bounded backpressure to capture;
+                        # the independent command watchdog still brakes on
+                        # stale RGB, and timing receipts retain the resulting
+                        # gaps. Queue saturation alone is not a camera error.
+                        self.write_queue.put((metadata, rgb), timeout=5)
                     previous_ns = image.time_stamp
                     previous_wall = received
                     frame_id += 1

@@ -34,12 +34,12 @@ class PredictivePlanner:
         self.maximum_horizontal_speed_mps = maximum_horizontal_speed_mps
 
     @staticmethod
-    def project(actions, horizontal_limit=3.):
+    def project(actions, horizontal_limit=3., vertical_limit=1., yaw_limit=45.):
         with torch.no_grad():
             norm = actions[..., :2].norm(dim=-1, keepdim=True).clamp_min(horizontal_limit)
             actions[..., :2].mul_(horizontal_limit / norm)
-            actions[..., 2].clamp_(-1, 1)
-            actions[..., 3].clamp_(-45, 45)
+            actions[..., 2].clamp_(-vertical_limit, vertical_limit)
+            actions[..., 3].clamp_(-yaw_limit, yaw_limit)
 
     def score(self, actions, initial, task, geometry, multipliers, delay_seconds):
         """geometry(position) returns conservative distance and unknown penalty.
@@ -122,11 +122,14 @@ class PredictivePlanner:
         # calibrated braking time.
         horizontal_limit = min(self.maximum_horizontal_speed_mps,
                                max(.25, self.scales.braking_acceleration*3.))
-        self.project(candidates, horizontal_limit)
+        initializing=initial['state'].shape[-1]>=32 and bool(initial['state'][0,18]>.5)
+        vertical_limit,yaw_limit=(.2,15.) if initializing else (1.,45.)
+        if initializing:horizontal_limit=min(horizontal_limit,.5)
+        self.project(candidates, horizontal_limit, vertical_limit, yaw_limit)
         # Retain every initial candidate: optimization cannot erase the fast proposal.
         best = candidates.detach().clone()
         best_scores = candidates.new_full((8,), float('inf'))
-        limits = candidates.new_tensor([horizontal_limit, horizontal_limit, 1, 45])
+        limits = candidates.new_tensor([horizontal_limit, horizontal_limit, vertical_limit, yaw_limit])
         normalized = (candidates / limits).detach().requires_grad_(True)
         optimizer = torch.optim.Adam([normalized], lr=.08)
         for iteration in range(12):
@@ -148,7 +151,7 @@ class PredictivePlanner:
             optimizer.step()
             with torch.no_grad():
                 physical = normalized * limits
-                self.project(physical, horizontal_limit)
+                self.project(physical, horizontal_limit, vertical_limit, yaw_limit)
                 normalized.copy_(physical / limits)
         with torch.no_grad():
             physical = normalized * limits

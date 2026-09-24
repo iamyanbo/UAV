@@ -1,0 +1,110 @@
+{
+  "status": "learned_flight_finished",
+  "episode_id": "train-00004",
+  "split": "train",
+  "phase": 2,
+  "runtime_goal_sha256": "46a365040425f4a504c74ea1042e0f0d46855a3402ddc2e298789c294489699f",
+  "pose_setting_calls_before_recording": 1,
+  "pre_episode_goal_pose_setting_calls": 4,
+  "pose_setting_calls_after_recording": 0,
+  "clock_speed": 1.0,
+  "maximum_speed_mps": 3.0,
+  "controller_kind": "learned_mode_1",
+  "runtime_isolation": {
+    "status": "live_inference_boundary_passed",
+    "episode_id": "train-00004",
+    "rgb_bytes": 921600,
+    "first_sim_ns": 1790219910827069696,
+    "last_sim_ns": 1790219911211077888,
+    "goal_views": 4,
+    "denied_operations": 5,
+    "simulator_rpc_inaccessible": true,
+    "privileged_files_inaccessible": true
+  },
+  "controller_checkpoint_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+  "termination": "initialization_timeout",
+  "success": false,
+  "elapsed_sim_seconds": 30.02164053916931,
+  "learned_controller": {
+    "status": "failed",
+    "accepted": false,
+    "frames": 275,
+    "error": {
+      "type": "RuntimeError",
+      "message": "RGB mapper did not finish cleanly; retained reconstruction log"
+    },
+    "shards": [
+      {
+        "path": "controller-000000.pt",
+        "sha256": "48f7bc91113848a9952b26bb4437419cd76cd24aebea6cd353c4beaf7e2ebdaa",
+        "samples": 64
+      },
+      {
+        "path": "controller-000001.pt",
+        "sha256": "0dcaf1d43f73e3981f6f879e7090dd5bc1a1a7a43b1d06473051330c1b3dff24",
+        "samples": 64
+      },
+      {
+        "path": "controller-000002.pt",
+        "sha256": "14332ac6423536f61c99fc8215b64cf6e7634b0c2bc776628012b1e8906e672f",
+        "samples": 64
+      },
+      {
+        "path": "controller-000003.pt",
+        "sha256": "8f78edb158d1fb641233760f8f4c78536406dbb4a73bc6336e67b91e35540997",
+        "samples": 64
+      },
+      {
+        "path": "controller-000004.pt",
+        "sha256": "f0617e9c69009145f1667d49e3d7f18b1d0d8465d7120508cfaf354568458f5d",
+        "samples": 19
+      }
+    ],
+    "scope": "Live Mode 1 only; no planner or Qwen configuration",
+    "sampled_policy": false,
+    "slow_planner_enabled": false,
+    "teacher_provenance": "observed-exploration/v3",
+    "final_map_status": "terminated",
+    "map_version": -1,
+    "handover_sim_ns": null
+  },
+  "broker_errors": [],
+  "commands": 1239,
+  "control_latency_p95_seconds": 0.216004608,
+  "capture_interval_p95_sim_seconds": 0.14580311040000007,
+  "fresh_rgb_hz": 11.953004007726966,
+  "control_work_p95_seconds": 0.0013297483557835217,
+  "control_missed_deadlines": 0,
+  "control_interval_p95_seconds": 0.04535652126651257,
+  "control_interval_max_seconds": 0.04930023499764502,
+  "control_schedule_missed_deadlines": 0,
+  "timing_gate": {
+    "accepted": false,
+    "capture_control_passed": false,
+    "requirements": {
+      "fresh_rgb_hz_min": 19,
+      "rgb_interval_p95_max": 0.075,
+      "control_p95_max": 0.05
+    },
+    "reason": "Learned safety inference latency and command-application timestamps not yet qualified",
+    "application_timestamps_available": false
+  },
+  "depth_label_index": "training_labels/depth/index.jsonl",
+  "depth_label_samples": 0,
+  "storage": {
+    "frames": 670,
+    "stream_sha256": "504cd595bf87ed22613c7f75181982d474ea591539f7d14444781f2373c8aef7",
+    "complete": true,
+    "codec": "per-frame zlib level 1, lossless RGB24",
+    "timestamps": "original AirSim image nanoseconds",
+    "pixel_format": "RGB24",
+    "color_calibration_sha256": "e26398b93a482d71ce068fc327c66aa4dce0c528d094850d23048171d2d5c838"
+  },
+  "training_label_frames": 599,
+  "teacher_provenance": "observed-exploration/v3",
+  "actual_displacement_m": 8.34598719135252,
+  "actual_path_length_m": 9.535524644791565,
+  "mean_actual_velocity_mps": 0.31735297289349507,
+  "maximum_actual_velocity_mps": 0.4249265112270997,
+  "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+}

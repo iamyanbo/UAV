@@ -41,7 +41,7 @@ def main():
                 '--max-pairs','1','--pair-index',str(index)],check=True)
             pair=json.loads((job/f'configuration-pair-{index:03d}'/'result.json').read_text());pairs.append(pair)
             (output/'pairs.json').write_text(json.dumps(pairs,indent=2))
-            if pair['preference_update_ready']:break
+            if pair['preference_update_ready'] or pair.get('control_exposure_blocked'):break
         result=dict(pairs[-1],pairs=pairs,matched_pairs=len(pairs),ties=sum(p['ambiguous'] for p in pairs),
             preference_status='ready' if pairs[-1]['preference_update_ready'] else 'blocked')
         (output/'outcomes.json').write_text(json.dumps(result['outcomes'],indent=2))
@@ -76,7 +76,9 @@ def main():
         if deliberation['status']!='completed' or deliberation['actual_planner_calls']<1:
             raise RuntimeError('Matched flight did not execute the trained predictive/configuration path')
         if result['runtime_goal_sha256']!=conditions['goal_panorama_sha256']:raise ValueError('Matched exact goal pixels changed')
-        outcomes.append(dict(complete_flight=True,episode_path=str(episode),result_sha256=digest(episode/'result.json'),
+        proposals=[json.loads(line) for line in (episode/'learned-controller/runtime/proposals.jsonl').read_text().splitlines()]
+        exposed=sum(p['mode']=='predictive_then_independent_safety' and not p['safety']['overridden'] and p.get('broker_acceptance',{}).get('accepted',False) for p in proposals)
+        outcomes.append(dict(applied_predictive_commands=exposed,complete_flight=True,episode_path=str(episode),result_sha256=digest(episode/'result.json'),
             configuration=configuration,collision=bool(result.get('airsim_collision') or result.get('geometry_collision')),
             success=bool(result['success']),elapsed_sim_seconds=result['elapsed_sim_seconds'],termination=result['termination']))
         (output/'outcomes.json').write_text(json.dumps(outcomes,indent=2))
@@ -86,12 +88,14 @@ def main():
     if rank(a)!=rank(b):winner=0 if rank(a)>rank(b) else 1
     elif a['success'] and abs(a['elapsed_sim_seconds']-b['elapsed_sim_seconds'])>1.:
         winner=0 if a['elapsed_sim_seconds']<b['elapsed_sim_seconds'] else 1
-    result=dict(status='completed',accepted=False,matched_conditions=conditions,
+    no_exposure=not any(x['applied_predictive_commands'] for x in outcomes)
+    if no_exposure:winner=None
+    result=dict(status='completed',accepted=False,control_exposure_blocked=no_exposure,matched_conditions=conditions,
         matched_conditions_sha256=hashlib.sha256(json.dumps(conditions,sort_keys=True).encode()).hexdigest(),
         controller_sha256=controller_hash,outcomes=outcomes,winner=winner,ambiguous=winner is None,
         ranking='collision avoidance, then success, then completion time among successes; <=1 s is a timing tie',
         preference_update_ready=winner is not None,
-        reason='Matched outcome tie; no preferred configuration label exists' if winner is None else None)
+        reason=('Neither configuration affected dispatched controls; preference learning blocked' if no_exposure else 'Matched outcome tie; no preferred configuration label exists') if winner is None else None)
     (output/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result))
 
 

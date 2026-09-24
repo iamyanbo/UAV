@@ -1,0 +1,110 @@
+{
+  "status": "learned_flight_finished",
+  "episode_id": "train-00004",
+  "split": "train",
+  "phase": 2,
+  "runtime_goal_sha256": "c716f35a72de37b4f0e3e7f28a0b284bab8a7767c6f75161afbffe328a9e84d7",
+  "pose_setting_calls_before_recording": 1,
+  "pre_episode_goal_pose_setting_calls": 4,
+  "pose_setting_calls_after_recording": 0,
+  "clock_speed": 1.0,
+  "maximum_speed_mps": 3.0,
+  "controller_kind": "learned_mode_1",
+  "runtime_isolation": {
+    "status": "live_inference_boundary_passed",
+    "episode_id": "train-00004",
+    "rgb_bytes": 921600,
+    "first_sim_ns": 1790220598498577408,
+    "last_sim_ns": 1790220598840584704,
+    "goal_views": 4,
+    "denied_operations": 5,
+    "simulator_rpc_inaccessible": true,
+    "privileged_files_inaccessible": true
+  },
+  "controller_checkpoint_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+  "termination": "initialization_timeout",
+  "success": false,
+  "elapsed_sim_seconds": 30.06964135169983,
+  "learned_controller": {
+    "status": "completed",
+    "accepted": false,
+    "frames": 306,
+    "error": null,
+    "shards": [
+      {
+        "path": "controller-000000.pt",
+        "sha256": "9a7c476338cd7d024253b904b190e691017153e63666cf49e2332901e0d80354",
+        "samples": 64
+      },
+      {
+        "path": "controller-000001.pt",
+        "sha256": "345da9a51d7ee737fba6ccdf0ee70510074dd845a0b146c0de87df2ee2b2ced4",
+        "samples": 64
+      },
+      {
+        "path": "controller-000002.pt",
+        "sha256": "df98145e081938d27a08100d69a3656d54346200dd37980b28b4c8d297cd8a3d",
+        "samples": 64
+      },
+      {
+        "path": "controller-000003.pt",
+        "sha256": "3eef6115e004526f8bb050ec0355eb58dd2bde47882b78876abbc73e68529d06",
+        "samples": 64
+      },
+      {
+        "path": "controller-000004.pt",
+        "sha256": "87f4e12105245f89e11a1c6d544b1d6d85d1bb922e09c76c7712004ff1873664",
+        "samples": 50
+      }
+    ],
+    "scope": "Live Mode 1 only; no planner or Qwen configuration",
+    "sampled_policy": false,
+    "slow_planner_enabled": false,
+    "teacher_provenance": "observed-exploration/v3",
+    "final_map_status": "terminated",
+    "map_version": -1,
+    "handover_sim_ns": null,
+    "control_safety_p95_seconds": 0.09992431191494688,
+    "control_safety_missed_deadlines": 206,
+    "safety_interventions": 0
+  },
+  "broker_errors": [],
+  "commands": 1241,
+  "control_latency_p95_seconds": 0.204004352,
+  "capture_interval_p95_sim_seconds": 0.13500288,
+  "fresh_rgb_hz": 13.132760926418316,
+  "control_work_p95_seconds": 0.0013210282195359468,
+  "control_missed_deadlines": 0,
+  "control_interval_p95_seconds": 0.04544010445242748,
+  "control_interval_max_seconds": 0.06196667696349323,
+  "control_schedule_missed_deadlines": 1,
+  "timing_gate": {
+    "accepted": false,
+    "capture_control_passed": false,
+    "requirements": {
+      "fresh_rgb_hz_min": 19,
+      "rgb_interval_p95_max": 0.075,
+      "control_p95_max": 0.05
+    },
+    "reason": "RGB/control acceptance is measured; application delay belongs to dispatched-command dynamics",
+    "application_timestamps_available": false
+  },
+  "depth_label_index": "training_labels/depth/index.jsonl",
+  "depth_label_samples": 0,
+  "storage": {
+    "frames": 738,
+    "stream_sha256": "38ffa542ea8692888e4f4e64f4b96bb3b8f13d5233a800f2820c30d9ff8068f9",
+    "complete": true,
+    "codec": "per-frame zlib level 1, lossless RGB24",
+    "timestamps": "original AirSim image nanoseconds",
+    "pixel_format": "RGB24",
+    "color_calibration_sha256": "b88e8ebaf81767b994f6832a9e50907fedabb8a2024e07c11240ef376ad108fa"
+  },
+  "training_label_frames": 600,
+  "teacher_provenance": "observed-exploration/v3",
+  "actual_displacement_m": 8.403905194162762,
+  "actual_path_length_m": 9.657747789156488,
+  "mean_actual_velocity_mps": 0.3209033413623671,
+  "maximum_actual_velocity_mps": 0.4249498802500894,
+  "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+}

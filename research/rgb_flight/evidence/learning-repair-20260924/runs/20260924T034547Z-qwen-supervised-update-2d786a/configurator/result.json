@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "phase": "supervised",
+  "integration_only": true,
+  "gradient_evidence": {
+    "qwen.model": {
+      "parameters": 1112,
+      "trainable": 288,
+      "gradient_tensors": 288,
+      "nonzero_gradient_tensors": 144,
+      "changed_tensors": 288,
+      "frozen_changed": 0
+    }
+  },
+  "resumed_from_updates": 0,
+  "optimizer_states": 288,
+  "examples_processed": 1,
+  "updates": 1
+}

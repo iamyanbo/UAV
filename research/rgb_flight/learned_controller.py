@@ -125,7 +125,7 @@ def main():
     parser.add_argument('--demonstrate',action='store_true')
     args=parser.parse_args();output=Path('/output');client=BrokerClient(args.socket,args.episode_id)
     if args.with_deliberation and args.sample_policy:parser.error('Initial PPO disables slow planning')
-    core=video=mapping=deliberation=None;count=0;error=None;chunks=[];shards=[]
+    core=video=mapping=deliberation=None;count=0;error=None;chunks=[];shards=[];latencies=[];interventions=0
     def flush():
         if not chunks:return
         path=output/f'controller-{len(shards):06d}.pt';torch.save(dict(samples=list(chunks)),path)
@@ -163,6 +163,7 @@ def main():
                 if str(failure) not in ('Stale RGB; braking','Stale or future command frame'):raise
                 trace['broker_acceptance']=dict(accepted=False,reason=str(failure))
             trace['processing_seconds']=time.monotonic()-started;trace['deadline_missed']=trace['processing_seconds']>.05
+            latencies.append(trace['processing_seconds']);interventions+=int(trace['safety']['overridden'])
             with (output/'proposals.jsonl').open('a') as stream:stream.write(json.dumps(trace)+'\n')
             runtime={k:value[k].detach().cpu() for k in ('state','memory','memory_valid','task','previous_command','target_context','z')}
             runtime.update(current_tokens=value['current_tokens'][0].cpu(),goal_context=value['goal_context'][0].cpu())
@@ -209,7 +210,9 @@ def main():
                     teacher_provenance='observed-exploration/v3' if args.demonstrate else None,
                     final_map_status=core.startup.state if core else None,
                     map_version=core.latest_map_version if core else None,
-                    handover_sim_ns=core.startup.handover_ns if core else None)
+                    handover_sim_ns=core.startup.handover_ns if core else None,
+                    control_safety_p95_seconds=float(np.quantile(latencies,.95)) if latencies else None,
+                    control_safety_missed_deadlines=sum(x>.05 for x in latencies),safety_interventions=interventions)
         (output/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result))
     return 2 if error else 0
 

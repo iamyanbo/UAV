@@ -1,7 +1,7 @@
 """Causal world-belief replay and observation-conditioned recovery imitation.
 
-The bootstrap teacher brakes when metric geometry is unavailable. It does not
-infer a search direction from privileged destination coordinates. Subsequent
+The bootstrap teacher supplies bounded translating startup demonstrations.
+Search targets use observed evidence, without privileged destination direction.
 DAgger rounds use the same teacher at states actually visited by the learner.
 """
 import argparse

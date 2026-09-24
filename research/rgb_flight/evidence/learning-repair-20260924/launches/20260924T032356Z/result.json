@@ -1,0 +1,14 @@
+{
+  "status": "rpc_finished",
+  "full_flight_validated": false,
+  "probe": "visual-goal-flight",
+  "episode_id": "train-00004",
+  "clock_speed": 1.0,
+  "runtime_preflight_return_code": 0,
+  "runtime_preflight_log": "/home/iamyanbo/uav-rgb-flight/launches/20260924T032356Z/runtime-preflight.log",
+  "rpc_return_code": 2,
+  "episode_result": "/home/iamyanbo/uav-rgb-flight/launches/20260924T032356Z/episode/result.json",
+  "episode_result_sha256": "ddb9c6b8cc0688328c68a7e716de9baa9d85449d4676172d62a16d116a0ac10d",
+  "controller_kind": "learned_mode_1",
+  "simulator_return_code": 143
+}

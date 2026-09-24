@@ -1,0 +1,19 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T035131Z-updated-policy-flight-d4c8b5/source/collect_learning_round.py",
+    "--episode-id",
+    "train-00000",
+    "--controller-checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/learning-repair-r46/execution/ppo-pack",
+    "--goal-collection",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T034035Z-exploration-demonstrations-0ec7d6/collection/flights.json"
+  ],
+  "seconds": 1200,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "flight",
+  "peak_gib": 72.0,
+  "status": "finished",
+  "return_code": 1,
+  "elapsed_seconds": 27.028977463021874
+}

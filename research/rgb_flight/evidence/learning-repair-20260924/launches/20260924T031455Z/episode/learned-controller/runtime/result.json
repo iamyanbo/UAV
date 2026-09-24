@@ -1,0 +1,50 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 399,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "4aaf4abd098a81a30a1e8d9d4855f21e33cb431693a8eb29fcc4ccf6ef61b32b",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "d8fa60c9e15116a8ff8a3a6133a1ec8fa1fc74fa5a1ffa64666de43d03ab81a3",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "84907961dd10662a57419dad0694dc6f7846d1cd0ba7f2ead2c9509f3476fd64",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "bc191b6b7089e418a5bd3df90802f10400a017235a2ba0dc41a38ea085462bed",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "ed90e8c2956c6d5126a92da479ab85db5b1dbf945054b6d2c2b091b9bbc9e64f",
+      "samples": 64
+    },
+    {
+      "path": "controller-000005.pt",
+      "sha256": "85e3033b5d13170e51f38a1f192409d7c79a5fb2be05344231aa2e5b985e04d4",
+      "samples": 64
+    },
+    {
+      "path": "controller-000006.pt",
+      "sha256": "7d2c06125f3dd5f3ba2ae32771e938a62beb6e3a3e3a20754431fc4023631ae3",
+      "samples": 15
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": "observed-exploration/v3",
+  "final_map_status": "terminated",
+  "map_version": -1,
+  "handover_sim_ns": null
+}

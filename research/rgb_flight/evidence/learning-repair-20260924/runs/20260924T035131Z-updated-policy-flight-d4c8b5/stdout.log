@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/iamyanbo/uav-rgb-flight/runs/20260924T035131Z-updated-policy-flight-d4c8b5/source/collect_learning_round.py", line 95, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/iamyanbo/uav-rgb-flight/runs/20260924T035131Z-updated-policy-flight-d4c8b5/source/collect_learning_round.py", line 80, in main
+    episode=launches[0]/'episode';receipt=json.loads((episode/'result.json').read_text())
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/iamyanbo/uav-rgb-flight/launches/20260924T035131Z/episode/result.json'

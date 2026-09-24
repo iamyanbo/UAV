@@ -29,7 +29,15 @@ class BoundedGaussians(GaussianModel):
         # these zero-element optimizer moments. Preserve the exact empty shape
         # without launching a kernel; nonempty tensors use native concatenation.
         def concatenate(a,b):
-            if a.shape[1:]!=b.shape[1:]:raise ValueError('Gaussian optimizer shape changed')
+            # Never clone/cat/zero a zero-element CUDA SH tensor: no kernel
+            # is necessary, including when only the new point set is empty.
+            if not a.numel() and not b.numel():
+                tail=b.shape[1:] if a.ndim==1 else a.shape[1:]
+                return a.new_empty((len(a)+len(b),*tail))
+            # Upstream initializes parameters as rank-one empty tensors.
+            if len(a)==0:return b.detach().clone()
+            if len(b)==0:return a.detach().clone()
+            if a.shape[1:]!=b.shape[1:]:raise ValueError('Gaussian optimizer shape changed: '+str(tuple(a.shape))+' -> '+str(tuple(b.shape)))
             if not a.numel() and not b.numel():return a.new_empty((len(a)+len(b),*a.shape[1:]))
             return torch.cat((a,b),dim=0)
         result={}
@@ -38,7 +46,9 @@ class BoundedGaussians(GaussianModel):
             old=group['params'][0];extra=tensors_dict[group['name']]
             state=self.optimizer.state.pop(old,None)
             if state is not None:
-                for key in ('exp_avg','exp_avg_sq'):state[key]=concatenate(state[key],torch.zeros_like(extra))
+                for key in ('exp_avg','exp_avg_sq'):
+                    extension=extra.new_empty(extra.shape) if not extra.numel() else torch.zeros_like(extra)
+                    state[key]=concatenate(state[key],extension)
             parameter=torch.nn.Parameter(concatenate(old,extra).detach().requires_grad_(True))
             group['params'][0]=parameter
             if state is not None:self.optimizer.state[parameter]=state

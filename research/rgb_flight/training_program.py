@@ -59,11 +59,13 @@ def validation_gate(paths, speed):
                 collision_free_success=success_rate,collision_rate=collision_rate)
 
 
-def state(collection_root, validation_results=()):
+def state(collection_root, validation_results=(), training_manifest=None):
     episodes=episode_receipts(collection_root)
     count=len(episodes)
     reached=[value for value in MILESTONES if count>=value]
-    start_training=count>=250
+    readiness=json.loads(Path(training_manifest).read_text()) if training_manifest else {}
+    start_training=bool(readiness.get('readiness',{}).get('training_ready') and
+        {'train','validation'}<={row['split'] for row in readiness.get('episodes',[])})
     gates={str(speed):validation_gate(validation_results,speed) for speed in SPEEDS}
     active_speed=3.
     if gates['3.0']['passed']:
@@ -71,7 +73,7 @@ def state(collection_root, validation_results=()):
     if gates['3.0']['passed'] and gates['4.5']['passed']:
         active_speed=6.
     return dict(schema='visual-goal-training-state/v1',valid_expert_episodes=count,
-        training_authorized=start_training,next_collection_milestone=next((x for x in MILESTONES if x>count),None),
+        training_authorized=start_training,training_ready=start_training,deployment_accepted=False,next_collection_milestone=next((x for x in MILESTONES if x>count),None),
         reached_milestones=reached,programme=['fast_visual_odometry','goal_matcher','jepa_world_model',
           'critic_and_mode1_imitation','qwen_lora','dagger','constrained_ppo','qwen_outcome_preferences'],
         budgets=BUDGETS,speed_gates=gates,active_speed_mps=active_speed,
@@ -86,6 +88,7 @@ def main():
     parser.add_argument('--round',type=Path)
     parser.add_argument('--hours',type=float,default=8)
     parser.add_argument('--collection-root',type=Path)
+    parser.add_argument('--training-manifest',type=Path)
     parser.add_argument('--validation-result',type=Path,action='append',default=[])
     parser.add_argument('--output',type=Path)
     args=parser.parse_args()
@@ -94,7 +97,7 @@ def main():
         from program_scheduler import run
         raise SystemExit(run(args.execute,args.round,args.hours))
     if not args.collection_root or not args.output:parser.error('Report requires --collection-root and --output')
-    value=state(args.collection_root,args.validation_result)
+    value=state(args.collection_root,args.validation_result,args.training_manifest)
     temporary=args.output.with_suffix('.pending'); temporary.write_text(json.dumps(value,indent=2)); temporary.replace(args.output)
     print(json.dumps({k:value[k] for k in ('valid_expert_episodes','training_authorized','next_collection_milestone','active_speed_mps')}))
 

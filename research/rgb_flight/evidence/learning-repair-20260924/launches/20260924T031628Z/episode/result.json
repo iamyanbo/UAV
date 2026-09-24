@@ -1,0 +1,112 @@
+{
+  "status": "learned_flight_finished",
+  "episode_id": "train-00003",
+  "split": "train",
+  "phase": 1,
+  "runtime_goal_sha256": "372283693a12496b54ed50d913289288bf9a6879877e1aac385778c0a442a93c",
+  "pose_setting_calls_before_recording": 1,
+  "pre_episode_goal_pose_setting_calls": 4,
+  "pose_setting_calls_after_recording": 0,
+  "clock_speed": 1.0,
+  "maximum_speed_mps": 3.0,
+  "controller_kind": "learned_mode_1",
+  "runtime_isolation": {
+    "status": "live_inference_boundary_passed",
+    "episode_id": "train-00003",
+    "rgb_bytes": 921600,
+    "first_sim_ns": 1790219816050829568,
+    "last_sim_ns": 1790219816365836288,
+    "goal_views": 4,
+    "denied_operations": 5,
+    "simulator_rpc_inaccessible": true,
+    "privileged_files_inaccessible": true
+  },
+  "controller_checkpoint_sha256": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4",
+  "termination": "initialization_timeout",
+  "success": false,
+  "elapsed_sim_seconds": 30.066641330718994,
+  "learned_controller": {
+    "status": "completed",
+    "accepted": false,
+    "frames": 371,
+    "error": null,
+    "shards": [
+      {
+        "path": "controller-000000.pt",
+        "sha256": "6b509d9a8555b6ce37e4396afc50da706f506a76d9fa6ff79c374beea5562c5c",
+        "samples": 64
+      },
+      {
+        "path": "controller-000001.pt",
+        "sha256": "d5476733ffe6f1fc3cd377daa4aea4ef7cac21b8fbaaa775257dc30cd990bb28",
+        "samples": 64
+      },
+      {
+        "path": "controller-000002.pt",
+        "sha256": "407f1ab39ad35f0d37b281b21fb7e1037e2b71a373367b18a93e83134e35a207",
+        "samples": 64
+      },
+      {
+        "path": "controller-000003.pt",
+        "sha256": "224a2496c7bb58a24e374083a8b4e449b5debb9814dc2ff5f40608feb85b5d5e",
+        "samples": 64
+      },
+      {
+        "path": "controller-000004.pt",
+        "sha256": "367c177c2d4567ae7afa17f074cbf298d26b6eee5a4e0ce744794a5b1f157a64",
+        "samples": 64
+      },
+      {
+        "path": "controller-000005.pt",
+        "sha256": "85c9c2dca17f049dd915dacdc250ad68c2cad493787e69e24dd9870c6ef18e7b",
+        "samples": 51
+      }
+    ],
+    "scope": "Live Mode 1 only; no planner or Qwen configuration",
+    "sampled_policy": false,
+    "slow_planner_enabled": false,
+    "teacher_provenance": "observed-exploration/v3",
+    "final_map_status": "terminated",
+    "map_version": -1,
+    "handover_sim_ns": null
+  },
+  "broker_errors": [],
+  "commands": 1244,
+  "control_latency_p95_seconds": 0.204004352,
+  "capture_interval_p95_sim_seconds": 0.108002304,
+  "fresh_rgb_hz": 22.967173980433476,
+  "control_work_p95_seconds": 0.0013318708166480064,
+  "control_missed_deadlines": 0,
+  "control_interval_p95_seconds": 0.04599527132231742,
+  "control_interval_max_seconds": 0.06457532499916852,
+  "control_schedule_missed_deadlines": 1,
+  "timing_gate": {
+    "accepted": false,
+    "capture_control_passed": false,
+    "requirements": {
+      "fresh_rgb_hz_min": 19,
+      "rgb_interval_p95_max": 0.075,
+      "control_p95_max": 0.05
+    },
+    "reason": "Learned safety inference latency and command-application timestamps not yet qualified",
+    "application_timestamps_available": false
+  },
+  "depth_label_index": "training_labels/depth/index.jsonl",
+  "depth_label_samples": 0,
+  "storage": {
+    "frames": 1293,
+    "stream_sha256": "40a65ef536bc87d64c44a6f91958f2ed9455442ed27fbded4bd1c25846c2c714",
+    "complete": true,
+    "codec": "per-frame zlib level 1, lossless RGB24",
+    "timestamps": "original AirSim image nanoseconds",
+    "pixel_format": "RGB24",
+    "color_calibration_sha256": "26709410dd1a802875c898e5add2a745f99dd7627dd2ca9de9e3fbc92c3d8556"
+  },
+  "training_label_frames": 600,
+  "teacher_provenance": "observed-exploration/v3",
+  "actual_displacement_m": 8.377963527206704,
+  "actual_path_length_m": 9.58161218640584,
+  "mean_actual_velocity_mps": 0.31854536308649933,
+  "maximum_actual_velocity_mps": 0.424943363200552,
+  "privileged_obstacle_field_sha256": "aa10aee79ede86978904de4638fb924e1205b28f014004c06c6bef34738deda9"
+}

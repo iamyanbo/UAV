@@ -69,21 +69,34 @@ def main():
             if len(matches)!=1:raise ValueError('Goal collection requires exactly one matching episode')
             goal=Path(matches[0]['episode_path'])/'goal'
         if goal:command+=['--goal',str(goal)]
-        process=subprocess.run(command,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-        (output/(identifier+'.log')).write_text(process.stdout)
-        launches=[]
-        for line in process.stdout.splitlines():
-            try:value=json.loads(line)
-            except ValueError:continue
-            if isinstance(value,dict) and 'launch' in value:launches.append(Path(value['launch']))
-        if len(launches)!=1:raise RuntimeError('Flight launch identity unavailable; inspect retained log')
-        episode=launches[0]/'episode';receipt=json.loads((episode/'result.json').read_text())
-        flights.append(dict(episode_path=str(episode),result=receipt,launcher_return_code=process.returncode))
-        (output/'flights.json').write_text(json.dumps(flights,indent=2))
-        if receipt['status'] not in ('expert_flight_finished','learned_flight_finished') or receipt.get('broker_errors'):
-            raise RuntimeError('Physical collection infrastructure failed; outcome retained')
-        if args.controller_checkpoints and receipt.get('learned_controller',{}).get('status')!='completed':
-            raise RuntimeError('Learned runtime failed during flight or shutdown; physical outcome retained')
+        for attempt in range(2):
+            process=subprocess.run(command,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+            (output/f'{identifier}-attempt-{attempt}.log').write_text(process.stdout)
+            launches=[]
+            for line in process.stdout.splitlines():
+                try:value=json.loads(line)
+                except ValueError:continue
+                if isinstance(value,dict) and 'launch' in value:launches.append(Path(value['launch']))
+            if len(launches)!=1:raise RuntimeError('Flight launch identity unavailable; inspect retained log')
+            episode=launches[0]/'episode';path=episode/'result.json'
+            receipt=json.loads(path.read_text()) if path.exists() else None
+            item=dict(episode_path=str(episode),result=receipt,launcher_return_code=process.returncode)
+            complete=bool(receipt and receipt['status'] in ('expert_flight_finished','learned_flight_finished')
+                and not receipt.get('broker_errors') and (not args.controller_checkpoints or
+                receipt.get('learned_controller',{}).get('status')=='completed'))
+            if complete:
+                # Collision and navigation timeouts are complete outcomes;
+                # never retry them to manufacture a successful episode.
+                flights.append(item);(output/'flights.json').write_text(json.dumps(flights,indent=2));break
+            launch_receipt=launches[0]/'result.json'
+            item['launcher_result']=json.loads(launch_receipt.read_text()) if launch_receipt.exists() else None
+            retained_failures.append(item)
+            (output/'infrastructure-failures.json').write_text(json.dumps(retained_failures,indent=2))
+        else:
+            (output/'result.json').write_text(json.dumps(dict(status='failed',accepted=False,
+                reason='Two infrastructure attempts failed; all receipts retained',episode_id=identifier,
+                complete_flights=len(flights)),indent=2))
+            raise RuntimeError('Physical collection infrastructure failed twice; outcomes retained')
     result=dict(status='completed',accepted=False,complete_flights=len(flights),
         successes=sum(bool(f['result'].get('success')) for f in flights),all_failures_retained=True,
         demonstration_batch=args.demonstration_batch,development_batch=args.development_batch,

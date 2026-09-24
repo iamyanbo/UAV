@@ -1,0 +1,37 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 289,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "47718eb9340353b556443db40b43edd552385b4816b78261a60185e51add63bd",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "745b4951bb7aa0f50d430ca1903555a6ce093fa09ea0176575810942182a450c",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "88d38524fcd6c1df5a16bd25d82aa9c202ea457e8374851aef091101a86c2a0c",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "987296570d31e0a8d04aff27830822d64303c9ed993654196db2266184830909",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "e3c36c8fd3fe3acd6317867ea365b16a0a76ce5009e75d61584cf2f96fd8b0cd",
+      "samples": 33
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": "observed-exploration/v3"
+}
