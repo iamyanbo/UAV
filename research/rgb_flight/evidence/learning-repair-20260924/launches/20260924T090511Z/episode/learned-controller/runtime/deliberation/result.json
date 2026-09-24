@@ -1,0 +1,21 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "actual_planner_calls": 2,
+  "errors": [],
+  "selected_planner_actions": 0,
+  "published_qwen_configurations": 0,
+  "actual_qwen_calls": 0,
+  "configuration_rejections": {},
+  "goal_vision_cache_hits": 0,
+  "goal_vision_cache_misses": 0,
+  "plan_rejections": {
+    "startup_or_recovery_mode1_active": 124,
+    "configuration_changed": 124,
+    "prediction_horizon_expired": 124,
+    "predicted_collision_risk": 124,
+    "publication_stale": 112,
+    "episode_ended_before_publication": 1
+  },
+  "scope": "Real Qwen and 12-step candidate optimization; unqualified cost scales and command-time estimates"
+}

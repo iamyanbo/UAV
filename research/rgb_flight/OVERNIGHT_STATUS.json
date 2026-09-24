@@ -1,8 +1,10 @@
 {
-  "observed_utc": "2026-09-24T09:05:30.014463+00:00",
+  "observed_utc": "2026-09-24T09:15:43.584052+00:00",
   "round": "navigation-repair-r72",
   "continuation": {
-    "status": "full_flow_running",
+    "status": "cumulative_training_running",
+    "independent_flow_completed": true,
+    "preference_status": "blocked",
     "accepted": false
   },
   "stages": {
@@ -783,37 +785,233 @@
       }
     },
     "matched-configuration-flights": {
-      "status": "running",
-      "reason": "Owned remote guard running",
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
       "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090308Z-matched-configuration-flights-0619a8",
-      "progress": null
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "control_exposure_blocked": true,
+        "matched_conditions": {
+          "episode_id": "train-00000",
+          "goal_panorama_sha256": "71cb9c8dfa0f245d1a2d45cc1c15a3324ecbcbbec8d4cd2628435173fbe2556c",
+          "clock_speed": 1.0,
+          "maximum_speed_mps": 3.0,
+          "rollout_seed": 0,
+          "scene": "env_airsim_16",
+          "controller_sha256": "3900c4dc67db165f42ee4bee59c39187fc19b1ce97d116c167f6e8539d72c80b",
+          "target_rule": "same deterministic causal frontier teacher, refreshed against currently observed IDs; compare bounded scoring multipliers"
+        },
+        "matched_conditions_sha256": "7060176416b20f1d04427deb981de0a76c26ae715553b476c6e62a8ce0f5c873",
+        "controller_sha256": "3900c4dc67db165f42ee4bee59c39187fc19b1ce97d116c167f6e8539d72c80b",
+        "outcomes": [
+          {
+            "applied_predictive_commands": 0,
+            "complete_flight": true,
+            "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T090308Z/episode",
+            "result_sha256": "9452a7a18ac9a867a31c6fd8a1c431c6de5ccfd3fd3db1a61bf08fd75fce961b",
+            "configuration": {
+              "target_id": null,
+              "grounded_kind": "none",
+              "intention": "search",
+              "goal_weight": 1.0,
+              "time_weight": 1.0,
+              "information_weight": 1.0,
+              "additional_caution": 1.0,
+              "confidence": 0.0,
+              "validity_horizon_seconds": 4.0,
+              "deliberate_immediately": true
+            },
+            "collision": false,
+            "success": false,
+            "elapsed_sim_seconds": 30.003640174865723,
+            "termination": "initialization_timeout"
+          },
+          {
+            "applied_predictive_commands": 0,
+            "complete_flight": true,
+            "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T090511Z/episode",
+            "result_sha256": "c53521fca5273dd32d6482bc377a040a099556c491d8f65c6286b85afbb42954",
+            "configuration": {
+              "target_id": null,
+              "grounded_kind": "none",
+              "intention": "search",
+              "goal_weight": 1.0,
+              "time_weight": 1.0,
+              "information_weight": 1.0,
+              "additional_caution": 2.0,
+              "confidence": 0.0,
+              "validity_horizon_seconds": 4.0,
+              "deliberate_immediately": true
+            },
+            "collision": false,
+            "success": false,
+            "elapsed_sim_seconds": 30.075641632080078,
+            "termination": "initialization_timeout"
+          }
+        ],
+        "winner": null,
+        "ambiguous": true,
+        "ranking": "collision avoidance, then success, then completion time among successes; <=1 s is a timing tie",
+        "preference_update_ready": false,
+        "reason": "Neither configuration affected dispatched controls; preference learning blocked",
+        "pairs": [
+          {
+            "status": "completed",
+            "accepted": false,
+            "control_exposure_blocked": true,
+            "matched_conditions": {
+              "episode_id": "train-00000",
+              "goal_panorama_sha256": "71cb9c8dfa0f245d1a2d45cc1c15a3324ecbcbbec8d4cd2628435173fbe2556c",
+              "clock_speed": 1.0,
+              "maximum_speed_mps": 3.0,
+              "rollout_seed": 0,
+              "scene": "env_airsim_16",
+              "controller_sha256": "3900c4dc67db165f42ee4bee59c39187fc19b1ce97d116c167f6e8539d72c80b",
+              "target_rule": "same deterministic causal frontier teacher, refreshed against currently observed IDs; compare bounded scoring multipliers"
+            },
+            "matched_conditions_sha256": "7060176416b20f1d04427deb981de0a76c26ae715553b476c6e62a8ce0f5c873",
+            "controller_sha256": "3900c4dc67db165f42ee4bee59c39187fc19b1ce97d116c167f6e8539d72c80b",
+            "outcomes": [
+              {
+                "applied_predictive_commands": 0,
+                "complete_flight": true,
+                "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T090308Z/episode",
+                "result_sha256": "9452a7a18ac9a867a31c6fd8a1c431c6de5ccfd3fd3db1a61bf08fd75fce961b",
+                "configuration": {
+                  "target_id": null,
+                  "grounded_kind": "none",
+                  "intention": "search",
+                  "goal_weight": 1.0,
+                  "time_weight": 1.0,
+                  "information_weight": 1.0,
+                  "additional_caution": 1.0,
+                  "confidence": 0.0,
+                  "validity_horizon_seconds": 4.0,
+                  "deliberate_immediately": true
+                },
+                "collision": false,
+                "success": false,
+                "elapsed_sim_seconds": 30.003640174865723,
+                "termination": "initialization_timeout"
+              },
+              {
+                "applied_predictive_commands": 0,
+                "complete_flight": true,
+                "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T090511Z/episode",
+                "result_sha256": "c53521fca5273dd32d6482bc377a040a099556c491d8f65c6286b85afbb42954",
+                "configuration": {
+                  "target_id": null,
+                  "grounded_kind": "none",
+                  "intention": "search",
+                  "goal_weight": 1.0,
+                  "time_weight": 1.0,
+                  "information_weight": 1.0,
+                  "additional_caution": 2.0,
+                  "confidence": 0.0,
+                  "validity_horizon_seconds": 4.0,
+                  "deliberate_immediately": true
+                },
+                "collision": false,
+                "success": false,
+                "elapsed_sim_seconds": 30.075641632080078,
+                "termination": "initialization_timeout"
+              }
+            ],
+            "winner": null,
+            "ambiguous": true,
+            "ranking": "collision avoidance, then success, then completion time among successes; <=1 s is a timing tie",
+            "preference_update_ready": false,
+            "reason": "Neither configuration affected dispatched controls; preference learning blocked"
+          }
+        ],
+        "matched_pairs": 1,
+        "ties": 1,
+        "preference_status": "blocked"
+      }
     },
     "preference-data": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090726Z-preference-data-97e62f",
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "matched_pairs": 1,
+        "strict_preferences": 0,
+        "ties": 1,
+        "preference_update_ready": false,
+        "reason": "Matched timeouts tie; no preference winner exists; retain SFT adapter"
+      }
     },
     "qwen-preference-update": {
-      "status": "ready",
-      "reason": null,
-      "job": null,
-      "progress": null
+      "status": "blocked",
+      "reason": "Matched timeouts tie; no preference winner exists; retain SFT adapter",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090732Z-qwen-preference-update-e1ba4f",
+      "progress": {
+        "status": "blocked",
+        "accepted": false,
+        "updates": 0,
+        "phase": "preference",
+        "reason": "Matched timeouts tie; no preference winner exists; retain SFT adapter"
+      }
     },
     "preference-pack": {
-      "status": "ready",
-      "reason": null,
+      "status": "failed",
+      "reason": "Dependency failed: qwen-preference-update: Matched timeouts tie; no preference winner exists; retain SFT adapter",
       "job": null,
       "progress": null
     },
     "preference-updated-flight": {
+      "status": "failed",
+      "reason": "Dependency failed: preference-pack: Dependency failed: qwen-preference-update: Matched timeouts tie; no preference winner exists; retain SFT adapter",
+      "job": null,
+      "progress": null
+    }
+  },
+  "cumulative_stages": {
+    "source-reload-flight": {
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090736Z-source-reload-flight-e25bd4",
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090736Z-source-reload-flight-e25bd4/collection/flights.json"
+      }
+    },
+    "world-continuation": {
+      "status": "running",
+      "reason": "Owned remote guard running",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090939Z-world-continuation-4e400f",
+      "progress": null
+    },
+    "policy-continuation": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "continued-policy-pack": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "next-training-collection": {
       "status": "ready",
       "reason": null,
       "job": null,
       "progress": null
     }
   },
-  "cumulative_stages": {},
   "deployment_accepted": false,
   "scope": "Execution snapshot only; optimizer counts do not establish navigation or complete cumulative budgets"
 }

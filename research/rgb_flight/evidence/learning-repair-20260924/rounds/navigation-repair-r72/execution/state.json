@@ -2151,7 +2151,7 @@
       ]
     },
     "matched-configuration-flights": {
-      "status": "running",
+      "status": "completed",
       "attempts": [
         {
           "process": {
@@ -2193,25 +2193,311 @@
         "train-00000"
       ],
       "started_unix": 1790240588.2185242,
-      "reason": "Owned remote guard running",
-      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090308Z-matched-configuration-flights-0619a8"
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090308Z-matched-configuration-flights-0619a8",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090308Z-matched-configuration-flights-0619a8/result.json",
+        "sha256": "ff02fc8df6a0bf856454171f9b1af9833caf017d351f3430bc4790972da5cb8d"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090308Z-matched-configuration-flights-0619a8/configuration-preferences/result.json",
+        "sha256": "b95548cf6700151b4bb2b9cbf92bfb793faf34d3dcebde4afe640c8d333ae38d"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "control_exposure_blocked": true,
+        "matched_conditions": {
+          "episode_id": "train-00000",
+          "goal_panorama_sha256": "71cb9c8dfa0f245d1a2d45cc1c15a3324ecbcbbec8d4cd2628435173fbe2556c",
+          "clock_speed": 1.0,
+          "maximum_speed_mps": 3.0,
+          "rollout_seed": 0,
+          "scene": "env_airsim_16",
+          "controller_sha256": "3900c4dc67db165f42ee4bee59c39187fc19b1ce97d116c167f6e8539d72c80b",
+          "target_rule": "same deterministic causal frontier teacher, refreshed against currently observed IDs; compare bounded scoring multipliers"
+        },
+        "matched_conditions_sha256": "7060176416b20f1d04427deb981de0a76c26ae715553b476c6e62a8ce0f5c873",
+        "controller_sha256": "3900c4dc67db165f42ee4bee59c39187fc19b1ce97d116c167f6e8539d72c80b",
+        "outcomes": [
+          {
+            "applied_predictive_commands": 0,
+            "complete_flight": true,
+            "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T090308Z/episode",
+            "result_sha256": "9452a7a18ac9a867a31c6fd8a1c431c6de5ccfd3fd3db1a61bf08fd75fce961b",
+            "configuration": {
+              "target_id": null,
+              "grounded_kind": "none",
+              "intention": "search",
+              "goal_weight": 1.0,
+              "time_weight": 1.0,
+              "information_weight": 1.0,
+              "additional_caution": 1.0,
+              "confidence": 0.0,
+              "validity_horizon_seconds": 4.0,
+              "deliberate_immediately": true
+            },
+            "collision": false,
+            "success": false,
+            "elapsed_sim_seconds": 30.003640174865723,
+            "termination": "initialization_timeout"
+          },
+          {
+            "applied_predictive_commands": 0,
+            "complete_flight": true,
+            "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T090511Z/episode",
+            "result_sha256": "c53521fca5273dd32d6482bc377a040a099556c491d8f65c6286b85afbb42954",
+            "configuration": {
+              "target_id": null,
+              "grounded_kind": "none",
+              "intention": "search",
+              "goal_weight": 1.0,
+              "time_weight": 1.0,
+              "information_weight": 1.0,
+              "additional_caution": 2.0,
+              "confidence": 0.0,
+              "validity_horizon_seconds": 4.0,
+              "deliberate_immediately": true
+            },
+            "collision": false,
+            "success": false,
+            "elapsed_sim_seconds": 30.075641632080078,
+            "termination": "initialization_timeout"
+          }
+        ],
+        "winner": null,
+        "ambiguous": true,
+        "ranking": "collision avoidance, then success, then completion time among successes; <=1 s is a timing tie",
+        "preference_update_ready": false,
+        "reason": "Neither configuration affected dispatched controls; preference learning blocked",
+        "pairs": [
+          {
+            "status": "completed",
+            "accepted": false,
+            "control_exposure_blocked": true,
+            "matched_conditions": {
+              "episode_id": "train-00000",
+              "goal_panorama_sha256": "71cb9c8dfa0f245d1a2d45cc1c15a3324ecbcbbec8d4cd2628435173fbe2556c",
+              "clock_speed": 1.0,
+              "maximum_speed_mps": 3.0,
+              "rollout_seed": 0,
+              "scene": "env_airsim_16",
+              "controller_sha256": "3900c4dc67db165f42ee4bee59c39187fc19b1ce97d116c167f6e8539d72c80b",
+              "target_rule": "same deterministic causal frontier teacher, refreshed against currently observed IDs; compare bounded scoring multipliers"
+            },
+            "matched_conditions_sha256": "7060176416b20f1d04427deb981de0a76c26ae715553b476c6e62a8ce0f5c873",
+            "controller_sha256": "3900c4dc67db165f42ee4bee59c39187fc19b1ce97d116c167f6e8539d72c80b",
+            "outcomes": [
+              {
+                "applied_predictive_commands": 0,
+                "complete_flight": true,
+                "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T090308Z/episode",
+                "result_sha256": "9452a7a18ac9a867a31c6fd8a1c431c6de5ccfd3fd3db1a61bf08fd75fce961b",
+                "configuration": {
+                  "target_id": null,
+                  "grounded_kind": "none",
+                  "intention": "search",
+                  "goal_weight": 1.0,
+                  "time_weight": 1.0,
+                  "information_weight": 1.0,
+                  "additional_caution": 1.0,
+                  "confidence": 0.0,
+                  "validity_horizon_seconds": 4.0,
+                  "deliberate_immediately": true
+                },
+                "collision": false,
+                "success": false,
+                "elapsed_sim_seconds": 30.003640174865723,
+                "termination": "initialization_timeout"
+              },
+              {
+                "applied_predictive_commands": 0,
+                "complete_flight": true,
+                "episode_path": "/home/iamyanbo/uav-rgb-flight/launches/20260924T090511Z/episode",
+                "result_sha256": "c53521fca5273dd32d6482bc377a040a099556c491d8f65c6286b85afbb42954",
+                "configuration": {
+                  "target_id": null,
+                  "grounded_kind": "none",
+                  "intention": "search",
+                  "goal_weight": 1.0,
+                  "time_weight": 1.0,
+                  "information_weight": 1.0,
+                  "additional_caution": 2.0,
+                  "confidence": 0.0,
+                  "validity_horizon_seconds": 4.0,
+                  "deliberate_immediately": true
+                },
+                "collision": false,
+                "success": false,
+                "elapsed_sim_seconds": 30.075641632080078,
+                "termination": "initialization_timeout"
+              }
+            ],
+            "winner": null,
+            "ambiguous": true,
+            "ranking": "collision avoidance, then success, then completion time among successes; <=1 s is a timing tie",
+            "preference_update_ready": false,
+            "reason": "Neither configuration affected dispatched controls; preference learning blocked"
+          }
+        ],
+        "matched_pairs": 1,
+        "ties": 1,
+        "preference_status": "blocked"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090308Z-matched-configuration-flights-0619a8/configuration-preferences/outcomes.json",
+          "sha256": "7b075507724356cc7aca761e485239a33b7106bd02dcbc3b8037209436d9903b"
+        }
+      ]
     },
     "preference-data": {
-      "status": "ready",
-      "attempts": []
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2656216,
+            "start_ticks": "133997892",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/preference-data-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2656216,
+        "start_ticks": "133997892",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/preference-data-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/spark_guard.py",
+        "--name",
+        "preference-data",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "12",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/stage_worker.py",
+        "build-preference-view",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/online-trajectories",
+        "--preference-outcomes",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T090308Z-matched-configuration-flights-0619a8/configuration-preferences/result.json",
+        "--supervised-adapter",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T083638Z-qwen-supervised-update-5c2687/configurator/latest.pt",
+        "--artifact-output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/preference-data"
+      ],
+      "started_unix": 1790240846.7956448,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090726Z-preference-data-97e62f",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090726Z-preference-data-97e62f/result.json",
+        "sha256": "7700725b25d058b9c158511eb58747b8aa601b61d8ad0b44dd538f879c3c729f"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/preference-data/result.json",
+        "sha256": "379bb5433034954432920336709731484a172da7347a68815958022ce3f458f0"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "matched_pairs": 1,
+        "strict_preferences": 0,
+        "ties": 1,
+        "preference_update_ready": false,
+        "reason": "Matched timeouts tie; no preference winner exists; retain SFT adapter"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/preference-data/configurator.json",
+          "sha256": "b84494150bc107fe21d9869cb00a8f2b7cf8f2dfe245dafa24a761ae79bce5cf"
+        },
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/preference-data/matched-pairs.jsonl",
+          "sha256": "8bc23d1e7853cbc5c2410f2e75c081e3c21779617ad46432b9b7ed04f9d3cee7"
+        }
+      ]
     },
     "qwen-preference-update": {
-      "status": "ready",
-      "attempts": []
+      "status": "blocked",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2656492,
+            "start_ticks": "133998493",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/qwen-preference-update-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2656492,
+        "start_ticks": "133998493",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/qwen-preference-update-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/spark_guard.py",
+        "--name",
+        "qwen-preference-update",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "40",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r71/stage_worker.py",
+        "train-configurator",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/preference-data",
+        "--configurator-phase",
+        "preference",
+        "--initialize-from",
+        "supervised.pt",
+        "--integration-only",
+        "--updates",
+        "1"
+      ],
+      "started_unix": 1790240852.8134735,
+      "reason": "Matched timeouts tie; no preference winner exists; retain SFT adapter",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090732Z-qwen-preference-update-e1ba4f",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090732Z-qwen-preference-update-e1ba4f/result.json",
+        "sha256": "ea3fa0086980034adda964a9566280d11837fe1b5a938ee0ac1b167cc4e3e9a4"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T090732Z-qwen-preference-update-e1ba4f/configurator/result.json",
+        "sha256": "d7131a2387dcb6d4ce772ab325b87db4474eafa67fc61f34df1adb25a72825cf"
+      },
+      "progress": {
+        "status": "blocked",
+        "accepted": false,
+        "updates": 0,
+        "phase": "preference",
+        "reason": "Matched timeouts tie; no preference winner exists; retain SFT adapter"
+      }
     },
     "preference-pack": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: qwen-preference-update: Matched timeouts tie; no preference winner exists; retain SFT adapter"
     },
     "preference-updated-flight": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: preference-pack: Dependency failed: qwen-preference-update: Matched timeouts tie; no preference winner exists; retain SFT adapter"
     }
   },
-  "updated_unix": 1790240721.537144
+  "updated_unix": 1790240855.8221157
 }

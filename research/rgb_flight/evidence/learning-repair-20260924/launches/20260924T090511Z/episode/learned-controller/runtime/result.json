@@ -1,0 +1,51 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 351,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "b63d08f34ebe5d76ada82e16530751558bc2c02a5483be4a8b2ece3cc051ce62",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "8f94ec293386ae26f1a90bb40c051ca350571950bff5a03d3c92ca8b809a050d",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "b088f71f5c32ae19ec60314ae413c6a0bdd76177cbac08c533802d6a332d3b76",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "c8678c400cf758c913747d478e9ecbebd4266e35e0dfef9144d534ad4ed45c00",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "2f95210bede1c66ba3b4f620a8ed647e2a1bb3cd6b8d232e523257e5d19f2999",
+      "samples": 64
+    },
+    {
+      "path": "controller-000005.pt",
+      "sha256": "0cb46c727aacc1ab1ebe46282aedeaa80bf0b8cd599e0d346febe7cc181c801a",
+      "samples": 31
+    }
+  ],
+  "scope": "Mode 1, Qwen and frozen predictive planning",
+  "sampled_policy": false,
+  "slow_planner_enabled": true,
+  "teacher_provenance": null,
+  "final_map_status": "terminated",
+  "map_version": -1,
+  "supported_maps_received": 9,
+  "optimized_surface_samples_received": 110064,
+  "first_supported_map_available_ns": 1790240819357580032,
+  "handover_sim_ns": null,
+  "control_safety_p95_seconds": 0.07528007868677378,
+  "control_safety_missed_deadlines": 230,
+  "safety_interventions": 338
+}

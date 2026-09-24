@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T090726Z-preference-data-97e62f/source/stage_worker.py",
+    "build-preference-view",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/online-trajectories",
+    "--preference-outcomes",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T090308Z-matched-configuration-flights-0619a8/configuration-preferences/result.json",
+    "--supervised-adapter",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T083638Z-qwen-supervised-update-5c2687/configurator/latest.pt",
+    "--artifact-output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/execution/preference-data"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 12.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 5.013784867944196
+}

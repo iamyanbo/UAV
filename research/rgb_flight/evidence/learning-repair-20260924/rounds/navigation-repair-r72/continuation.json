@@ -1,4 +1,6 @@
 {
-  "status": "full_flow_running",
+  "status": "cumulative_training_running",
+  "independent_flow_completed": true,
+  "preference_status": "blocked",
   "accepted": false
 }
