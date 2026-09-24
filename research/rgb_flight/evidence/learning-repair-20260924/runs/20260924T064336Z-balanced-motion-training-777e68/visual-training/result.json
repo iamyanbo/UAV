@@ -1,0 +1,48 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "updates": 2000,
+  "resumed_from_update": 633,
+  "objective_version": "metric-motion-rate-balanced-regimes/v4",
+  "manifest_sha256": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e",
+  "resume_evidence": {
+    "checkpoint_sha256": "1c13a78bc703d22c95d58e99fc61949ea3916342950a1938688456baa904dbd6",
+    "restored_update": 633,
+    "optimizer_states": 178,
+    "optimizer_step_min": 633.0,
+    "optimizer_step_max": 633.0
+  },
+  "gradient_evidence": {
+    "encoder": {
+      "finite_gradients": true,
+      "changed": true
+    },
+    "temporal": {
+      "finite_gradients": true,
+      "changed": true
+    },
+    "motion": {
+      "finite_gradients": true,
+      "changed": true
+    },
+    "motion_uncertainty": {
+      "finite_gradients": true,
+      "changed": true
+    }
+  },
+  "train_windows": 299,
+  "development_windows": 68,
+  "elapsed_seconds": 4356.724412081996,
+  "reason": "Full held-out trajectory drift and uncertainty qualification still required",
+  "sampling_regimes": {
+    "stationary": 137,
+    "slow": 46,
+    "cruise": 116
+  },
+  "sequence_steps": 160,
+  "warmup_steps": 32,
+  "normalization": "fixed inference BatchNorm statistics",
+  "activation_checkpointing": true,
+  "motion_parameterization": "rate",
+  "checkpoint_selection": "development normalized motion-rate error plus normalized accumulated drift"
+}

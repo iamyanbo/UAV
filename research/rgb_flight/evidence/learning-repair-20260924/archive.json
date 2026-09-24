@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-09-24T07:54:07.466271+00:00",
+  "observed_utc": "2026-09-24T08:04:17.664822+00:00",
   "source_root": "/home/iamyanbo/uav-rgb-flight",
   "scope": "Execution receipts and derived summaries; active counters are snapshots; raw RGB and weights remain on Spark",
   "files": [
@@ -3774,6 +3774,66 @@
       "sha256": "04f23198c351f082790626a87d4debcb690b087ace795fe50916ff28f684569d"
     },
     {
+      "path": "launches/20260924T080202Z/episode/learned-controller/runtime/alignment.jsonl",
+      "bytes": 11846,
+      "sha256": "cd6081cf8b774186cbf5cd4ef619a70daae570bd84847a8cf56d054493ff84f1"
+    },
+    {
+      "path": "launches/20260924T080202Z/episode/learned-controller/runtime/capacity.json",
+      "bytes": 87,
+      "sha256": "cc138900d031add92918b94110be88d8a003cccb43edd7e2b83e4201f5dfda47"
+    },
+    {
+      "path": "launches/20260924T080202Z/episode/learned-controller/runtime/reconstruction/memory/versions.jsonl",
+      "bytes": 8860,
+      "sha256": "eafa3f350f93db61b7847c2cfdf9487cea0d431a1cb11942781f6f16de9d406e"
+    },
+    {
+      "path": "launches/20260924T080202Z/episode/learned-controller/runtime/reconstruction/result.json",
+      "bytes": 680,
+      "sha256": "15e8fa0d019f13dbbee3a517659d2c33c09f93598acd37b6a539f81ff382dbae"
+    },
+    {
+      "path": "launches/20260924T080202Z/episode/learned-controller/runtime/result.json",
+      "bytes": 1554,
+      "sha256": "b5491fd117bf81d0065abf3b5d596a0aa54c629c2419dead05e2d213cf1ba5f1"
+    },
+    {
+      "path": "launches/20260924T080202Z/episode/learned-controller/runtime/termination.json",
+      "bytes": 36,
+      "sha256": "bd41a9e416bb70ee36946fc10ccd1eb393c173dfad3dd70e274c4ad9003f7401"
+    },
+    {
+      "path": "launches/20260924T080202Z/episode/learned-controller/runtime/video/result.json",
+      "bytes": 247,
+      "sha256": "4f08f0302fa888258b3a43987ddb00a74e6970aa0f3c397419a794f634976aea"
+    },
+    {
+      "path": "launches/20260924T080202Z/episode/learned-controller/source_hashes.json",
+      "bytes": 2250,
+      "sha256": "e36d242458ba9fbf4cab1005f6828fc15d848fc63456995bce11749082ab914e"
+    },
+    {
+      "path": "launches/20260924T080202Z/episode/result.json",
+      "bytes": 4310,
+      "sha256": "60238e0aa6c4eaeb3bcb8ca057d0bc25771551e8447e03228a9f5f3c328f52fc"
+    },
+    {
+      "path": "launches/20260924T080202Z/result.json",
+      "bytes": 585,
+      "sha256": "66818f1c26c5e3d2c3fbdd6c90706cde79501f123ffc28895a2c0c4594f3fa07"
+    },
+    {
+      "path": "launches/20260924T080334Z/episode/learned-controller/runtime/capacity.json",
+      "bytes": 54,
+      "sha256": "73c1571da17a65b335a867fdefe9be49d0444be852c78cf9f1daf88c054760f0"
+    },
+    {
+      "path": "launches/20260924T080334Z/episode/learned-controller/source_hashes.json",
+      "bytes": 2250,
+      "sha256": "e36d242458ba9fbf4cab1005f6828fc15d848fc63456995bce11749082ab914e"
+    },
+    {
       "path": "recorded-image-sources.json",
       "bytes": 1119,
       "sha256": "230659c81a0e84670a2ba2d74fa83933911609d1874cfce51d862e58a6339bf8"
@@ -4339,9 +4399,14 @@
       "sha256": "0f549fe4659ffdf8c35d5d890001956038b92a230ba9dda0448b734a14558407"
     },
     {
+      "path": "rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/checkpoints.json",
+      "bytes": 1212,
+      "sha256": "3330eb6f7c582baf4349cd6071bdd1c4aa77fbbb621445f86795da350b289014"
+    },
+    {
       "path": "rounds/navigation-repair-r68/perception-cycle/execution/state.json",
-      "bytes": 20060,
-      "sha256": "3c732d2df7b88dbe73fb038c9ad7f3cefaa3b1ae954ff65c1c6338f2944942e1"
+      "bytes": 34686,
+      "sha256": "6a09e536288fca8c74deda3d6915c2ff5696df86a18fc3273e0364bd7614d323"
     },
     {
       "path": "rounds/navigation-repair-r68/perception-cycle/programme-spec.json",
@@ -6839,19 +6904,29 @@
       "sha256": "62ebe1287b71e5914b35c4f07ea760413a26c756eccee70a019c9b1d6c0682a8"
     },
     {
+      "path": "runs/20260924T064336Z-balanced-motion-training-777e68/result.json",
+      "bytes": 742,
+      "sha256": "aaaf3e05012a300ba15c7a5348a9b88989493507aeb38fc832f90e47cf4104aa"
+    },
+    {
       "path": "runs/20260924T064336Z-balanced-motion-training-777e68/source_hashes.json",
       "bytes": 12570,
       "sha256": "c377e269b20042be8033f9b15e5a712a51c3a0295adabe69c87bea121c33a7c9"
     },
     {
       "path": "runs/20260924T064336Z-balanced-motion-training-777e68/stdout.log",
-      "bytes": 1393,
-      "sha256": "7b2d9d5bf1d07ddaeb399e8251fd8167cee77edaf7d7b4b96701d6597e1d378a"
+      "bytes": 2621,
+      "sha256": "3d7a42b6ad4aae292c0804bd4c458635cce4df304c3ab4835a9279d2bad67c50"
     },
     {
       "path": "runs/20260924T064336Z-balanced-motion-training-777e68/visual-training/metrics.jsonl",
-      "bytes": 490256,
-      "sha256": "924200dd4dc972e8db93e82436779c4c214013137b8eb4f27834b934565789f6"
+      "bytes": 507214,
+      "sha256": "c3532e5d9d66d5b11beda46a81116a2d77de7e03acc5e2ccd71701cda0e76eaf"
+    },
+    {
+      "path": "runs/20260924T064336Z-balanced-motion-training-777e68/visual-training/result.json",
+      "bytes": 1399,
+      "sha256": "53e314b91ec5b67f70fd5c0a5bc59b48108c7b1706f369fe5e0161002f5ead9b"
     },
     {
       "path": "runs/20260924T064336Z-preference-data-3ca23e/result.json",
@@ -6887,6 +6962,91 @@
       "path": "runs/20260924T064343Z-qwen-preference-update-700348/stdout.log",
       "bytes": 1669,
       "sha256": "28503dc7289995397650159ece87323cdbd684ca109ba637294aa4326e796beb"
+    },
+    {
+      "path": "runs/20260924T075645Z-selected-perception-pack-8951e7/result.json",
+      "bytes": 1030,
+      "sha256": "2c8acce255b73da8305db927b5b7d6ebf0e93bafd5ccec38d20e93bdd55d9586"
+    },
+    {
+      "path": "runs/20260924T075645Z-selected-perception-pack-8951e7/source_hashes.json",
+      "bytes": 12570,
+      "sha256": "c377e269b20042be8033f9b15e5a712a51c3a0295adabe69c87bea121c33a7c9"
+    },
+    {
+      "path": "runs/20260924T075645Z-selected-perception-pack-8951e7/stdout.log",
+      "bytes": 1083,
+      "sha256": "a4c3d88a95ac5e1436f7b2bfe666f2a8f8cdc6951dbf9abcaa2b1c0375480914"
+    },
+    {
+      "path": "runs/20260924T075647Z-recorded-odometry-qualification-20fb24/odometry-qualification/episodes.jsonl",
+      "bytes": 30233,
+      "sha256": "4fb44ae1b21665ec63601a05f7642d4f7e71ae2866d061eed61feb7c0e2a2178"
+    },
+    {
+      "path": "runs/20260924T075647Z-recorded-odometry-qualification-20fb24/odometry-qualification/result.json",
+      "bytes": 1819,
+      "sha256": "e541d29449e503fb56c56f6d68d5b248d8165ee5d6c87784f5a566047d5d8894"
+    },
+    {
+      "path": "runs/20260924T075647Z-recorded-odometry-qualification-20fb24/result.json",
+      "bytes": 693,
+      "sha256": "1ad929519238da97e23637921c2f00cc5d952878546fd69fffb4affcd7da6812"
+    },
+    {
+      "path": "runs/20260924T075647Z-recorded-odometry-qualification-20fb24/source_hashes.json",
+      "bytes": 12570,
+      "sha256": "c377e269b20042be8033f9b15e5a712a51c3a0295adabe69c87bea121c33a7c9"
+    },
+    {
+      "path": "runs/20260924T075647Z-recorded-odometry-qualification-20fb24/stdout.log",
+      "bytes": 2943,
+      "sha256": "1a9eacb118ac6cfa3f2e8516aa3540311c3f9557e305fd02a3f07fc7a38c0dd1"
+    },
+    {
+      "path": "runs/20260924T080202Z-new-perception-pilot-db3b2b/collection/flights.json",
+      "bytes": 4922,
+      "sha256": "5e8320b01f76454a622ac33d30517badce422ff68374d1e04953d0fed4a6fd91"
+    },
+    {
+      "path": "runs/20260924T080202Z-new-perception-pilot-db3b2b/collection/result.json",
+      "bytes": 377,
+      "sha256": "7a1fe74b06e2a4b8524a82e3bb6ee6b63f63dfa6af89e82132b43222aff8b31b"
+    },
+    {
+      "path": "runs/20260924T080202Z-new-perception-pilot-db3b2b/result.json",
+      "bytes": 769,
+      "sha256": "d5117ab60ca3dff74443b117b65206b1044308095084d7cd0b32d80b90da1253"
+    },
+    {
+      "path": "runs/20260924T080202Z-new-perception-pilot-db3b2b/source_hashes.json",
+      "bytes": 12570,
+      "sha256": "c377e269b20042be8033f9b15e5a712a51c3a0295adabe69c87bea121c33a7c9"
+    },
+    {
+      "path": "runs/20260924T080202Z-new-perception-pilot-db3b2b/stdout.log",
+      "bytes": 356,
+      "sha256": "bbc7a411cb2b673641a358a2e44d03530ed24b4fc8cb0b0f386deb33bf4df3a2"
+    },
+    {
+      "path": "runs/20260924T080334Z-new-perception-demonstrations-428867/collection/flights.json",
+      "bytes": 4922,
+      "sha256": "5e8320b01f76454a622ac33d30517badce422ff68374d1e04953d0fed4a6fd91"
+    },
+    {
+      "path": "runs/20260924T080334Z-new-perception-demonstrations-428867/collection/imported-failures.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "runs/20260924T080334Z-new-perception-demonstrations-428867/source_hashes.json",
+      "bytes": 12570,
+      "sha256": "c377e269b20042be8033f9b15e5a712a51c3a0295adabe69c87bea121c33a7c9"
+    },
+    {
+      "path": "runs/20260924T080334Z-new-perception-demonstrations-428867/stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "path": "train-00001-initial-rgb.png",

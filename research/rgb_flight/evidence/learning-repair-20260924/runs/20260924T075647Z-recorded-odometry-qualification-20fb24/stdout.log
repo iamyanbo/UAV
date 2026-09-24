@@ -1,0 +1,29 @@
+
+=============
+== PyTorch ==
+=============
+
+NVIDIA Release 25.11 (build 231036168)
+PyTorch Version 2.10.0a0+b558c98
+Container image Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+Copyright (c) 2014-2024 Facebook Inc.
+Copyright (c) 2011-2014 Idiap Research Institute (Ronan Collobert)
+Copyright (c) 2012-2014 Deepmind Technologies    (Koray Kavukcuoglu)
+Copyright (c) 2011-2012 NEC Laboratories America (Koray Kavukcuoglu)
+Copyright (c) 2011-2013 NYU                      (Clement Farabet)
+Copyright (c) 2006-2010 NEC Laboratories America (Ronan Collobert, Leon Bottou, Iain Melvin, Jason Weston)
+Copyright (c) 2006      Idiap Research Institute (Samy Bengio)
+Copyright (c) 2001-2004 Idiap Research Institute (Ronan Collobert, Samy Bengio, Johnny Mariethoz)
+Copyright (c) 2015      Google Inc.
+Copyright (c) 2015      Yangqing Jia
+Copyright (c) 2013-2016 The Caffe contributors
+All rights reserved.
+
+Various files include modifications (c) NVIDIA CORPORATION & AFFILIATES.  All rights reserved.
+
+GOVERNING TERMS: The software and materials are governed by the NVIDIA Software License Agreement
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-software-license-agreement/)
+and the Product-Specific Terms for NVIDIA AI Products
+(found at https://www.nvidia.com/en-us/agreements/enterprise-software/product-specific-terms-for-ai-products/).
+
+{"status": "completed", "accepted": false, "checkpoint_sha256": "e0e705d8916c2592a1f9443ff0c013916002dd5e9ce861269927c1d4a77e136c", "source_bundle_sha256": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e", "development_attempts": 47, "development_episode_ids": ["train-00010", "train-00012", "train-00030", "train-00043", "train-00056", "train-00059", "train-00064", "train-00075", "train-00093", "train-00102", "train-00103", "train-00121", "train-00132", "train-00142", "train-00163", "train-00171", "train-00184", "train-00189", "train-00193", "train-00221", "train-00232", "train-00235", "train-00239", "train-00253", "train-00259", "train-00262", "train-00294"], "motion_pairs": 9578, "translation_rmse_m": 0.056838063434130254, "rotation_rmse_rad": 0.015341845803758252, "marginal_95pct_coverage": 0.5807579870536647, "horizons": {"1": {"windows": 636, "translation_rmse_m": 1.3417417425962894, "rotation_rmse_rad": 0.2356410582996349}, "2": {"windows": 593, "translation_rmse_m": 2.605863156061799, "rotation_rmse_rad": 0.441035985691305}, "4": {"windows": 522, "translation_rmse_m": 5.266637135353169, "rotation_rmse_rad": 0.8364837485708019}, "10": {"windows": 387, "translation_rmse_m": 14.018434761498945, "rotation_rmse_rad": 1.845546808848537}}, "limitations": ["Repeated attempts are not independent episodes", "Unaligned labels and RGB gaps are reported, not interpolated across missing coverage", "Long-horizon covariance uses first-order independent increment propagation; empirical calibration remains required"]}

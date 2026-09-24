@@ -149,7 +149,7 @@
   "round_id": "execution",
   "stages": {
     "balanced-motion-training": {
-      "status": "running",
+      "status": "completed",
       "attempts": [
         {
           "process": {
@@ -168,7 +168,7 @@
           "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/balanced-motion-training-001.log"
         }
       ],
-      "reason": "Owned remote guard running",
+      "reason": "Worker completed; acceptance not inferred",
       "input_hashes": {
         "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/trajectory-bundle/manifest.json": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e",
         "/home/iamyanbo/uav-rgb-flight/runs/20260924T051243Z-balanced-motion-training-5b8884/visual-training/latest.pt": "e35bc2b2312e6f3884a05677b432c0245a32fd492c39378395ab2ab71bfa2467"
@@ -206,26 +206,26 @@
       "started_unix": 1790232216.32025,
       "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T064336Z-balanced-motion-training-777e68",
       "guard_receipt": {
-        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T061132Z-balanced-motion-training-4fd8af/result.json",
-        "sha256": "4fe3d1417cd97311332e7293c17a47e21248d1e083cfc4c605cf1bf6bb682d1f"
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T064336Z-balanced-motion-training-777e68/result.json",
+        "sha256": "aaaf3e05012a300ba15c7a5348a9b88989493507aeb38fc832f90e47cf4104aa"
       },
       "worker_receipt": {
-        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T061132Z-balanced-motion-training-4fd8af/visual-training/result.json",
-        "sha256": "eaed30118bf0b7609a0f9181527878c36237185a9e04abbcd8e5c2bc582008a7"
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T064336Z-balanced-motion-training-777e68/visual-training/result.json",
+        "sha256": "53e314b91ec5b67f70fd5c0a5bc59b48108c7b1706f369fe5e0161002f5ead9b"
       },
       "progress": {
-        "status": "checkpointed",
+        "status": "completed",
         "accepted": false,
-        "updates": 633,
-        "resumed_from_update": 200,
+        "updates": 2000,
+        "resumed_from_update": 633,
         "objective_version": "metric-motion-rate-balanced-regimes/v4",
         "manifest_sha256": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e",
         "resume_evidence": {
-          "checkpoint_sha256": "e35bc2b2312e6f3884a05677b432c0245a32fd492c39378395ab2ab71bfa2467",
-          "restored_update": 200,
+          "checkpoint_sha256": "1c13a78bc703d22c95d58e99fc61949ea3916342950a1938688456baa904dbd6",
+          "restored_update": 633,
           "optimizer_states": 178,
-          "optimizer_step_min": 200.0,
-          "optimizer_step_max": 200.0
+          "optimizer_step_min": 633.0,
+          "optimizer_step_max": 633.0
         },
         "gradient_evidence": {
           "encoder": {
@@ -247,7 +247,7 @@
         },
         "train_windows": 299,
         "development_windows": 68,
-        "elapsed_seconds": 1388.188952920027,
+        "elapsed_seconds": 4356.724412081996,
         "reason": "Full held-out trajectory drift and uncertainty qualification still required",
         "sampling_regimes": {
           "stationary": 137,
@@ -263,12 +263,12 @@
       },
       "artifacts": [
         {
-          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T061132Z-balanced-motion-training-4fd8af/visual-training/latest.pt",
-          "sha256": "1c13a78bc703d22c95d58e99fc61949ea3916342950a1938688456baa904dbd6"
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T064336Z-balanced-motion-training-777e68/visual-training/latest.pt",
+          "sha256": "71b8bd2f100d8b79f438f8804f56033f610f1dbcb5e6672c18cfe9b94c0cd2b6"
         },
         {
-          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T061132Z-balanced-motion-training-4fd8af/visual-training/best.pt",
-          "sha256": "cc19a05d7cc966532f46ee945cb3dfc607c6c01e9e7824e5229dc9c37a8b37fa"
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T064336Z-balanced-motion-training-777e68/visual-training/best.pt",
+          "sha256": "e0e705d8916c2592a1f9443ff0c013916002dd5e9ce861269927c1d4a77e136c"
         }
       ],
       "checkpoint": {
@@ -277,25 +277,350 @@
       }
     },
     "selected-perception-pack": {
-      "status": "ready",
-      "attempts": [],
-      "reason": "Waiting for balanced-motion-training=completed"
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2626822,
+            "start_ticks": "133573750",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/selected-perception-pack-000.log"
+        }
+      ],
+      "reason": "Worker completed; acceptance not inferred",
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T064336Z-balanced-motion-training-777e68/visual-training/best.pt": "e0e705d8916c2592a1f9443ff0c013916002dd5e9ce861269927c1d4a77e136c",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/checkpoints.json": "01fcc325088beb309965e5e2c1194fb34d8a1b5e0cb3697c053e1d509a0775d4"
+      },
+      "process": {
+        "pid": 2626822,
+        "start_ticks": "133573750",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/selected-perception-pack-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r68/spark_guard.py",
+        "--name",
+        "selected-perception-pack",
+        "--seconds",
+        "1800",
+        "--kind",
+        "cpu",
+        "--peak-gib",
+        "4",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r68/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/goal.pt",
+        "--odometry",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T064336Z-balanced-motion-training-777e68/visual-training/best.pt",
+        "--projection",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/projection.pt",
+        "--safety",
+        "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/safety.json",
+        "--goal-match-threshold",
+        ".9",
+        "--output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints"
+      ],
+      "started_unix": 1790236605.3737195,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T075645Z-selected-perception-pack-8951e7",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T075645Z-selected-perception-pack-8951e7/result.json",
+        "sha256": "2c8acce255b73da8305db927b5b7d6ebf0e93bafd5ccec38d20e93bdd55d9586"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/checkpoints.json",
+        "sha256": "3330eb6f7c582baf4349cd6071bdd1c4aa77fbbb621445f86795da350b289014"
+      },
+      "progress": {
+        "schema": "visual-navigation-checkpoints/v1",
+        "status": "completed",
+        "accepted": false,
+        "artifacts": {
+          "goal": {
+            "path": "goal.pt",
+            "sha256": "6a023b03ee33748c372369c5282e806c100547e0cb4b60245c207e421395bf0e",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/goal.pt"
+          },
+          "odometry": {
+            "path": "odometry.pt",
+            "sha256": "e0e705d8916c2592a1f9443ff0c013916002dd5e9ce861269927c1d4a77e136c",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T064336Z-balanced-motion-training-777e68/visual-training/best.pt"
+          },
+          "projection": {
+            "path": "projection.pt",
+            "sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/projection.pt"
+          },
+          "safety": {
+            "path": "safety.json",
+            "sha256": "ad063b81b2ec32d9830e62f53fd75d9092600423003ae619f8159ee051cddf1d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/whole-pipeline-r35/checkpoints/safety.json"
+          }
+        },
+        "goal_match_threshold": 0.9,
+        "scope": "Integration snapshot. Packaging does not establish model compatibility or acceptance."
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/checkpoints.json",
+          "sha256": "3330eb6f7c582baf4349cd6071bdd1c4aa77fbbb621445f86795da350b289014"
+        }
+      ]
     },
     "recorded-odometry-qualification": {
-      "status": "ready",
-      "attempts": [],
-      "reason": "Waiting for selected-perception-pack=completed"
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2626833,
+            "start_ticks": "133573950",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/recorded-odometry-qualification-000.log"
+        }
+      ],
+      "reason": "Worker completed; acceptance not inferred",
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/checkpoints.json": "3330eb6f7c582baf4349cd6071bdd1c4aa77fbbb621445f86795da350b289014",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/trajectory-bundle/manifest.json": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e"
+      },
+      "process": {
+        "pid": 2626833,
+        "start_ticks": "133573950",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/recorded-odometry-qualification-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r68/spark_guard.py",
+        "--name",
+        "recorded-odometry-qualification",
+        "--seconds",
+        "3600",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "16",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r68/stage_worker.py",
+        "qualify-odometry",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r58/execution/trajectory-bundle",
+        "--navigation-pack",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints"
+      ],
+      "started_unix": 1790236607.3784907,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T075647Z-recorded-odometry-qualification-20fb24",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T075647Z-recorded-odometry-qualification-20fb24/result.json",
+        "sha256": "1ad929519238da97e23637921c2f00cc5d952878546fd69fffb4affcd7da6812"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T075647Z-recorded-odometry-qualification-20fb24/odometry-qualification/result.json",
+        "sha256": "e541d29449e503fb56c56f6d68d5b248d8165ee5d6c87784f5a566047d5d8894"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "checkpoint_sha256": "e0e705d8916c2592a1f9443ff0c013916002dd5e9ce861269927c1d4a77e136c",
+        "source_bundle_sha256": "03b02ab6b31d4214eb4256163ac7edb4b0c8fc19a6f0e3d91de4ea021bf6542e",
+        "development_attempts": 47,
+        "development_episode_ids": [
+          "train-00010",
+          "train-00012",
+          "train-00030",
+          "train-00043",
+          "train-00056",
+          "train-00059",
+          "train-00064",
+          "train-00075",
+          "train-00093",
+          "train-00102",
+          "train-00103",
+          "train-00121",
+          "train-00132",
+          "train-00142",
+          "train-00163",
+          "train-00171",
+          "train-00184",
+          "train-00189",
+          "train-00193",
+          "train-00221",
+          "train-00232",
+          "train-00235",
+          "train-00239",
+          "train-00253",
+          "train-00259",
+          "train-00262",
+          "train-00294"
+        ],
+        "motion_pairs": 9578,
+        "translation_rmse_m": 0.056838063434130254,
+        "rotation_rmse_rad": 0.015341845803758252,
+        "marginal_95pct_coverage": 0.5807579870536647,
+        "horizons": {
+          "1": {
+            "windows": 636,
+            "translation_rmse_m": 1.3417417425962894,
+            "rotation_rmse_rad": 0.2356410582996349
+          },
+          "2": {
+            "windows": 593,
+            "translation_rmse_m": 2.605863156061799,
+            "rotation_rmse_rad": 0.441035985691305
+          },
+          "4": {
+            "windows": 522,
+            "translation_rmse_m": 5.266637135353169,
+            "rotation_rmse_rad": 0.8364837485708019
+          },
+          "10": {
+            "windows": 387,
+            "translation_rmse_m": 14.018434761498945,
+            "rotation_rmse_rad": 1.845546808848537
+          }
+        },
+        "limitations": [
+          "Repeated attempts are not independent episodes",
+          "Unaligned labels and RGB gaps are reported, not interpolated across missing coverage",
+          "Long-horizon covariance uses first-order independent increment propagation; empirical calibration remains required"
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T075647Z-recorded-odometry-qualification-20fb24/odometry-qualification/result.json",
+          "sha256": "e541d29449e503fb56c56f6d68d5b248d8165ee5d6c87784f5a566047d5d8894"
+        }
+      ]
     },
     "new-perception-pilot": {
-      "status": "ready",
-      "attempts": [],
-      "reason": "Waiting for recorded-odometry-qualification=completed"
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2627159,
+            "start_ticks": "133605483",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/new-perception-pilot-000.log"
+        }
+      ],
+      "reason": "Worker completed; acceptance not inferred",
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/checkpoints.json": "3330eb6f7c582baf4349cd6071bdd1c4aa77fbbb621445f86795da350b289014",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T034035Z-exploration-demonstrations-0ec7d6/collection/flights.json": "38f8620a30ee4140be2e83a6e6438e800eb93e2e23856d811b8353520bed140a"
+      },
+      "process": {
+        "pid": 2627159,
+        "start_ticks": "133605483",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/new-perception-pilot-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r68/spark_guard.py",
+        "--name",
+        "new-perception-pilot",
+        "--seconds",
+        "1200",
+        "--kind",
+        "flight",
+        "--peak-gib",
+        "72",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r68/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints",
+        "--demonstrate",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T034035Z-exploration-demonstrations-0ec7d6/collection/flights.json"
+      ],
+      "started_unix": 1790236922.7052393,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T080202Z-new-perception-pilot-db3b2b",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T080202Z-new-perception-pilot-db3b2b/result.json",
+        "sha256": "d5117ab60ca3dff74443b117b65206b1044308095084d7cd0b32d80b90da1253"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T080202Z-new-perception-pilot-db3b2b/collection/result.json",
+        "sha256": "7a1fe74b06e2a4b8524a82e3bb6ee6b63f63dfa6af89e82132b43222aff8b31b"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T080202Z-new-perception-pilot-db3b2b/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T080202Z-new-perception-pilot-db3b2b/collection/flights.json",
+          "sha256": "5e8320b01f76454a622ac33d30517badce422ff68374d1e04953d0fed4a6fd91"
+        }
+      ]
     },
     "new-perception-demonstrations": {
-      "status": "ready",
-      "attempts": [],
-      "reason": "Waiting for new-perception-pilot=completed"
+      "status": "running",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2627807,
+            "start_ticks": "133614693",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/new-perception-demonstrations-000.log"
+        }
+      ],
+      "reason": "Owned remote guard running",
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/checkpoints.json": "3330eb6f7c582baf4349cd6071bdd1c4aa77fbbb621445f86795da350b289014",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T034035Z-exploration-demonstrations-0ec7d6/collection/flights.json": "38f8620a30ee4140be2e83a6e6438e800eb93e2e23856d811b8353520bed140a"
+      },
+      "process": {
+        "pid": 2627807,
+        "start_ticks": "133614693",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/new-perception-demonstrations-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r68/spark_guard.py",
+        "--name",
+        "new-perception-demonstrations",
+        "--seconds",
+        "2400",
+        "--kind",
+        "flight",
+        "--peak-gib",
+        "72",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/navigation-repair-r68/collect_learning_round.py",
+        "--demonstration-batch",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T034035Z-exploration-demonstrations-0ec7d6/collection/flights.json",
+        "--import-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T080202Z-new-perception-pilot-db3b2b/collection/flights.json"
+      ],
+      "started_unix": 1790237014.8122768,
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T080334Z-new-perception-demonstrations-428867"
     }
   },
-  "updated_unix": 1790236442.0269227
+  "updated_unix": 1790237051.85279
 }
