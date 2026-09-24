@@ -53,10 +53,17 @@ def main():
             continuation = read(directory / 'continuation.json')
             state = read(directory / 'execution/state.json')
             cumulative = read(directory / 'cumulative-window/execution/state.json')
+            stages = (state or {}).get('stages', {})
+            if not continuation and stages:
+                terminal_states = {'completed', 'accepted', 'failed', 'blocked'}
+                terminal = all(row.get('status') in terminal_states for row in stages.values())
+            else:
+                terminal = bool(continuation and continuation['status'] in
+                    ('window_ended', 'blocked', 'operator_stopped', 'window_expired_waiting'))
             status = dict(observed_utc=datetime.now(timezone.utc).isoformat(),
                 round=args.round, continuation=continuation,
                 stages={name: {key: row.get(key) for key in ('status', 'reason', 'job', 'progress')}
-                        for name, row in (state or {}).get('stages', {}).items()},
+                        for name, row in stages.items()},
                 cumulative_stages={name: {key: row.get(key) for key in ('status', 'reason', 'job', 'progress')}
                         for name, row in (cumulative or {}).get('stages', {}).items()},
                 deployment_accepted=False,
@@ -73,8 +80,6 @@ def main():
                 elif changed.returncode != 0:
                     raise RuntimeError(changed.stderr)
                 git('push', 'origin', 'master', check=True)
-            terminal = bool(continuation and continuation['status'] in
-                ('window_ended', 'blocked', 'operator_stopped', 'window_expired_waiting'))
             print(json.dumps(dict(status='observed', round=args.round, terminal=terminal)), flush=True)
         except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
             print(json.dumps(dict(status='observation_failed', error=str(error))), flush=True)

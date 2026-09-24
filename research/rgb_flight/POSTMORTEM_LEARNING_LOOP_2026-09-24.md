@@ -132,3 +132,6 @@ The Qwen data path now carries real retrieved frames into training and flight. R
 The user relaxed the priority of the 50 ms gate in favor of navigation. The r71 historical-RGB reload measured 14.04 fresh RGB/s, 129 ms control/safety p95 and 241 ms control-latency p95. Qwen received three actual historical images and three observed IDs in its fourth call; the response and planner optimization finished after that episode. These values remain recorded but are not the primary unresolved milestone. The larger blockers are metric handover, odometry drift, startup timeouts, retained collision risk, no qualified Mode 2 action, and no successful flight.
 
 The campaign has not completed its cumulative budgets: the latest bounded window reached world/policy update 2,001 each and collected ten additional training flights. There is no active continuation after the eight-hour window. Preference ties, navigation failures and the partial budgets are explicit in the status and receipt archive; no acceptance is inferred from completed software stages.
+
+
+R73 resumed the completed r72 world and policy optimizers on their unchanged objectives and datasets in a new bounded eight-hour window. Its source-reload flight and subsequent collection are pending; the saved counters do not establish that navigation has improved.

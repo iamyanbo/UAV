@@ -95,3 +95,6 @@ R72 recollected ten demonstrations under the historical-RGB grounding contract. 
 The matched Qwen configurations caused no dispatched control changes. Their two complete flights both timed out and tied, so preference training correctly remained blocked at zero updates; dependent preference packaging/reload stages did not run. Independent learner stages completed.
 
 The connected r72 cumulative window resumed world and policy checkpoints and completed 2,000 updates of each, reaching update 2,001 including each integration update. It then flew one reload episode and collected ten more training episodes (paths 9.49-13.16 m; nine initialization timeouts, one collision). The eight-hour window ended without a follow-on window. This is a functioning end-to-end learning and data-collection flow, not completed cumulative training or accepted navigation. The user has stated that initial functional movement and navigation take priority over the 50 ms optimization gate.
+
+
+R73 started the next at-most-eight-hour cumulative window after r72 ended. It resumes the same world and policy objectives and datasets from r72's verified update-2,001 checkpoints toward update 4,001. The next reload flight and training collection remain pending. This is continuation of the authorized cumulative schedule, not a navigation acceptance claim.
