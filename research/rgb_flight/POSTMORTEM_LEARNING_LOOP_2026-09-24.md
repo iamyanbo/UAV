@@ -135,3 +135,14 @@ The campaign has not completed its cumulative budgets: the latest bounded window
 
 
 R73 resumed the completed r72 world and policy optimizers on their unchanged objectives and datasets in a new bounded eight-hour window. Its source-reload flight and subsequent collection are pending; the saved counters do not establish that navigation has improved.
+
+
+## Incorrect continuation priority
+
+When asked whether more training was the best next step, I checked the actual gradient path and failure records. R73 updates the world model and policy while keeping odometry fixed. Extending those updates cannot directly fix the metric-odometry/alignment failure that prevents handover. Restarting the cumulative window as the next priority was therefore a mistake. It has been checkpointed at world update 2,042 with its optimizer state preserved; policy remains at 2,001. No checkpoint or failed flight was discarded.
+
+The r72 development records contain 11 similarity fits that reached the fitting stage; all were rejected by the residual/uncertainty requirements. The other recorded reasons were 131 insufficient-support events, eight insufficient-excitation events and 910 records labeled tracking_lost. The latter include pre-initialization records and must not be interpreted as 910 independent tracking failures.
+
+Existing recorded-data diagnosis was then run on train-00093, selected because it had the most supported map publications. Across 69 paired frames, relative-rotation RMSE was 0.843 degrees and post-hoc similarity-aligned translation RMSE was 0.266 m over a 3.022 m motion radius (residual/radius 0.0881). This suggests the metric-odometry/alignment path is a useful next target even when relative SLAM can reconstruct the trajectory. It is one selected diagnostic flight, not a general SLAM acceptance result. The fitted scale uses privileged evaluation labels and is prohibited from runtime. Source hashes and the actual result are preserved in `runs/20260924T132121Z-metric-handover-diagnosis-ecdb8e/tracking-diagnosis.json`.
+
+The next useful milestone is to isolate learned metric-motion error, timestamp/frame alignment and uncertainty propagation on these same recorded observations, fix the measured defect, and demonstrate repeated metric handovers in real simulator flights before expanding downstream navigation training. More updates remain appropriate once the failing mechanism and its learning signal have been established.
