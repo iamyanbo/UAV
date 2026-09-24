@@ -1,11 +1,14 @@
 {
-  "observed_utc": "2026-09-24T11:38:45.192333+00:00",
+  "observed_utc": "2026-09-24T11:48:59.202388+00:00",
   "round": "navigation-repair-r72",
   "continuation": {
-    "status": "cumulative_training_running",
+    "status": "window_ended",
     "independent_flow_completed": true,
     "preference_status": "blocked",
-    "accepted": false
+    "cumulative_window": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/cumulative-window",
+    "scheduler_return_code": 2,
+    "accepted": false,
+    "reason": "Movement, map handover and navigation are measured separately; timing optimization is deferred"
   },
   "stages": {
     "bootstrap-flight": {
@@ -1257,10 +1260,21 @@
       }
     },
     "next-training-collection": {
-      "status": "running",
-      "reason": "Owned remote guard running",
+      "status": "completed",
+      "reason": "Worker completed; acceptance not inferred",
       "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T113245Z-next-training-collection-2a4f74",
-      "progress": null
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 10,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T113245Z-next-training-collection-2a4f74/collection/flights.json"
+      }
     }
   },
   "deployment_accepted": false,

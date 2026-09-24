@@ -679,7 +679,7 @@
       ]
     },
     "next-training-collection": {
-      "status": "running",
+      "status": "completed",
       "attempts": [
         {
           "process": {
@@ -738,9 +738,35 @@
         "train-00311"
       ],
       "started_unix": 1790249565.8863904,
-      "reason": "Owned remote guard running",
-      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T113245Z-next-training-collection-2a4f74"
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T113245Z-next-training-collection-2a4f74",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T113245Z-next-training-collection-2a4f74/result.json",
+        "sha256": "90b950b1ad4294ca8be4ab80a12ff53f653411d57216fef136777ca61be6ad59"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T113245Z-next-training-collection-2a4f74/collection/result.json",
+        "sha256": "3dc59906ca65e3bff6fccd6b22c7369b272f8980d440f2f9f45235e24642f25e"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 10,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T113245Z-next-training-collection-2a4f74/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T113245Z-next-training-collection-2a4f74/collection/flights.json",
+          "sha256": "fe2c32a37a6a427b8ea223477dcddeb7680b3f580fc501a79bb468b9591fdaa5"
+        }
+      ]
     }
   },
-  "updated_unix": 1790249916.4129791
+  "updated_unix": 1790250463.2012498
 }

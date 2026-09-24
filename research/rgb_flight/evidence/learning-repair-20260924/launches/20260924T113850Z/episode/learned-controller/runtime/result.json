@@ -1,0 +1,51 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 327,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "9a8af3831076a63b446a0a3697cf1208bb3237907d8685d0bbda86ca13b72db2",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "b6c429ce1f8fd36964c6541e000df524b0c1f8b070887d5e9309f04fa83aaeca",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "a075e0c6c95977e85ae4925053cd5e04019b1012b0a4d5caf53470e141faba89",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "cf1b5d3f649eaa7522936a13bb5057100b858e3d992226bd3bd75202a0d05886",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "14b222e095924ddddd0287345fe207639cf114f8ebb2545f7dbf823140211348",
+      "samples": 64
+    },
+    {
+      "path": "controller-000005.pt",
+      "sha256": "16a2db416c2221729a5584ee84faaffb2f7ed93c9ac8d2397dc4a215651110b7",
+      "samples": 7
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": null,
+  "final_map_status": "initializing",
+  "map_version": -1,
+  "supported_maps_received": 10,
+  "optimized_surface_samples_received": 75514,
+  "first_supported_map_available_ns": 1790249992686943744,
+  "handover_sim_ns": null,
+  "control_safety_p95_seconds": 0.07551811479497701,
+  "control_safety_missed_deadlines": 138,
+  "safety_interventions": 224
+}

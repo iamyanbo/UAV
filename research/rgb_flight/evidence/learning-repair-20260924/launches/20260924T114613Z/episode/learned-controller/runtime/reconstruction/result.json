@@ -1,0 +1,20 @@
+{
+  "status": "live_observed_stream_reconstructed",
+  "frames": 51,
+  "memory_versions": 18,
+  "elapsed_wall_seconds": 31.230038774898276,
+  "peak_allocated_bytes": 8141632512,
+  "peak_reserved_bytes": 10357833728,
+  "metric_scale_established": false,
+  "live_async_execution": true,
+  "foundation_passed": false,
+  "tracking_initialized_frames": 21,
+  "sampling_skipped_frames": 27,
+  "current_pose_method": "past_anchor_pose_only",
+  "coordinate_gauge": "causal_common_camera_similarity; arbitrary_scale",
+  "gauge_changes": 1,
+  "tracking_optimizer": "DSPO",
+  "gauge_rejected_frames": 0,
+  "mapping_execution": "asynchronous_bounded_worker",
+  "mapping_requests_superseded": 3
+}

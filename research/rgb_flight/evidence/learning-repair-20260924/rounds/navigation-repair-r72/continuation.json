@@ -1,6 +1,9 @@
 {
-  "status": "cumulative_training_running",
+  "status": "window_ended",
   "independent_flow_completed": true,
   "preference_status": "blocked",
-  "accepted": false
+  "cumulative_window": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r72/cumulative-window",
+  "scheduler_return_code": 2,
+  "accepted": false,
+  "reason": "Movement, map handover and navigation are measured separately; timing optimization is deferred"
 }
