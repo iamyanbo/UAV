@@ -1,0 +1,23 @@
+{
+  "status": "causal_reconstruction_complete",
+  "frames": 1570,
+  "memory_versions": 331,
+  "elapsed_wall_seconds": 477.90991598018445,
+  "peak_allocated_bytes": 8294482944,
+  "peak_reserved_bytes": 10473177088,
+  "metric_scale_established": true,
+  "metric_scale_usable_frames": 45,
+  "metric_uncertainty_calibrated": false,
+  "live_async_execution": false,
+  "foundation_passed": false,
+  "tracking_initialized_frames": 1079,
+  "sampling_skipped_frames": 605,
+  "current_pose_method": "past_anchor_pose_only",
+  "coordinate_gauge": "causal_common_camera_similarity; arbitrary_scale",
+  "gauge_changes": 2,
+  "tracking_optimizer": "DSPO",
+  "gauge_rejected_frames": 0,
+  "empty_active_graph_frames": 0,
+  "mapping_execution": "asynchronous_bounded_worker",
+  "mapping_requests_superseded": 0
+}

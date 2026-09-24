@@ -59,3 +59,15 @@ R85 continues the same v6 batch from five preserved r84 flights. The first resum
 
 
 The completed r85 train-00006 flight (`launches/20260924T170706Z`) consumed all 35 submitted asynchronous geometry results, received 49 supported Gaussian publications (891,412 samples), and produced 51 mapped-state decisions plus 209 observed-target-motion decisions. Perception/belief p95 was 89 ms and maximum 429 ms; control/safety p95 was 124 ms with 1,001 missed 50 ms deadlines and 1,031 interventions. It traveled 22.06 m, displaced 9.75 m and timed out without success or controller error. This verifies exercised integration and a metric handover, not a matched claim that Gaussian geometry improves navigation.
+
+
+R86 completed the ten demonstrations (zero successes), prepared 727/727 timing-valid world windows, and executed a real world-model update. Its receipt verifies finite changed parameters, 141 optimizer states, checkpoint reload and a finite nonzero candidate-action gradient (norm 0.02043). Policy-data preparation follows. The original failed recording completed reconstruction with the patched source: 1,570 frames, 331 map versions, 45 usable metric-scale frames, 477.91 wall seconds. Dense recorded replay encountered zero empty graphs, so this is processing verification, not reproduction of the online empty-graph edge case.
+
+
+The first depth-aware policy/critic update also completed on 538 windows from all ten demonstrations. All four depth-encoder tensors had nonzero gradients and changed; all 186 frozen goal-pipeline tensors stayed unchanged. The receipt verifies 26 optimizer states and checkpoint reload. These are one-update integration receipts, not evidence of a trained navigation policy.
+
+
+Qwen supervised preparation produced 401 training examples, including 293 with historical RGB and nine with observed targets; both internal-development task IDs were excluded. One real Qwen update completed with 288 optimizer states. The first packaged learned-policy flight (`launches/20260924T174110Z`) completed without a controller error, traveled 14.98 m and displaced 7.88 m, but timed out without reaching the goal. DAgger then prepares corrections at these actual learner-visited states.
+
+
+After the disk-reserve interruption and lossless duplicate sharing described in the postmortem, r87 reused verified r86 stages and reran DAgger preparation. The 610-window dataset reproduced the original manifest hash. DAgger retraining completed with finite changed policy/depth/critic parameters, unchanged frozen goal parameters and a verified reload. It initialized from the first policy update and correctly reset optimizer state for the changed aggregate dataset. Fresh PPO collection follows.

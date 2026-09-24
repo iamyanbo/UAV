@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T175611Z-dagger-pack-07af12/source/package_navigation.py",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/goal.pt",
+    "--odometry",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/odometry.pt",
+    "--projection",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/projection.pt",
+    "--vision",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/vision.json",
+    "--safety",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/safety.json",
+    "--policy",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T175602Z-dagger-update-186cde/training/final.pt",
+    "--world",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt",
+    "--qwen",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T174000Z-qwen-supervised-update-840051/configurator/latest.pt",
+    "--goal-match-threshold",
+    "0.9",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/dagger-pack"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 4.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 1.0103149749338627
+}

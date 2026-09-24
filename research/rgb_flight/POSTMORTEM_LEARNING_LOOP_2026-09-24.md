@@ -180,3 +180,13 @@ The first eight v6 demonstrations include two `geometry_collision` outcomes (tra
 `launches/20260924T171500Z` ended with a geometry collision at 118.69 simulated seconds after 43.89 m of movement. Its reconstruction worker also crashed at the upstream frontend `self.graph.ii.min()` after keyframe removal left zero active factors. The parent remained alive waiting on its mapper child, delaying shutdown until the existing timeout. The collector correctly retained this as an infrastructure failure instead of treating its incomplete inference record as a complete demonstration. Its automatic retry produced a complete physical outcome; both attempts remain recorded.
 
 R86 adds an auditable Python-only patch to the existing Splat-SLAM port: an empty graph has no optimized interval to mark dirty. Reconstruction publishes explicit tracking loss while the active graph is empty, skips metric pose/map publication, and allows later observed correspondences to recover it. Mapper shutdown now runs in `finally`, including on unexpected exceptions. The previous dependency receipt and patch are preserved before updating the port. Nine compatible complete demonstrations are imported; the last is collected with this repair. Original failed RGB is queued for actual reconstruction with the repaired source.
+
+
+## Repeated artifact copies exhausted the disk reserve
+
+R86 DAgger preparation generated 610 aggregate windows from 1,627 actual learner states/corrections, but the resource guard stopped its job when free disk crossed the 80 GiB reserve. The scheduler correctly marked the stage failed despite its completed data receipt; downstream stages did not run on a failed guard outcome. I had allowed repeated full trajectory bundles and copied datasets to accumulate without checking their cumulative disk cost before this continuation.
+
+With all study containers stopped, exact immutable duplicates under `rounds` and `runs` are being replaced atomically with hardlinks after SHA-256 and unchanged-file checks. Every path, byte sequence, manifest hash, checkpoint and failed attempt is preserved; raw flight recordings are untouched. Each replacement has a receipt. The stopped DAgger result will remain preserved and preparation will be rerun in a new source round using verified completed upstream stages. The existing disk reserve is not lowered.
+
+
+Deduplication completed in 247.68 seconds: 10,063 byte-identical artifact copies now share storage, recovering 145,547,699,434 bytes (135.55 GiB) and leaving 215.59 GiB free. The per-path SHA-256 receipt is `receipts/dedup-20260924.jsonl`. R87 restarted at DAgger preparation through the existing verified-stage continuation; no completed optimizer update or flight was rerun.

@@ -1,0 +1,1 @@
+{"update": 1, "training_loss": 63.724605560302734, "validation_loss": 78.97615693191003, "window_exposures": 2, "unique_train_windows": 582, "exposed_unique_train_windows": 2, "exposed_unique_train_episodes": 2, "dataset_train_simulated_hours": 0.3399022510933334, "elapsed_seconds": 58.60640474781394}

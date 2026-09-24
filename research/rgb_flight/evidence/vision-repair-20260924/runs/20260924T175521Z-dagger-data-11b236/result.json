@@ -1,0 +1,28 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T175521Z-dagger-data-11b236/source/stage_worker.py",
+    "build-online-view",
+    "--learning-phase",
+    "dagger",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/online-trajectories",
+    "--navigation-pack",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/trained-pack",
+    "--world-checkpoint",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt",
+    "--collection",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T174110Z-dagger-flight-7521d8/collection/flights.json",
+    "--base-policy-data",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data",
+    "--artifact-output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r87/execution/dagger-data"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 24.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 40.03643765090965
+}

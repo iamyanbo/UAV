@@ -1,0 +1,28 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T174653Z-dagger-data-44d049/source/stage_worker.py",
+    "build-online-view",
+    "--learning-phase",
+    "dagger",
+    "--dataset",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/online-trajectories",
+    "--navigation-pack",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/trained-pack",
+    "--world-checkpoint",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt",
+    "--collection",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T174110Z-dagger-flight-7521d8/collection/flights.json",
+    "--base-policy-data",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data",
+    "--artifact-output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "gpu",
+  "peak_gib": 24.0,
+  "status": "stopped",
+  "reason": "Disk reserve breached",
+  "elapsed_seconds": 54.42051254096441
+}

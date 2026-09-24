@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/home/iamyanbo/uav-rgb-flight/envs/airsim/bin/python",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T174519Z-online-trajectories-539246/source/trajectory_bundle.py",
+    "--collection-root",
+    "/home/iamyanbo/uav-rgb-flight/launches",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/online-trajectories"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 8.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 94.07980267307721
+}

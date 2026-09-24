@@ -13,7 +13,7 @@ REMOTE = r'''
 import base64,json
 from pathlib import Path
 root=Path('/home/iamyanbo/uav-rgb-flight');selected=set()
-for pattern in ('splat-native-port.json','splat-native.patch','before-empty-graph-splat-native*'):
+for pattern in ('splat-native-port.json','splat-native.patch','before-empty-graph-splat-native*','dedup-20260924.*'):
  selected.update(root.joinpath('receipts').glob(pattern))
 run_patterns=('result.json','source_hashes.json','inference-source-hashes.json','stdout.log','tracking-diagnosis.json',
  'collection/*.json','training/result.json','training/metrics.jsonl',
@@ -50,7 +50,8 @@ for folder in root.joinpath('launches').iterdir():
   selected.update(folder.glob(pattern))
 result=[]
 for path in sorted(selected):
- if path.is_file() and path.stat().st_size<=2_000_000:
+ limit=10_000_000 if path.parent==root/'receipts' and path.name.startswith('dedup-') else 2_000_000
+ if path.is_file() and path.stat().st_size<=limit:
   try:data=path.read_bytes()
   except FileNotFoundError:continue
   result.append([str(path.relative_to(root)),base64.b64encode(data).decode('ascii')])

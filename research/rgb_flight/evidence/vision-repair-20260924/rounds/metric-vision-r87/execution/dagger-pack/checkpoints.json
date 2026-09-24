@@ -1,0 +1,49 @@
+{
+  "schema": "visual-navigation-checkpoints/v1",
+  "status": "completed",
+  "accepted": false,
+  "artifacts": {
+    "goal": {
+      "path": "goal.pt",
+      "sha256": "135aff99bf25f1faee24fc5737e572f1f19cf1fa3ce52972e4656bb046e9db0a",
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/goal.pt"
+    },
+    "odometry": {
+      "path": "odometry.pt",
+      "sha256": "e0e705d8916c2592a1f9443ff0c013916002dd5e9ce861269927c1d4a77e136c",
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/odometry.pt"
+    },
+    "world": {
+      "path": "world.pt",
+      "sha256": "a4e133fa0289bf737f9ae4ba020d7db3f3ca5d446e37320513ce27ffe2a8e410",
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt"
+    },
+    "policy": {
+      "path": "policy.pt",
+      "sha256": "344a8024cae76345e7ad06951ef8336df93852b4389986a0dd57189961150041",
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T175602Z-dagger-update-186cde/training/final.pt"
+    },
+    "projection": {
+      "path": "projection.pt",
+      "sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/projection.pt"
+    },
+    "safety": {
+      "path": "safety.json",
+      "sha256": "ad063b81b2ec32d9830e62f53fd75d9092600423003ae619f8159ee051cddf1d",
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/safety.json"
+    },
+    "qwen": {
+      "path": "qwen.pt",
+      "sha256": "69a3c5d3684ba3c9ae2eb422999b94cbc2e15cffc7bdfddc2faf39de5c572c79",
+      "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174000Z-qwen-supervised-update-840051/configurator/latest.pt"
+    },
+    "vision": {
+      "path": "vision.json",
+      "sha256": "642ca7609c884fb33168e7ea6478a476a960cf81b0cc2050c452aafcb30efd8f",
+      "source": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/vision.json"
+    }
+  },
+  "goal_match_threshold": 0.9,
+  "scope": "Integration snapshot. Packaging does not establish model compatibility or acceptance."
+}

@@ -313,7 +313,7 @@
       ]
     },
     "world-data": {
-      "status": "running",
+      "status": "completed",
       "attempts": [
         {
           "process": {
@@ -357,101 +357,1028 @@
         "{job}/world-data"
       ],
       "started_unix": 1790271043.464726,
-      "reason": "Owned remote guard running",
-      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e"
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/result.json",
+        "sha256": "7394993454f242a01e0c6863ffc52dc21708c95fe0f07eae3bcbbe004a69d133"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data/result.json",
+        "sha256": "5bf762630f8a26b8b4d4bb708fbbd6162a63bdba06c2976720946522a50763ea"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "candidate_windows": 727,
+        "timing_valid_windows": 727,
+        "training_ready": true,
+        "blocking_reasons": []
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data/manifest.json",
+          "sha256": "6bb4017687b95a908350c7ee0eed79d480fc5c864ca51bb2ea0971c05d8df608"
+        }
+      ]
     },
     "world-update": {
-      "status": "ready",
-      "attempts": []
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2723175,
+            "start_ticks": "137043909",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/world-update-000.log"
+        }
+      ],
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data/manifest.json": "6bb4017687b95a908350c7ee0eed79d480fc5c864ca51bb2ea0971c05d8df608"
+      },
+      "process": {
+        "pid": 2723175,
+        "start_ticks": "137043909",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/world-update-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/spark_guard.py",
+        "--name",
+        "world-update",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "36",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/stage_worker.py",
+        "train-world",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data",
+        "--integration-only",
+        "--updates",
+        "1"
+      ],
+      "started_unix": 1790271306.9660544,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/result.json",
+        "sha256": "8db7da16f29f5d9e17778239091d00c18c5c07a36f742392c0974d1c0d9e9343"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/result.json",
+        "sha256": "99fe696dbbde57dea75cf03d4d009e6b73046bea4dbced25cc800bf5bc25ee38"
+      },
+      "progress": {
+        "status": "completed",
+        "updates": 1,
+        "accepted": false,
+        "objective_version": "shared-droid-dispatched-state/v5",
+        "integration_only": true,
+        "gradient_evidence": {
+          "model.spatial": {
+            "parameters": 1,
+            "trainable": 1,
+            "gradient_tensors": 1,
+            "nonzero_gradient_tensors": 1,
+            "changed_tensors": 1,
+            "frozen_changed": 0
+          },
+          "model.visual": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.goal_visual": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.goal_attention": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "model.goal_score": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.memory": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.context": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.transformer": {
+            "parameters": 72,
+            "trainable": 72,
+            "gradient_tensors": 72,
+            "nonzero_gradient_tensors": 72,
+            "changed_tensors": 72,
+            "frozen_changed": 0
+          },
+          "model.norm": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.belief": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "model.heads": {
+            "parameters": 48,
+            "trainable": 48,
+            "gradient_tensors": 48,
+            "nonzero_gradient_tensors": 32,
+            "changed_tensors": 48,
+            "frozen_changed": 0
+          }
+        },
+        "resumed_from_update": 0,
+        "optimizer_states": 141,
+        "foundation_source": {
+          "accepted": false,
+          "training_ready": true,
+          "valid_expert_episodes": 250,
+          "visual_goal_runtime": true
+        },
+        "dataset_manifest_sha256": "6bb4017687b95a908350c7ee0eed79d480fc5c864ca51bb2ea0971c05d8df608",
+        "scope": "world training",
+        "checkpoint_reload_verified": true,
+        "optimizer_reload_states": 141,
+        "initialization": null,
+        "gradient_gate_passed": true,
+        "candidate_action_gradient": {
+          "finite": true,
+          "norm": 0.020429767668247223
+        }
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt",
+          "sha256": "a4e133fa0289bf737f9ae4ba020d7db3f3ca5d446e37320513ce27ffe2a8e410"
+        }
+      ]
     },
     "policy-data": {
-      "status": "ready",
-      "attempts": []
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2723645,
+            "start_ticks": "137050230",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/policy-data-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2723645,
+        "start_ticks": "137050230",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/policy-data-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/spark_guard.py",
+        "--name",
+        "policy-data",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "24",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/learning_data_job.py",
+        "--phase",
+        "policy",
+        "--bundle",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/trajectories",
+        "--collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T172417Z-bootstrap-flight-eb4f56/collection/flights.json",
+        "--checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints",
+        "--world",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt",
+        "--output",
+        "{job}/policy-data"
+      ],
+      "started_unix": 1790271370.1747808,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/result.json",
+        "sha256": "1fba665a3efe0d03a0f4e143b38ed2c556e82dde50061f21d6cb4d7a4acf5dff"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data/result.json",
+        "sha256": "079595bd9122461b5220ede9aec5d8c600e532a4807493bd61d8cceaae181008"
+      },
+      "progress": {
+        "status": "completed",
+        "training_ready": true,
+        "deployment_accepted": false,
+        "accepted": false,
+        "windows": 538,
+        "episodes": 10,
+        "excluded_short_or_unsupported_attempts": 0
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data/manifest.json",
+          "sha256": "535b5c23744a4891ab41135b296b34f495ea108c4848b8a038dbc0308f74846e"
+        }
+      ]
     },
     "policy-update": {
-      "status": "ready",
-      "attempts": []
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2724194,
+            "start_ticks": "137062452",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/policy-update-000.log"
+        }
+      ],
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data/manifest.json": "535b5c23744a4891ab41135b296b34f495ea108c4848b8a038dbc0308f74846e"
+      },
+      "process": {
+        "pid": 2724194,
+        "start_ticks": "137062452",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/policy-update-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/spark_guard.py",
+        "--name",
+        "policy-update",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "36",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/stage_worker.py",
+        "train-policy",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data",
+        "--integration-only",
+        "--updates",
+        "1",
+        "--goal-checkpoint",
+        "goal.pt"
+      ],
+      "started_unix": 1790271492.399669,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173812Z-policy-update-1cd07c",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173812Z-policy-update-1cd07c/result.json",
+        "sha256": "48a12dfe62cf582dde0cdeab7ecdd9f136734ae1ea1db59b962f33d0672216cc"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173812Z-policy-update-1cd07c/training/result.json",
+        "sha256": "766c778d77dfadab2247d9cfcf134b8d8772c7e73201f3dc68c9228146f1b8b7"
+      },
+      "progress": {
+        "status": "completed",
+        "updates": 1,
+        "accepted": false,
+        "objective_version": "spatial-depth-audited-stops/v5",
+        "integration_only": true,
+        "gradient_evidence": {
+          "model.log_std": {
+            "parameters": 1,
+            "trainable": 1,
+            "gradient_tensors": 0,
+            "nonzero_gradient_tensors": 0,
+            "changed_tensors": 0,
+            "frozen_changed": 0
+          },
+          "model.goal_pipeline": {
+            "parameters": 186,
+            "trainable": 0,
+            "gradient_tensors": 0,
+            "nonzero_gradient_tensors": 0,
+            "changed_tensors": 0,
+            "frozen_changed": 0
+          },
+          "model.gru": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "model.mean": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.value": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.collision_value": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.stop_head": {
+            "parameters": 2,
+            "trainable": 2,
+            "gradient_tensors": 2,
+            "nonzero_gradient_tensors": 2,
+            "changed_tensors": 2,
+            "frozen_changed": 0
+          },
+          "model.depth_encoder": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "critic.goal_attention": {
+            "parameters": 4,
+            "trainable": 4,
+            "gradient_tensors": 4,
+            "nonzero_gradient_tensors": 4,
+            "changed_tensors": 4,
+            "frozen_changed": 0
+          },
+          "critic.net": {
+            "parameters": 6,
+            "trainable": 6,
+            "gradient_tensors": 6,
+            "nonzero_gradient_tensors": 6,
+            "changed_tensors": 6,
+            "frozen_changed": 0
+          }
+        },
+        "resumed_from_update": 0,
+        "optimizer_states": 26,
+        "foundation_source": {
+          "accepted": false,
+          "training_ready": true,
+          "visual_goal_runtime": true,
+          "valid_expert_episodes": 250
+        },
+        "dataset_manifest_sha256": "535b5c23744a4891ab41135b296b34f495ea108c4848b8a038dbc0308f74846e",
+        "scope": "policy imitation and primitive critic; PPO not executed",
+        "checkpoint_reload_verified": true,
+        "optimizer_reload_states": 26,
+        "initialization": null,
+        "gradient_gate_passed": true
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173812Z-policy-update-1cd07c/training/final.pt",
+          "sha256": "86172d97c255bab7de96ded9e0aec1a9adaca4b3e18c71cd89b9c738f7f7d2a1"
+        }
+      ]
     },
     "configuration-data": {
-      "status": "ready",
-      "attempts": []
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2724507,
+            "start_ticks": "137063356",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/configuration-data-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2724507,
+        "start_ticks": "137063356",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/configuration-data-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/spark_guard.py",
+        "--name",
+        "configuration-data",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "12",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/stage_worker.py",
+        "build-configurator-view",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/trajectories",
+        "--collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T172417Z-bootstrap-flight-eb4f56/collection/flights.json",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data-replays/0",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data-replays/1",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data-replays/2",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data-replays/3",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data-replays/4",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data-replays/5",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data-replays/6",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data-replays/7",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data-replays/8",
+        "--runtime-replay",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173043Z-world-data-c8b44e/world-data-replays/9",
+        "--artifact-output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/configuration-data"
+      ],
+      "started_unix": 1790271501.4360309,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173821Z-configuration-data-84fda7",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173821Z-configuration-data-84fda7/result.json",
+        "sha256": "b4d48b1cdd812ac503baf072095c9ad2d9fbb659a8deb56428559a6c2cae1573"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/configuration-data/result.json",
+        "sha256": "222500f58f6405559042bff3318235160ba7b2d7477b80538dd101457b0f2bce"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "examples": 401,
+        "observed_target_examples": 9,
+        "historical_rgb_examples": 293,
+        "excluded": [
+          {
+            "episode_id": "train-00010",
+            "reason": "Outside internal training partition"
+          },
+          {
+            "episode_id": "train-00012",
+            "reason": "Outside internal training partition"
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/configuration-data/configurator.json",
+          "sha256": "3648302f7ed8ff10b281f4228c7f9a49850c603ee7b59ed1512edf78443dc8f9"
+        }
+      ]
     },
     "qwen-supervised-update": {
-      "status": "ready",
-      "attempts": []
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2725322,
+            "start_ticks": "137073271",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/qwen-supervised-update-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2725322,
+        "start_ticks": "137073271",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/qwen-supervised-update-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/spark_guard.py",
+        "--name",
+        "qwen-supervised-update",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "40",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/stage_worker.py",
+        "train-configurator",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/configuration-data",
+        "--integration-only",
+        "--updates",
+        "1"
+      ],
+      "started_unix": 1790271600.5897295,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174000Z-qwen-supervised-update-840051",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174000Z-qwen-supervised-update-840051/result.json",
+        "sha256": "3f4587a9ccf9a43c17caa0383230f9b51d629e0985328665d997a2a9f28bd360"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174000Z-qwen-supervised-update-840051/configurator/result.json",
+        "sha256": "feba8a3c5b93f43c466a62f062f20a56709d91e57268740c22e9102ef7fd6e78"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "phase": "supervised",
+        "integration_only": true,
+        "gradient_evidence": {
+          "qwen.model": {
+            "parameters": 1112,
+            "trainable": 288,
+            "gradient_tensors": 288,
+            "nonzero_gradient_tensors": 144,
+            "changed_tensors": 288,
+            "frozen_changed": 0
+          }
+        },
+        "resumed_from_updates": 0,
+        "optimizer_states": 288,
+        "examples_processed": 1,
+        "updates": 1
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174000Z-qwen-supervised-update-840051/configurator/latest.pt",
+          "sha256": "69a3c5d3684ba3c9ae2eb422999b94cbc2e15cffc7bdfddc2faf39de5c572c79"
+        }
+      ]
     },
     "trained-pack": {
-      "status": "ready",
-      "attempts": []
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2725674,
+            "start_ticks": "137080102",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/trained-pack-000.log"
+        }
+      ],
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173812Z-policy-update-1cd07c/training/final.pt": "86172d97c255bab7de96ded9e0aec1a9adaca4b3e18c71cd89b9c738f7f7d2a1",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt": "a4e133fa0289bf737f9ae4ba020d7db3f3ca5d446e37320513ce27ffe2a8e410",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T174000Z-qwen-supervised-update-840051/configurator/latest.pt": "69a3c5d3684ba3c9ae2eb422999b94cbc2e15cffc7bdfddc2faf39de5c572c79",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/safety.json": "ad063b81b2ec32d9830e62f53fd75d9092600423003ae619f8159ee051cddf1d",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/checkpoints.json": "11432ad488602a724f0c59cfcbd7cf3e601d151530e23c941ea5d4524a5586aa"
+      },
+      "process": {
+        "pid": 2725674,
+        "start_ticks": "137080102",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/trained-pack-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/spark_guard.py",
+        "--name",
+        "trained-pack",
+        "--seconds",
+        "1800",
+        "--kind",
+        "cpu",
+        "--peak-gib",
+        "4",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/package_navigation.py",
+        "--goal",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/goal.pt",
+        "--odometry",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/odometry.pt",
+        "--projection",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/projection.pt",
+        "--vision",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/vision.json",
+        "--safety",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/safety.json",
+        "--policy",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173812Z-policy-update-1cd07c/training/final.pt",
+        "--world",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt",
+        "--qwen",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T174000Z-qwen-supervised-update-840051/configurator/latest.pt",
+        "--goal-match-threshold",
+        "0.9",
+        "--output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/trained-pack"
+      ],
+      "started_unix": 1790271668.8985517,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174108Z-trained-pack-5f66dc",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174108Z-trained-pack-5f66dc/result.json",
+        "sha256": "4dfe69f854608abda50e25ee2c1b60749d1477383d9314fd0bceb75be518cff5"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/trained-pack/checkpoints.json",
+        "sha256": "b67d68e993e624cec6f924146e4fd73b31732b693101c6de6c1a93591227ed65"
+      },
+      "progress": {
+        "schema": "visual-navigation-checkpoints/v1",
+        "status": "completed",
+        "accepted": false,
+        "artifacts": {
+          "goal": {
+            "path": "goal.pt",
+            "sha256": "135aff99bf25f1faee24fc5737e572f1f19cf1fa3ce52972e4656bb046e9db0a",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/goal.pt"
+          },
+          "odometry": {
+            "path": "odometry.pt",
+            "sha256": "e0e705d8916c2592a1f9443ff0c013916002dd5e9ce861269927c1d4a77e136c",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/odometry.pt"
+          },
+          "world": {
+            "path": "world.pt",
+            "sha256": "a4e133fa0289bf737f9ae4ba020d7db3f3ca5d446e37320513ce27ffe2a8e410",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt"
+          },
+          "policy": {
+            "path": "policy.pt",
+            "sha256": "86172d97c255bab7de96ded9e0aec1a9adaca4b3e18c71cd89b9c738f7f7d2a1",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T173812Z-policy-update-1cd07c/training/final.pt"
+          },
+          "projection": {
+            "path": "projection.pt",
+            "sha256": "308124e2c91c7c576ca91e0a623184356801bbb5b806a3355c84fbbea2e6f66d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/projection.pt"
+          },
+          "safety": {
+            "path": "safety.json",
+            "sha256": "ad063b81b2ec32d9830e62f53fd75d9092600423003ae619f8159ee051cddf1d",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/safety.json"
+          },
+          "qwen": {
+            "path": "qwen.pt",
+            "sha256": "69a3c5d3684ba3c9ae2eb422999b94cbc2e15cffc7bdfddc2faf39de5c572c79",
+            "source": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174000Z-qwen-supervised-update-840051/configurator/latest.pt"
+          },
+          "vision": {
+            "path": "vision.json",
+            "sha256": "642ca7609c884fb33168e7ea6478a476a960cf81b0cc2050c452aafcb30efd8f",
+            "source": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints/vision.json"
+          }
+        },
+        "goal_match_threshold": 0.9,
+        "scope": "Integration snapshot. Packaging does not establish model compatibility or acceptance."
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/trained-pack/checkpoints.json",
+          "sha256": "b67d68e993e624cec6f924146e4fd73b31732b693101c6de6c1a93591227ed65"
+        }
+      ]
     },
     "dagger-flight": {
-      "status": "ready",
-      "attempts": []
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2725686,
+            "start_ticks": "137080302",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-flight-000.log"
+        }
+      ],
+      "input_hashes": {
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/trained-pack/checkpoints.json": "b67d68e993e624cec6f924146e4fd73b31732b693101c6de6c1a93591227ed65"
+      },
+      "process": {
+        "pid": 2725686,
+        "start_ticks": "137080302",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-flight-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/spark_guard.py",
+        "--name",
+        "dagger-flight",
+        "--seconds",
+        "1200",
+        "--kind",
+        "flight",
+        "--peak-gib",
+        "72",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/collect_learning_round.py",
+        "--episode-id",
+        "train-00000",
+        "--controller-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/trained-pack",
+        "--goal-collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T172417Z-bootstrap-flight-eb4f56/collection/flights.json"
+      ],
+      "started_unix": 1790271670.903352,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174110Z-dagger-flight-7521d8",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174110Z-dagger-flight-7521d8/result.json",
+        "sha256": "2bfe35ce5567c716a16518991dbdcc84ad5de63ebead197c05cf73718dce5471"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174110Z-dagger-flight-7521d8/collection/result.json",
+        "sha256": "8b86c5f5ee2cf80f9c957da969040681a162d475f4199ab2c6ec01af0aecfd05"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 1,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": false,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174110Z-dagger-flight-7521d8/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174110Z-dagger-flight-7521d8/collection/flights.json",
+          "sha256": "f318c62de4febaaaa2dff0335fa2dd31ff81afc4337ef7bc83533f3f33185a74"
+        }
+      ]
     },
     "online-trajectories": {
-      "status": "ready",
-      "attempts": []
+      "status": "completed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2727285,
+            "start_ticks": "137105160",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/online-trajectories-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2727285,
+        "start_ticks": "137105160",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/online-trajectories-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/spark_guard.py",
+        "--name",
+        "online-trajectories",
+        "--seconds",
+        "1800",
+        "--kind",
+        "cpu",
+        "--peak-gib",
+        "8",
+        "--",
+        "/home/iamyanbo/uav-rgb-flight/envs/airsim/bin/python",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/trajectory_bundle.py",
+        "--collection-root",
+        "/home/iamyanbo/uav-rgb-flight/launches",
+        "--output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/online-trajectories"
+      ],
+      "started_unix": 1790271919.4790535,
+      "reason": "Worker completed; acceptance not inferred",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174519Z-online-trajectories-539246",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174519Z-online-trajectories-539246/result.json",
+        "sha256": "682dd7e5fa303aa23124f57dcbf33957918c5a216484e35fc1f3cbf69e94ba52"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/online-trajectories/result.json",
+        "sha256": "773b35674e60666851d76decfb6cad5b7c5184db4b9097542eaab0cb6a5ca506"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "attempts": 485,
+        "excluded": 0,
+        "unique_successful_episodes": 250,
+        "timing_passed_attempts": 11,
+        "manifest_sha256": "45403dc6b6f0a520eaaf95aaaec00eb8db3b75266d397f9ec7b23b26f1ff34ee"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/online-trajectories/manifest.json",
+          "sha256": "45403dc6b6f0a520eaaf95aaaec00eb8db3b75266d397f9ec7b23b26f1ff34ee"
+        }
+      ]
     },
     "dagger-data": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [
+        {
+          "process": {
+            "pid": 2727719,
+            "start_ticks": "137114590",
+            "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+          },
+          "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data-000.log"
+        }
+      ],
+      "input_hashes": {},
+      "process": {
+        "pid": 2727719,
+        "start_ticks": "137114590",
+        "boot_id": "8a6ee6e3-b6e5-489e-9d54-62b2f95e21cf"
+      },
+      "log": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data-000.log",
+      "command": [
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/spark_guard.py",
+        "--name",
+        "dagger-data",
+        "--seconds",
+        "1800",
+        "--kind",
+        "gpu",
+        "--peak-gib",
+        "24",
+        "--",
+        "python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r86/stage_worker.py",
+        "build-online-view",
+        "--learning-phase",
+        "dagger",
+        "--dataset",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/online-trajectories",
+        "--navigation-pack",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/trained-pack",
+        "--world-checkpoint",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173507Z-world-update-73ee92/training/final.pt",
+        "--collection",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T174110Z-dagger-flight-7521d8/collection/flights.json",
+        "--base-policy-data",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T173610Z-policy-data-07d3f1/policy-data",
+        "--artifact-output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data"
+      ],
+      "started_unix": 1790272013.7755675,
+      "reason": "Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174653Z-dagger-data-44d049",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T174653Z-dagger-data-44d049/result.json",
+        "sha256": "316b029e48b28f3ef3bb8da5f6266a50fe5215f3dfa95b94bb4b2df3a08b6945"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json",
+        "sha256": "2124c5eb70cecd78bcecf5cd5ae3cadc7d7a8819160c45da3ed25882f7a8b987"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "learner_states": 1627,
+        "corrections": 1627,
+        "aggregated_windows": 610,
+        "dataset": "/artifacts/dagger-data/dataset",
+        "scope": "Recovery DAgger; no privileged hidden-goal direction labels"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/dataset/manifest.json",
+          "sha256": "fe790c70de5d75cc8a781b61617702920d16b25994da0bd1001002b451ebbd6d"
+        }
+      ]
     },
     "dagger-update": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     },
     "dagger-pack": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: dagger-update: Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     },
     "fresh-ppo-flight": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     },
     "ppo-data": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     },
     "ppo-update": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     },
     "ppo-pack": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: ppo-update: Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     },
     "updated-policy-flight": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: ppo-pack: Dependency failed: ppo-update: Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     },
     "final-reload-flight": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     },
     "development-flights": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: final-reload-flight: Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     },
     "matched-configuration-flights": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: development-flights: Dependency failed: final-reload-flight: Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     },
     "preference-data": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: matched-configuration-flights: Dependency failed: development-flights: Dependency failed: final-reload-flight: Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     },
     "qwen-preference-update": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: preference-data: Dependency failed: matched-configuration-flights: Dependency failed: development-flights: Dependency failed: final-reload-flight: Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     },
     "preference-pack": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: qwen-preference-update: Dependency failed: preference-data: Dependency failed: matched-configuration-flights: Dependency failed: development-flights: Dependency failed: final-reload-flight: Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     },
     "preference-updated-flight": {
-      "status": "ready",
-      "attempts": []
+      "status": "failed",
+      "attempts": [],
+      "reason": "Dependency failed: preference-pack: Dependency failed: qwen-preference-update: Dependency failed: preference-data: Dependency failed: matched-configuration-flights: Dependency failed: development-flights: Dependency failed: final-reload-flight: Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Worker or resource guard failed; preserved /home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r86/execution/dagger-data/result.json"
     }
   },
-  "updated_unix": 1790271089.5529957
+  "updated_unix": 1790272068.5939608
 }
