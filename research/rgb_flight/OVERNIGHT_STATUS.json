@@ -1,11 +1,168 @@
 {
-  "observed_utc": "2026-09-24T08:14:28.923980+00:00",
+  "observed_utc": "2026-09-24T08:24:40.333031+00:00",
   "round": "navigation-repair-r72",
   "continuation": {
-    "status": "waiting_for_perception_and_demonstrations",
+    "status": "full_flow_running",
     "accepted": false
   },
-  "stages": {},
+  "stages": {
+    "bootstrap-flight": {
+      "status": "running",
+      "reason": "Owned remote guard running",
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T081706Z-bootstrap-flight-5f0773",
+      "progress": null
+    },
+    "trajectories": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "world-data": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "world-update": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "policy-data": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "policy-update": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "configuration-data": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "qwen-supervised-update": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "trained-pack": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "dagger-flight": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "online-trajectories": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "dagger-data": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "dagger-update": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "dagger-pack": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "fresh-ppo-flight": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "ppo-data": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "ppo-update": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "ppo-pack": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "updated-policy-flight": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "final-reload-flight": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "development-flights": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "matched-configuration-flights": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "preference-data": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "qwen-preference-update": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "preference-pack": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    },
+    "preference-updated-flight": {
+      "status": "ready",
+      "reason": null,
+      "job": null,
+      "progress": null
+    }
+  },
   "cumulative_stages": {},
   "deployment_accepted": false,
   "scope": "Execution snapshot only; optimizer counts do not establish navigation or complete cumulative budgets"

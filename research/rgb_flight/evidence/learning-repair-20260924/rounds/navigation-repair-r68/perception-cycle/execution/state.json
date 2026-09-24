@@ -574,7 +574,7 @@
       ]
     },
     "new-perception-demonstrations": {
-      "status": "running",
+      "status": "completed",
       "attempts": [
         {
           "process": {
@@ -585,7 +585,7 @@
           "log": "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/new-perception-demonstrations-000.log"
         }
       ],
-      "reason": "Owned remote guard running",
+      "reason": "Worker completed; acceptance not inferred",
       "input_hashes": {
         "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints/checkpoints.json": "3330eb6f7c582baf4349cd6071bdd1c4aa77fbbb621445f86795da350b289014",
         "/home/iamyanbo/uav-rgb-flight/runs/20260924T034035Z-exploration-demonstrations-0ec7d6/collection/flights.json": "38f8620a30ee4140be2e83a6e6438e800eb93e2e23856d811b8353520bed140a"
@@ -619,8 +619,34 @@
         "/home/iamyanbo/uav-rgb-flight/runs/20260924T080202Z-new-perception-pilot-db3b2b/collection/flights.json"
       ],
       "started_unix": 1790237014.8122768,
-      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T080334Z-new-perception-demonstrations-428867"
+      "job": "/home/iamyanbo/uav-rgb-flight/runs/20260924T080334Z-new-perception-demonstrations-428867",
+      "guard_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T080334Z-new-perception-demonstrations-428867/result.json",
+        "sha256": "f6f2f40368ab74be7cd2e907cdc935ffe8117a0bb64d10eb7ab580247bed1d8c"
+      },
+      "worker_receipt": {
+        "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T080334Z-new-perception-demonstrations-428867/collection/result.json",
+        "sha256": "0ae10e5bac8cfa59aad6f780ef347fa902f13e940a3de64a6e8d90397b314b23"
+      },
+      "progress": {
+        "status": "completed",
+        "accepted": false,
+        "complete_flights": 10,
+        "successes": 0,
+        "all_failures_retained": true,
+        "demonstration_batch": true,
+        "development_batch": false,
+        "any_movement": true,
+        "controller_frozen_during_collection": true,
+        "flights": "/home/iamyanbo/uav-rgb-flight/runs/20260924T080334Z-new-perception-demonstrations-428867/collection/flights.json"
+      },
+      "artifacts": [
+        {
+          "path": "/home/iamyanbo/uav-rgb-flight/runs/20260924T080334Z-new-perception-demonstrations-428867/collection/flights.json",
+          "sha256": "059a0ee046d26fda7e8b2edf9583e88f2193331cd01ac9737f8e1ad700a320a8"
+        }
+      ]
     }
   },
-  "updated_unix": 1790237662.7481582
+  "updated_unix": 1790237825.9460938
 }

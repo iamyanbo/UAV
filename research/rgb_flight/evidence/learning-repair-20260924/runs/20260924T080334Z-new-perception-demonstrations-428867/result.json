@@ -1,0 +1,20 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T080334Z-new-perception-demonstrations-428867/source/collect_learning_round.py",
+    "--demonstration-batch",
+    "--controller-checkpoints",
+    "/home/iamyanbo/uav-rgb-flight/rounds/navigation-repair-r68/perception-cycle/execution/perception-checkpoints",
+    "--goal-collection",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T034035Z-exploration-demonstrations-0ec7d6/collection/flights.json",
+    "--import-collection",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T080202Z-new-perception-pilot-db3b2b/collection/flights.json"
+  ],
+  "seconds": 2400,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "flight",
+  "peak_gib": 72.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 810.4882570952177
+}
