@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-09-24T10:47:40.595749+00:00",
+  "observed_utc": "2026-09-24T10:57:53.251252+00:00",
   "source_root": "/home/iamyanbo/uav-rgb-flight",
   "scope": "Execution receipts and derived summaries; active counters are snapshots; raw RGB and weights remain on Spark",
   "files": [
@@ -6435,8 +6435,8 @@
     },
     {
       "path": "rounds/navigation-repair-r72/cumulative-window/execution/state.json",
-      "bytes": 20054,
-      "sha256": "e8c676f98c01be39709159cac4be18d09dec1ef59ee800ae7cb9d5692d3013c3"
+      "bytes": 26331,
+      "sha256": "ab4830c3321571126e88e82c057649e8eb363f6c73ed9b220f51cbf61a95dc8c"
     },
     {
       "path": "rounds/navigation-repair-r72/cumulative-window/programme-spec.json",
@@ -9639,19 +9639,44 @@
       "sha256": "0a24e693b6c79cc668ce5b6d8365cc09b93590d1aba9b7c3316b7626059cd4b1"
     },
     {
+      "path": "runs/20260924T090939Z-world-continuation-4e400f/result.json",
+      "bytes": 670,
+      "sha256": "ee53394f4d7f55aa7423940add5ea3019ee2c08fbe6a179540e49617d4655bc1"
+    },
+    {
       "path": "runs/20260924T090939Z-world-continuation-4e400f/source_hashes.json",
       "bytes": 12570,
       "sha256": "5a12a2cf0022ec559bed8c9e40ffab736a90689c75243ca7c8547252393cd618"
     },
     {
       "path": "runs/20260924T090939Z-world-continuation-4e400f/stdout.log",
+      "bytes": 3715,
+      "sha256": "502bc59c40f3029bb61c756a49c3c265c57b551ef1d2ab561664c29ab7823b33"
+    },
+    {
+      "path": "runs/20260924T090939Z-world-continuation-4e400f/training/metrics.jsonl",
+      "bytes": 594936,
+      "sha256": "ab5dabb19d9907ca3211df92248349db27a557d1761fff26eea6e6ab06505556"
+    },
+    {
+      "path": "runs/20260924T090939Z-world-continuation-4e400f/training/result.json",
+      "bytes": 2897,
+      "sha256": "cdb0703374752b50c5b9c2c0d067ef5571e783e7264edb7ad81285c0ade2c113"
+    },
+    {
+      "path": "runs/20260924T105047Z-policy-continuation-a876b9/source_hashes.json",
+      "bytes": 12570,
+      "sha256": "5a12a2cf0022ec559bed8c9e40ffab736a90689c75243ca7c8547252393cd618"
+    },
+    {
+      "path": "runs/20260924T105047Z-policy-continuation-a876b9/stdout.log",
       "bytes": 1393,
       "sha256": "7b2d9d5bf1d07ddaeb399e8251fd8167cee77edaf7d7b4b96701d6597e1d378a"
     },
     {
-      "path": "runs/20260924T090939Z-world-continuation-4e400f/training/metrics.jsonl",
-      "bytes": 576420,
-      "sha256": "8f0400d342e5b52066a86aa6ccaeab0bd319efeebd02782a1fdcb659edd02689"
+      "path": "runs/20260924T105047Z-policy-continuation-a876b9/training/metrics.jsonl",
+      "bytes": 94824,
+      "sha256": "5545eeb357c6d9f4f1818813ac717ef51f5cd3ae4c4c1d543ebff7a660d16364"
     },
     {
       "path": "train-00001-initial-rgb.png",
