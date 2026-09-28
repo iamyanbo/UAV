@@ -59,15 +59,20 @@ class SceneProcess:
         else:self.settings_path.write_bytes(self.old)
 
 
-def collect(registry_path,manifests,output,split,window,packages=None,variants=None):
+def collect(registry_path,manifests,output,split,window,packages=None,variants=None,sources=None,limit=None,learner_round=False):
+    if limit is not None and limit<=0:raise ValueError('Positive per-scene attempt limit required')
     registry=read(registry_path);public=read(Path(manifests)/(split+'.json'))
     if public['registry_sha256']!=digest(registry_path):raise ValueError('Scene registry changed after mission generation')
     labels=Path(manifests)/'evaluator_labels'/(split+'.json')
     output=Path(output);output.mkdir(parents=True,exist_ok=True)
     packages={} if packages is None else read(packages)['seeds']
+    if learner_round and (not packages or split!='train'):raise ValueError('Learner round requires training split and packages')
     if split=='test' and set(packages)!=set(map(str,config()['evaluation']['seeds'])):
         raise ValueError('Sealed evaluation requires three independently trained seed packages')
     variants=variants or (config()['variants'] if packages else ['expert'])
+    sources=sources or (['expert','manoeuvre'] if not packages else ['exploration'])
+    if split=='test': sources=['expert','exploration','manoeuvre']
+    if not packages and 'exploration' in sources:raise ValueError('Exploration requires trained perception packages')
     if not packages and variants!=['expert']:raise ValueError('Learned variants require model packages')
     root=Path(__file__).resolve().parents[2]
     for scene in registry['scenes']:
@@ -76,6 +81,8 @@ def collect(registry_path,manifests,output,split,window,packages=None,variants=N
             path=Path(scene[name])/'map.json' if name=='map' else Path(scene[name])
             if digest(path)!=scene[key]:raise ValueError('Scene input changed')
         missions=[r for r in public['episodes'] if r['scene_id']==scene['scene_id']]
+        if limit is not None: missions=missions[:limit]
+        if split=='train':missions=[r for r in missions if r['collection_source'] in sources]
         if not window.remaining():return
         with SceneProcess(scene):
             for variant in variants:
@@ -90,7 +97,8 @@ def collect(registry_path,manifests,output,split,window,packages=None,variants=N
                         run.mkdir()
                         command=[sys.executable,str(root/'research/rgb_flight/visual_goal_flight.py'),
                             '--output',str(run),'--expected-settings',scene['settings'],'--evaluator-labels',str(labels),
-                            '--episode-id',mission['episode_id'],'--obstacle-field',scene['obstacle_field'],'--goal-view-count','1']
+                            '--episode-id',mission['episode_id'],'--obstacle-field',scene['obstacle_field'],'--goal-view-count','1',
+                            '--aerial-camera','--collection-source',('learner' if learner_round or packages and split!='test' and mission.get('collection_source')!='exploration' else mission.get('collection_source','expert'))]
                         if package_root:
                             command+=['--photo-checkpoints',str(package_root),'--map-prior',scene['map'],'--photo-variant',variant]
                         write(run/'request.json',dict(command=command,seed=int(seed),variant=variant,map_sha256=scene['map_sha256'],
@@ -99,6 +107,7 @@ def collect(registry_path,manifests,output,split,window,packages=None,variants=N
                             code=subprocess.run(command,cwd=root,stdout=log,stderr=subprocess.STDOUT).returncode
                         result=read(receipt) if receipt.exists() else dict(episode_id=mission['episode_id'],success=False,
                             termination='infrastructure_error',status='failed',clock_speed=1.)
-                        result.update(seed=int(seed),variant=variant,scene_id=scene['scene_id'],split=split,host_exit_code=code)
+                        result.update(seed=int(seed),variant=variant,scene_id=scene['scene_id'],split=split,host_exit_code=code,
+                            collection_source=('learner' if learner_round else 'exploration' if mission.get('collection_source')=='exploration' and packages else 'learner' if packages else mission.get('collection_source','expert')))
                         write(receipt,result)
                         if code not in (0,2):raise RuntimeError('Collector infrastructure failure; inspect '+str(run))

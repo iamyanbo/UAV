@@ -6,7 +6,7 @@ from pathlib import Path
 import random
 import time
 
-SCHEMA = 'photo-map-model/v1'
+SCHEMA = 'photo-map-model/v2'
 
 
 def digest(path):

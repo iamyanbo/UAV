@@ -1,112 +1,112 @@
-# Photo-goal navigation with a coarse overhead map
+# Photo-map aerial navigation: planner-first revision
 
-## Status — September 27, 2026
+## Status - September 28, 2026
 
-Local implementation, **not executed, trained, or validated**. No Spark
-connection, remote job, simulator run, test suite, or flight was initiated in
-this implementation pass. All numerical defaults are experiment settings,
-not measured performance or calibrated uncertainty claims.
+Local implementation only. **No Spark connection, tests, compilation/import
+checks, replay, training, acquisition or simulator flights have been run for
+this revision.** Source inspection is the only review performed. Implementation
+is not a trained navigation result or evidence of real-world transfer.
 
-The user-facing task is: place the drone somewhere in the mapped environment,
-give it one destination photo, and have it locate itself, find the destination,
-fly there and verify arrival. Up to four photos are supported. No start pose,
-heading, destination coordinate, or rough destination region is supplied.
-The destination means the photo's arrival viewpoint, not any arbitrary object
-visible somewhere inside the picture.
+The task is an unknown start pose, one goal photograph and a supplied registered
+overhead RGB/coarse-height map. The goal means the photographed arrival
+viewpoint. Seeing its building from cruise height is not arrival.
 
-## Runtime boundary
+## Architecture
 
-Allowed: current RGB, calibration, timestamps, past commands, immutable goal
-photographs, registered overhead RGB, approximate heights and map extent.
-The flight controller's internal sensing is not a navigation-policy input.
-Depth used by inference is predicted from RGB by the existing Metric3Dv2
-adapter, never simulator depth. The initial belief is unlocalized.
+RGB and relative camera calibration feed shared MobileNet features, Metric3Dv2
+predicted depth and visual motion estimation. Cross-view retrieval and temporal
+consistency estimate pose. Overlapping map-tile hypotheses are clustered rather
+than forcing their shared probability to compete against itself.
 
-Offline mapping can use simulator depth to construct the explicitly supplied
-coarse map. The runtime map contains overhead RGB at 1 m/pixel and a 2 m
-height grid, with heights rounded conservatively in NED coordinates. This is
-a simulator-derived prior, not evidence of real-satellite transfer. It omits
-fine collision geometry and every task marker. Temporary mission memory is
-reset between flights; trained weights are frozen during evaluation.
+The mission manager inspects destination hypotheses in probability/travel-time
+order, then uses observed-view coverage search. Inspections acquire forward and
+oblique yaw sweeps at the estimated point and four uncertainty offsets. An
+unreachable point is not a negative observation. No true goal region or simulator
+pose is available to this controller.
 
-## Implemented flow
+The geometric planner retains direct, around-obstacle and overflight routes.
+Overflight heights clear the relevant corridor by 8 or 16 m, with nearby ascent
+and descent connections when endpoint connections are unavailable. The
+around-obstacle arm allows at most 4 m above the higher endpoint, preserving a
+meaningful comparison with overflight. Reference costs include horizontal and
+vertical travel, turning, camera movement and braking estimates.
 
-1. `prepare.py` imports registered maps or rasterizes independent downward
-   survey captures. Registry generation binds assets and separates geography.
-2. `models.py` provides the MobileNet spatial encoder, cross-view retrieval,
-   position/heading registration, goal and arrival heads, subgoal policy, and
-   map-conditioned V-JEPA prediction. All new heads require training.
-3. `runtime.py` estimates global pose candidates, checks temporal consistency
-   with RGB/predicted-depth PnP, and preserves unresolved destination hypotheses.
-4. `navigation.py` selects direct, overflight or 3D detour routes and falls back
-   to deterministic map coverage when destination retrieval is unresolved.
-5. Arrival requires repeated visual evidence and a settling period. Simulator
-   truth is used only by the separate existing flight evaluator.
-6. Predictive ranking and Qwen execute on bounded asynchronous workers; stale
-   or misaligned predictive results cannot replace current geometric commands.
-7. `deployment.py` copies source and creates an inference-only Docker namespace:
-   no network, dataset root, simulator settings, or evaluator mounts.
+The fast branch geometrically tracks trajectories and checks clearance/freshness.
+The slow branch predicts four seconds of visual features, displacement, collision
+evidence and goal evidence for at most twelve shared vehicle/camera sequences.
+Its score includes estimated remaining route time: useful long climbs must not
+be penalized merely because the goal is not closer after four seconds.
+Long-range route value is geometric, not claimed to be learned by this predictor.
 
-The 4-second world model predicts visual features, local displacement,
-collision evidence, goal evidence and an information proxy. The information
-target is improvement in frozen visual map-match confidence and goal evidence;
-it is **not calibrated entropy reduction or a safety probability**. Shared
-attention/MoT research is deferred; ordinary map cross-attention is implemented.
+Qwen, a learned actor, PPO, learned information gain and hierarchical learned
+planning are deferred. Retained legacy definitions are not enabled experiments.
 
-## Data and learning
+## Camera and information boundary
 
-`data.py` reads immutable recorded RGB and separately timestamp-matched labels.
-Failed flights can supply transitions; successful arrivals supply positives.
-Imitation uses declared body-frame subgoals, or geometric shadow-teacher
-commands computed from the learner's own observations. No omniscient destination
-action supervises unresolved search. Post-safety command-dispatch intervals are
-recorded; they are not called measured actuator application times.
+One RGB camera pitches from -90 degrees (down) to +90 (up), at a simulated
+45 degrees/s. A 2-degree deadband and 200 ms settling interval prevent noisy
+target angles from permanently holding translation. Vehicle actuation stays
+independent. Camera updates/image capture are serialized; each frame carries its
+simulated relative transform. Visual motion uses both frames' extrinsics.
+No world camera pose is published to inference.
 
-Training stages: localization -> goal/arrival -> local policy -> world model.
-Local policy use is optional at packaging; geometric execution is the default
-common baseline. Its initial trainer learns independent subgoal-conditioned
-steps with a reset GRU; this is not a long-memory policy experiment. Later
-stages freeze the visual encoder so map descriptors do not silently change.
-PPO and Qwen preference learning are off in the successor campaign.
+World-model inputs use four 50 ms slots per 200 ms step, with four vehicle
+controls plus requested camera pitch. Labels use actual post-veto dispatches;
+application timestamps remain unobserved. Offline depth/pose/goal coordinates
+are supervision and evaluation inputs, never runtime inputs.
 
-Goal batching pads with attention masks and samples available views; one photo
-is the primary condition. V-JEPA targets use 16 distinct causal frames and
-are cached with RGB and teacher identities. Training resumes optimizer and RNG
-state only when the stage, seed, backbone and dataset identities match.
+## Data and training
 
-## Evaluation scope
+1. Declare and survey the complete scene flight envelope. Unknown space stays
+   unknown; endpoint-only legacy fields do not qualify upper airspace.
+2. Qualify observed-free ascent/descent connections and registered maps.
+3. Capture a multilevel/multiangle perception bank before a trained navigator is
+   available. Collect privileged 3D expert and bounded manoeuvre flights.
+4. Train localization, freeze the encoder, train goal/arrival, and select an
+   arrival threshold on validation data. Expert terminal yaw aligns with the
+   goal photo so settled positives show the requested view.
+5. Collect observation-only exploration with the perception package. Replay
+   recorded experts in perception-only mode for inference-equivalent state
+   inputs; never replace those inputs with true velocity/pose.
+6. Train masked world prediction with frozen V-JEPA visual targets. Initial
+   horizons are 1/2/4 seconds over 20/30/50% of 10,000 updates.
+7. Collect one learner round and fine-tune world prediction for at most 5,000
+   updates using equal learner/original family sampling.
 
-Three training, one validation and two held-out environments are required for
-the generalization campaign. `env_airsim_16` belongs to training. Registered
-test maps are allowed at inference; test navigation trajectories are excluded
-from datasets and teacher encoding. Six actual compatible environment assets
-have **not** been acquired or qualified by this code change.
+Initial collection is 150 attempts per training scene: 75 expert, 45 exploration,
+30 manoeuvre. Expansion is capped at the existing 500 attempts per scene.
+Failures remain recorded and do not satisfy successful coverage quotas.
+Scenes, episodes and phases are balanced when sampling windows. Goal positives
+and negatives are balanced. Adjacent frames never cross geographical splits.
 
-The initial reference routes span 20–300 m. Longer-range claims require larger
-qualified environments and a separately revised route/evaluator contract.
-Mission timeout includes reference travel time plus localization/search time.
+## Comparisons and execution limits
 
-Four variants share inputs and limits: geometry, recent-only world model,
-map-conditioned world model, and map-world with Qwen. Three trained seeds and
-200 sealed missions yield 2,400 main trials. Missing trials remain explicit;
-collisions, timeouts, infrastructure errors and localization failures remain
-in the denominator. Operational targets remain 90% collision-free success and
-at most 1% collisions; confidence intervals and paired differences are reported.
+Variants: `geometry`, `geometric_candidates`, `predictive_candidates`.
+Candidate geometry and learned ranking share the same generator and execution
+checks. Primary predictive attribution is the third versus second.
 
-## Compatibility and known evidence limits
+Dispatch retains a 20 Hz target and 250 ms freshness limit. Prediction requests
+are capped at 1 Hz with one job pending. GPU access is serialized at individual
+world-step boundaries with fast-work priority. Kernels are not preemptible;
+a slow slice exceeding 50 ms suspends new prediction for that runtime instance.
+This is a conservative admission rule, not a measured performance claim.
 
-- Historical campaigns and results remain separate. Goal record v1 is readable;
-  new writes use v2. Legacy four-view cache v2 is readable; new caches use v3.
-- New model/package schemas reject legacy whole-model checkpoints. Shared
-  goal modules retain parameter shapes but new one-view capability still needs
-  training and calibration. Old four-view-trained weights are not qualified.
-- Only source inspection has been performed. Sensor rates, GPU memory, map
-  completeness, learned alignment, candidate confidence, stopping reliability,
-  planner cost, and physical executability remain unverified.
-- A low-information photo or overhead/first-person mismatch can leave both
-  destination and start ambiguous. The system reports failures rather than
-  receiving a hidden hint. Coarse height fields cannot represent overhangs.
-- Compute/propulsion energy is explicitly unmeasured until instrumentation is
-  run; completion time is not substituted for joules.
+Evaluation retains three training scenes, one validation scene, two test scenes
+and three seeds: 200 sealed missions x 3 variants x 3 seeds = 1,800 trials.
+Targets remain >=90% collision-free success and <=1% collisions, with confidence
+intervals, failed/missing trials, route strata and actual timings.
 
-See [SPARK_HANDOFF.md](SPARK_HANDOFF.md) for the complete deferred sequence.
+## Remaining evidence
+
+Actual compatible scenes/envelopes; numerical/API compatibility; camera/body
+motion separation; high-altitude localization; corridor executability; data
+coverage; learned model quality; complete-flight false-stop calibration; GPU
+scheduling and camera-to-command latency; sealed outcomes.
+
+Predicted-depth clearance is not a certified swept-volume guarantee. Featureless
+sky, height-field overhang limitations and unavailable ascent views can cause
+failures. Energy and physical/satellite transfer remain unmeasured.
+
+Original documents/configuration are retained as `PROJECT.v1.md`,
+`SPARK_HANDOFF.v1.md` and `campaign.v1.json`. See `IMPLEMENTATION_PLAN.md` for
+the requirement-to-code contract and `SPARK_HANDOFF.md` for deferred commands.

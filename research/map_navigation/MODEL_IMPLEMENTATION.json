@@ -1,31 +1,44 @@
 {
-  "schema": "photo-map-implementation/v1",
-  "status": "implemented-unvalidated",
+  "schema": "photo-map-implementation/v2",
+  "status": "implemented-unexecuted",
   "entrypoint": "python -m research.map_navigation.run --workspace WORKSPACE STAGE",
-  "task": "One goal photograph plus overhead RGB/coarse heights; unknown initial pose; RGB-only runtime localization",
+  "task": "Unknown start; goal photo; registered map; RGB and bounded relative camera pitch",
   "models": {
-    "shared_rgb": "MobileNetV3 spatial encoder",
-    "localization": "Cross-view retrieval, relative registration and temporal hypothesis filter",
-    "goal": "Masked one-to-four-view cross-attention and separate arrival head",
-    "world": "Action-conditioned recurrent rollout with coarse-map attention and causal RGB history",
-    "teacher": "Frozen V-JEPA 2 visual features, offline only",
-    "optional_vlm": "Frozen Qwen2.5-VL-3B asynchronous inspection requests",
-    "optional_policy": "Subgoal-conditioned imitation; single-step hidden-state reset"
+    "shared_rgb": "MobileNetV3 spatial encoder with relative-camera embedding",
+    "localization": "Full-map retrieval, overlapping pose clustering and temporal consistency",
+    "goal": "Goal/arrival heads; validation-frame threshold calibration",
+    "world": "Action-conditioned latent predictor: 20 x 200 ms, four vehicle/camera dispatch slots per step",
+    "teacher": "Frozen V-JEPA 2 offline only",
+    "fast_control": "Geometric tracking and freshness/clearance checks",
+    "deferred": [
+      "learned recurrent actor",
+      "Qwen",
+      "PPO",
+      "learned global exploration"
+    ]
   },
-  "baselines": ["geometry", "recent_world", "map_world", "map_world_qwen"],
-  "implementation_review": "Source inspection, Python AST/JSON parsing and whitespace check; no simulator, training or model runtime executed during implementation",
+  "baselines": [
+    "geometry",
+    "geometric_candidates",
+    "predictive_candidates"
+  ],
+  "source_review": "Manual source inspection only; no parsing/import/compilation or execution checks performed",
+  "tests_run": false,
+  "spark_contacted": false,
   "trained": false,
   "runtime_validated": false,
   "flight_validated": false,
   "novelty_established": false,
-  "next_milestone": "Supply actual scene/map assets and train/validate components using SPARK_HANDOFF.md",
+  "implementation_plan": "IMPLEMENTATION_PLAN.md",
+  "deferred_handoff": "SPARK_HANDOFF.md",
+  "next_milestone": "Separately authorized environment acquisition and camera/flight qualification; no automatic launch",
   "remaining_evidence": [
-    "Dependency and API compatibility in the Spark image",
-    "Unknown-start and goal-photo localization on held-out scenes",
-    "Positive arrival supervision and false-stop calibration",
-    "Complete closed-loop flights under continuous physics",
-    "Measured command freshness and worker latency",
-    "Measured power and validated propulsion energy estimates",
-    "Matched ablations, satellite domain transfer and map-error stress cases"
+    "Real scene flight-envelope inspection and multialtitude survey",
+    "Camera/body-motion separation and recorded look/settle timing",
+    "Data-category coverage and complete climb/cruise/descent flights",
+    "Runtime API, numerical and model compatibility",
+    "Trained perception and prediction",
+    "GPU scheduling and actual camera-to-command deadlines",
+    "Matched full-flight evaluation and uncertainty"
   ]
 }

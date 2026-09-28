@@ -36,8 +36,10 @@ def rotation_increment(vector):
 
 
 class WorldModel(nn.Module):
-    def __init__(self):
+    def __init__(self, action_dim=4):
         super().__init__()
+        self.action_dim = action_dim
+        if action_dim not in (4,5): raise ValueError("Unsupported action layout")
         self.register_buffer('state_mean', torch.zeros(STATE_DIM))
         self.register_buffer('state_scale', torch.ones(STATE_DIM))
         self.register_buffer('motion_scale', torch.ones(6))
@@ -48,7 +50,7 @@ class WorldModel(nn.Module):
         self.goal_score = nn.Linear(384 * 2, 384)
         self.spatial = nn.Parameter(torch.randn(1, 64, 384) * .02)
         self.memory = nn.Linear(256 + 8, 384)
-        self.context = nn.Linear(STATE_DIM + 256 + 16 + TASK_DIM + 264, 384)
+        self.context = nn.Linear(STATE_DIM + 256 + 4*action_dim + TASK_DIM + 264, 384)
         layer = nn.TransformerEncoderLayer(384, 8, 1536, dropout=.1, activation='gelu', batch_first=True, norm_first=True)
         self.transformer = nn.TransformerEncoder(layer, 6, enable_nested_tensor=False)
         self.norm = nn.LayerNorm(384)
@@ -67,9 +69,9 @@ class WorldModel(nn.Module):
             raise ValueError('World model requires one to four spatial goal grids')
         if target_context.shape != (len(z), 264):
             raise ValueError('World model requires an observed target-memory token')
-        if action.shape != (len(z),4,4):
+        if action.shape != (len(z),4,self.action_dim):
             raise ValueError('World actions require four executed 50 ms command slots')
-        action = (action / action.new_tensor([3, 3, 1, 45])).flatten(1)
+        action = (action / action.new_tensor([3, 3, 1, 45] + ([90] if self.action_dim == 5 else []))).flatten(1)
         normalized_state = (state - self.state_mean) / self.state_scale
         context = self.context(torch.cat((normalized_state, belief, action, task, target_context), -1))[:, None]
         tokens = torch.cat((self.visual(z) + self.spatial, self.memory(memory), context), 1)

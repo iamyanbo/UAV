@@ -17,12 +17,13 @@ def package(checkpoint,vision,output,learned_local_policy=False):
     saved=torch.load(checkpoint,map_location='cpu',weights_only=True)
     if saved.get('schema')!=SCHEMA or not {'localization','goal'}<=set(saved['trained_stages']):
         raise ValueError('Train localization and goal recognition before packaging')
-    if learned_local_policy and 'policy' not in saved['trained_stages']:raise ValueError('Local policy has not been trained')
+    if learned_local_policy:raise ValueError('Learned actor deferred in the planner-first campaign')
+    if not saved.get('calibration'):raise ValueError('Calibrate arrival on validation data before packaging')
     out=Path(output);out.mkdir(parents=True,exist_ok=False)
     # Strip labels, optimizer and training-only identities from inference package.
-    torch.save({key:saved[key] for key in ('schema','model','trained_stages','backbone_sha256')},out/'model.pt')
+    torch.save({key:saved[key] for key in ('schema','model','trained_stages','backbone_sha256','calibration')},out/'model.pt')
     shutil.copyfile(vision,out/'vision.json')
-    write(out/'package.json',dict(schema='photo-map-package/v1',trained_stages=saved['trained_stages'],
+    write(out/'package.json',dict(schema='photo-map-package/v2',trained_stages=saved['trained_stages'],
           learned_local_policy=learned_local_policy,accepted=False,files={p.name:digest(p) for p in out.iterdir()}))
 
 

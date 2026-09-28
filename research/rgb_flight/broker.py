@@ -21,9 +21,13 @@ from calibration import canonical_rgb
 
 class RGBBroker:
     def __init__(self, socket_path, episode_id, calibration, writer=None, vehicle='drone_1', camera_workers=1,
-                 raw_channel_order=None, goal_observation=None, maximum_horizontal_speed_mps=3.):
+                 raw_channel_order=None, goal_observation=None, maximum_horizontal_speed_mps=3., camera_pitch_enabled=False):
         if camera_workers not in (1,2):
             raise ValueError('Only measured one/two-request camera pipelines are supported')
+        from camera_joint import PitchJoint
+        self.camera_joint = PitchJoint(calibration) if camera_pitch_enabled else None
+        if self.camera_joint and camera_workers != 1:
+            raise ValueError("Tiltable camera requires serialized single-worker captures")
         self.camera_workers=camera_workers
         self.raw_channel_order=raw_channel_order
         self.late_camera_responses=[]
@@ -47,6 +51,7 @@ class RGBBroker:
         self.errors = []
         self.pending = None
         self.pending_source = None
+        self.pending_candidate = None
         self.last_command_wall = 0
         self.stop_requested = False
         self.command_log = []
@@ -122,7 +127,12 @@ class RGBBroker:
                         calibration=asdict(self.goal_observation.calibration),
                         panorama_sha256=self.goal_observation.content_sha256), self.goal_observation.rgb_views[index]
         if op == 'command':
-            if set(request) != {'op', 'episode_id', 'frame_id', 'values', 'stop'} or type(request['stop']) is not bool:
+            allowed = {'op', 'episode_id', 'frame_id', 'values', 'stop'}
+            if self.camera_joint and 'camera_pitch_deg' in request: allowed.add('camera_pitch_deg')
+            if self.camera_joint and 'candidate_id' in request:
+                if not isinstance(request['candidate_id'],str) or len(request['candidate_id'])>64:raise ValueError('Invalid candidate identity')
+                allowed.add('candidate_id')
+            if set(request) != allowed or type(request['stop']) is not bool:
                 raise ValueError('Invalid command request')
             values = request['values']
             if not isinstance(values, list) or len(values) != 4 or any(type(v) not in (int, float) for v in values):
@@ -145,9 +155,12 @@ class RGBBroker:
                     raise ValueError('Command source frame is no longer retained')
                 if time.monotonic() - source['received_monotonic'] > .25:
                     raise RuntimeError('Stale RGB; braking')
+                if self.camera_joint and "camera_pitch_deg" in request:
+                    self.camera_joint.request(request["camera_pitch_deg"])
                 self.last_command_wall = time.monotonic()
                 self.pending = command
                 self.pending_source = source
+                self.pending_candidate = request.get("candidate_id")
                 self.stop_requested |= request['stop']
                 self.accepted_command_log.append(dict(episode_id=self.episode_id,
                     based_on_frame_id=request['frame_id'],values=list(values),stop_requested=request['stop'],
@@ -164,10 +177,11 @@ class RGBBroker:
         def request_image():
             if not hasattr(local,'client'):
                 local.client=airsim.MultirotorClient(timeout_value=10)
+            calibration = self.camera_joint.capture_pose(local.client,self.vehicle) if self.camera_joint else self.calibration
             started=time.monotonic()
             images=local.client.simGetImages([airsim.ImageRequest('front_custom',airsim.ImageType.Scene,False,False)],vehicle_name=self.vehicle)
             image=images[0] if len(images)==1 else None
-            return started,time.monotonic(),image
+            return started,time.monotonic(),image,calibration
         pool=ThreadPoolExecutor(max_workers=self.camera_workers)
         pending={pool.submit(request_image) for _ in range(self.camera_workers)}
         try:
@@ -177,7 +191,7 @@ class RGBBroker:
                     raise RuntimeError('RGB request timeout')
                 responses=sorted((future.result() for future in done),key=lambda x:x[1])
                 pending.update(pool.submit(request_image) for _ in done)
-                for started,received,image in responses:
+                for started,received,image,calibration in responses:
                     rgb = bytes(image.image_data_uint8) if image is not None else b''
                     dimensions = (image.width, image.height) if image is not None else (None, None)
                     if dimensions != (640, 480) or len(rgb) != 640 * 480 * 3:
@@ -203,7 +217,7 @@ class RGBBroker:
                     with self.condition:
                         metadata = dict(episode_id=self.episode_id, frame_id=frame_id, sim_ns=image.time_stamp,
                                         received_monotonic=received, request_started_monotonic=started,
-                                        calibration=self.calibration,
+                                        calibration=calibration,
                                         command_history=[dict(x) for x in self.history if x['sim_ns'] <= image.time_stamp and x['issued_monotonic'] <= started])
                         self.latest = metadata, rgb
                         self.recent_frames.append(metadata)
@@ -250,7 +264,11 @@ class RGBBroker:
                     overridden = bool(stale or self.errors or started - self.last_command_wall > .2)
                     command = zero if overridden or self.stop_requested else self.pending
                     command = command or zero
+                    camera_wait = bool(self.camera_joint and not self.camera_joint.settled)
+                    if camera_wait:
+                        command = Command(0.,0.,0.,command.yaw_dps)
                     source = None if overridden else self.pending_source
+                    candidate = None if overridden else self.pending_candidate
                 # Simulator state stays inside this broker; only its clock is
                 # retained. The synchronous call also pumps the RPC event loop.
                 stamp = client.getMultirotorState(vehicle_name=self.vehicle).timestamp
@@ -259,6 +277,10 @@ class RGBBroker:
                             drivetrain=airsim.DrivetrainType.MaxDegreeOfFreedom,
                             yaw_mode=airsim.YawMode(True, command.yaw_dps), vehicle_name=self.vehicle)
                 row = dict(sim_ns=stamp, issued_monotonic=time.monotonic(), values=list(asdict(command).values()))
+                if self.camera_joint:
+                    row['candidate_id']=candidate
+                    row.update(camera_pitch_deg=self.camera_joint.target,camera_actual_pitch_deg=self.camera_joint.pitch,
+                               camera_wait=camera_wait,camera_profile='pitch-rgb/v1')
                 row.update(action_semantics='post-safety-dispatch/50ms-v3',dispatch_sim_ns=stamp,
                            dispatch_interval_seconds=(submitted-self.command_log[-1]['submitted_monotonic']) if self.command_log else None,
                            timing_uncertainty_seconds=time.monotonic()-started,

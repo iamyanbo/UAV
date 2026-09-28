@@ -13,8 +13,8 @@ class EvaluationState:
 
 
 class FlightEvaluator:
-    def __init__(self, goal, boundary, start_seconds, reference_length, timeout_seconds=180):
-        if not 20 <= reference_length <= 300:
+    def __init__(self, goal, boundary, start_seconds, reference_length, timeout_seconds=180, maximum_reference_length=300):
+        if not 20 <= reference_length <= maximum_reference_length:
             raise ValueError('Reference path outside visual-goal phase bounds')
         self.goal, self.boundary = goal, boundary
         self.start = self.previous_time = start_seconds

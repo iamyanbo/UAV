@@ -14,15 +14,19 @@ class MapPrior:
     def __init__(self, folder):
         self.root = Path(folder).resolve()
         self.meta = read(self.root / 'map.json')
-        if self.meta['schema'] != 'overhead-map/v1':
+        if self.meta['schema'] not in ('overhead-map/v1','overhead-map/v2'):
             raise ValueError('Unsupported coarse map')
-        if set(self.meta)!={'schema','origin_xy_m','frame','rgb_mpp','height_mpp','quantization_m','source','files'}:
+        if set(self.meta)-{'flight_envelope'}!={'schema','origin_xy_m','frame','rgb_mpp','height_mpp','quantization_m','source','files'}:
             raise ValueError('Unexpected map metadata; runtime maps cannot carry mission labels')
         if set(self.meta['files'])!={'overhead.png','surface.npy','coverage.npy'}:
             raise ValueError('Unexpected map assets')
         for name, identity in self.meta['files'].items():
             if digest(contained(self.root, name)) != identity:
                 raise ValueError('Map checksum differs: ' + name)
+        self.flight_envelope = self.meta.get('flight_envelope')
+        if self.flight_envelope is not None:
+            from .aerial import envelope
+            envelope(self.flight_envelope)
         self.rgb = np.asarray(Image.open(self.root / 'overhead.png').convert('RGB'))
         self.surface = np.load(self.root / 'surface.npy', allow_pickle=False)
         self.coverage = np.load(self.root / 'coverage.npy', allow_pickle=False).astype(bool)

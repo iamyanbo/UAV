@@ -42,7 +42,9 @@ def main():
     parser.add_argument('--goal-view-count',type=int,choices=(1,2,3,4),default=4)
     parser.add_argument('--photo-checkpoints',type=Path)
     parser.add_argument('--map-prior',type=Path)
-    parser.add_argument('--photo-variant',choices=('geometry','recent_world','map_world','map_world_qwen'),default='geometry')
+    parser.add_argument('--photo-variant',choices=('geometry','geometric_candidates','predictive_candidates'),default='geometry')
+    parser.add_argument('--aerial-camera',action='store_true')
+    parser.add_argument('--collection-source',choices=('expert','manoeuvre','exploration','learner'),default='expert')
     parser.add_argument('--controller-checkpoints',type=Path,help='Run isolated trained Mode 1 instead of the privileged expert')
     parser.add_argument('--integration-only',action='store_true')
     parser.add_argument('--sample-policy',action='store_true')
@@ -66,6 +68,13 @@ def main():
     label = next(row for row in json.loads(args.evaluator_labels.read_text())['episodes']
                  if row['episode_id'] == args.episode_id)
     field = PrivilegedObstacleField.load(args.obstacle_field)
+    if args.aerial_camera:
+        import sys
+        sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
+        from research.map_navigation.aerial import direction_pitch,phase_for
+        if field.observed_free is None:raise ValueError('Aerial collection requires observed-free geometry')
+    if args.collection_source=='exploration' and not args.photo_checkpoints:
+        raise ValueError('Exploration cannot use the privileged route follower')
     # The launcher owns the unique run directory; only the episode is new.
     output = args.output.resolve(); output.mkdir(parents=True, exist_ok=True)
     episode = output/'episode'; episode.mkdir()
@@ -107,6 +116,10 @@ def main():
                   pose_setting_calls_after_recording=0, clock_speed=1., maximum_speed_mps=args.maximum_speed_mps)
     broker = writer = label_stream = depth_index = depth_pool = depth_future = controller = None
     broker_closed=False
+    result['collection_source']=args.collection_source
+    result['camera_profile']='pitch-rgb/v1' if args.aerial_camera else 'fixed'
+    result['route_advantage']=label.get('route_advantage')
+    result['route_alternatives']=label.get('route_alternatives',[])
     result['controller_kind']='photo_map' if args.photo_checkpoints else 'learned_mode_1' if args.controller_checkpoints else 'privileged_shortest_path_expert'
     result['scene_id']=label.get('scene_id','env_airsim_16')
     if args.photo_checkpoints:result['variant']=args.photo_variant
@@ -170,7 +183,8 @@ def main():
         writer = EpisodeWriter(episode/'observations', hashlib.sha256(color_data).hexdigest())
         (episode/'observations/color_calibration.json').write_bytes(color_data)
         broker = RGBBroker(episode/'ipc/rgb.sock', args.episode_id, asdict(calibration), writer,
-                           raw_channel_order=color['raw_channel_order'], goal_observation=goal,camera_workers=2,
+                           raw_channel_order=color['raw_channel_order'], goal_observation=goal,camera_workers=1 if args.aerial_camera else 2,
+                           camera_pitch_enabled=args.aerial_camera,
                            maximum_horizontal_speed_mps=args.maximum_speed_mps)
         broker.start(); channel = BrokerClient(broker.socket_path, args.episode_id)
         result['runtime_isolation']=verify_live_boundary(broker.socket_path,args.episode_id,labels_dir,
@@ -200,8 +214,9 @@ def main():
         depth_index = (depth_dir/'index.jsonl').open('x', encoding='utf-8')
         depth_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='privileged-depth')
         first = client.getMultirotorState(vehicle_name=vehicle)
-        evaluator = FlightEvaluator(label['goal_ned_m'], field.bounds.tolist(), first.timestamp/1e9,
-                                    label['reference_length_m'],timeout_seconds=label.get('timeout_s',180))
+        evaluator = FlightEvaluator(label['goal_ned_m'], label.get('flight_envelope',{}).get('bounds_ned_m',field.bounds.tolist()), first.timestamp/1e9,
+                                    label['reference_length_m'],timeout_seconds=label.get('timeout_s',180),
+                                    maximum_reference_length=label.get('maximum_reference_length_m',300))
         path = np.asarray(label['reference_path_ned_m'], dtype=np.float64)
         target_index = 1; stopped = False; previous_position = np.asarray(start, dtype=np.float64)
         last_frame = -1; last_depth_sim = -math.inf; wall_deadline = time.monotonic()+label.get('timeout_s',180)+30
@@ -252,8 +267,15 @@ def main():
                 if horizontal < 1 and abs(delta[2]) < .75 and target_index < len(path)-1:
                     target_index += 1; target = path[target_index]; delta=target-position; horizontal=float(np.linalg.norm(delta[:2]))
                 stop_candidate = bool(stopped or (target_index==len(path)-1 and horizontal<1 and abs(delta[2])<.5))
+                final_yaw_error=0.
+                if args.aerial_camera and stop_candidate and not stopped:
+                    yaw=airsim.to_eularian_angles(k.orientation)[2]
+                    desired=math.radians(float(label.get('goal_yaw_degrees',0.)))
+                    final_yaw_error=math.atan2(math.sin(desired-yaw),math.cos(desired-yaw))
                 if stop_candidate:
                     command = [0,0,0,0]
+                    if args.aerial_camera and abs(final_yaw_error)>math.radians(5):
+                        command[3]=float(np.clip(math.degrees(final_yaw_error)*1.5,-45,45));stop_candidate=False
                 else:
                     yaw = airsim.to_eularian_angles(k.orientation)[2]
                     desired = math.atan2(delta[1],delta[0]); yaw_error=math.atan2(math.sin(desired-yaw),math.cos(desired-yaw))
@@ -265,8 +287,24 @@ def main():
                              float(np.clip(delta[2],-1,1)),float(np.clip(math.degrees(yaw_error)*1.5,-45,45))]
                 if (state.timestamp-first.timestamp)/1e9 < args.bootstrap_hold_seconds:
                     command=[0.,0.,0.,0.];stop_candidate=False
+                pitch=None
+                if args.aerial_camera:
+                    pitch=direction_pitch(command[:3]) if np.linalg.norm(command[:3])>.01 else 0.
+                    elapsed=(state.timestamp-first.timestamp)/1e9
+                    row['flight_phase']=phase_for(command,'settle' if stop_candidate else 'transit')
+                    if args.collection_source=='manoeuvre' and not stop_candidate and 3 <= elapsed%16 < 7:
+                        probes=([1.,0.,-.5,0.,25.],[1.,0.,.5,0.,-25.],[.5,.5,0.,15.,0.],
+                                [.5,-.5,0.,-15.,0.],[0.,0.,0.,20.,-45.],[0.,0.,0.,0.,0.])
+                        probe=probes[int(elapsed//16)%len(probes)]
+                        command=list(probe[:4]);pitch=probe[4]
+                        row['flight_phase']='scan' if int(elapsed//16)%6==4 else phase_for(command)
+                        yaw=airsim.to_eularian_angles(k.orientation)[2];c,s=math.cos(yaw),math.sin(yaw)
+                        displacement=np.array([c*command[0]-s*command[1],s*command[0]+c*command[1],command[2]])*2
+                        blocked=field.swept_collision(position,position+displacement)
+                        row['privileged_probe_veto']=bool(blocked)
+                        if blocked:command=[0.,0.,0.,0.]
                 try:
-                    channel.command(last_frame,command,stop=stop_candidate)
+                    channel.command(last_frame,command,stop=stop_candidate,camera_pitch_deg=pitch)
                     if stop_candidate:
                         stopped = True
                 except RuntimeError as error:

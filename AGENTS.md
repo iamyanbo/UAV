@@ -1,5 +1,9 @@
 # CURI-UAV research invariants
 
+## Planner-first aerial revision ? September 28, 2026
+
+The user explicitly requested local implementation only, no Spark access and no tests. Do not connect remotely, run tests, training, replay, acquisition or simulator flights during this pass. Source inspection is allowed. Implement the approved climb/search/cruise/descent plan in `research/map_navigation/IMPLEMENTATION_PLAN.md`: one tiltable RGB camera with recorded relative transforms, qualified flight envelope, privileged motion collection separated from observation-only exploration, geometric fast control and predictive slow candidate ranking. Learned actor, Qwen and PPO are deferred. Preserve the previous campaign and evidence. Every runtime/training claim remains unexecuted until separately authorized execution. Do not delegate to sub-agents without an explicit request.
+
 ## Photo-map successor — September 27, 2026
 
 The user authorized implementing `research/map_navigation/` locally while Spark is unavailable. Implement the complete successor before remote training/flight validation; do not contact Spark or run repeated tests during this coding pass. Keep execution windowless. Its task supersedes the old single-scene/no-prior/four-goal-view restrictions for this campaign: one goal photo (optionally up to four), supplied overhead RGB and approximate heights, unknown launch position/heading, no goal region, RGB-only runtime localization, multiple training and held-out environments. Do not resume historical supervisors. Keep the original campaign and evidence, simulator-label isolation, model provenance, resource reserves and no-spend/no-physical-flight restrictions. Code completion is not trained or validated navigation.

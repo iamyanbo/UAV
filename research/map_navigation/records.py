@@ -53,4 +53,6 @@ class RoutePlan:
     created_s: float
     target_id: str
     estimated_seconds: float
+    family: str = "direct"
+
 

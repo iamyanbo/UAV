@@ -106,10 +106,10 @@ class PrivilegedObstacleField:
     def segment_free(self, start, end):
         return not self.swept_collision(start, end)
 
-    def reference_path(self, start, goal, lattice_m=2., maximum_expansions=12000):
+    def reference_path(self, start, goal, lattice_m=2., maximum_expansions=12000, search_bounds=None):
         """Privileged 3-D A* followed by collision-checked line simplification."""
         if self.observed_free is not None:
-            return self._reference_path_observed(start, goal, maximum_expansions)
+            return self._reference_path_observed(start, goal, maximum_expansions, search_bounds)
         import heapq
         start, goal = np.asarray(start, dtype=np.float64), np.asarray(goal, dtype=np.float64)
         origin = self.bounds[0]
@@ -119,8 +119,8 @@ class PrivilegedObstacleField:
         def position(index):
             return origin + np.asarray(index) * lattice_m
         a, b = cell(start), cell(goal)
-        corridor_min = np.minimum(start, goal)-30.
-        corridor_max = np.maximum(start, goal)+30.
+        corridor_min, corridor_max = (np.stack((np.minimum(start, goal)-30., np.maximum(start, goal)+30.))
+                                      if search_bounds is None else np.asarray(search_bounds))
         if self.contains_vehicle(start) or self.contains_vehicle(goal):
             raise ValueError('Endpoint intersects privileged geometry')
         moves = [(x, y, z) for x in (-1, 0, 1) for y in (-1, 0, 1) for z in (-1, 0, 1) if x or y or z]
@@ -162,7 +162,7 @@ class PrivilegedObstacleField:
                     heapq.heappush(queue, (value + float(np.linalg.norm(q - goal)), nxt))
         raise ValueError('No privileged collision-free 3-D path')
 
-    def _reference_path_observed(self, start, goal, maximum_expansions):
+    def _reference_path_observed(self, start, goal, maximum_expansions, search_bounds=None):
         """Search surveyed free voxels; exact swept checks decide acceptance."""
         import heapq
         start, goal = np.asarray(start, dtype=np.float64), np.asarray(goal, dtype=np.float64)
@@ -190,7 +190,8 @@ class PrivilegedObstacleField:
                     return tuple(np.floor(self._safe_free_points[index]/resolution).astype(int))
             raise ValueError('Endpoint has no swept-safe surveyed lattice connection')
         a, b = endpoint(start), endpoint(goal)
-        lower, upper = np.minimum(start, goal)-30., np.maximum(start, goal)+30.
+        lower, upper = (np.stack((np.minimum(start, goal)-30., np.maximum(start, goal)+30.))
+                        if search_bounds is None else np.asarray(search_bounds))
         moves = [(x,y,z) for x in (-1,0,1) for y in (-1,0,1) for z in (-1,0,1) if x or y or z]
         queue, costs, parent, closed = [(0.,a)], {a:0.}, {}, set()
         while queue:

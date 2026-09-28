@@ -20,6 +20,7 @@ def report(manifest,results,output):
     for path in Path(results).rglob('episode/result.json'):
         row=read(path);key=(row.get('variant'),row.get('seed'),row['episode_id'])
         if row['episode_id'] not in by_id or row.get('variant') not in cfg['variants']:continue
+        if row.get('seed') not in cfg['evaluation']['seeds']:raise ValueError('Unexpected evaluation seed')
         if key in rows:raise ValueError('Duplicate trial '+str(key))
         if row.get('clock_speed')!=1.:raise ValueError('Evaluation requires real-time simulator clock')
         if row['scene_id']!=by_id[row['episode_id']]['scene_id']:raise ValueError('Wrong evaluation environment')
@@ -52,18 +53,24 @@ def report(manifest,results,output):
             median_success_time_s=float(np.median(times)) if times else None,median_final_error_m=float(np.median(errors)) if errors else None,
             meets_operational_targets=bool(n==len(by_id)*len(cfg['evaluation']['seeds']) and n and len(successes)/n>=.9 and collisions/n<=.01),
             terminations={reason:sum(r.get('termination')==reason for r in group) for reason in sorted({r.get('termination','unknown') for r in group})})
+    strata={}
+    for variant in cfg['variants']:
+        for category in ('overflight_better','low_better','comparable'):
+            group=[r for (v,_,_),r in rows.items() if v==variant and r.get('route_advantage')==category]
+            strata[variant+'/'+category]=dict(trials=len(group),successes=sum(bool(r.get('success')) for r in group))
     paired={};rng=np.random.default_rng(0)
-    for variant in cfg['variants'][1:]:
+    for reference,variant in [('geometry','geometric_candidates'),('geometric_candidates','predictive_candidates')]:
         differences=[]
         for seed in cfg['evaluation']['seeds']:
             for ident in by_id:
-                a=rows.get(('geometry',seed,ident));b=rows.get((variant,seed,ident))
+                a=rows.get((reference,seed,ident));b=rows.get((variant,seed,ident))
                 if a and b:differences.append(int(bool(b.get('success')))-int(bool(a.get('success'))))
         if differences:
             x=np.asarray(differences);bootstrap=[float(rng.choice(x,len(x),replace=True).mean()) for _ in range(2000)]
-            paired[variant]=dict(pairs=len(x),success_difference=float(x.mean()),ci95=np.quantile(bootstrap,[.025,.975]).tolist(),
+            paired[reference+'->'+variant]=dict(pairs=len(x),success_difference=float(x.mean()),ci95=np.quantile(bootstrap,[.025,.975]).tolist(),
                                 caveat='paired trial bootstrap; does not estimate uncertainty across all possible cities')
     missing=sorted(expected-set(rows))
-    write(output,dict(schema='photo-map-evaluation/v1',complete=not missing,missing=missing,variants=summary,paired=paired,
-         localization=localization,all_failures_retained=True,energy={'compute':'not measured by this evaluator','propulsion':'not measured; time is not energy'},
+    write(output,dict(schema='photo-map-evaluation/v2',complete=not missing,missing=missing,variants=summary,paired=paired,
+         localization=localization,strata=strata,all_failures_retained=True,energy={'compute':'not measured by this evaluator','propulsion':'not measured; time is not energy'},
          generalization_scope='registered held-out scenes only; no real-satellite or physical-flight claim'))
+

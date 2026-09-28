@@ -1,6 +1,6 @@
 {
-  "schema": "photo-map-campaign/v2",
-  "status": "implemented-unexecuted",
+  "schema": "photo-map-campaign/v1",
+  "status": "implemented-unvalidated",
   "seed": 20260927,
   "runtime_inputs": [
     "RGB",
@@ -10,8 +10,7 @@
     "past_commands",
     "overhead_RGB",
     "coarse_heights",
-    "map_bounds",
-    "relative_camera_pitch"
+    "map_bounds"
   ],
   "forbidden_runtime_inputs": [
     "launch_pose",
@@ -68,8 +67,7 @@
     ],
     "timeout_min_s": 180,
     "timeout_factor": 4,
-    "search_allowance_s": 180,
-    "maximum_reference_length_m": 1000
+    "search_allowance_s": 180
   },
   "navigation": {
     "maximum_speed_mps": 3.0,
@@ -85,16 +83,7 @@
     "arrival_evidence_frames": 5,
     "arrival_dwell_s": 1.0,
     "maximum_result_age_s": 0.25,
-    "braking_mps2": 2.0,
-    "prediction_hz": 1.0,
-    "maximum_candidates": 12,
-    "overflight_clearances_m": [
-      8.0,
-      16.0
-    ],
-    "corridor_margin_m": 3.0,
-    "camera_settle_s": 0.2,
-    "search_scan_seconds": 12.0
+    "braking_mps2": 2.0
   },
   "models": {
     "encoder": "MobileNetV3-Large",
@@ -107,14 +96,13 @@
     "horizon_steps": 20,
     "dt_s": 0.2,
     "hypotheses": 8,
-    "qwen": "Qwen2.5-VL-3B-Instruct",
-    "action_channels": 5,
-    "optional_vlm_enabled": false
+    "qwen": "Qwen2.5-VL-3B-Instruct"
   },
   "training": {
     "stages": [
       "localization",
       "goal",
+      "policy",
       "world"
     ],
     "batch_size": 4,
@@ -125,21 +113,13 @@
     "minimum_goal_positives": 100,
     "minimum_goal_negatives": 100,
     "ppo_enabled": false,
-    "qwen_preference_enabled": false,
-    "validate_every": 1000,
-    "validation_windows": 1024,
-    "curriculum": [
-      0.2,
-      0.3,
-      0.5
-    ],
-    "fine_tune_updates": 5000,
-    "policy_enabled": false
+    "qwen_preference_enabled": false
   },
   "variants": [
     "geometry",
-    "geometric_candidates",
-    "predictive_candidates"
+    "recent_world",
+    "map_world",
+    "map_world_qwen"
   ],
   "evaluation": {
     "clock_speed": 1.0,
@@ -165,40 +145,6 @@
   "evidence": {
     "tested": false,
     "trained": false,
-    "validated": false,
-    "qualification_required": true
-  },
-  "camera": {
-    "profile": "pitch-rgb/v1",
-    "minimum_pitch_deg": -90,
-    "maximum_pitch_deg": 90,
-    "rate_dps": 45,
-    "settle_s": 0.2,
-    "tolerance_deg": 2
-  },
-  "collection": {
-    "initial_attempts_per_scene": 150,
-    "expanded_attempts_per_scene": 500,
-    "learner_attempts_per_scene": 100,
-    "source_cycle": [
-      "expert",
-      "expert",
-      "expert",
-      "expert",
-      "expert",
-      "exploration",
-      "exploration",
-      "exploration",
-      "manoeuvre",
-      "manoeuvre"
-    ],
-    "bank_columns": 100,
-    "bank_pitches": [
-      -90,
-      -45,
-      0,
-      45,
-      90
-    ]
+    "validated": false
   }
 }

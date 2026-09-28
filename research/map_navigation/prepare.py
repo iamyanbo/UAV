@@ -6,7 +6,8 @@ from PIL import Image
 from obstacle_field import PrivilegedObstacleField
 from .common import config,read,write,digest
 from .maps import MapPrior,prepare_map
-from .navigation import Router
+from .routing import Router, route_advantage
+from .aerial import envelope
 
 
 def survey(field_path,settings_path,output,window):
@@ -84,57 +85,85 @@ def registry(inventory_path,output):
         if row['geography_id'] in seen:raise ValueError('Duplicated geography in scene inventory')
         seen.add(row['geography_id'])
         prior=MapPrior(row['map']);field=PrivilegedObstacleField.load(row['obstacle_field'])
+        specification=read(row['qualification'])
+        if not specification.get('qualified') or specification.get('field_sha256')!=digest(row['obstacle_field']) or specification.get('qualified_map_sha256')!=prior.identity:
+            raise ValueError('Scene requires matching altitude qualification and qualified map')
+        if field.observed_free is None or prior.flight_envelope is None:
+            raise ValueError('Explicit surveyed free space and flight envelope required')
+        envelope(prior.flight_envelope)
         settings=read(row['settings'])
         if settings.get('ClockSpeed')!=1.:raise ValueError('Registry requires ClockSpeed=1')
         if not row.get('launch_argv') or not Path(row['launch_argv'][0]).is_file():raise ValueError('Actual scene executable required')
         if np.any(prior.bounds[0]<field.bounds[0,:2]) or np.any(prior.bounds[1]>field.bounds[1,:2]+2):raise ValueError('Map and field frames differ')
         scenes.append(dict(row,map=str(Path(row['map']).resolve()),obstacle_field=str(Path(row['obstacle_field']).resolve()),
-            settings=str(Path(row['settings']).resolve()),map_sha256=prior.identity,field_sha256=digest(row['obstacle_field']),settings_sha256=digest(row['settings'])))
+            settings=str(Path(row['settings']).resolve()),map_sha256=prior.identity,field_sha256=digest(row['obstacle_field']),settings_sha256=digest(row['settings']),qualification_sha256=digest(row['qualification'])))
     if len(scenes)<6 or scenes[0]['scene_id']!='env_airsim_16':raise ValueError('Need env_airsim_16 and five distinct compatible environments; no same-scene fallback')
     scenes=scenes[:6]
     for i,row in enumerate(scenes):row['split']='train' if i<3 else 'validation' if i==3 else 'test'
     write(output,dict(schema='photo-map-scenes/v1',scenes=scenes,inventory_sha256=digest(inventory_path)))
 
 
-def manifests(registry_path,output):
+def manifests(registry_path,output,window=None):
+    from dataclasses import asdict
     cfg=config();scenes=read(registry_path)['scenes'];output=Path(output)
-    output.mkdir(parents=True,exist_ok=False);rng=np.random.default_rng(cfg['seed'])
-    public=[];private=[]
+    output.mkdir(parents=True,exist_ok=True);rng=np.random.default_rng(cfg['seed'])
+    state_path=output/'evaluator_labels/generation-progress.json'
+    identity=digest(registry_path);campaign_identity=digest(Path(__file__).with_name('campaign.json'))
+    public=[];private=[];audit=[];attempt_counts={}
+    if state_path.exists():
+        saved=read(state_path)
+        if saved['registry_sha256']!=identity or saved.get('campaign_sha256')!=campaign_identity:raise ValueError('Manifest resume registry changed')
+        public=saved['public'];private=saved['private'];audit=saved['audit'];attempt_counts=saved['attempt_counts'];rng.bit_generator.state=saved['rng']
+    def checkpoint():
+        write(state_path,dict(registry_sha256=identity,campaign_sha256=campaign_identity,public=public,private=private,audit=audit,attempt_counts=attempt_counts,rng=rng.bit_generator.state))
+    categories=('overflight_better','low_better','comparable')
     for scene in scenes:
-        field=PrivilegedObstacleField.load(scene['obstacle_field']);prior=MapPrior(scene['map']);router=Router(prior,cfg['navigation'])
-        count=cfg['episodes'][scene['split']+'_per_scene'];accepted=0;attempts=0
+        field=PrivilegedObstacleField.load(scene['obstacle_field']);prior=MapPrior(scene['map'])
+        router=Router(prior,cfg['navigation'],field)
+        count=cfg['episodes'][scene['split']+'_per_scene'];accepted=sum(r['scene_id']==scene['scene_id'] for r in public);attempts=attempt_counts.get(scene['scene_id'],0)
+        rejects={};bounds=router.bounds
         while accepted<count and attempts<count*1000:
-            attempts+=1;band=cfg['episodes']['distance_bands_m'][accepted%3]
-            start_xy=rng.uniform(prior.bounds[0]+4,prior.bounds[1]-4)
+            if window is not None and not window.remaining():checkpoint();return
+            attempts+=1;attempt_counts[scene['scene_id']]=attempts;band=cfg['episodes']['distance_bands_m'][(accepted//3)%3]
+            start_xy=rng.uniform(np.maximum(prior.bounds[0],bounds[0,:2])+4,np.minimum(prior.bounds[1],bounds[1,:2])-4)
             heading=rng.uniform(-math.pi,math.pi);distance=rng.uniform(*band)
             goal_xy=start_xy+distance*np.array([math.cos(heading),math.sin(heading)])
             surfaces=prior.height(np.stack((start_xy,goal_xy)))
             if not np.isfinite(surfaces).all():continue
-            start=np.r_[start_xy,surfaces[0]-rng.uniform(5,20)];goal=np.r_[goal_xy,surfaces[1]-rng.uniform(5,20)]
-            if field.contains_vehicle(start) or field.contains_vehicle(goal):continue
-            candidates=[]
-            if field.segment_free(start,goal):candidates.append([start,goal])
-            cruise=min(start[2],goal[2],float(np.nanmin(prior.surface))-8)
-            over=[start,np.r_[start_xy,cruise],np.r_[goal_xy,cruise],goal]
-            if all(field.segment_free(a,b) for a,b in zip(over,over[1:])):candidates.append(over)
-            try:candidates.append(field.reference_path(start,goal))
-            except ValueError:pass
-            if not candidates:continue
-            path=min(candidates,key=lambda p:sum(router.duration(a,b) for a,b in zip(p,p[1:])))
-            length=sum(float(np.linalg.norm(np.asarray(a)-b)) for a,b in zip(path,path[1:]))
-            if not 20<=length<=300:continue
-            duration=sum(router.duration(a,b) for a,b in zip(path,path[1:]))
-            ident=f'{scene["scene_id"]}-{scene["split"]}-{accepted:05d}'
-            timeout=max(180,4*duration+180)
+            try:
+                # Alternate ground-level and roof-level endpoints independently.
+                bases=[field.ground_z(start_xy) if accepted%2==0 else surfaces[0],
+                       field.ground_z(goal_xy) if (accepted//2)%2==0 else surfaces[1]]
+            except ValueError:continue
+            start=np.r_[start_xy,bases[0]-rng.uniform(5,10)];goal=np.r_[goal_xy,bases[1]-rng.uniform(5,10)]
+            if not router.free(start,start) or not router.free(goal,goal):continue
+            yaw=float(rng.uniform(-180,180))
+            routes=router.alternatives(start,goal,yaw=math.radians(yaw))
+            category=route_advantage(routes)
+            if category!=categories[accepted%3]:
+                rejects[category]=rejects.get(category,0)+1;continue
+            best=routes[0];path=np.asarray(best.waypoints)
+            length=sum(float(np.linalg.norm(b-a)) for a,b in zip(path,path[1:]))
+            if not 20<=length<=cfg['episodes']['maximum_reference_length_m']:continue
+            ident=f"{scene['scene_id']}-{scene['split']}-{accepted:05d}"
+            source=cfg['collection']['source_cycle'][accepted%10] if scene['split']=='train' else 'expert'
+            timeout=max(180,4*best.estimated_seconds+180)
             public.append(dict(episode_id=ident,scene_id=scene['scene_id'],split=scene['split'],map_sha256=prior.identity,
-                               goal_views=1,goal_record='goals/'+ident,timeout_s=timeout))
+                goal_views=1,goal_record='goals/'+ident,timeout_s=timeout,collection_source=source))
             private.append(dict(episode_id=ident,scene_id=scene['scene_id'],split=scene['split'],phase=1+accepted%3,
-                 start_ned_m=start.tolist(),start_yaw_degrees=float(rng.uniform(-180,180)),goal_ned_m=goal.tolist(),
-                 goal_yaw_degrees=float(rng.uniform(-180,180)),reference_path_ned_m=np.asarray(path).tolist(),
-                 reference_length_m=length,reference_time_s=duration,timeout_s=timeout,
-                 route_kind='direct' if len(path)==2 else 'overflight' if len(path)==4 and np.allclose(path[1],over[1]) else 'detour'))
-            accepted+=1
-        if accepted<count:raise RuntimeError('Insufficient surveyed flight coverage: '+scene['scene_id'])
+                start_ned_m=start.tolist(),start_yaw_degrees=yaw,goal_ned_m=goal.tolist(),
+                goal_yaw_degrees=float(rng.uniform(-180,180)),reference_path_ned_m=path.tolist(),
+                reference_length_m=length,reference_time_s=best.estimated_seconds,timeout_s=timeout,
+                maximum_reference_length_m=cfg['episodes']['maximum_reference_length_m'],
+                horizontal_separation_m=float(np.linalg.norm(goal_xy-start_xy)),
+                endpoint_kinds=['ground' if accepted%2==0 else 'roof','ground' if (accepted//2)%2==0 else 'roof'],
+                route_kind=best.family,route_advantage=category,route_alternatives=[asdict(r) for r in routes],
+                collection_source=source,flight_envelope=prior.flight_envelope,camera_profile='pitch-rgb/v1'))
+            accepted+=1;checkpoint()
+        audit.append(dict(scene_id=scene['scene_id'],accepted=accepted,requested=count,attempts=attempts,rejected_categories=rejects))
+        write(output/'generation-audit.json',audit)
+        if accepted<count:raise RuntimeError('Missing route-category coverage; do not substitute easier missions: '+scene['scene_id'])
+    checkpoint()
     for split in ('train','validation','test'):
-        write(output/(split+'.json'),dict(schema='photo-map-missions/v1',registry_sha256=digest(registry_path),episodes=[r for r in public if r['split']==split]))
-        write(output/'evaluator_labels'/(split+'.json'),dict(schema='privileged-photo-map-labels/v1',episodes=[r for r in private if r['split']==split]))
+        write(output/(split+'.json'),dict(schema='photo-map-missions/v2',registry_sha256=digest(registry_path),episodes=[r for r in public if r['split']==split]))
+        write(output/'evaluator_labels'/(split+'.json'),dict(schema='privileged-photo-map-labels/v2',episodes=[r for r in private if r['split']==split]))
