@@ -59,14 +59,16 @@ class SceneProcess:
         else:self.settings_path.write_bytes(self.old)
 
 
-def collect(registry_path,manifests,output,split,window,packages=None,variants=None,sources=None,limit=None,learner_round=False):
+def collect(registry_path,manifests,output,split,window,packages=None,variants=None,sources=None,limit=None,learner_round=False,sample_policy=False):
     if limit is not None and limit<=0:raise ValueError('Positive per-scene attempt limit required')
     registry=read(registry_path);public=read(Path(manifests)/(split+'.json'))
+    if public['schema']!='photo-map-missions/v4':raise ValueError('Fixed-camera v4 missions required')
     if public['registry_sha256']!=digest(registry_path):raise ValueError('Scene registry changed after mission generation')
     labels=Path(manifests)/'evaluator_labels'/(split+'.json')
     output=Path(output);output.mkdir(parents=True,exist_ok=True)
     packages={} if packages is None else read(packages)['seeds']
     if learner_round and (not packages or split!='train'):raise ValueError('Learner round requires training split and packages')
+    if sample_policy and (not packages or split=='test'):raise ValueError('Sampling is restricted to adaptation collection')
     if split=='test' and set(packages)!=set(map(str,config()['evaluation']['seeds'])):
         raise ValueError('Sealed evaluation requires three independently trained seed packages')
     variants=variants or (config()['variants'] if packages else ['expert'])
@@ -75,6 +77,9 @@ def collect(registry_path,manifests,output,split,window,packages=None,variants=N
     if not packages and 'exploration' in sources:raise ValueError('Exploration requires trained perception packages')
     if not packages and variants!=['expert']:raise ValueError('Learned variants require model packages')
     root=Path(__file__).resolve().parents[2]
+    ledger_path=Path(registry_path).parent/'temporal-collection-budget.json'
+    ledger=read(ledger_path) if ledger_path.exists() else dict(registry_sha256=digest(registry_path),attempts_reserved=0,milestones=[])
+    if ledger['registry_sha256']!=digest(registry_path):raise ValueError('Collection budget registry mismatch')
     for scene in registry['scenes']:
         if scene['split']!=split:continue
         for name,key in [('map','map_sha256'),('obstacle_field','field_sha256'),('settings','settings_sha256')]:
@@ -94,13 +99,22 @@ def collect(registry_path,manifests,output,split,window,packages=None,variants=N
                         run=output/name;receipt=run/'episode/result.json'
                         if receipt.exists():continue  # Retain failures; retries need a new explicit output root.
                         if run.exists():raise RuntimeError('Interrupted attempt requires inspection: '+str(run))
+                        if split=='train':
+                            if ledger['attempts_reserved']>=config()['training']['budgets']['collection_episodes']:return
+                            ledger['attempts_reserved']+=1
+                            if ledger['attempts_reserved'] in config()['training']['collection_milestones']:
+                                ledger['milestones'].append(ledger['attempts_reserved'])
+                            write(ledger_path,ledger)
                         run.mkdir()
                         command=[sys.executable,str(root/'research/rgb_flight/visual_goal_flight.py'),
                             '--output',str(run),'--expected-settings',scene['settings'],'--evaluator-labels',str(labels),
                             '--episode-id',mission['episode_id'],'--obstacle-field',scene['obstacle_field'],'--goal-view-count','1',
-                            '--aerial-camera','--collection-source',('learner' if learner_round or packages and split!='test' and mission.get('collection_source')!='exploration' else mission.get('collection_source','expert'))]
+                            '--fixed-photo-camera','--collection-source',('learner' if learner_round or sample_policy or packages and split!='test' and mission.get('collection_source')!='exploration' else mission.get('collection_source','expert'))]
                         if package_root:
                             command+=['--photo-checkpoints',str(package_root),'--map-prior',scene['map'],'--photo-variant',variant]
+                            if sample_policy:command+=['--photo-sample-policy']
+                            if mission.get('initial_subgoal'):
+                                command+=['--photo-initial-subgoal',json.dumps(mission['initial_subgoal'])]
                         write(run/'request.json',dict(command=command,seed=int(seed),variant=variant,map_sha256=scene['map_sha256'],
                               registry_sha256=digest(registry_path),mission_sha256=digest(Path(manifests)/(split+'.json'))))
                         with (run/'host.log').open('x') as log:
@@ -109,5 +123,7 @@ def collect(registry_path,manifests,output,split,window,packages=None,variants=N
                             termination='infrastructure_error',status='failed',clock_speed=1.)
                         result.update(seed=int(seed),variant=variant,scene_id=scene['scene_id'],split=split,host_exit_code=code,
                             collection_source=('learner' if learner_round else 'exploration' if mission.get('collection_source')=='exploration' and packages else 'learner' if packages else mission.get('collection_source','expert')))
+                        result['branch_group']=mission.get('branch_group')
+                        result['initial_subgoal']=mission.get('initial_subgoal')
                         write(receipt,result)
                         if code not in (0,2):raise RuntimeError('Collector infrastructure failure; inspect '+str(run))

@@ -16,17 +16,19 @@ class ComputeLane:
         self.slowest_slice_s=0.;self.slow_slices=0
 
     @contextmanager
-    def enter(self, fast=False):
+    def enter(self, fast=False, essential=False):
+        queued=time.monotonic()
         with self.condition:
             if fast:self.fast_waiting+=1
             try:
                 self.condition.wait_for(lambda:not self.busy and (fast or self.fast_waiting==0))
-                if not fast and not self.slow_admitted:
+                if not fast and not essential and not self.slow_admitted:
                     raise RuntimeError('prediction_slice_budget_exceeded')
                 self.busy=True
             finally:
                 if fast:self.fast_waiting-=1
         started=time.monotonic()
+        if fast:self.last_fast_queue_s=started-queued
         try:
             yield
         finally:
@@ -41,3 +43,4 @@ class ComputeLane:
 
     def fast(self):return self.enter(True)
     def slow(self):return self.enter(False)
+    def background(self):return self.enter(False,True)

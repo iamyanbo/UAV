@@ -116,6 +116,7 @@ def qualify(field_path, prior_path, envelope_path, output):
         if high[2] >= low[2]-4 or not router.free(low,low): continue
         try:
             route=field.reference_path(low,high,maximum_expansions=40000,search_bounds=bounds)
+            route=np.asarray(router.forward_ramps(route))
             if all(router.free(a,b) for a,b in zip(route,route[1:])):
                 examples.append(dict(low_ned_m=low.tolist(),high_ned_m=high.tolist(),ascent=route.tolist(),descent=route[::-1].tolist()))
         except ValueError:

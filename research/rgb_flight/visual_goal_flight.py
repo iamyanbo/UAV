@@ -42,7 +42,10 @@ def main():
     parser.add_argument('--goal-view-count',type=int,choices=(1,2,3,4),default=4)
     parser.add_argument('--photo-checkpoints',type=Path)
     parser.add_argument('--map-prior',type=Path)
-    parser.add_argument('--photo-variant',choices=('geometry','geometric_candidates','predictive_candidates'),default='geometry')
+    parser.add_argument('--photo-variant',choices=('mode1','mode1_vlm','mode1_vlm_world'),default='mode1_vlm_world')
+    parser.add_argument('--fixed-photo-camera',action='store_true')
+    parser.add_argument('--photo-sample-policy',action='store_true')
+    parser.add_argument('--photo-initial-subgoal')
     parser.add_argument('--aerial-camera',action='store_true')
     parser.add_argument('--collection-source',choices=('expert','manoeuvre','exploration','learner'),default='expert')
     parser.add_argument('--controller-checkpoints',type=Path,help='Run isolated trained Mode 1 instead of the privileged expert')
@@ -56,6 +59,14 @@ def main():
     parser.add_argument('--depth-label-hz', type=float, default=0.,
                         help='Optional privileged depth capture; omitted depth is masked, never fabricated')
     args = parser.parse_args()
+    if args.photo_sample_policy and (not args.photo_checkpoints or args.collection_source!='learner'):
+        parser.error('Photo policy sampling is limited to learner collection')
+    if args.photo_checkpoints and not args.fixed_photo_camera:
+        parser.error('Photo campaign requires --fixed-photo-camera')
+    if args.fixed_photo_camera and (args.aerial_camera or args.goal_view_count!=1):
+        parser.error('Fixed camera campaign requires one goal view and no camera joint')
+    if args.fixed_photo_camera and args.controller_checkpoints:
+        parser.error('Temporal campaign cannot invoke the historical recurrent controller')
     if args.photo_checkpoints and (args.controller_checkpoints or not args.map_prior):
         parser.error('Photo runtime requires its map and cannot share a legacy controller')
     if not 0 <= args.bootstrap_hold_seconds <= 30:
@@ -68,7 +79,7 @@ def main():
     label = next(row for row in json.loads(args.evaluator_labels.read_text())['episodes']
                  if row['episode_id'] == args.episode_id)
     field = PrivilegedObstacleField.load(args.obstacle_field)
-    if args.aerial_camera:
+    if args.aerial_camera or args.fixed_photo_camera:
         import sys
         sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
         from research.map_navigation.aerial import direction_pitch,phase_for
@@ -118,6 +129,7 @@ def main():
     broker_closed=False
     result['collection_source']=args.collection_source
     result['camera_profile']='pitch-rgb/v1' if args.aerial_camera else 'fixed'
+    if args.fixed_photo_camera:result['camera_profile']='fixed-forward-monocular/v1'
     result['route_advantage']=label.get('route_advantage')
     result['route_alternatives']=label.get('route_alternatives',[])
     result['controller_kind']='photo_map' if args.photo_checkpoints else 'learned_mode_1' if args.controller_checkpoints else 'privileged_shortest_path_expert'
@@ -200,7 +212,7 @@ def main():
             sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
             from research.map_navigation.deployment import PhotoControllerProcess
             controller=PhotoControllerProcess(broker.socket_path,args.episode_id,args.photo_checkpoints,
-                args.map_prior,episode/'photo-controller',args.photo_variant)
+                args.map_prior,episode/'photo-controller',args.photo_variant,args.photo_sample_policy,args.photo_initial_subgoal)
             controller.ready()
             result['controller_checkpoint_sha256']=controller.identity
         elif args.controller_checkpoints:
@@ -268,13 +280,13 @@ def main():
                     target_index += 1; target = path[target_index]; delta=target-position; horizontal=float(np.linalg.norm(delta[:2]))
                 stop_candidate = bool(stopped or (target_index==len(path)-1 and horizontal<1 and abs(delta[2])<.5))
                 final_yaw_error=0.
-                if args.aerial_camera and stop_candidate and not stopped:
+                if (args.aerial_camera or args.fixed_photo_camera) and stop_candidate and not stopped:
                     yaw=airsim.to_eularian_angles(k.orientation)[2]
                     desired=math.radians(float(label.get('goal_yaw_degrees',0.)))
                     final_yaw_error=math.atan2(math.sin(desired-yaw),math.cos(desired-yaw))
                 if stop_candidate:
                     command = [0,0,0,0]
-                    if args.aerial_camera and abs(final_yaw_error)>math.radians(5):
+                    if (args.aerial_camera or args.fixed_photo_camera) and abs(final_yaw_error)>math.radians(5):
                         command[3]=float(np.clip(math.degrees(final_yaw_error)*1.5,-45,45));stop_candidate=False
                 else:
                     yaw = airsim.to_eularian_angles(k.orientation)[2]
@@ -288,7 +300,7 @@ def main():
                 if (state.timestamp-first.timestamp)/1e9 < args.bootstrap_hold_seconds:
                     command=[0.,0.,0.,0.];stop_candidate=False
                 pitch=None
-                if args.aerial_camera:
+                if args.aerial_camera or args.fixed_photo_camera:
                     pitch=direction_pitch(command[:3]) if np.linalg.norm(command[:3])>.01 else 0.
                     elapsed=(state.timestamp-first.timestamp)/1e9
                     row['flight_phase']=phase_for(command,'settle' if stop_candidate else 'transit')
@@ -303,6 +315,32 @@ def main():
                         blocked=field.swept_collision(position,position+displacement)
                         row['privileged_probe_veto']=bool(blocked)
                         if blocked:command=[0.,0.,0.,0.]
+                    if args.fixed_photo_camera:
+                        pitch=None
+                        if not stop_candidate and abs(command[3])>22.5:
+                            command[:3]=[0.,0.,0.]
+                        # Forward-camera demonstrations exclude blind vertical
+                        # ascent: gain height only while looking along motion.
+                        if abs(command[2])>0:
+                            command[0]=max(command[0],2*abs(command[2]))
+                            command[1]=0.
+                        row['observable_execution_intention']=dict(
+                            intention='hold' if stop_candidate else 'inspect',
+                            altitude='gain' if command[2]<-.1 else 'lose' if command[2]>.1 else 'maintain')
+                        row['proposed_command']=list(command)
+                        from dataclasses import asdict
+                        from research.map_navigation.contracts import Subgoal,SpatialSnapshot
+                        now=metadata['sim_ns']/1e9
+                        row['subgoal']=asdict(Subgoal(**row['observable_execution_intention'],confidence=1.,
+                            source_observation=last_frame,source_s=now,expires_s=now+5))
+                        row['spatial_snapshot']=asdict(SpatialSnapshot(observed_s=now))
+                        # A label-side final veto cannot certify unseen ascent;
+                        # it only excludes privileged geometry collisions from
+                        # expert demonstrations of visible forward manoeuvres.
+                        yaw=airsim.to_eularian_angles(k.orientation)[2];c,s=math.cos(yaw),math.sin(yaw)
+                        delta_world=np.array([c*command[0]-s*command[1],s*command[0]+c*command[1],command[2]])*2
+                        if field.swept_collision(position,position+delta_world):command=[0.,0.,0.,0.]
+                        row['safety_modified_command']=list(command)
                 try:
                     channel.command(last_frame,command,stop=stop_candidate,camera_pitch_deg=pitch)
                     if stop_candidate:

@@ -9,6 +9,9 @@ from .models import PhotoNavigationModel
 
 
 def objective(model,items,stage,device,horizon_limit=20):
+    if stage not in ('localization','goal'):
+        from .learning import objective as temporal_objective
+        return temporal_objective(model,items,stage,device,horizon_limit)
     current=torch.stack([r['current'] for r in items]).to(device)
     z=model.encode(current,[r['camera_pitch_deg'] for r in items])
     labels=[r['labels'] for r in items]
@@ -31,51 +34,26 @@ def objective(model,items,stage,device,horizon_limit=20):
         loss+=F.binary_cross_entropy_with_logits(registration['match_logit'],usable.float())
         loss+=F.binary_cross_entropy_with_logits(bad['match_logit'],torch.zeros(len(items),device=device))
         return loss
-    goals=current.new_zeros(len(items),4,3,480,640)
-    valid=torch.zeros(len(items),4,dtype=torch.bool,device=device)
-    for i,row in enumerate(items):
-        count=len(row['goals'])
-        if model.training:count=1 if random.random()<.5 else random.randint(1,count)
-        indices=random.sample(range(len(row['goals'])),count) if model.training else list(range(count))
-        goals[i,:count]=row['goals'][indices].to(device);valid[i,:count]=True
-    goal_tokens=model.encode(goals.flatten(0,1),[0.]*(len(items)*4)).reshape(len(items),4,300,256)
-    evidence=model.goal_evidence(z,goal_tokens,valid)
-    if stage=='goal':
-        return F.binary_cross_entropy_with_logits(evidence['match_logit'],target('near_goal'))+F.binary_cross_entropy_with_logits(evidence['arrival_logit'],target('arrival'))
-    if stage!='world':raise ValueError('Planner-first training has no learned actor stage')
-    maps=model.encode(torch.stack([r['tile'] for r in items]).to(device))
-    horizon=min(horizon_limit,max(len(r['actions']) for r in items));batch=len(items)
-    actions=z.new_zeros(batch,horizon,4,5);teacher=z.new_zeros(batch,horizon,64,1024)
-    positions=z.new_zeros(batch,horizon,3);goals_label=z.new_zeros(batch,horizon);collision=z.new_zeros(batch,horizon)
-    mask=torch.zeros(batch,horizon,dtype=torch.bool,device=device);visual_mask=mask.clone()
-    memory=[]
-    for i,row in enumerate(items):
-        n=min(horizon,len(row['actions']));actions[i,:n]=row['actions'][:n].to(device);mask[i,:n]=True
-        teacher[i,:n]=row['teacher'][:n].to(device);visual_mask[i,:n]=row['teacher_valid'][:n].to(device)
-        positions[i,:n]=z.new_tensor(row['labels']['future_position'][:n])
-        goals_label[i,:n]=z.new_tensor(row['labels']['future_goal'][:n])
-        collision[i,:n]=z.new_tensor(row['labels']['future_collision'][:n])
-        with torch.no_grad():
-            if row['history_rgb']:
-                features=model.encode(torch.stack(row['history_rgb']).to(device),row['history_pitch']).flatten(0,1)
-                memory.append(F.adaptive_avg_pool1d(features.T[None],64).transpose(1,2)[0])
-            else:memory.append(z.new_zeros(64,256))
-    predicted=model.future(z,maps,goal_tokens,actions,goal_valid=valid,memory=torch.stack(memory),
-                           runtime_state=z.new_tensor([r['runtime_state'] for r in items]))
-    def masked(value,which):return (value*which).sum()/which.sum().clamp_min(1)
-    visual=F.mse_loss(F.layer_norm(predicted['visual'],(1024,)),F.layer_norm(teacher,(1024,)),reduction='none').mean((-1,-2))
-    return (masked(visual,visual_mask&mask)+.1*masked(F.smooth_l1_loss(predicted['state'][...,:3],positions,reduction='none').mean(-1),mask)+
-            masked(F.binary_cross_entropy_with_logits(predicted['goal'],goals_label,reduction='none'),mask)+
-            masked(F.binary_cross_entropy_with_logits(predicted['collision'],collision,reduction='none'),mask))
-
+    goals=torch.stack([row['goals'][0] for row in items]).to(device)
+    goal_tokens=model.encode(goals)[:,None]
+    evidence=model.goal_evidence(z,goal_tokens)
+    return F.binary_cross_entropy_with_logits(evidence['match_logit'],target('near_goal'))+F.binary_cross_entropy_with_logits(evidence['arrival_logit'],target('arrival'))
 
 def train(dataset,stage,backbone,output,window,updates=None,resume=None,initialize=None,teacher_root=None,seed=0,fine_tune=False):
     if resume and initialize:raise ValueError('Choose resume OR initialize from a preceding stage')
     if (Path(output)/'latest.pt').exists() and not resume:
         raise ValueError('Checkpoint exists; explicitly resume or choose a new output directory')
-    cfg=config()['training'];updates=updates or (cfg['fine_tune_updates'] if fine_tune else cfg['updates_per_stage'])
+    if stage in ('configurator','preferences','ppo'):
+        from .staged import train_external
+        return train_external(dataset,stage,backbone,output,window,updates,resume,initialize,seed)
+    cfg=config()['training']
+    ceiling=cfg['budgets']['world_updates'] if stage=='world' else cfg['budgets']['imitation_updates'] if stage in ('policy','dagger') else cfg['updates_per_stage']
+    # Leave room inside the full-pipeline ceilings for recovery and branch
+    # fine tuning; a default initial stage must not exhaust the entire budget.
+    allocation={'policy':150000,'dagger':50000,'world':250000}.get(stage,ceiling)
+    updates=updates or (cfg['fine_tune_updates'] if fine_tune else min(allocation,ceiling))
     if fine_tune and (stage!='world' or not (initialize or resume)):raise ValueError('Fine tuning requires an initialized world stage')
-    if updates>(cfg['fine_tune_updates'] if fine_tune else cfg['updates_per_stage']):raise ValueError('Explicit campaign revision required to extend the budget')
+    if updates>ceiling:raise ValueError('Explicit campaign revision required to extend the budget')
     seed_all(seed);reserve_memory()
     training=Dataset(dataset,stage,'train',teacher_root);validation=Dataset(dataset,stage,'validation',teacher_root)
     if fine_tune and {training.spec['episodes'][w['episode']]['collection_source']=='learner' for w in training.windows}!={False,True}:raise ValueError('Fine tuning requires both original and learner-round windows')
@@ -87,12 +65,16 @@ def train(dataset,stage,backbone,output,window,updates=None,resume=None,initiali
         saved=torch.load(resume or initialize,map_location='cpu',weights_only=True)
         if saved['schema']!=SCHEMA or saved['backbone_sha256']!=source_identity:raise ValueError('Incompatible checkpoint')
         model.load_state_dict(saved['model'],strict=True);trained=list(saved['trained_stages'])
-    dependencies={'localization':set(),'goal':{'localization'},'world':{'localization','goal'}}
+    budget_key='world_updates' if stage=='world' else 'imitation_updates' if stage in ('policy','dagger') else stage+'_updates'
+    usage=dict(saved.get('budget_usage',{})) if saved else {}
+    base_used=usage.get(budget_key,0)-(saved['updates'] if resume else 0)
+    if base_used+updates>ceiling:raise ValueError('Cumulative stage budget would be exceeded; choose a remaining-budget update count')
+    dependencies={'localization':set(),'goal':{'localization'},'odometry':{'localization','goal'},'policy':{'localization','goal','odometry'},'dagger':{'policy','world'},'world':{'localization','goal','policy'}}
     if not dependencies[stage]<=set(trained):raise ValueError('Missing prior trained stages: '+str(dependencies[stage]-set(trained)))
     # Later stages cannot silently invalidate localization by modifying its encoder.
-    trainable={'localization':('encoder.','camera_projection.','map_projection.','registration.','camera_embedding.'),
+    trainable={'localization':('encoder.','camera_projection.','map_projection.','registration.'),
                'goal':('goal.','arrival.'),
-               'world':('world.','map_attention.','teacher_projection.')}[stage]
+               'world':('world.',),'policy':('policy.','subgoal_encoder.','reference_geometry.'),'dagger':('policy.',),'odometry':('motion.',)}[stage]
     for name,param in model.named_parameters():param.requires_grad_(name.startswith(trainable))
     optimizer=torch.optim.AdamW([p for p in model.parameters() if p.requires_grad],lr=cfg['learning_rate'])
     if resume:
@@ -108,13 +90,16 @@ def train(dataset,stage,backbone,output,window,updates=None,resume=None,initiali
     if resume:best_validation=saved.get("best_validation",float("inf"))
     def checkpoint(update,is_best=False):
         stages=sorted(set(trained)|({stage} if update>=updates else set()))
-        value=dict(teacher_sha256=training.teacher_identity,calibration=saved.get('calibration') if saved and stage=='world' else None,schema=SCHEMA,model=model.state_dict(),optimizer=optimizer.state_dict(),stage=stage,updates=update,
+        value=dict(teacher_sha256=training.teacher_identity,calibration=saved.get('calibration') if saved and stage not in ('localization','goal') else None,schema=SCHEMA,model=model.state_dict(),optimizer=optimizer.state_dict(),stage=stage,updates=update,
             trained_stages=stages,seed=seed,dataset_sha256=data_identity,backbone_sha256=source_identity,
             python_rng=random.getstate(),torch_rng=torch.get_rng_state(),cuda_rng=torch.cuda.get_rng_state_all(),
             validation_loss=last_validation,accepted=False,target_updates=updates,fine_tune=fine_tune,best_validation=best_validation)
+        value['budget_usage']=dict(usage,**{budget_key:base_used+update})
         temporary=output/'latest.pending';torch.save(value,temporary);temporary.replace(output/'latest.pt')
         if is_best:
             temporary=output/'best.pending';torch.save(value,temporary);temporary.replace(output/'best.pt')
+        if update in (1000,10000,50000,100000,200000,300000):
+            torch.save(value,output/f'checkpoint-{stage}-{update:06d}.pt')
         if update>=updates and (output/'best.pt').exists():
             best=torch.load(output/'best.pt',map_location='cpu',weights_only=True)
             best['trained_stages']=stages;best['stage_budget_completed']=True
@@ -129,7 +114,11 @@ def train(dataset,stage,backbone,output,window,updates=None,resume=None,initiali
             indices=[training.sample_index(random,learner_mix=fine_tune) for _ in range(cfg['batch_size'])]
             horizon=20 if fine_tune or (update+1)/updates>.5 else 5 if (update+1)/updates<=.2 else 10
             optimizer.zero_grad(set_to_none=True)
-            loss=objective(model,[training.get(i) for i in indices],stage,'cuda',horizon)
+            items=[training.get(i) for i in indices]
+            loss=objective(model,items,stage,'cuda',horizon)
+            if stage=='world' and fine_tune:
+                from .learning import objective as temporal_objective
+                loss=loss+temporal_objective(model,items,stage,'cuda',horizon,actor_rollouts=True)
             if not torch.isfinite(loss):raise RuntimeError('Nonfinite loss; preserve previous checkpoint')
             loss.backward();torch.nn.utils.clip_grad_norm_([p for p in model.parameters() if p.requires_grad],1.)
             optimizer.step()

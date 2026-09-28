@@ -158,12 +158,12 @@ def manifests(registry_path,output,window=None):
                 horizontal_separation_m=float(np.linalg.norm(goal_xy-start_xy)),
                 endpoint_kinds=['ground' if accepted%2==0 else 'roof','ground' if (accepted//2)%2==0 else 'roof'],
                 route_kind=best.family,route_advantage=category,route_alternatives=[asdict(r) for r in routes],
-                collection_source=source,flight_envelope=prior.flight_envelope,camera_profile='pitch-rgb/v1'))
+                collection_source=source,flight_envelope=prior.flight_envelope,camera_profile='fixed-forward-monocular/v1'))
             accepted+=1;checkpoint()
         audit.append(dict(scene_id=scene['scene_id'],accepted=accepted,requested=count,attempts=attempts,rejected_categories=rejects))
         write(output/'generation-audit.json',audit)
         if accepted<count:raise RuntimeError('Missing route-category coverage; do not substitute easier missions: '+scene['scene_id'])
     checkpoint()
     for split in ('train','validation','test'):
-        write(output/(split+'.json'),dict(schema='photo-map-missions/v2',registry_sha256=digest(registry_path),episodes=[r for r in public if r['split']==split]))
-        write(output/'evaluator_labels'/(split+'.json'),dict(schema='privileged-photo-map-labels/v2',episodes=[r for r in private if r['split']==split]))
+        write(output/(split+'.json'),dict(schema='photo-map-missions/v4',registry_sha256=digest(registry_path),episodes=[r for r in public if r['split']==split]))
+        write(output/'evaluator_labels'/(split+'.json'),dict(schema='privileged-photo-map-labels/v4',episodes=[r for r in private if r['split']==split]))

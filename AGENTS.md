@@ -1,5 +1,14 @@
 # CURI-UAV research invariants
 
+## Two-mode temporal-window revision - September 28, 2026
+
+The latest user plan supersedes both GRU restoration and planner-first runtime. Active code is `research/map_navigation`: a four-frame MobileNetV3 temporal-attention actor owns every vehicle command; Qwen proposes subgoals and the six-layer world model rolls the same frozen actor forward. No GRU, separate planning critic, geometric runtime route follower, action optimization, or command arbitration. Photo-SLAM is pinned to f8bfb2f0809c003ccc3fd577dc43c576fcafa4ac, with a live native bridge, bounded Gaussian updates and asynchronous RGB-derived metric depth. One fixed forward camera and one goal photo. Preserve archived source and evidence. Local source work only: no Spark, tests, imports/compilation checks, builds, training, replay, acquisition, or simulator execution. Do not delegate. Performance and navigation acceptance remain pending.
+
+
+## Restored learned architecture - September 28, 2026
+
+The user superseded the planner-first revision: restore the default `master` architecture (b192a5c), with learned recurrent Mode 1, predictive Mode 2, primitive critic, asynchronous Qwen and Splat-SLAM memory. Supply one goal photo and a coarse map as learned context; do not replace the actor with runtime geometric waypoints. Use one fixed forward monocular camera, four vehicle action channels, and altitude-aware training. Restore staged imitation, world/critic, Qwen, DAgger and constrained PPO. Implement locally only: no tests, compilation/import checks, training, replay, simulator flights or Spark access in this pass. Do not delegate. Preserve original and planner-first history/evidence.
+
 ## Planner-first aerial revision ? September 28, 2026
 
 The user explicitly requested local implementation only, no Spark access and no tests. Do not connect remotely, run tests, training, replay, acquisition or simulator flights during this pass. Source inspection is allowed. Implement the approved climb/search/cruise/descent plan in `research/map_navigation/IMPLEMENTATION_PLAN.md`: one tiltable RGB camera with recorded relative transforms, qualified flight envelope, privileged motion collection separated from observation-only exploration, geometric fast control and predictive slow candidate ranking. Learned actor, Qwen and PPO are deferred. Preserve the previous campaign and evidence. Every runtime/training claim remains unexecuted until separately authorized execution. Do not delegate to sub-agents without an explicit request.

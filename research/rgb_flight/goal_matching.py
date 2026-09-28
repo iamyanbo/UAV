@@ -49,8 +49,9 @@ class CrossViewGoalMatcher(nn.Module):
 
     def forward(self, current_tokens, goal_tokens, return_attention=False, goal_valid=None):
         if (current_tokens.ndim != 3 or goal_tokens.ndim != 4 or current_tokens.shape[-1] != 256
-                or not 1 <= goal_tokens.shape[1] <= 4 or goal_tokens.shape[2:] != current_tokens.shape[1:]):
-            raise ValueError('Expected one to four same-resolution goal grids')
+                or not 1 <= goal_tokens.shape[1] <= 4 or goal_tokens.shape[-1] != 256
+                or goal_tokens.shape[2] < 1 or current_tokens.shape[1] < 1):
+            raise ValueError('Expected current spatial tokens and one to four full goal grids')
         batch = current_tokens.shape[0]
         views = goal_tokens.shape[1]
         goal = self.goal_norm(goal_tokens+self.view_embedding[:views]).reshape(batch, -1, 256)

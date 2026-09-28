@@ -1,4 +1,4 @@
-"""Route alternatives, with identical costs in offline and runtime planning."""
+"""Privileged offline reference routes. Never imported by vehicle inference."""
 import heapq
 import math
 import time
@@ -10,6 +10,7 @@ from .records import RoutePlan
 class Router:
     def __init__(self, prior, cfg, field=None):
         self.map, self.cfg, self.field = prior, cfg, field
+        if field is None:raise ValueError('Offline route labels require privileged surveyed geometry')
         self.obstacles = [];self.deadline=None;self.budget_exhausted=False
         if prior.flight_envelope is None:
             raise ValueError('Qualify the map flight envelope before aerial routing')
@@ -113,9 +114,28 @@ class Router:
                 paths.append(('detour',simple))
         except ValueError:
             pass
+        visible=[]
+        for family,points in paths:
+            try:visible.append((family,self.forward_ramps(points)))
+            except ValueError:continue
         return tuple(RoutePlan(tuple(tuple(float(v) for v in p) for p in points), version, now, target,
                                path_time(points,self.cfg,yaw), family)
-                     for family, points in sorted(paths,key=lambda pair:path_time(pair[1],self.cfg,yaw)))
+                     for family, points in sorted(visible,key=lambda pair:path_time(pair[1],self.cfg,yaw)))
+
+    def forward_ramps(self, points):
+        """Replace steep reference edges with surveyed, forward-visible ramps."""
+        result=[np.asarray(points[0])]
+        for end in points[1:]:
+            start=result[-1];end=np.asarray(end);delta=end-start
+            if abs(delta[2])<=.5*np.linalg.norm(delta[:2])+.01:
+                result.append(end);continue
+            radius=max(8.,2*abs(delta[2]));mid=(start+end)/2
+            candidates=[mid+np.array([radius*math.cos(a),radius*math.sin(a),0.]) for a in np.linspace(0,2*math.pi,8,endpoint=False)]
+            good=[p for p in candidates if self.free(start,p) and self.free(p,end) and
+                  abs(delta[2])/2<=.5*min(np.linalg.norm(p[:2]-start[:2]),np.linalg.norm(end[:2]-p[:2]))]
+            if not good:raise ValueError('No surveyed fixed-camera forward climb/descent connection')
+            result.extend((min(good,key=lambda p:self.duration(start,p)+self.duration(p,end)),end))
+        return result
 
     def route(self, start, goal, version, now, target):
         routes = self.alternatives(start,goal,version,now,target)

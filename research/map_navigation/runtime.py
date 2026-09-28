@@ -1,66 +1,25 @@
-"""Isolated inference entry point. No simulator imports or evaluator files.
-
-One perception/planning job is in flight. The main loop owns dispatch and
-brakes on stale results; a slow model cannot pause the simulator clock.
-"""
+"""Mode 1 owns vehicle commands; Mode 2 only publishes expiring subgoals."""
 import argparse
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict
-import math
-from pathlib import Path
-import time
+from dataclasses import replace,asdict
 import json
+from pathlib import Path
+import threading
+import time
 import numpy as np
 import torch
 from PIL import Image
 from wire import BrokerClient
-from metric_depth import MetricDepth
-from .common import config, read, write, digest, contained
-from .maps import MapPrior
+from .common import config,read,write,digest,contained
 from .models import load_model
-from .records import Hypothesis, GoalBelief
-from .navigation import BeliefFilter, Mission
-
-
-class VisualMotion:
-    """RGB feature tracking with RGB-predicted depth; no commanded-motion scale."""
-    def __init__(self):
-        import cv2
-        self.cv=cv2;self.orb=cv2.ORB_create(nfeatures=1800);self.previous=None
-
-    def update(self,rgb,depth,calibration,now):
-        cv=self.cv
-        gray=cv.cvtColor(rgb,cv.COLOR_RGB2GRAY)
-        keys,features=self.orb.detectAndCompute(gray,None)
-        result=None
-        if self.previous is not None and features is not None:
-            old_keys,old_features,old_depth,old_time,old_calibration=self.previous
-            if old_features is not None and 0<now-old_time<1:
-                matches=cv.BFMatcher(cv.NORM_HAMMING).knnMatch(old_features,features,k=2)
-                pairs=[pair[0] for pair in matches if len(pair)==2 and pair[0].distance<.7*pair[1].distance]
-                points=[];pixels=[]
-                for m in pairs:
-                    u,v=old_keys[m.queryIdx].pt;d=float(old_depth[int(v),int(u)])
-                    if .2<d<80:
-                        points.append([(u-old_calibration['cx'])*d/old_calibration['fx'],(v-old_calibration['cy'])*d/old_calibration['fy'],d])
-                        pixels.append(keys[m.trainIdx].pt)
-                if len(points)>=16:
-                    k=np.array([[calibration['fx'],0,calibration['cx']],[0,calibration['fy'],calibration['cy']],[0,0,1]],float)
-                    ok,rvec,tvec,inliers=cv.solvePnPRansac(np.asarray(points,float),np.asarray(pixels,float),k,None,reprojectionError=3.,iterationsCount=100)
-                    if ok and inliers is not None and len(inliers)>=12:
-                        rotation=cv.Rodrigues(rvec)[0].T
-                        translation=-rotation@tvec[:,0]
-                        extrinsic=np.asarray(calibration['camera_to_body_rotation']).reshape(3,3)
-                        old_extrinsic=np.asarray(old_calibration['camera_to_body_rotation']).reshape(3,3)
-                        body_rotation=old_extrinsic@rotation@extrinsic.T
-                        lever=np.asarray(calibration['camera_origin_body_m'])
-                        old_lever=np.asarray(old_calibration['camera_origin_body_m'])
-                        delta=old_extrinsic@translation+old_lever-body_rotation@lever
-                        result=dict(delta=np.r_[delta,math.atan2(body_rotation[1,0],body_rotation[0,0])],
-                                    speed=float(np.linalg.norm(delta)/(now-old_time)),inliers=len(inliers),delta_seconds=now-old_time)
-        self.previous=(keys,features,depth,now,dict(calibration))
-        return result
+from .maps import MapPrior
+from .contracts import ObservationContext,context_record
+from .temporal import pool,embed_subgoal
+from .compute import ComputeLane
+from .perception import BackgroundPerception
+from .subgoals import Mode2
+from .safety import Safety
 
 
 def image_tensor(rgb,device):
@@ -68,171 +27,126 @@ def image_tensor(rgb,device):
 
 
 class Navigator:
-    def __init__(self,package,map_folder,goal_rgb,variant):
-        from .compute import ComputeLane
-        self.cfg=config();self.nav=self.cfg['navigation'];self.variant=variant
-        if variant not in self.cfg['variants']:raise ValueError('Unknown aerial comparison variant')
-        self.package=Path(package);spec=read(self.package/'package.json')
-        if spec['schema']!='photo-map-package/v2':raise ValueError('New camera-aware package required')
-        if spec.get('learned_local_policy'):raise ValueError('Learned actor is deferred')
-        if set(spec['files'])!={'model.pt','vision.json'}:raise ValueError('Unexpected inference assets')
+    def __init__(self,package,map_folder,goal_rgb,variant,sample_policy=False,initial_subgoal=None):
+        if len(goal_rgb)!=1:raise ValueError('Exactly one goal photograph required')
+        if variant not in config()['variants']:raise ValueError('Unknown temporal variant')
+        self.device='cuda';self.variant=variant;self.package=Path(package);self.sample_policy=sample_policy
+        self.behavior_identity=digest(self.package/'model.pt')
+        self.initial_subgoal=initial_subgoal
+        spec=read(self.package/'package.json')
+        if spec['schema']!='photo-map-package/v4':raise ValueError('Temporal-window package required')
+        required={'model.pt','vision.json','photo-slam.json'}
+        if not required<=set(spec['files']) or set(spec['files'])-required-{'qwen.pt'}:raise ValueError('Unexpected assets')
         for name,sha in spec['files'].items():
-            if digest(contained(self.package,name))!=sha:raise ValueError('Changed package')
-        self.device='cuda';torch.set_num_threads(2)
+            if digest(contained(self.package,name))!=sha:raise ValueError('Changed inference package')
         self.model,self.saved=load_model('/models/mobilenet-v3-large-imagenet1k-v2.pt',self.package/'model.pt')
         if digest('/models/mobilenet-v3-large-imagenet1k-v2.pt')!=self.saved['backbone_sha256']:raise ValueError('Backbone mismatch')
-        required={'localization','goal'}|({'world'} if variant=='predictive_candidates' else set())
-        if not required<=set(self.saved['trained_stages']):raise ValueError('Untrained runtime stages')
-        self.nav['goal_threshold']=float(self.saved['calibration']['threshold'])
-        self.model.eval().requires_grad_(False);self.lane=ComputeLane()
-        self.prior=MapPrior(map_folder);self.filter=BeliefFilter(self.nav);self.mission=Mission(self.prior,self.nav)
-        self.motion=VisualMotion();self.depth=MetricDepth(self.package/'vision.json')
+        stages={'localization','goal','policy'}|({'world'} if variant=='mode1_vlm_world' else set())
+        if not stages<=set(self.saved['trained_stages']):raise ValueError('Untrained runtime stages')
+        self.calibration=self.saved['calibration']
+        if variant=='mode1_vlm_world' and 'score_scales' not in self.calibration:raise ValueError('Validate world score scales first')
+        self.model.eval().requires_grad_(False);torch.set_num_threads(2)
+        self.lane=ComputeLane();self.safety=Safety();self.prior=MapPrior(map_folder)
+        self.reference_features={};self.feature_cache={};self.history=deque(maxlen=4)
+        self.lock=threading.Lock();self.context=None;self.current_references={}
+        self.goal_image=Image.fromarray(goal_rgb[0]);self.map_image=Image.fromarray(self.prior.rgb).resize((640,480))
         with torch.inference_mode():
-            self.goals=self.model.encode(torch.stack([image_tensor(x,self.device) for x in goal_rgb]),[0.]*len(goal_rgb))[None]
-            self.map_tokens=torch.cat([self.model.encode(torch.stack([image_tensor(self.prior.tile(j),self.device)
-                for j in range(i,min(i+4,len(self.prior.tiles)))])) for i in range(0,len(self.prior.tiles),4)])
-            self.map_descriptors=self.model.descriptors(self.map_tokens,True)
-            self.goal_candidates=self.locate(self.goals.flatten(0,1),average=True)
-        self.history=deque(maxlen=32);self.last_plan_s=-math.inf;self.last_obstacles_s=-math.inf
-        self.planning_pool=ThreadPoolExecutor(max_workers=1);self.planning_pending=None;self.active_plan=None
-        self.prediction_receipt=None
+            self.goals=self.model.encode(image_tensor(goal_rgb[0],self.device)[None])[None]
+            for i in range(len(self.prior.tiles)):
+                tokens=self.model.encode(image_tensor(self.prior.tile(i),self.device)[None])
+                self.reference_features[('map',f'map-{i}')]=tokens.mean(1)
+            descriptors=torch.cat([self.model.descriptors(value[:,None],True) for value in self.reference_features.values()])
+            indices=(self.model.descriptors(self.goals[:,0])@descriptors.T)[0].topk(min(8,len(descriptors))).indices.tolist()
+            self.map_references=tuple(f'map-{i}' for i in indices)
+            self.map_hypotheses=tuple((f'map-{i}',float(self.prior.height(self.prior.tiles[i])),2.) for i in indices)
+        self.background=BackgroundPerception(read(self.package/'photo-slam.json'),self.package/'vision.json',self.lane)
+        self.mode2=Mode2(self.model,self.lane,variant,self.latest,self.calibration,
+                         self.package/'qwen.pt' if 'qwen.pt' in spec['files'] else None)
+        self.arrival_since=None;self.arrival_frames=0;self.last_match=0.;self.no_progress=0
 
-    def close(self):
-        self.planning_pool.shutdown(wait=True,cancel_futures=True)
-        self.mission.close()
-
-    @torch.inference_mode()
-    def predict(self,tokens,candidates,maps,memory,state,belief,now,target_id,obstacle_version):
-        started=time.monotonic();scores=[];components=[]
-        try:
-            for candidate in candidates:
-                if time.monotonic()-started>1.:
-                    return dict(discarded='prediction_deadline',observed_s=now)
-                with self.lane.slow():
-                    actions=tokens.new_tensor(candidate.actions)[None]
-                predicted=self.model.future(tokens,maps,self.goals,actions,memory=memory,runtime_state=state,
-                                             compute_guard=self.lane.slow)
-                with self.lane.slow():
-                    collision=float(predicted['collision'].sigmoid().amax())
-                    goal=float(predicted['goal'][0,-1].sigmoid())
-                    error=float((predicted['state'][0,-1,:3]-tokens.new_tensor(candidate.terminal_body)).norm())
-                remaining=candidate.remaining_seconds+error/self.nav['maximum_speed_mps']
-                score=goal-2*collision-.05*remaining
-                scores.append(score);components.append(dict(candidate_id=candidate.identity,goal=goal,
-                    collision_evidence=collision,remaining_seconds=remaining,score=score))
-        except RuntimeError as exc:
-            if str(exc)!='prediction_slice_budget_exceeded':raise
-            return dict(discarded=str(exc),observed_s=now)
-        chosen=candidates[int(np.argmax(scores))]
-        return dict(actions=chosen.actions.tolist(),candidate_id=chosen.identity,route_family=chosen.route_family,
-            components=components,observed_s=now,origin=belief.best.position,alignment=belief.alignment_version,
-            target_id=target_id,obstacle_version=obstacle_version,work_s=time.monotonic()-started)
-
-    def locate(self,tokens,average=False):
-        from .localization import locate
-        return locate(self.model,tokens,self.prior,self.map_tokens,self.map_descriptors,average)
-
-    def clearance(self,depth,calibration,command,speed,age):
-        velocity=np.asarray(command[:3]);proposed=float(np.linalg.norm(velocity))
-        if proposed<1e-5:return True,0.
-        braking=max(speed,proposed);distance=braking*age+braking**2/(2*self.nav['braking_mps2'])+.75
-        rotation=np.asarray(calibration['camera_to_body_rotation']).reshape(3,3)
-        origin=np.asarray(calibration['camera_origin_body_m'])
-        points=np.linspace(0,distance,max(3,int(distance/.25)))[:,None]*velocity[None]/proposed
-        points=(points-origin)@rotation
-        for p in points:
-            if np.linalg.norm(p)<.8:continue
-            if p[2]<=0:return False,distance
-            u=int(calibration['fx']*p[0]/p[2]+calibration['cx']);v=int(calibration['fy']*p[1]/p[2]+calibration['cy'])
-            radius=int(max(calibration['fx'],calibration['fy'])*.9/p[2])+1
-            if not 0<=u<640 or not 0<=v<480:return False,distance
-            # Visible corridor only; this monocular veto is not a certified
-            # swept-volume guarantee for portions outside the camera frustum.
-            patch=depth[max(0,v-radius):min(480,v+radius+1),max(0,u-radius):min(640,u+radius+1)]
-            if not np.isfinite(patch).all() or np.any(patch<=0) or float(np.min(patch))*.7<=p[2]+.25:return False,distance
-        return True,distance
+    def latest(self):
+        with self.lock:return self.context,dict(self.current_references)
 
     @torch.inference_mode()
     def step(self,metadata,rgb_bytes,perception_only=False):
         from .aerial import camera_pitch,phase_for
-        from .candidates import generate,select_geometric
-        started=time.monotonic();now=metadata['sim_ns']/1e9
-        rgb=np.frombuffer(rgb_bytes,np.uint8).reshape(480,640,3).copy();cal=metadata['calibration'];pitch=camera_pitch(cal)
+        started=time.monotonic();now=metadata['sim_ns']/1e9;frame=metadata['frame_id']
+        if abs(camera_pitch(metadata['calibration']))>1:raise ValueError('Fixed forward camera required')
+        if self.history and (frame<=self.history[-1][0] or now<=self.history[-1][1]):raise ValueError('Observation order changed')
+        rgb=np.frombuffer(rgb_bytes,np.uint8).reshape(480,640,3).copy()
+        spatial,local=self.background.observe(metadata,rgb)
+        spatial=replace(spatial,map_references=self.map_references,map_hypotheses=self.map_hypotheses)
+        commands=[r for r in metadata.get('command_history',[]) if r['sim_ns']<=metadata['sim_ns']]
+        previous=commands[-1]['values'] if commands else [0.,0.,0.,0.]
         with self.lane.fast():
-            tokens=self.model.encode(image_tensor(rgb,self.device)[None],[pitch])
-            depth=self.depth(rgb,cal).numpy()
-            located=self.locate(tokens) if float(rgb.mean(-1).std())>=5 else ()
-            evidence=self.model.goal_evidence(tokens,self.goals)
-            match=float(evidence['match_logit'].sigmoid());arrival=float(evidence['arrival_logit'].sigmoid())
-        motion=self.motion.update(rgb,depth,cal,now)
-        belief=self.filter.update(located,now,None if motion is None else motion['delta'])
-        state=np.zeros(32,np.float32);state[6]=1;state[10]=1
-        state[18]=math.sin(math.radians(pitch));state[19]=math.cos(math.radians(pitch))
-        state[20]=float(cal.get('camera_settled',True));state[21]=float(belief.aligned)
-        state[22]=float(motion is not None)
-        if motion:
-            state[3:6]=motion['delta'][:3]/motion['delta_seconds'];state[23]=motion['delta'][3]/motion['delta_seconds']
-        if belief.best:state[16]=belief.best.sigma_m;state[14]=belief.best.probability
-        if perception_only:
-            return dict(frame_id=metadata['frame_id'],observed_s=now,predictor_state=state.tolist(),belief=asdict(belief),
-                        match=match,arrival=arrival,work_s=time.monotonic()-started,flight_phase='unlabelled')
-        if belief.aligned:
-            self.mission.observe(belief.best,cal,depth)
-            if motion and now-self.last_obstacles_s>=1:
-                ys,xs=np.mgrid[0:480:24,0:640:24];d=depth[::24,::24];good=np.isfinite(d)&(d>.2)&(d<30)
-                points=np.stack(((xs-cal['cx'])*d/cal['fx'],(ys-cal['cy'])*d/cal['fy'],d),-1)[good]
-                points=points@np.asarray(cal['camera_to_body_rotation']).reshape(3,3).T+np.asarray(cal['camera_origin_body_m'])
-                c,s=math.cos(belief.best.yaw),math.sin(belief.best.yaw);rotation=np.array([[c,-s,0],[s,c,0],[0,0,1]])
-                self.mission.add_obstacles(points@rotation.T+belief.best.position);self.last_obstacles_s=now
-        goal=GoalBelief(self.goal_candidates,not self.goal_candidates or self.goal_candidates[0].probability<.8,now)
-        speed=motion['speed'] if motion else math.inf
-        decision=self.mission.step(belief,goal,match,arrival,speed,now)
-        if self.planning_pending is not None and self.planning_pending.done():
-            result=self.planning_pending.result();self.planning_pending=None;self.prediction_receipt=result
-            if 'discarded' not in result:self.active_plan=result
-        if self.variant!='geometry' and belief.aligned and motion and decision['mode'] in ('search','approach'):
-            if now-self.last_plan_s>=1/self.nav['prediction_hz']:
-                candidates=generate(self.mission,belief,decision,pitch);self.last_plan_s=now
-                decision['candidate_ids']=[c.identity for c in candidates]
-                if candidates:
-                    chosen=select_geometric(candidates)
-                    geometric=dict(actions=chosen.actions.tolist(),candidate_id=chosen.identity,route_family=chosen.route_family,
-                        observed_s=now,origin=belief.best.position,alignment=belief.alignment_version,
-                        target_id=decision.get('target_id'),obstacle_version=self.mission.obstacle_version)
-                    self.active_plan=geometric
-                    if self.variant=='predictive_candidates' and self.planning_pending is None and self.lane.slow_admitted:
-                        memory=torch.cat([r['tokens'] for r in self.history],1) if self.history else None
-                        self.planning_pending=self.planning_pool.submit(self.predict,tokens,candidates,
-                            self.map_tokens[belief.best.tile_id:belief.best.tile_id+1],memory,
-                            tokens.new_tensor(state)[None],belief,now,decision.get('target_id'),self.mission.obstacle_version)
-            plan=self.active_plan
-            if (plan and 0<=now-plan['observed_s']<=1 and plan['alignment']==belief.alignment_version
-                and plan['target_id']==decision.get('target_id') and plan['obstacle_version']==self.mission.obstacle_version
-                and np.linalg.norm(np.asarray(plan['origin'])-belief.best.position)<=2):
-                slot=min(79,int((now-plan['observed_s'])/.05));action=np.asarray(plan['actions']).reshape(80,5)[slot]
-                decision['command']=action[:4].tolist();decision['camera_pitch_deg']=float(action[4])
-                decision['selected_candidate']=plan['candidate_id'];decision['route_family']=plan['route_family']
-                decision['prediction_used']='components' in plan
-                decision['prediction_age_s']=now-plan['observed_s']
-                if 'components' in plan:decision['prediction_components']=plan['components']
-        if not self.history or now-self.history[-1]['now']>=1:
-            self.history.append(dict(now=now,tokens=tokens.detach()))
-        command=np.asarray(decision['command'],float)
-        if command.shape!=(4,) or not np.isfinite(command).all():raise ValueError('Invalid planned command')
-        command[:2]*=min(1.,3./max(np.linalg.norm(command[:2]),1e-9));command[2]=np.clip(command[2],-1,1);command[3]=np.clip(command[3],-45,45)
-        requested_pitch=float(decision.get('camera_pitch_deg',pitch))
-        if not cal.get('camera_settled',True) or abs(requested_pitch-pitch)>2:command[:3]=0
-        allowed,stopping=self.clearance(depth,cal,command,speed if math.isfinite(speed) else 6.,time.monotonic()-metadata['received_monotonic'])
-        if not allowed:command[:]=0;decision['stop']=False
-        if motion is None and np.linalg.norm(command[:3])>.01:command[:3]=0;decision['stop']=False
-        decision['command']=command.tolist()
-        decision.update(observed_s=now,frame_id=metadata['frame_id'],source_wall=metadata['received_monotonic'],
-            match=match,arrival=arrival,belief=asdict(belief),braked=not allowed,stopping_distance_m=stopping,
-            work_s=time.monotonic()-started,speed_mps=speed if math.isfinite(speed) else None,
-            predictor_state=state.tolist(),flight_phase=phase_for(command,decision['mode']),
-            slow_admitted=self.lane.slow_admitted,maximum_slow_slice_s=self.lane.slowest_slice_s,
-            last_prediction_discard=(self.prediction_receipt or {}).get('discarded'))
-        return decision
+            current=self.model.encode(image_tensor(rgb,self.device)[None])
+            evidence=self.model.goal_evidence(current,self.goals)
+            features=pool(current);self.history.append((frame,now,features,tuple(previous)))
+            self.feature_cache[frame]=current.mean(1)
+            while len(self.feature_cache)>128:del self.feature_cache[next(iter(self.feature_cache))]
+            spatial=replace(spatial,keyframes=tuple(row for row in spatial.keyframes
+                if row[1] in self.feature_cache and row[0] in self.background.keyframes))
+            window=features.new_zeros(1,4,64,256);actions=features.new_zeros(1,4,4)
+            times=features.new_zeros(1,4);valid=torch.zeros(1,4,dtype=torch.bool,device=self.device)
+            for j,(_,stamp,feature,command) in enumerate(self.history,4-len(self.history)):
+                window[:,j]=feature;actions[:,j]=actions.new_tensor(command);times[:,j]=stamp-now;valid[:,j]=True
+            context=ObservationContext('observation-context/v1',tuple(r[0] for r in self.history),
+                tuple(r[1] for r in self.history),window,actions,valid,self.goals,evidence['goal_context'],
+                spatial,metadata['received_monotonic']).validate()
+            references=dict(self.reference_features)
+            for ident,source,_ in spatial.keyframes:
+                if source in self.feature_cache:references[('keyframe',ident)]=self.feature_cache[source]
+            for row in spatial.geometry:references[('geometry',row[0])]=current.mean(1)
+            with self.lock:self.context=context;self.current_references=references
+            if self.initial_subgoal is not None:
+                from .contracts import Subgoal
+                self.mode2.active=Subgoal.proposal(self.initial_subgoal,frame,now,spatial)
+                self.initial_subgoal=None
+            selected=self.mode2.active
+            embedding=embed_subgoal(self.model,selected,now,spatial,references,self.device)
+            proposal,stop_logit=self.model.policy(window,times,actions,valid,evidence['goal_context'],embedding)
+            sampled_latent=None;behavior_logprob=None
+            if self.sample_policy:
+                mean=torch.atanh((proposal/proposal.new_tensor([3,3,1,45])).clamp(-.999,.999))
+                distribution=torch.distributions.Normal(mean,.15)
+                latent=distribution.sample();behavior_logprob=float(distribution.log_prob(latent).sum())
+                sampled_latent=latent[0].tolist();proposal=latent.tanh()*proposal.new_tensor([3,3,1,45])
+                proposal[:,:2]/=(proposal[:,:2].norm(dim=-1,keepdim=True)/3).clamp_min(1)
+            proposed=proposal[0].cpu().numpy();stop_probability=float(stop_logit.sigmoid()[0])
+            match=float(evidence['match_logit'].sigmoid()[0]);arrival=float(evidence['arrival_logit'].sigmoid()[0])
+        queue_s=self.lane.last_fast_queue_s
+        fresh=(local is not None and 0<=now-local['observed_s']<=.25 and
+               0<=time.monotonic()-local['source_wall']<=.25)
+        speed=local['speed'] if local else None
+        allowed=False;distance=0.
+        if fresh:
+            allowed,distance=self.safety.clearance(local['depth'],local['calibration'],proposed,speed if speed is not None else 6.,max(0.,now-local['observed_s']))
+        command=proposed.copy() if allowed else np.zeros(4)
+        command[:2]*=min(1.,2.999/max(float(np.linalg.norm(command[:2])),1e-9))
+        agreement=(fresh and speed is not None and speed<.5 and
+                   min(match,arrival)>=self.calibration['threshold'] and stop_probability>=.5)
+        if agreement:
+            if self.arrival_since is None:self.arrival_since=now
+            self.arrival_frames+=1;command[:]=0
+        else:self.arrival_since=None;self.arrival_frames=0
+        stop=bool(agreement and self.arrival_frames>=5 and now-self.arrival_since>=1.)
+        self.no_progress=self.no_progress+1 if match<=self.last_match+.005 else 0;self.last_match=match
+        images=[Image.fromarray(rgb),self.goal_image,self.map_image]
+        images.extend(Image.fromarray(self.background.keyframes[row[0]]) for row in spatial.keyframes if row[0] in self.background.keyframes)
+        self.mode2.update(context,images,triggered=self.no_progress>=60 or (selected is not None and match>.95))
+        used=selected if selected and selected.valid(now,spatial) else None
+        return dict(frame_id=frame,observed_s=now,source_wall=metadata['received_monotonic'],
+            mode='settle' if agreement else 'actor',command=command.tolist(),proposed_command=proposed.tolist(),
+            stop=stop,stop_probability=stop_probability,braked=not allowed,match=match,arrival=arrival,
+            context=context_record(context,used),selected_subgoal=asdict(used) if used else None,
+            speed_mps=speed,flight_phase=phase_for(command),stopping_distance_m=distance,
+            work_s=time.monotonic()-started,queue_s=queue_s,slow=self.mode2.receipt,
+            perception_error=self.background.error,slow_admitted=self.lane.slow_admitted,
+            background_timing={k:local[k] for k in ('queue_s','work_s','tracking_s','depth_and_queue_s','mapping_and_export_s')} if local else None,
+            maximum_slow_slice_s=self.lane.slowest_slice_s,perception_only=perception_only,
+            sampled_latent=sampled_latent,behavior_logprob=behavior_logprob,behavior_sha256=self.behavior_identity)
+
+    def close(self):self.mode2.close();self.background.close()
 
 
 def main():
@@ -240,41 +154,38 @@ def main():
     parser.add_argument('--socket',default='/ipc/rgb.sock');parser.add_argument('--episode-id',required=True)
     parser.add_argument('--package',default='/navigation');parser.add_argument('--map',default='/prior')
     parser.add_argument('--output',type=Path,default=Path('/output'))
-    parser.add_argument('--variant',choices=config()['variants'],default='geometry')
+    parser.add_argument('--variant',choices=config()['variants'],default='mode1_vlm_world')
+    parser.add_argument('--sample-policy',action='store_true')
+    parser.add_argument('--initial-subgoal')
     args=parser.parse_args();args.output.mkdir(parents=True,exist_ok=True)
     client=BrokerClient(args.socket,args.episode_id);pool=ThreadPoolExecutor(max_workers=1)
-    error=None;pending=None;active=None;frames=0;last=-1;nav=None
+    pending=None;active=None;nav=None;frames=0;last=-1;error=None
     try:
-        first,_=client.goal_view(0)
-        views=[np.frombuffer(client.goal_view(i)[1],np.uint8).reshape(480,640,3).copy() for i in range(first.get('view_count',4))]
-        nav=Navigator(args.package,args.map,views,args.variant)
+        first,raw=client.goal_view(0)
+        if first.get('view_count',1)!=1:raise ValueError('One goal image required')
+        nav=Navigator(args.package,args.map,[np.frombuffer(raw,np.uint8).reshape(480,640,3).copy()],args.variant,args.sample_policy,
+                      json.loads(args.initial_subgoal) if args.initial_subgoal else None)
         (args.output/'CONTROLLER_READY').touch()
         with (args.output/'decisions.jsonl').open('x') as log:
             while not (args.output/'CONTROLLER_STOP').exists():
                 metadata,rgb=client.observe(last);last=metadata['frame_id'];frames+=1
-                if pending and pending.done():
+                if pending is not None and pending.done():
                     active=pending.result();pending=None
                     log.write(json.dumps(active,allow_nan=False)+'\n');log.flush()
                 if pending is None:pending=pool.submit(nav.step,dict(metadata),bytes(rgb))
-                command=[0.,0.,0.,0.];stop=False;source_frame=last;candidate=None
-                if active and time.monotonic()-active['source_wall']<=config()['navigation']['maximum_result_age_s']:
-                    command=active['command'];stop=active['stop'];source_frame=active['frame_id'];candidate=active.get('selected_candidate','geometry')
-                if active and active['mode']=='localization_failure':
-                    write(args.output/'termination.json',dict(reason='localization_failure'))
-                    active=None
-                try:client.command(source_frame,command,stop,camera_pitch_deg=active.get('camera_pitch_deg',0.) if active else 0.,candidate_id=candidate)
+                command=[0.,0.,0.,0.];stop=False;source=last
+                if active and 0<=time.monotonic()-active['source_wall']<=.25:
+                    command=active['command'];stop=active['stop'];source=active['frame_id']
+                try:client.command(source,command,stop)
                 except RuntimeError as exc:
-                    if 'Stale RGB' not in str(exc) and 'Stale or future command frame' not in str(exc) and 'no longer retained' not in str(exc):raise
+                    if not any(s in str(exc) for s in ('Stale RGB','Stale or future command frame','no longer retained')):raise
     except Exception as exc:
         error=type(exc).__name__+': '+str(exc)
-        write(args.output/'termination.json',dict(reason='controller_error',detail=error))
-        raise
+        write(args.output/'termination.json',dict(reason='controller_error',detail=error));raise
     finally:
         pool.shutdown(wait=True,cancel_futures=True)
         if nav is not None:nav.close()
-        client.close()
-        write(args.output/'result.json',dict(status='failed' if error else 'runtime_finished',frames=frames,error=error,
-              tested_claim=False,variant=args.variant))
+        client.close();write(args.output/'result.json',dict(status='failed' if error else 'runtime_finished',frames=frames,error=error,tested_claim=False,variant=args.variant))
 
 
 if __name__=='__main__':main()

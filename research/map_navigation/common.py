@@ -6,7 +6,7 @@ from pathlib import Path
 import random
 import time
 
-SCHEMA = 'photo-map-model/v2'
+SCHEMA = 'photo-map-model/v4'
 
 
 def digest(path):
@@ -18,14 +18,14 @@ def digest(path):
 
 
 def read(path):
-    return json.loads(Path(path).read_text(encoding='utf-8'))
+    return json.loads(Path(path).read_text(encoding='utf-8-sig'))
 
 
 def write(path, value):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     pending = path.with_suffix(path.suffix + '.pending')
-    pending.write_text(json.dumps(value, indent=2, allow_nan=False) + '\n', encoding='utf-8')
+    pending.write_text(json.dumps(value, indent=2, allow_nan=False) + '\n', encoding='utf-8-sig')
     pending.replace(path)
 
 
@@ -80,4 +80,3 @@ class FlightLock:
     def __exit__(self, *args):
         os.close(self.fd)
         self.path.unlink()
-

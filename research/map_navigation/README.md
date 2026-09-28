@@ -1,16 +1,10 @@
-# Photo-goal aerial navigation
+# Photo-goal navigation source
 
-**Implemented locally; unexecuted, untrained and unvalidated.** The user requested
-no Spark access and no tests during this revision. None have been run.
+The active implementation is the two-mode temporal-window campaign described
+in [PROJECT.md](PROJECT.md). Start with [DEFERRED_VERIFICATION.md](DEFERRED_VERIFICATION.md)
+and the [native dependency instructions](native/README.md) before any separately
+authorized execution. This pass is local source work only and has no measured
+training, navigation, native-build or latency result.
 
-- [Architecture and boundaries](PROJECT.md)
-- [Detailed implementation contract](IMPLEMENTATION_PLAN.md)
-- [Deferred acquisition/training commands](SPARK_HANDOFF.md)
-- [Machine-readable evidence status](MODEL_IMPLEMENTATION.json)
-
-Supply a goal photo and a qualified overhead/height map. A tiltable RGB camera,
-geometric fast controller and optional predictive slow planner support
-localization, candidate inspection, aerial search, overflight and descent.
-
-Privileged motion demonstrations are separate from observation-only exploration.
-Code, reference paths and offline surveys do not establish closed-loop success.
+Historical planner-first and partial GRU-restoration files are preserved in
+`archive/`; active runtime and training require new v4 artifacts.

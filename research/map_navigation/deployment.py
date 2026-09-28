@@ -12,28 +12,37 @@ from .common import SCHEMA,read,write,digest,contained
 from .maps import MapPrior
 
 
-def package(checkpoint,vision,output,learned_local_policy=False):
+def package(checkpoint,vision,output,learned_local_policy=True,photo_slam=None,qwen=None):
     import torch
     saved=torch.load(checkpoint,map_location='cpu',weights_only=True)
-    if saved.get('schema')!=SCHEMA or not {'localization','goal'}<=set(saved['trained_stages']):
-        raise ValueError('Train localization and goal recognition before packaging')
-    if learned_local_policy:raise ValueError('Learned actor deferred in the planner-first campaign')
+    if saved.get('schema')!=SCHEMA or not {'localization','goal','policy'}<=set(saved['trained_stages']):
+        raise ValueError('Train temporal actor and perception before packaging')
+    if photo_slam is None:raise ValueError('Pinned Photo-SLAM deployment descriptor required')
+    mapping=read(photo_slam)
+    if mapping.get('upstream_commit')!='f8bfb2f0809c003ccc3fd577dc43c576fcafa4ac' or mapping.get('schema')!='photo-slam-live/v1':
+        raise ValueError('Incompatible native dependency descriptor')
     if not saved.get('calibration'):raise ValueError('Calibrate arrival on validation data before packaging')
     out=Path(output);out.mkdir(parents=True,exist_ok=False)
     # Strip labels, optimizer and training-only identities from inference package.
-    torch.save({key:saved[key] for key in ('schema','model','trained_stages','backbone_sha256','calibration')},out/'model.pt')
+    torch.save({key:saved[key] for key in ('schema','model','trained_stages','backbone_sha256','calibration','budget_usage')},out/'model.pt')
     shutil.copyfile(vision,out/'vision.json')
-    write(out/'package.json',dict(schema='photo-map-package/v2',trained_stages=saved['trained_stages'],
-          learned_local_policy=learned_local_policy,accepted=False,files={p.name:digest(p) for p in out.iterdir()}))
+    shutil.copyfile(photo_slam,out/'photo-slam.json')
+    if qwen:
+        adapter=torch.load(qwen,map_location='cpu',weights_only=True)
+        if adapter.get('schema')!='subgoal-qwen/v1':raise ValueError('Incompatible Qwen adapter')
+        torch.save({k:adapter[k] for k in ('schema','modules','adapter','base_identity','budget_usage')},out/'qwen.pt')
+    write(out/'package.json',dict(schema='photo-map-package/v4',trained_stages=saved['trained_stages'],
+          learned_local_policy=True,accepted=False,files={p.name:digest(p) for p in out.iterdir()}))
 
 
 class PhotoControllerProcess:
-    def __init__(self,socket_path,episode_id,checkpoints,map_prior,output,variant):
+    def __init__(self,socket_path,episode_id,checkpoints,map_prior,output,variant,sample_policy=False,initial_subgoal=None):
         root=Path.home()/'uav-rgb-flight';source_root=Path(__file__).resolve().parents[2]
         self.output=Path(output);self.output.mkdir(parents=True,exist_ok=False)
         self.writable=self.output/'runtime';self.writable.mkdir()
         package_root=Path(checkpoints).resolve();spec=read(package_root/'package.json')
-        if set(spec['files'])!={'model.pt','vision.json'}:raise ValueError('Unexpected inference assets')
+        required={'model.pt','vision.json','photo-slam.json'}
+        if spec['schema']!='photo-map-package/v4' or not required<=set(spec['files']) or set(spec['files'])-required-{'qwen.pt'}:raise ValueError('Unexpected inference assets')
         allowed={'package.json',*spec['files']}
         if {p.name for p in package_root.iterdir()}!=allowed:raise ValueError('Inference package has undeclared files')
         for name,sha in spec['files'].items():
@@ -56,9 +65,14 @@ class PhotoControllerProcess:
             '--security-opt','no-new-privileges','--user',f'{os.getuid()}:{os.getgid()}','--cpus','8','--shm-size','2g',
             '-v',str(source)+':/source:ro','-v',str(root/'assets/models')+':/models:ro',
             '-v',str(root/'deps/Metric3D')+':/upstream/metric3d:ro',
+            '-v',str(root/'deps/Photo-SLAM')+':/upstream/photo-slam:ro',
+            '-e','PYTHONPATH=/models/photo-slam/lib',
+            '-e','LD_LIBRARY_PATH=/models/photo-slam/lib:/upstream/photo-slam/lib:/upstream/photo-slam/ORB-SLAM3/lib',
             '-v',str(package_root)+':/navigation:ro','-v',str(prior.root)+':/prior:ro',
             '-v',str(socket_path.parent)+':/ipc:ro','-v',str(self.writable)+':/output',
             '-w','/source',image,'python','-m','research.map_navigation.runtime','--episode-id',episode_id,'--variant',variant]
+        if sample_policy:command.append('--sample-policy')
+        if initial_subgoal:command+=['--initial-subgoal',initial_subgoal]
         write(self.output/'request.json',dict(command=command,map_sha256=prior.identity,checkpoint_sha256=self.identity))
         self.log=(self.output/'stdout.log').open('x');self.process=subprocess.Popen(command,stdout=self.log,stderr=subprocess.STDOUT)
 

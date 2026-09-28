@@ -34,12 +34,17 @@ def report(manifest,results,output):
             for decision in lines(decision_path):
                 label=by_frame.get(decision['frame_id'])
                 if label is None:continue
-                hypotheses=decision['belief']['hypotheses']
-                if hypotheses and decision['belief']['aligned']:
-                    errors.append(float(np.linalg.norm(np.asarray(hypotheses[0]['position'])-label['true_position_ned_m'])))
                 position=np.asarray(label['true_position_ned_m'])
                 false_stops+=int(decision['stop'] and (np.linalg.norm(position[:2]-goal[:2])>3 or abs(position[2]-goal[2])>2))
-            localization[str(key)]=dict(aligned_position_errors_m=errors,false_stop_decisions=false_stops,
+            decisions=lines(decision_path)
+            timings=[r['work_s'] for r in decisions]
+            queues=[r.get('queue_s',0.) for r in decisions]
+            localization[str(key)]=dict(false_stop_decisions=false_stops,
+                interventions=sum(bool(r.get('braked')) for r in decisions),
+                fast_decision_latency_s=dict(zip(('p50','p95','p99'),np.quantile(timings,[.5,.95,.99]).tolist())) if timings else None,
+                gpu_queue_latency_s=dict(zip(('p50','p95','p99'),np.quantile(queues,[.5,.95,.99]).tolist())) if queues else None,
+                climb_decisions=sum(r.get('flight_phase')=='climb' for r in decisions),
+                goal_conditioned_decisions=sum(r.get('selected_subgoal') is None for r in decisions),
                 false_stop_scope='planned decisions; includes decisions rejected as stale before dispatch')
     expected={(v,s,e) for v in cfg['variants'] for s in cfg['evaluation']['seeds'] for e in by_id}
     summary={}
@@ -53,13 +58,14 @@ def report(manifest,results,output):
             median_success_time_s=float(np.median(times)) if times else None,median_final_error_m=float(np.median(errors)) if errors else None,
             meets_operational_targets=bool(n==len(by_id)*len(cfg['evaluation']['seeds']) and n and len(successes)/n>=.9 and collisions/n<=.01),
             terminations={reason:sum(r.get('termination')==reason for r in group) for reason in sorted({r.get('termination','unknown') for r in group})})
+        summary[variant]['targets_supported_at_95_percent']=bool(n and wilson(len(successes),n)[0]>=.9 and wilson(collisions,n)[1]<=.01)
     strata={}
     for variant in cfg['variants']:
         for category in ('overflight_better','low_better','comparable'):
             group=[r for (v,_,_),r in rows.items() if v==variant and r.get('route_advantage')==category]
             strata[variant+'/'+category]=dict(trials=len(group),successes=sum(bool(r.get('success')) for r in group))
     paired={};rng=np.random.default_rng(0)
-    for reference,variant in [('geometry','geometric_candidates'),('geometric_candidates','predictive_candidates')]:
+    for reference,variant in [('mode1','mode1_vlm'),('mode1_vlm','mode1_vlm_world')]:
         differences=[]
         for seed in cfg['evaluation']['seeds']:
             for ident in by_id:
@@ -70,7 +76,6 @@ def report(manifest,results,output):
             paired[reference+'->'+variant]=dict(pairs=len(x),success_difference=float(x.mean()),ci95=np.quantile(bootstrap,[.025,.975]).tolist(),
                                 caveat='paired trial bootstrap; does not estimate uncertainty across all possible cities')
     missing=sorted(expected-set(rows))
-    write(output,dict(schema='photo-map-evaluation/v2',complete=not missing,missing=missing,variants=summary,paired=paired,
+    write(output,dict(schema='photo-map-evaluation/v4',complete=not missing,missing=missing,variants=summary,paired=paired,
          localization=localization,strata=strata,all_failures_retained=True,energy={'compute':'not measured by this evaluator','propulsion':'not measured; time is not energy'},
          generalization_scope='registered held-out scenes only; no real-satellite or physical-flight claim'))
-

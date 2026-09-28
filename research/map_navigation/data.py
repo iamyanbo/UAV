@@ -4,6 +4,7 @@ All targets live under `labels`; inference never imports this module. Image
 windows are indexed, not copied into a second unbounded video archive.
 """
 from bisect import bisect_right
+from dataclasses import asdict
 from functools import lru_cache
 import hashlib
 import json
@@ -19,6 +20,7 @@ from .action_data import aerial_slots, IndexedCommands
 from .aerial import camera_pitch
 from .common import read, write, digest, config, reserve_memory
 from .maps import MapPrior
+from .contracts import Subgoal, SpatialSnapshot, snapshot_from_dict
 
 
 def lines(path):
@@ -57,6 +59,8 @@ def build_dataset(registry_path,flight_root,output,banks=()):
         if scene_id not in scene_by_id:
             audit.append(dict(episode=str(episode),reason='unregistered_scene'));continue
         scene=scene_by_id[scene_id]
+        if result.get('camera_profile')!='fixed-forward-monocular/v1':
+            audit.append(dict(episode=str(episode),reason='historical_camera_schema'));continue
         if scene['split']=='test':continue
         if result.get('split')!=scene['split']:raise ValueError('Scene/episode split mismatch')
         needed=[episode/'observations/storage.json',episode/'training_labels/frames.jsonl',episode/'training_labels/commands.jsonl',episode/'goal/goal.json',episode/'evaluator_labels/episode.json']
@@ -89,6 +93,7 @@ def build_dataset(registry_path,flight_root,output,banks=()):
             collection_source=result.get('collection_source','legacy_expert')))
         times=[r['sim_ns'] for r in rows];previous=-math.inf
         for i,row in enumerate(rows):
+            if abs(camera_pitch(row['calibration']))>1:raise ValueError('Nonfixed camera in temporal dataset')
             label=selected.get(row['frame_id'])
             if label is None or row['sim_ns']-previous<200_000_000:continue
             previous=row['sim_ns'];position=np.asarray(label['true_position_ned_m'])
@@ -111,11 +116,31 @@ def build_dataset(registry_path,flight_root,output,banks=()):
             slots=aerial_slots(commands,row['sim_ns'],camera_pitch(row['calibration']))
             correction=corrections.get(row['frame_id'])
             estimate=estimates.get(row['frame_id'],{})
+            recorded=estimate.get('context')
+            spatial=snapshot_from_dict(recorded['spatial']) if recorded else SpatialSnapshot(observed_s=row['sim_ns']/1e9)
+            subgoal=Subgoal(**recorded['subgoal']) if recorded and recorded.get('subgoal') else None
+            execution=label.get('observable_execution_intention')
+            if result.get('collection_source')=='learner' and estimate and recorded:
+                # Observation-only DAgger safety teacher: retain safe learner
+                # proposals, or inspect with yaw after a fresh visible veto.
+                # This query never sees the remaining privileged route.
+                command=estimate['proposed_command']
+                if estimate.get('braked'):
+                    command=[0.,0.,0.,15.] if not estimate.get('perception_error') and estimate.get('speed_mps') is not None else [0.]*4
+                correction=dict(teacher_command=command)
+            if not recorded and execution:
+                subgoal=Subgoal(**label['subgoal'])
+                spatial=snapshot_from_dict(label['spatial_snapshot'])
+            if recorded:
+                by_frame={r['frame_id']:j for j,r in enumerate(rows[max(0,i-256):i+1],max(0,i-256))}
+                history=[by_frame[f] for f in recorded['frame_ids'] if f in by_frame]
+            else:
+                history=sorted({max(0,bisect_right(times,row['sim_ns']-j*50_000_000)-1) for j in range(4)})
             estimated_belief=estimate.get('belief',{})
             estimated_hypotheses=estimated_belief.get('hypotheses',[])
             estimated_tile=estimated_hypotheses[0]['tile_id'] if estimated_belief.get('aligned') and estimated_hypotheses else None
-            if correction is not None:body=np.asarray(correction['subgoal_body'])
-            actions=[];future=[];future_positions=[];future_goal=[];future_collision=[]
+            if correction is not None and 'subgoal_body' in correction:body=np.asarray(correction['subgoal_body'])
+            actions=[];future=[];future_positions=[];future_goal=[];future_collision=[];future_yaw=[]
             for step in range(20):
                 stamp=row['sim_ns']+int((step+1)*200_000_000)
                 j=bisect_right(times,stamp)-1
@@ -125,20 +150,25 @@ def build_dataset(registry_path,flight_root,output,banks=()):
                 future.append(j);actions.append(slot['values'])
                 p=np.asarray(target_label['true_position_ned_m'])-position
                 future_positions.append([c*p[0]+s*p[1],-s*p[0]+c*p[1],p[2]])
+                future_yaw.append((yaw(target_label['true_quaternion_xyzw'])-heading+math.pi)%(2*math.pi)-math.pi)
                 future_goal.append(float(np.linalg.norm(np.asarray(target_label['true_position_ned_m'])[:2]-goal[:2])<=3 and abs(target_label['true_position_ned_m'][2]-goal[2])<=2
                     and abs((yaw(target_label['true_quaternion_xyzw'])-desired+math.pi)%(2*math.pi)-math.pi)<=math.radians(30)
                     and abs(camera_pitch(rows[j]['calibration']))<=20))
                 future_collision.append(float(target_label['airsim_collision'] or target_label['geometry_collision']))
                 if future_collision[-1]:break
             windows.append(dict(episode=index,frame=i,tile=tile,split=scene['split'],future=future,actions=actions,
+                history=history,subgoal=asdict(subgoal) if subgoal else None,spatial=asdict(spatial),
+                observation_schema='observation-context/v1',
                 runtime_state=estimate.get('predictor_state'),estimated_tile=estimated_tile,flight_phase=(estimate.get('flight_phase') if estimate.get('flight_phase') not in (None,'unlabelled') else label.get('flight_phase','unlabelled')),
                 camera_pitch_deg=camera_pitch(row['calibration']),
                 labels=dict(offset=(position[:2]-prior.tiles[tile]).tolist(),above_surface=float(surface-position[2]),
                     yaw=[math.sin(heading),math.cos(heading)],near_goal=near,goal_valid=valid,arrival=stop,
                     subgoal_body=body.tolist(),command=correction['teacher_command'] if correction is not None else None if slots['values'] is None else slots['values'][0],
-                    policy_valid=bool((correction is not None or result['controller_kind']=='privileged_shortest_path_expert' and all(slots['valid'])) and not label['airsim_collision'] and not label['geometry_collision']),
-                    future_position=future_positions,future_goal=future_goal,future_collision=future_collision)))
-    write(output,dict(schema='photo-map-dataset/v2',bank_records=bank_records,bank_identities=bank_identities,registry_sha256=digest(registry_path),episodes=episodes,windows=windows,
+                    policy_valid=bool((correction is not None or execution is not None and all(slots['valid'])) and not label['airsim_collision'] and not label['geometry_collision']),
+                    terminal_value=float(bool(result.get('success')))-2*float(result.get('termination') in ('collision','geometry_collision'))
+                        -.001*max(0.,result.get('elapsed_sim_seconds',0.)-(row['sim_ns']-rows[0]['sim_ns'])/1e9),
+                    future_position=future_positions,future_goal=future_goal,future_collision=future_collision,future_yaw=future_yaw)))
+    write(output,dict(schema='photo-map-dataset/v4',bank_records=bank_records,bank_identities=bank_identities,registry_sha256=digest(registry_path),episodes=episodes,windows=windows,
           audit=audit,training_goal_positives=goals_positive,training_goal_negatives=goals_negative,
           action_semantics='post-safety dispatch intervals, not measured actuator application',
           purpose='perception, subgoal execution and transition learning; no omniscient search imitation'))
@@ -147,12 +177,13 @@ def build_dataset(registry_path,flight_root,output,banks=()):
 class Dataset:
     def __init__(self,path,stage,split='train',teacher_root=None):
         self.path=Path(path);self.spec=read(path);self.stage=stage;self.teacher_root=Path(teacher_root) if teacher_root else None
-        if self.spec['schema']!='photo-map-dataset/v2':raise ValueError('New dataset schema required')
+        if self.spec['schema']!='photo-map-dataset/v4':raise ValueError('Fixed-camera temporal dataset required')
         if split not in ('train','validation'):raise ValueError('Sealed test data cannot train or tune models')
         self.teacher_identity=None
         self.windows=[w for w in self.spec['windows'] if w['split']==split and
-            (stage!='goal' or w['labels']['goal_valid']) and (stage!='policy' or w['labels']['policy_valid']) and
-            (stage!='world' or (len(w['future'])>=1 and w.get('runtime_state') is not None and w.get('estimated_tile') is not None))]
+            (stage!='goal' or w['labels']['goal_valid']) and (stage not in ('policy','dagger') or w['labels']['policy_valid']) and
+            (stage!='odometry' or len(w['future'])>=1) and
+            (stage!='world' or len(w['future'])>=1)]
         if stage=='world':
             eligible=[]
             for window in self.windows:
@@ -252,6 +283,12 @@ class Dataset:
         if prior.identity!=ep['map_sha256']:raise ValueError('Dataset map changed')
         return ep,lines(Path(ep['path'])/'observations/frames.jsonl'),load_goal(Path(ep['path'])/'goal'),prior
 
+    @lru_cache(maxsize=8)
+    def spatial_history(self,index):
+        ep=self.spec['episodes'][index]
+        if not ep.get('perception_sha256'):return []
+        return [(r['observed_s'],snapshot_from_dict(r['context']['spatial'])) for r in lines(ep['perception_path']) if r.get('context')]
+
     def get(self,index):
         def tensor(raw):return torch.from_numpy(np.frombuffer(raw,np.uint8).reshape(480,640,3).copy()).permute(2,0,1)
         if index>=len(self.windows):
@@ -267,15 +304,36 @@ class Dataset:
         if self.stage=='localization':
             return self.localization_sample(current,prior,position,math.atan2(*labels['yaw']),window['camera_pitch_deg'],labels)
         goals=torch.stack([tensor(raw) for raw in goal.rgb_views])
-        input_tile=window['estimated_tile'] if self.stage=='world' else window['tile']
+        input_tile=window['estimated_tile'] if window.get('estimated_tile') is not None else 0
         tile=torch.from_numpy(prior.tile(input_tile)).permute(2,0,1)
         value=dict(current=current,goals=goals,tile=tile,labels=labels,camera_pitch_deg=window['camera_pitch_deg'],
                    runtime_state=window.get('runtime_state'),actions=torch.tensor(window['actions'],dtype=torch.float32))
+        history=window['history'];times=[r['sim_ns']/1e9 for r in rows]
+        value['history_rgb']=[tensor(rgb_at(ep['path'],rows[i])) for i in history]
+        value['history_times']=[times[i] for i in history]
+        value['history_ids']=[rows[i]['frame_id'] for i in history]
+        value['history_commands']=[]
+        for i in history:
+            commands=rows[i].get('command_history',[])
+            previous=[r for r in commands if r['sim_ns']<=rows[i]['sim_ns']]
+            value['history_commands'].append(previous[-1]['values'] if previous else [0.]*4)
+        value['subgoal']=Subgoal(**window['subgoal']) if window['subgoal'] else None
+        value['spatial']=snapshot_from_dict(window['spatial'])
+        now=value['history_times'][-1]
+        past=[snapshot for stamp,snapshot in self.spatial_history(window['episode']) if 0<now-stamp<=3]
+        value['delayed_spatial']=past[::max(1,len(past)//3)][:3]
+        value['reference_rgb']=None
+        if value['subgoal'] and value['subgoal'].target_source=='map':
+            ref=value['subgoal'].target_reference
+            if ref not in value['spatial'].map_references:raise ValueError('Unsupported recorded map target')
+            value['reference_rgb']=torch.from_numpy(prior.tile(int(ref.split('-')[-1]))).permute(2,0,1)
+        elif value['subgoal'] and value['subgoal'].target_source=='keyframe':
+            source=next(r[1] for r in value['spatial'].keyframes if r[0]==value['subgoal'].target_reference)
+            index=next(i for i,r in enumerate(rows) if r['frame_id']==source)
+            value['reference_rgb']=tensor(rgb_at(ep['path'],rows[index]))
+        elif value['subgoal'] and value['subgoal'].target_source=='geometry':value['reference_rgb']=current
+        value['future_rgb']=[tensor(rgb_at(ep['path'],rows[i])) for i in window['future']]
         if self.stage=='world':
-            times=[r['sim_ns'] for r in rows];now=times[window['frame']]
-            history=sorted({bisect_right(times,now-int(seconds*1e9))-1 for seconds in range(1,33)}-{ -1 })
-            value['history_rgb']=[tensor(rgb_at(ep['path'],rows[i])) for i in history]
-            value['history_pitch']=[camera_pitch(rows[i]['calibration']) for i in history]
             if self.teacher_root is None:raise ValueError('World training requires V-JEPA feature cache')
             key=hashlib.sha256((ep['path']+ep['rgb_sha256']).encode()).hexdigest()[:20]
             artifact=self.teacher(key)

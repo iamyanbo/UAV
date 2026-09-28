@@ -11,6 +11,6 @@
       null
     ]
   ],
-  "camera_profile": "pitch-rgb/v1",
+  "camera_profile": "fixed-forward-monocular/v1",
   "description": "Replace nulls with inspected scene bounds: min north/east/NED-z (ceiling), max north/east/NED-z (lower limit). This is a declared flight volume, not a claim of surveyed free space."
 }

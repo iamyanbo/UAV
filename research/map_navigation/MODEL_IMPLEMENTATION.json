@@ -1,44 +1,25 @@
 {
-  "schema": "photo-map-implementation/v2",
-  "status": "implemented-unexecuted",
-  "entrypoint": "python -m research.map_navigation.run --workspace WORKSPACE STAGE",
-  "task": "Unknown start; goal photo; registered map; RGB and bounded relative camera pitch",
+  "schema": "photo-map-implementation/v4",
+  "architecture": "two-mode-temporal-window",
   "models": {
-    "shared_rgb": "MobileNetV3 spatial encoder with relative-camera embedding",
-    "localization": "Full-map retrieval, overlapping pose clustering and temporal consistency",
-    "goal": "Goal/arrival heads; validation-frame threshold calibration",
-    "world": "Action-conditioned latent predictor: 20 x 200 ms, four vehicle/camera dispatch slots per step",
-    "teacher": "Frozen V-JEPA 2 offline only",
-    "fast_control": "Geometric tracking and freshness/clearance checks",
-    "deferred": [
-      "learned recurrent actor",
-      "Qwen",
-      "PPO",
-      "learned global exploration"
-    ]
+    "encoder": "MobileNetV3-Large; encode newest image once; cached full goal grid",
+    "actor": "4 masked frames x 64 spatial tokens; 2 x 256 temporal attention; four velocities and stop probability",
+    "world": "6 x 384 transformer; bounded feature/action history; 20 x 200 ms; visual/motion/risk/visibility/goal/progress/terminal heads",
+    "mode2": "Qwen2.5-VL-3B grounded subgoals assessed by frozen deployed actor rollouts",
+    "teacher": "frozen V-JEPA 2 auxiliary targets; offline only",
+    "mapping": "Photo-SLAM f8bfb2f0809c003ccc3fd577dc43c576fcafa4ac; headless native live RGB bridge",
+    "safety": "asynchronous RGB-derived metric depth; observed corridor; 250 ms source freshness"
   },
-  "baselines": [
-    "geometry",
-    "geometric_candidates",
-    "predictive_candidates"
-  ],
-  "source_review": "Manual source inspection only; no parsing/import/compilation or execution checks performed",
+  "interfaces": ["observation-context/v1", "subgoal/v1", "spatial-snapshot/v1"],
+  "variants": ["mode1", "mode1_vlm", "mode1_vlm_world"],
+  "source_review": "manual source and diff review only",
   "tests_run": false,
+  "builds_run": false,
   "spark_contacted": false,
   "trained": false,
   "runtime_validated": false,
   "flight_validated": false,
   "novelty_established": false,
-  "implementation_plan": "IMPLEMENTATION_PLAN.md",
-  "deferred_handoff": "SPARK_HANDOFF.md",
-  "next_milestone": "Separately authorized environment acquisition and camera/flight qualification; no automatic launch",
-  "remaining_evidence": [
-    "Real scene flight-envelope inspection and multialtitude survey",
-    "Camera/body-motion separation and recorded look/settle timing",
-    "Data-category coverage and complete climb/cruise/descent flights",
-    "Runtime API, numerical and model compatibility",
-    "Trained perception and prediction",
-    "GPU scheduling and actual camera-to-command deadlines",
-    "Matched full-flight evaluation and uncertainty"
-  ]
+  "verification_plan": "DEFERRED_VERIFICATION.md",
+  "native_instructions": "native/README.md"
 }

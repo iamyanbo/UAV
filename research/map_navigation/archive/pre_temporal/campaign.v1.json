@@ -1,0 +1,150 @@
+{
+  "schema": "photo-map-campaign/v1",
+  "status": "implemented-unvalidated",
+  "seed": 20260927,
+  "runtime_inputs": [
+    "RGB",
+    "goal_photographs",
+    "calibration",
+    "timestamps",
+    "past_commands",
+    "overhead_RGB",
+    "coarse_heights",
+    "map_bounds"
+  ],
+  "forbidden_runtime_inputs": [
+    "launch_pose",
+    "launch_region",
+    "goal_coordinates",
+    "goal_region",
+    "simulator_depth",
+    "simulator_state",
+    "expert_route",
+    "fine_collision_field"
+  ],
+  "goal_views": {
+    "default": 1,
+    "minimum": 1,
+    "maximum": 4
+  },
+  "map": {
+    "rgb_mpp": 1.0,
+    "height_mpp": 2.0,
+    "height_quantization_m": 2.0,
+    "tile_m": [
+      128.0,
+      96.0
+    ],
+    "stride_m": 48.0
+  },
+  "splits": {
+    "train_scenes": 3,
+    "validation_scenes": 1,
+    "test_scenes": 2,
+    "integration_scene": "env_airsim_16"
+  },
+  "episodes": {
+    "train_per_scene": 500,
+    "validation_per_scene": 100,
+    "test_per_scene": 100,
+    "distance_bands_m": [
+      [
+        20,
+        80
+      ],
+      [
+        80,
+        180
+      ],
+      [
+        180,
+        300
+      ]
+    ],
+    "goal_agl_m": [
+      5,
+      20
+    ],
+    "timeout_min_s": 180,
+    "timeout_factor": 4,
+    "search_allowance_s": 180
+  },
+  "navigation": {
+    "maximum_speed_mps": 3.0,
+    "vertical_speed_mps": 1.0,
+    "yaw_rate_dps": 45.0,
+    "cruise_clearance_m": 8.0,
+    "ceiling_above_highest_m": 30.0,
+    "grid_m": 4.0,
+    "localization_timeout_s": 90,
+    "localization_probability": 0.8,
+    "maximum_pose_sigma_m": 5.0,
+    "goal_threshold": 0.9,
+    "arrival_evidence_frames": 5,
+    "arrival_dwell_s": 1.0,
+    "maximum_result_age_s": 0.25,
+    "braking_mps2": 2.0
+  },
+  "models": {
+    "encoder": "MobileNetV3-Large",
+    "teacher": "V-JEPA 2 ViT-L",
+    "map_token_count": 64,
+    "dimension": 256,
+    "world_width": 384,
+    "world_layers": 6,
+    "heads": 8,
+    "horizon_steps": 20,
+    "dt_s": 0.2,
+    "hypotheses": 8,
+    "qwen": "Qwen2.5-VL-3B-Instruct"
+  },
+  "training": {
+    "stages": [
+      "localization",
+      "goal",
+      "policy",
+      "world"
+    ],
+    "batch_size": 4,
+    "learning_rate": 0.0001,
+    "updates_per_stage": 10000,
+    "save_every": 250,
+    "hours": 8,
+    "minimum_goal_positives": 100,
+    "minimum_goal_negatives": 100,
+    "ppo_enabled": false,
+    "qwen_preference_enabled": false
+  },
+  "variants": [
+    "geometry",
+    "recent_world",
+    "map_world",
+    "map_world_qwen"
+  ],
+  "evaluation": {
+    "clock_speed": 1.0,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "horizontal_tolerance_m": 3.0,
+    "vertical_tolerance_m": 2.0,
+    "maximum_arrival_speed_mps": 0.5,
+    "dwell_s": 1.0,
+    "success_target": 0.9,
+    "collision_ceiling": 0.01
+  },
+  "resources": {
+    "minimum_available_memory_gib": 12,
+    "checkpoint_headroom_gib": 4,
+    "maximum_window_hours": 8,
+    "flight_excludes_training": true,
+    "cloud_spend": 0
+  },
+  "evidence": {
+    "tested": false,
+    "trained": false,
+    "validated": false
+  }
+}
