@@ -20,11 +20,13 @@ CORE_FLOW = (
 
 
 class WeekendRun:
-    def __init__(self, root, source, output, deadline):
+    def __init__(self, root, source, output, deadline, demonstrations, demonstration_pack):
         self.root = root
         self.source = source
         self.output = output
         self.deadline = deadline
+        self.demonstrations = demonstrations
+        self.demonstration_pack = demonstration_pack
         self.journal = output / 'journal.json'
         self.log = output / 'supervisor.log'
         self.entries = []
@@ -88,10 +90,10 @@ class WeekendRun:
                    '--spec', str(spec), '--round', str(execution)]
         return self.run(command, execution / 'state.json', required)
 
-    def complete_flow(self, training_cycle, demo, pack, output):
+    def complete_flow(self, training_cycle, demonstrations, demonstration_pack, output):
         command = [sys.executable, str(self.source / 'continue_complete_flow.py'),
-                   '--training-cycle', str(training_cycle), '--demonstrations', str(demo),
-                   '--demonstration-checkpoints', str(pack), '--output', str(output)]
+                   '--training-cycle', str(training_cycle), '--demonstrations', str(demonstrations),
+                   '--demonstration-checkpoints', str(demonstration_pack), '--output', str(output)]
         # A tied/no-exposure preference stage is allowed to remain blocked;
         # every independent learner and physical flow must still complete.
         ok = self.run(command, output / 'execution/state.json', CORE_FLOW)
@@ -138,6 +140,8 @@ class WeekendRun:
 
     def run_all(self, initial_cycle):
         initial = self.root / 'rounds' / initial_cycle
+        demonstrations = self.demonstrations
+        demonstration_pack = self.demonstration_pack
         current_execution = initial
         current_cumulative = initial
         initial_required = ('source-reload-flight', 'world-continuation',
@@ -152,12 +156,14 @@ class WeekendRun:
                 if not self.scheduler(initial / 'programme-spec.json', initial / 'execution', initial_required):
                     self.record('initial_window_incomplete', round=str(initial))
                     return
-            collection, pack = self.collection_inputs(current_execution / 'execution')
+            # continue_complete_flow treats this argument as the original v6
+            # teacher batch. The newly collected learned flights are supplied
+            # separately from training_cycle as additional world data.
             cycle_index = 1
             while (self.output / f'full-flow-{cycle_index:03d}').exists():
                 cycle_index += 1
             flow = self.output / f'full-flow-{cycle_index:03d}'
-            if not self.complete_flow(current_execution, collection, pack, flow):
+            if not self.complete_flow(current_execution, demonstrations, demonstration_pack, flow):
                 self.record('cycle_stopped', cycle=str(flow), reason='Independent learner/flight stage incomplete')
                 return
             cumulative = flow / 'cumulative-window'
@@ -182,13 +188,18 @@ def main():
     parser.add_argument('--source', type=Path, default=Path('/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r92'))
     parser.add_argument('--initial-cycle', default='metric-vision-r92')
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--demonstrations', type=Path,
+                        default=Path('/home/iamyanbo/uav-rgb-flight/runs/20260924T172417Z-bootstrap-flight-eb4f56/collection/flights.json'))
+    parser.add_argument('--demonstration-pack', type=Path,
+                        default=Path('/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r84/perception-checkpoints'))
     parser.add_argument('--days', type=float, default=3)
     args = parser.parse_args()
     if not 0 < args.days <= 3.5:
         parser.error('The requested unattended period must be between zero and 3.5 days')
     args.output.mkdir(parents=True, exist_ok=True)
     deadline = time.time() + args.days * 86400
-    worker = WeekendRun(args.root.resolve(), args.source.resolve(), args.output.resolve(), deadline)
+    worker = WeekendRun(args.root.resolve(), args.source.resolve(), args.output.resolve(), deadline,
+                        args.demonstrations.resolve(), args.demonstration_pack.resolve())
     worker.record('started', initial_cycle=args.initial_cycle, days=args.days,
                   windows='At most eight hours each; existing Spark guards retained')
     worker.run_all(args.initial_cycle)

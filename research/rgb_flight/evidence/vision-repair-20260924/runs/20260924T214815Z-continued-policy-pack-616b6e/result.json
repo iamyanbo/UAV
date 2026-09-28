@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T214815Z-continued-policy-pack-616b6e/source/package_navigation.py",
+    "--goal",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r88/execution/ppo-pack/goal.pt",
+    "--odometry",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r88/execution/ppo-pack/odometry.pt",
+    "--projection",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r88/execution/ppo-pack/projection.pt",
+    "--safety",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r88/execution/ppo-pack/safety.json",
+    "--world",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r88/execution/ppo-pack/world.pt",
+    "--qwen",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r88/execution/ppo-pack/qwen.pt",
+    "--vision",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r88/execution/ppo-pack/vision.json",
+    "--policy",
+    "/home/iamyanbo/uav-rgb-flight/runs/20260924T205120Z-policy-continuation-e34cdd/training/final.pt",
+    "--goal-match-threshold",
+    "0.9",
+    "--output",
+    "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r92/execution/continued-policy-pack"
+  ],
+  "seconds": 1800,
+  "resource_policy": "12 GiB available floor; 4 GiB checkpoint headroom; measured peak admission; 80 GiB disk reserve",
+  "kind": "cpu",
+  "peak_gib": 4.0,
+  "status": "finished",
+  "return_code": 0,
+  "elapsed_seconds": 1.0137689230032265
+}

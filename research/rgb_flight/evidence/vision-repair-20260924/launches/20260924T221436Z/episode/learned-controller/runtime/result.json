@@ -1,0 +1,134 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 1299,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "fcb47601a5ee6342fb5321561b8e52bc6278257cefff40f32fd6277993b273a8",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "8aab9567a4de2ec6c18bf85c3a52d64f09080fa73f2189482b7e1d65bd0edf0a",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "22ece7016dfe045ccb0c37f098c1f624573b8293801ab2d24d6ff77a856288c5",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "ba0c4b93be205d9399ee5a3e29d763c816ecbf3f15a8171ac6d75e1074ae182d",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "e8a7f18bfb8fbfccdcb3e735134aa518fa540cb42ee914c492cee4f65c54b7ab",
+      "samples": 64
+    },
+    {
+      "path": "controller-000005.pt",
+      "sha256": "4e4e25be6e3196128c1a6457612eb981053b378724f0c423a952b3c7176dcd8d",
+      "samples": 64
+    },
+    {
+      "path": "controller-000006.pt",
+      "sha256": "8f581725d25e07c1342de2260c5fc956f518e2fd00d12c2f0bb86b99b57a6dad",
+      "samples": 64
+    },
+    {
+      "path": "controller-000007.pt",
+      "sha256": "f54e73d1c91fa1c1c5e54a15b5c775936ba16800bbb504ae04cda123f27df9bb",
+      "samples": 64
+    },
+    {
+      "path": "controller-000008.pt",
+      "sha256": "b061a5cd4f71ea3cd0d6378ed123cf8e50480db2aae41573a4d221af987103fc",
+      "samples": 64
+    },
+    {
+      "path": "controller-000009.pt",
+      "sha256": "ebfb9fd41438a31586e7495a5b512f89eb3bd2a618e833d41c7995c66cd10971",
+      "samples": 64
+    },
+    {
+      "path": "controller-000010.pt",
+      "sha256": "342229ef9145cc8adbaa5cc4c698e98b718b29478bb73d44fd0f6718210790bc",
+      "samples": 64
+    },
+    {
+      "path": "controller-000011.pt",
+      "sha256": "f6bdadc174a0f73b150d53f4f9a152c69a3bd5c01e3f0e31a64ea7cc0e105e8d",
+      "samples": 64
+    },
+    {
+      "path": "controller-000012.pt",
+      "sha256": "0ed1d3294cab45da7371a6e37d507aca398064de7d8faf6ff591800aafa0eb07",
+      "samples": 64
+    },
+    {
+      "path": "controller-000013.pt",
+      "sha256": "8538b83493c0a80ae4e208b849f8af04482d67ef965ab30970adc10afc8d2dc2",
+      "samples": 64
+    },
+    {
+      "path": "controller-000014.pt",
+      "sha256": "716f717bf4d95cd88d8fd9ba961710521459080a0f4c0a2649fc073e7901fd82",
+      "samples": 64
+    },
+    {
+      "path": "controller-000015.pt",
+      "sha256": "d89fc229fc7bf11e5ab932f9272355234542813e7ca0043bd5b3eb54b2cccd0e",
+      "samples": 64
+    },
+    {
+      "path": "controller-000016.pt",
+      "sha256": "763a041ad8130e35c8f3758bbff24c7539102059463134fff700ff56c1b3955d",
+      "samples": 64
+    },
+    {
+      "path": "controller-000017.pt",
+      "sha256": "ce6ad77a87d3960f56939d75b58ad0b12977480383144a1a9244426925d79d12",
+      "samples": 64
+    },
+    {
+      "path": "controller-000018.pt",
+      "sha256": "21a24818b58c8b3bf50b7930fcc42aafb083a060bab0428fc9d053ecbf924ac6",
+      "samples": 64
+    },
+    {
+      "path": "controller-000019.pt",
+      "sha256": "48cac914b37049e0b2074409cc583a72e6234aa50e808a69e07833039b4ffc2f",
+      "samples": 64
+    },
+    {
+      "path": "controller-000020.pt",
+      "sha256": "3c12f5dd9df1efd82ee2d54de892cea1c7ab26ee59e36ed7bd74eb91f9f9899f",
+      "samples": 19
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": null,
+  "final_map_status": "local_navigation",
+  "map_version": -1,
+  "map_fusion": {
+    "submitted": 1,
+    "results_polled": 1,
+    "pending_result": false,
+    "queue_bound": 1,
+    "availability": "actual CPU geometry completion, then causal publication"
+  },
+  "supported_maps_received": 53,
+  "optimized_surface_samples_received": 1004766,
+  "first_supported_map_available_ns": 1790288146882755072,
+  "handover_sim_ns": 1790288134846498304,
+  "metric_handover_sim_ns": null,
+  "control_safety_p95_seconds": 0.11910369291435927,
+  "control_safety_missed_deadlines": 865,
+  "safety_interventions": 15
+}

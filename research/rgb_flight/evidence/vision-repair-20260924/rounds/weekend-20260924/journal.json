@@ -9,6 +9,70 @@
       "initial_cycle": "metric-vision-r92",
       "days": 3.0,
       "windows": "At most eight hours each; existing Spark guards retained"
+    },
+    {
+      "time_utc": "2026-09-24T22:22:42.526489+00:00",
+      "event": "window_start",
+      "command": [
+        "/usr/bin/python3",
+        "/home/iamyanbo/uav-rgb-flight/submissions/metric-vision-r92/continue_complete_flow.py",
+        "--training-cycle",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r92",
+        "--demonstrations",
+        "/home/iamyanbo/uav-rgb-flight/runs/20260924T214817Z-next-training-collection-9acaf7/collection/flights.json",
+        "--demonstration-checkpoints",
+        "/home/iamyanbo/uav-rgb-flight/rounds/metric-vision-r92/execution/continued-policy-pack",
+        "--output",
+        "/home/iamyanbo/uav-rgb-flight/rounds/weekend-20260924/full-flow-001",
+        "--hours",
+        "8.00000"
+      ],
+      "stages": {
+        "world-update": "missing",
+        "policy-update": "missing",
+        "qwen-supervised-update": "missing",
+        "dagger-update": "missing",
+        "ppo-update": "missing",
+        "updated-policy-flight": "missing",
+        "final-reload-flight": "missing",
+        "development-flights": "missing"
+      }
+    },
+    {
+      "time_utc": "2026-09-24T22:24:46.970819+00:00",
+      "event": "window_end",
+      "return_code": 2,
+      "stages": {
+        "world-update": "failed",
+        "policy-update": "failed",
+        "qwen-supervised-update": "failed",
+        "dagger-update": "failed",
+        "ppo-update": "failed",
+        "updated-policy-flight": "failed",
+        "final-reload-flight": "failed",
+        "development-flights": "failed"
+      }
+    },
+    {
+      "time_utc": "2026-09-24T22:24:46.971052+00:00",
+      "event": "stage_failure",
+      "stages": {
+        "world-update": "Dependency failed: world-data: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T222442Z-world-data-f74d06/stdout.log",
+        "policy-update": "Dependency failed: policy-data: Dependency failed: world-update: Dependency failed: world-data: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T222442Z-world-data-f74d06/stdout.log",
+        "qwen-supervised-update": "Dependency failed: configuration-data: Dependency failed: policy-update: Dependency failed: policy-data: Dependency failed: world-update: Dependency failed: world-data: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T222442Z-world-data-f74d06/stdout.log",
+        "dagger-update": "Dependency failed: dagger-data: Dependency failed: online-trajectories: Dependency failed: dagger-flight: Dependency failed: trained-pack: Dependency failed: qwen-supervised-update: Dependency failed: configuration-data: Dependency failed: policy-update: Dependency failed: policy-data: Dependency failed: world-update: Dependency failed: world-data: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T222442Z-world-data-f74d06/stdout.log",
+        "ppo-update": "Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Dependency failed: online-trajectories: Dependency failed: dagger-flight: Dependency failed: trained-pack: Dependency failed: qwen-supervised-update: Dependency failed: configuration-data: Dependency failed: policy-update: Dependency failed: policy-data: Dependency failed: world-update: Dependency failed: world-data: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T222442Z-world-data-f74d06/stdout.log",
+        "updated-policy-flight": "Dependency failed: ppo-pack: Dependency failed: ppo-update: Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Dependency failed: online-trajectories: Dependency failed: dagger-flight: Dependency failed: trained-pack: Dependency failed: qwen-supervised-update: Dependency failed: configuration-data: Dependency failed: policy-update: Dependency failed: policy-data: Dependency failed: world-update: Dependency failed: world-data: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T222442Z-world-data-f74d06/stdout.log",
+        "final-reload-flight": "Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Dependency failed: online-trajectories: Dependency failed: dagger-flight: Dependency failed: trained-pack: Dependency failed: qwen-supervised-update: Dependency failed: configuration-data: Dependency failed: policy-update: Dependency failed: policy-data: Dependency failed: world-update: Dependency failed: world-data: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T222442Z-world-data-f74d06/stdout.log",
+        "development-flights": "Dependency failed: final-reload-flight: Dependency failed: updated-policy-flight: Dependency failed: ppo-pack: Dependency failed: ppo-update: Dependency failed: ppo-data: Dependency failed: fresh-ppo-flight: Dependency failed: dagger-pack: Dependency failed: dagger-update: Dependency failed: dagger-data: Dependency failed: online-trajectories: Dependency failed: dagger-flight: Dependency failed: trained-pack: Dependency failed: qwen-supervised-update: Dependency failed: configuration-data: Dependency failed: policy-update: Dependency failed: policy-data: Dependency failed: world-update: Dependency failed: world-data: Guard ended without worker receipt; inspect /home/iamyanbo/uav-rgb-flight/runs/20260924T222442Z-world-data-f74d06/stdout.log"
+      },
+      "state": "/home/iamyanbo/uav-rgb-flight/rounds/weekend-20260924/full-flow-001/execution/state.json"
+    },
+    {
+      "time_utc": "2026-09-24T22:24:46.971255+00:00",
+      "event": "cycle_stopped",
+      "cycle": "/home/iamyanbo/uav-rgb-flight/rounds/weekend-20260924/full-flow-001",
+      "reason": "Independent learner/flight stage incomplete"
     }
   ]
 }

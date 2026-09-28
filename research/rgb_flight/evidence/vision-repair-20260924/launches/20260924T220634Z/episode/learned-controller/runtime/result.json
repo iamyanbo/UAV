@@ -1,0 +1,139 @@
+{
+  "status": "completed",
+  "accepted": false,
+  "frames": 1396,
+  "error": null,
+  "shards": [
+    {
+      "path": "controller-000000.pt",
+      "sha256": "ac0dacae0489527676ee77cf8c17180acbe34ab15c362b2d70712fd2e0fcecc7",
+      "samples": 64
+    },
+    {
+      "path": "controller-000001.pt",
+      "sha256": "00e416e045c0a90173f47e84327c278b0695b1a2bd137190549e6cff0cecd040",
+      "samples": 64
+    },
+    {
+      "path": "controller-000002.pt",
+      "sha256": "a992548ad3324f16138c665d35f2542824c3a883a7c08a1ea928593fca6f416d",
+      "samples": 64
+    },
+    {
+      "path": "controller-000003.pt",
+      "sha256": "918c39afdf3ffc0a8ac0dbe124896ec93805c4eb4df425b5297f433da007a258",
+      "samples": 64
+    },
+    {
+      "path": "controller-000004.pt",
+      "sha256": "5127d14b9e6d530b57376d0659522eb28956e49055922f94b31c766c4dba358c",
+      "samples": 64
+    },
+    {
+      "path": "controller-000005.pt",
+      "sha256": "560217b823e4fd192fc9efc2037d57ff8fe6404d1b539e8e6a5a9f5ae9d6c0a8",
+      "samples": 64
+    },
+    {
+      "path": "controller-000006.pt",
+      "sha256": "6d2e5858bd84c0301f631f8d45ff20602e5380fb0525af1f0b6a4b88addb78ca",
+      "samples": 64
+    },
+    {
+      "path": "controller-000007.pt",
+      "sha256": "6647aed0f78221f257337e7ae5f0596cca2deccd782ed0dbe464064144e0ec85",
+      "samples": 64
+    },
+    {
+      "path": "controller-000008.pt",
+      "sha256": "3dcca3900c5f509f60371f89fea9eb867f5036dabf035f9430681866834e2015",
+      "samples": 64
+    },
+    {
+      "path": "controller-000009.pt",
+      "sha256": "9a29d6dcaa49f3f9a493d531d2ebc020346cc7b3ddc4b4f3506f894af3f93c8e",
+      "samples": 64
+    },
+    {
+      "path": "controller-000010.pt",
+      "sha256": "a1e03ca9a781a664323d82bd5f19d97d2f20d3742d278c9a907d282fb1e056d0",
+      "samples": 64
+    },
+    {
+      "path": "controller-000011.pt",
+      "sha256": "6e7edf9a1cc883750535d6f2d68e90548d3aa984696f6420206affc9b8ade065",
+      "samples": 64
+    },
+    {
+      "path": "controller-000012.pt",
+      "sha256": "d0890abbe1cb2e14a238150b48baff00256651f7ba49e017b9dfd8e08f23a51e",
+      "samples": 64
+    },
+    {
+      "path": "controller-000013.pt",
+      "sha256": "63997a92db12dd0d3b0b41045dd9ae83ce9c2958291b1e36e72a25d9af291b7f",
+      "samples": 64
+    },
+    {
+      "path": "controller-000014.pt",
+      "sha256": "f4d34bc10d86279daec0bfe46ca16a6e56318ae066bdd7210461d1e8668cd359",
+      "samples": 64
+    },
+    {
+      "path": "controller-000015.pt",
+      "sha256": "4b51b0bbd8ab1f402a3c0e4619eebfbb4c44f210219e0e091c2807535bd8023f",
+      "samples": 64
+    },
+    {
+      "path": "controller-000016.pt",
+      "sha256": "815cdbce2f23ad4f3d690f286b048cb648a92c5144e021930beb916438f0d45e",
+      "samples": 64
+    },
+    {
+      "path": "controller-000017.pt",
+      "sha256": "7693d0cc3d705289f333e98b325d7394ae7bb166b8d2884ba9f8c2a396b3c721",
+      "samples": 64
+    },
+    {
+      "path": "controller-000018.pt",
+      "sha256": "6f8c753b0e43002f182dc390209d16afd6dffcc244beceeff5f6bcf342324eb3",
+      "samples": 64
+    },
+    {
+      "path": "controller-000019.pt",
+      "sha256": "b1d1c37bf66c6f74595b819ea43317d1a5f9f103b522c5658d4e06884fb72c7e",
+      "samples": 64
+    },
+    {
+      "path": "controller-000020.pt",
+      "sha256": "0dded416445c823e604770bb42807147549880759dd9e351c2b25b2b7f2e345e",
+      "samples": 64
+    },
+    {
+      "path": "controller-000021.pt",
+      "sha256": "5986b614256949d327ce11834824c1cd1f1c09819e31290db30ce11e98f59ab6",
+      "samples": 52
+    }
+  ],
+  "scope": "Live Mode 1 only; no planner or Qwen configuration",
+  "sampled_policy": false,
+  "slow_planner_enabled": false,
+  "teacher_provenance": null,
+  "final_map_status": "local_navigation",
+  "map_version": -1,
+  "map_fusion": {
+    "submitted": 0,
+    "results_polled": 0,
+    "pending_result": false,
+    "queue_bound": 1,
+    "availability": "actual CPU geometry completion, then causal publication"
+  },
+  "supported_maps_received": 52,
+  "optimized_surface_samples_received": 556837,
+  "first_supported_map_available_ns": 1790287674103928064,
+  "handover_sim_ns": 1790287653598490624,
+  "metric_handover_sim_ns": null,
+  "control_safety_p95_seconds": 0.11473994952393696,
+  "control_safety_missed_deadlines": 887,
+  "safety_interventions": 18
+}

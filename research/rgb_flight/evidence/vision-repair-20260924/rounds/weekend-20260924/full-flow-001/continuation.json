@@ -1,0 +1,8 @@
+{
+  "status": "window_ended",
+  "independent_flow_completed": false,
+  "preference_status": "failed",
+  "accepted": false,
+  "scheduler_return_code": 2,
+  "reason": "Use flight timing/navigation receipts for acceptance; budgets are separate"
+}
