@@ -183,7 +183,7 @@ observation capture
 
 Neural inference time alone is not the control-loop latency. A system can report sub-20-ms model inference and still have a much older observation after preprocessing, planning, networking and inner-loop execution. Any aerial paper making a real-time claim should report timestamped action age, vehicle motion during inference, dropped or superseded actions and performance as delay changes.
 
-The most defensible architecture is a fast reactive actor plus a slower deliberative branch. The slow branch can select subgoals, configure task costs, choose memory queries and plan reveal manoeuvres. The fast actor handles stabilization, local obstacle response, tracking corrections and safe fallback. Deliberation can supervise or distill into the fast branch, but the two branches should share a time-indexed state and explicit arbitration rules.
+A fast reactive actor plus a slower deliberative branch is one candidate when the mission requires semantic decisions during flight. The slow branch can select subgoals, configure task costs, choose memory queries and plan reveal manoeuvres. The fast actor handles stabilization, local obstacle response, tracking corrections and safe fallback. If both are used, they need a shared time-indexed state and explicit arbitration. Compare this added branch with a route planner and controller that already meet the mission.
 
 ## 6. Occlusion, belief and active perception
 
@@ -297,7 +297,7 @@ Combine learned task value and information gain with formally specified intrinsi
 
 ## 11. Recommended experimental standard
 
-The next research implementation should begin with one real UAV task: point-to-point navigation, target tracking or occlusion-aware inspection. The architecture should then be evaluated in a hierarchy:
+The next research implementation should begin with a mission that requires the selected capability, such as reaching a surface hidden from above for inspection. First specify the allowed altitude, maps, sensors, operator support, and a competent simple system. For ordinary delivery, planned cruise above most obstacles and a short assessed approach are the reference to beat; [Prime Air's published profile](https://www.primeair.amazon/operations) illustrates this design. Then evaluate any additional architecture in a hierarchy:
 
 1. **Perception and state:** localization, geometry, target identity and map uncertainty.
 2. **Prediction:** one-step and multi-step action-conditioned latent prediction.
@@ -306,17 +306,17 @@ The next research implementation should begin with one real UAV task: point-to-p
 5. **Generalization:** unseen scenes, weather/lighting, altitude, sensor noise, moving objects and dynamics changes.
 6. **Realism:** vehicle motion continues during inference; commands are timestamped; stale actions can be superseded; safety assumptions are checked.
 
-The minimum baseline set should include a geometric controller or MPC, a native aerial VLA/world-action model, a FlowPilot- or SkyJEPA-style predictive baseline where applicable, a fast/slow or asynchronous baseline and a safety-filtered version. Ablations should remove language configuration, persistent memory, belief updates, future prediction, delay handling and safety constraints one at a time.
+The first baseline should be the simplest competent complete system for that mission: a suitable route and altitude, estimated position, a geometric planner or MPC, local obstacle handling, and an approach or abort rule as needed. Add native aerial VLA, predictive, fast/slow, and safety-filtered comparisons only when they address the observed failure and can be matched on goal, sensors, compute, and vehicle. Ablate the added mechanism and report whether it improves completed missions, intervention, time, energy, or safety. A model benchmark alone cannot establish operational value.
 
 ## 12. Position for the current project
 
-The literature supports a focused direction but not a broad novelty claim. The strongest formulation is:
+The literature supports several candidate mechanisms but does not yet select a mission. An earlier formulation was:
 
 > Can a UAV maintain a persistent, uncertain scene model and use a language-configured JEPA-style predictive branch to choose long-horizon actions, while a fast reactive branch continues safe flight during delayed deliberation?
 
-This question is grounded in an actual aerial difficulty: the vehicle's motion changes what it can see, and the best action may be the one that reveals information rather than immediately reducing distance to the goal. It naturally connects VLM task interpretation, JEPA prediction, 3DGS memory, active perception, asynchronous control and safety filtering.
+This question concerns a real aerial difficulty: motion changes what the vehicle can see. It is justified only for a task where that fact changes a necessary decision and where a simpler flight profile or sensor choice does not resolve the failure. The proposed combination of VLM, JEPA, 3DGS, active perception, asynchronous control, and safety filtering is a menu of candidate tools, not a system requirement or a demonstrated application.
 
-The contribution would need to be narrower than “a VLM plus JEPA plus 3DGS.” A credible paper should state one structural mechanism—such as action-preserving task-conditioned compression, belief-aware observation prediction or continuous time-indexed inference—and demonstrate it on route-level UAV tasks with measured delay and strong baselines.
+The contribution would need to be narrower than “a VLM plus JEPA plus 3DGS.” A credible paper should name a measured mission failure, test one structural mechanism—such as action-preserving task-conditioned compression, belief-aware observation prediction or continuous time-indexed inference—and demonstrate a material gain over a simple complete system under matched conditions.
 
 ## Selected references and local evidence
 

@@ -2,6 +2,8 @@
 
 **A consolidated per-paper annotated reference for the navigation-tracking-exploration agenda.**
 
+**2026-09-27 evidence update:** the [detailed image-goal navigation audit](Image-Goal%20Navigation%20-%20Detailed%20Evidence%20Audit%20-%202026-09-27.md) checks the closest papers' evaluation protocols and qualifies earlier claims about distance, memory, arrival accuracy, and deployment. Entries outside that audit retain their original evidence depth.
+
 Companion to the short survey deck (`UAV_Navigation_Literature_Review_Presentation.md`) and to the thematic synthesis (`UAV World Models and VLM Literature Review - Comprehensive.md`). This document goes paper by paper, mirrors the deck's four groups (World Models & JEPA, Aerial & VLA, 3DGS & Mapping, Safety & Control), and adds the related work those two documents only name-drop.
 
 ## How to read an entry
@@ -22,6 +24,14 @@ Every entry follows the same six lines so entries are comparable:
 - **Recovered lead:** identity from the recovered source archive; treat detail as a lead until re-read.
 
 Numbers are only directly comparable when sensor suite, action space, scene split, compute budget and success criteria match. Simulation success, inference speed and rendering quality are not closed-loop real-flight autonomy.
+
+### Application check
+
+Each entry's **UAV relevance** describes a capability that might help a mission; it is not evidence that the mission needs the method. Ordinary delivery is a key counterexample to automatic low-altitude navigation claims: [Prime Air](https://www.primeair.amazon/operations) publishes planned high-cruise routes and [Zipline](https://www.zipline.com/newsroom/zipline-unveils-new-autonomous-system-capable-of-quiet-fast-and-precise-home-delivery) describes keeping its main aircraft high while lowering a delivery device. A paper proposing intricate city maneuvering should compare with such simpler mission designs before claiming delivery value.
+
+The reviewed methods have narrower plausible applications. [FlowPilot](https://arxiv.org/html/2608.00635v1) and [AirDreamer](https://arxiv.org/html/2606.03252v1) can inform required close-range approaches and inspection, but their physical flight evidence does not establish city-wide routing. [SPRIN-D](https://arxiv.org/html/2510.01348v1) demonstrates real kilometer-scale GNSS-denied waypoint flights with LiDAR and prior geodata: the longest reported sortie is 1,371 m and its 9 km course was the challenge requirement. [CityNav](https://arxiv.org/html/2406.14240v3) is useful when a destination must be grounded from language; its simulation result does not show that language is preferable to a provided coordinate. An [under-bridge inspection account](https://www.skydio.com/customer-stories/japanese-infrastructure-waymark) gives a concrete mission reason for proximity and GNSS-denied operation, while remaining vendor-reported operational evidence.
+
+For any proposed architecture, name a required mission, a competent simple baseline, the observed baseline failure, and a matched test showing improved completion, intervention, time, energy, or safety. A missing paper result or an unfilled benchmark cell alone does not establish application value.
 
 ## The frame: what the papers actually establish
 
@@ -56,21 +66,21 @@ Read any claim against this list and most apparent disagreements in the literatu
 - **Does not establish:** flight-physics fidelity, calibrated uncertainty, real-time latency, or safety; Dreamer-style latent states are not a collision- or clearance-aware UAV state.
 - **UAV relevance:** the canonical "imagine then act" baseline. Aerial adaptations (e.g. AirDreamer) all modify the recipe because plain Dreamer is weak on flight physics.
 
-## A3. DINO-WM, Leptons et al (arXiv 2411.04983)
+## A3. DINO-WM, Zhou, Pan, LeCun and Pinto (arXiv 2411.04983)
 
-- **What it does:** freezes a pretrained DINOv2 visual representation and learns latent dynamics (a world model) on top of it for goal-conditioned planning.
-- **Evidence:** long-horizon visual planning on DMC; shows a strong pretrained visual backbone replaces expensive reconstruction in the world model.
-- **Establishes:** pretrained representation plus latent dynamics can support goal-directed planning; representation choice is a major design lever.
-- **Does not establish:** action-conditioned or control-centric states; the DINO features are not chosen to preserve task geometry or safety quantities.
-- **UAV relevance:** a direct test of the project's "beat a small encoder from scratch, and beat a pretrained representation used as-is" bar.
+- **What it does:** learns action-conditioned dynamics over frozen DINOv2 patch features and optimizes action sequences toward a goal image.
+- **Evidence:** visual planning across six environments, including navigation, pushing and multiparticle tasks; the earlier DMC characterization was inaccurate. [Primary paper](https://arxiv.org/abs/2411.04983).
+- **Establishes:** pretrained visual features plus learned action-conditioned dynamics can support planning without pixel reconstruction.
+- **Does not establish:** UAV deployment, flight-safety guarantees, or calibrated geometric uncertainty.
+- **UAV relevance:** a relevant latent-planning comparator; its action conditioning must not be omitted when assessing novelty.
 
 ## A4. V-JEPA 2, Meta (arXiv 2506.09985)
 
-- **What it does:** large-scale video-representation pretraining with a hierarchical masked-feature objective; strong spatio-temporal understanding and world modeling from video alone.
-- **Evidence:** state-of-the-art label efficiencies on video understanding and world-model tasks; no action interface.
-- **Establishes:** video understanding and generative-slot world modeling can come from video pretraining; a powerful video predictor exists.
-- **Does not establish:** action-conditioned control; the paper's authors are explicit that video understanding, video generation and controllable robots are separate capabilities that must each be built.
-- **UAV relevance:** a model that answers questions about a flight video has not learned how an action changes the aircraft; keeps the "not action-conditioned" caveat central for any UAV claim.
+- **What it does:** action-free video pretraining learns predictive representations; V-JEPA 2-AC adds action-conditioned posttraining for robotic planning.
+- **Evidence:** the paper includes image-goal robotic manipulation after posttraining on less than 62 hours of robot video. The previous "no action interface" statement omitted this variant. [Primary paper](https://arxiv.org/abs/2506.09985).
+- **Establishes:** video pretraining can be combined with action-conditioned robot data to support physical control.
+- **Does not establish:** aerial transfer, UAV dynamics, or safe long-distance flight.
+- **UAV relevance:** distinguish use of the base encoder from use or adaptation of the action-conditioned model; selecting the encoder alone does not supply a trained UAV transition model.
 
 ## A5. Dynalang, Lin et al (arXiv 2308.01399)
 
@@ -190,15 +200,15 @@ Read any claim against this list and most apparent disagreements in the literatu
 - **OpenUAV "UAV-Need-Help" (arXiv 2410.07087, ICLR 2025)** moves to open-ended object finding from multi-view video plus natural instruction.
 - **UAV-ON (arXiv 2508.00288, ACM MM 2025)** a VLM captioner (Qwen-VL) feeding a separate aerial object-nav agent; the archetype of VLM-as-perception.
 - **Surveys:** aerial VLN roadmap (arXiv 2604.13654) stages the field into hand-crafted, agentic, VLM, VLA, and world-model-VLA waves; the architecture survey (arXiv 2604.07705) sorts by seq2seq, end-to-end LLM/VLM, hierarchical, multi-agent and dialog models.
-- **Reality check:** benchmark success is an offline route metric; it is not closed-loop flight, measured action age, or collision/clearance evidence.
+- **Reality check:** identify whether each result measures offline prediction, closed-loop simulation, or physical flight. A benchmark success rate alone does not establish measured action age or collision/clearance performance.
 
 ## B1. OpenFly (arXiv 2502.18041), "A comprehensive platform for aerial vision-language navigation"
 
 - **What it does:** a large-scale aerial VLN evaluation platform and dataset: about 100,000 flight paths across 18 scenes, rendered by four different methods (Unreal Engine, GTA V, Google Earth imagery and 3D Gaussian Splatting of real photos), so it doubles as a real-to-sim benchmark.
 - **Evidence:** its own OpenFly-Agent reached a 26.09% success rate in real outdoor flights (modest, honest number); used as the comparison baseline by later systems (WorldFly, Pi-0-UAV).
 - **Establishes:** shared evaluation infrastructure and the largest aerial VLN setting in the corpus; a standard target for route-level comparisons.
-- **Does not establish:** a strong learned baseline or a real-flight guarantee; success on OpenFly is an offline route metric.
-- **UAV relevance:** the project's default evaluation ladder step 4 (closed loop) can be instantiated here, with the caveat that offline success is not flight.
+- **Does not establish:** reliable city-wide image-goal navigation. The paper reports distinct simulator and physical evaluations; its physical success rate must not be labeled an offline route metric. [Checked version: v7](https://arxiv.org/html/2502.18041v7).
+- **UAV relevance:** useful aerial evaluation infrastructure and a physical deployment reference; match the goal interface, sensors, split, controller and computing setup before comparing results.
 
 ## B2. SkyJEPA (arXiv 2606.23444), "Learning Long-Horizon World Models for Zero-Shot Sim-to-Real Control of Quadrotors"
 
@@ -469,7 +479,7 @@ Read any claim against this list and most apparent disagreements in the literatu
 - **Does not establish:** end-to-end action-age reporting as standard practice; most papers still quote inference latency.
 - **UAV relevance:** the deck's "Report, not assume" block: timestamped action age, motion during inference, dropped or superseded actions.
 
-**Group D takeaway.** Every safety primitive a UAV needs already exists and works (CBFs, backups, PA-MPPI, gatekeeper, certified maps, perception-aware MPC, belief-space planning). The open problem is integration: wiring a learned semantic planner and a language-configurable cost into these constraints without letting the language model disable the safety terms, and measuring the timing assumptions the proofs rely on.
+**Group D takeaway.** Many of the safety primitives used in UAV navigation already exist, including CBFs, backups, PA-MPPI, gatekeepers, certified maps, perception-aware MPC, and belief-space planning. Their guarantees depend on different state, model, and timing assumptions. The open problem is how to connect semantic planning to these constraints while preserving those assumptions and measuring the full action delay.
 
 ---
 
@@ -479,3 +489,22 @@ Read any claim against this list and most apparent disagreements in the literatu
 - **Why the memory-vs-belief story is real.** AECNav, AirHunt, AeroBelief and ConsistNav all build explicit evidence/belief/executive machinery for open-vocabulary search, and UWM-JEPA carries belief into a JEPA latent. "Remember the last location" is treated everywhere as insufficient; alternatives, likelihoods and reveal actions are the recognized mechanisms.
 - **Why the Gaussian story is real but narrowed.** SOUS VIDE/FiGS (simulator), GRaD-Nav/GRaD-Nav++ (differentiable simulator plus VLA), VISTA/ATLAS (semantic memory), SemSafe-3DGS (risk-aware nav) and FastBridge (safety filter over splats) show each Gaussian role is largely occupied. The opening is a single state that is simultaneously a memory, a simulator and a safe predictive state with calibrated uncertainty, dynamics and unknown-space handling (open areas E and F).
 - **What is not yet done together on a real UAV.** No located paper demonstrates, on one aircraft: language-configured subgoals, action-conditioned prediction over a compact geometric state, calibrated uncertainty that changes execution, explicit action-age handling, and controlled real-flight transfer. This is the statement behind the deck's position slide, and it is the bar a thesis contribution must meet.
+
+---
+
+# Cross-paper synthesis of the proposed gap claims
+
+This update checks representative papers named in the proposed gap list against nearby work already in the review. Unless the entry already has a full-text audit elsewhere in this document, the new source claims below are checked at abstract level and are not reproduced experiments.
+
+| Topic | What these papers establish | What they do not establish |
+|---|---|---|
+| Sim-to-real disturbance robustness | [SOUS VIDE/FiGS](https://arxiv.org/abs/2412.16346) couples randomized dynamics and visual simulation with real-UAV tests that include mass and wind changes. | It is a visuomotor flight-policy result, not evidence that VLM semantic representations stay stable under blur, sensor degradation, and delayed observations. |
+| Long-horizon aerial navigation | [FSD-VLN](https://arxiv.org/abs/2607.08359) directly studies long-horizon aerial VLN; [RAVEN](https://arxiv.org/abs/2509.23563) adds persistent semantic spatial memory for outdoor search. | Their existence means the gap is active. It does not show long-range target grounding, recovery, or cross-domain performance is solved. |
+| Viewpoint and spatial memory | [AgenticDiffusion](https://arxiv.org/abs/2606.04111) uses synchronized FPV and top-view inputs; [AirAnchor](https://arxiv.org/abs/2609.08442) joins local spatial anchors and persistent object memory; [FindAnything](https://arxiv.org/abs/2504.08603) provides adjacent open-vocabulary volumetric mapping. | These are multi-view or explicit-memory strategies, not proof of a single representation invariant to the full 6-DoF viewpoint range or a unified aerial map for semantics, dynamics, and safety. |
+| Continuous control | [FlowPilot](https://arxiv.org/abs/2608.00635) predicts smooth executable trajectories and reports real quadrotor flight. | Continuous UAV trajectory generation is not an empty area. The remaining problem is how language-grounded intent, robust prediction, and safety assurance work together under delay and shift. |
+| Cooperative navigation | [CoNav-UAV](https://arxiv.org/abs/2608.01802) studies dual-altitude leader/follower VLN in high-fidelity urban simulation. | The field has dedicated multi-UAV methods; simulated cooperation does not settle low-latency communication or real-world team coordination. |
+| Semantic safety | [ASMA](https://arxiv.org/abs/2409.10283) applies scene-aware control barrier functions to a vision-language drone-navigation setting. | A semantic or scene-aware component does not provide a formal guarantee for the complete perception-to-control pipeline or calibrate grounding confidence end to end. |
+| Energy, data, and benchmarks | [AVERY](https://arxiv.org/abs/2511.18151) evaluates adaptive VLM split computing; [CityNav](https://arxiv.org/abs/2406.14240) supplies language-goal trajectories over real-city 3D scenes. | Edge/cloud energy results are not automatically onboard flight results. CityNav’s real-city geometry is presented through a web 3D simulator, not recorded aircraft trajectories. Neither paper alone standardizes metrics across benchmarks. |
+| Causal world models and disturbances | [WM-CDT](https://arxiv.org/abs/2605.16547) applies a learned counterfactual digital twin to UAV navigation under semantic-communication constraints and writes exogenous disturbance into its system model. [CausalNav](https://arxiv.org/abs/2608.07809) tests physical-parameter shift on non-UAV control tasks. SOUS VIDE tests physical wind/mass changes without a causal latent world model. | It is inaccurate to say causal world models or counterfactual UAV navigation do not exist. A narrower open question is whether explicit, intervention-grounded models of hidden physical changes improve risk-aware UAV planning under shift. WM-CDT’s counterfactual target is semantic transmission; the full text does not report wind- or payload-specific interventions. |
+
+**Synthesis.** Most of the 11 headings are active research areas with partial methods. The stronger gaps are the intersections: semantic grounding under simultaneous visual degradation and delay; safety decisions that account for semantic uncertainty as well as geometry; and physical-disturbance counterfactuals that change aerial planning. Treat these as candidates for further citation and method audits, not settled “no prior work” claims.
