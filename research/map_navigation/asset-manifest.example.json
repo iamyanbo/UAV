@@ -1,0 +1,14 @@
+{
+  "schema": "photo-map-scene-assets/v1",
+  "scene_id": "env_airsim_16",
+  "geography_id": "openfly-env_airsim_16",
+  "city_id": "replace-with-actual-city-identity",
+  "source": "replace-with-source-and-version",
+  "license": "replace-with-asset-license-and-release-terms",
+  "assets": [
+    {
+      "path": "/absolute/path/to/cooked-scene-or-content-package",
+      "sha256": "replace-with-sha256-of-actual-file"
+    }
+  ]
+}

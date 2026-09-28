@@ -62,6 +62,7 @@ class SceneProcess:
 def collect(registry_path,manifests,output,split,window,packages=None,variants=None,sources=None,limit=None,learner_round=False,sample_policy=False):
     if limit is not None and limit<=0:raise ValueError('Positive per-scene attempt limit required')
     registry=read(registry_path);public=read(Path(manifests)/(split+'.json'))
+    if registry.get('schema')!='photo-map-scenes/v2':raise ValueError('Frozen v2 scene registry required')
     if public['schema']!='photo-map-missions/v4':raise ValueError('Fixed-camera v4 missions required')
     if public['registry_sha256']!=digest(registry_path):raise ValueError('Scene registry changed after mission generation')
     labels=Path(manifests)/'evaluator_labels'/(split+'.json')
@@ -82,9 +83,14 @@ def collect(registry_path,manifests,output,split,window,packages=None,variants=N
     if ledger['registry_sha256']!=digest(registry_path):raise ValueError('Collection budget registry mismatch')
     for scene in registry['scenes']:
         if scene['split']!=split:continue
-        for name,key in [('map','map_sha256'),('obstacle_field','field_sha256'),('settings','settings_sha256')]:
+        for name,key in [('map','map_sha256'),('obstacle_field','field_sha256'),
+                         ('settings','settings_sha256'),('qualification','qualification_sha256'),
+                         ('asset_manifest','asset_manifest_sha256')]:
             path=Path(scene[name])/'map.json' if name=='map' else Path(scene[name])
             if digest(path)!=scene[key]:raise ValueError('Scene input changed')
+        for asset in read(scene['asset_manifest'])['assets']:
+            if not Path(asset['path']).is_file() or digest(asset['path'])!=asset['sha256']:
+                raise ValueError('Scene asset changed since registry freeze')
         missions=[r for r in public['episodes'] if r['scene_id']==scene['scene_id']]
         if limit is not None: missions=missions[:limit]
         if split=='train':missions=[r for r in missions if r['collection_source'] in sources]

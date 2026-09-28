@@ -6,5 +6,10 @@ and the [native dependency instructions](native/README.md) before any separately
 authorized execution. This pass is local source work only and has no measured
 training, navigation, native-build or latency result.
 
+Before training, freeze the multi-city scene inventory, goal-photo missions and
+held-out evaluation in [PUBLICATION_PROTOCOL.md](PUBLICATION_PROTOCOL.md).
+The source tree currently names only `env_airsim_16`; no cross-city evidence
+exists yet.
+
 Historical planner-first and partial GRU-restoration files are preserved in
 `archive/`; active runtime and training require new v4 artifacts.

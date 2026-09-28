@@ -1,10 +1,14 @@
 {
-  "schema": "photo-map-inventory/v1",
-  "instructions": "Supply six distinct compatible scenes. Each map points to qualify OUTPUT/prior, with the sibling qualification receipt and the exact field used for qualification. No assets are implied by these examples.",
+  "schema": "photo-map-inventory/v2",
+  "instructions": "Replace this illustrative row with exactly six qualified scenes: three train, one validation, two test. Assign splits explicitly. Keep each city in one split and include at least two training cities. No assets are implied by this example.",
   "scenes": [
     {
       "scene_id": "env_airsim_16",
       "geography_id": "openfly-env_airsim_16",
+      "city_id": "replace-with-actual-city-identity",
+      "asset_family_id": "replace-with-source-asset-family",
+      "asset_manifest": "/absolute/path/to/scene-assets-manifest.json",
+      "split": "train",
       "launch_argv": [
         "/absolute/path/to/env_airsim_16/LinuxNoEditor/start.sh",
         "-RenderOffScreen",

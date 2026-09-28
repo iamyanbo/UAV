@@ -43,7 +43,9 @@ def yaw(q):
 
 
 def build_dataset(registry_path,flight_root,output,banks=()):
-    registry=read(registry_path);scene_by_id={s['scene_id']:s for s in registry['scenes']}
+    registry=read(registry_path)
+    if registry.get('schema')!='photo-map-scenes/v2':raise ValueError('Frozen v2 scene registry required')
+    scene_by_id={s['scene_id']:s for s in registry['scenes']}
     episodes=[];windows=[];audit=[];goals_positive=goals_negative=0
     bank_records=[];bank_identities={}
     for bank_path in banks:

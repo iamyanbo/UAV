@@ -79,11 +79,38 @@ def survey(field_path,settings_path,output,window):
 
 
 def registry(inventory_path,output):
-    """Inventory contains paths to actual assets; never manufacture scene IDs."""
-    rows=read(inventory_path)['scenes'];seen=set();scenes=[]
-    for row in sorted(rows,key=lambda r:(r['scene_id']!='env_airsim_16',r['scene_id'])):
-        if row['geography_id'] in seen:raise ValueError('Duplicated geography in scene inventory')
-        seen.add(row['geography_id'])
+    """Freeze explicit geography-disjoint splits over six qualified scene assets."""
+    inventory=read(inventory_path)
+    if inventory.get('schema')!='photo-map-inventory/v2':raise ValueError('Explicit v2 scene inventory required')
+    rows=inventory['scenes'];scenes=[];ids=set();geographies=set();asset_hashes=set();city_splits={}
+    required={'scene_id','geography_id','city_id','asset_family_id','asset_manifest',
+              'split','launch_argv','settings','obstacle_field','map','qualification'}
+    counts={'train':0,'validation':0,'test':0}
+    for row in sorted(rows,key=lambda r:r['scene_id']):
+        if not required.issubset(row):raise ValueError('Incomplete scene inventory row')
+        if row['split'] not in counts:raise ValueError('Unknown scene split')
+        if not all(isinstance(row[key],str) and row[key].strip() for key in
+                   ('scene_id','geography_id','city_id','asset_family_id','asset_manifest')):
+            raise ValueError('Empty scene identity')
+        if row['scene_id'] in ids or row['geography_id'] in geographies:
+            raise ValueError('Duplicated scene or geography in inventory')
+        ids.add(row['scene_id']);geographies.add(row['geography_id'])
+        city=row['city_id'];split=row['split']
+        if city in city_splits and city_splits[city]!=split:
+            raise ValueError('One city cannot occur in more than one split')
+        city_splits[city]=split;counts[split]+=1
+        if not Path(row['asset_manifest']).is_file():raise ValueError('Scene asset manifest required')
+        asset_record=read(row['asset_manifest'])
+        if asset_record.get('schema')!='photo-map-scene-assets/v1' or any(
+                asset_record.get(key)!=row[key] for key in ('scene_id','geography_id','city_id')):
+            raise ValueError('Scene asset manifest identity mismatch')
+        if not asset_record.get('assets'):raise ValueError('Scene asset manifest has no assets')
+        for asset in asset_record['assets']:
+            if not Path(asset['path']).is_file() or digest(asset['path'])!=asset['sha256']:
+                raise ValueError('Scene asset missing or changed')
+        asset_sha=digest(row['asset_manifest'])
+        if asset_sha in asset_hashes:raise ValueError('Duplicated scene asset manifest')
+        asset_hashes.add(asset_sha)
         prior=MapPrior(row['map']);field=PrivilegedObstacleField.load(row['obstacle_field'])
         specification=read(row['qualification'])
         if not specification.get('qualified') or specification.get('field_sha256')!=digest(row['obstacle_field']) or specification.get('qualified_map_sha256')!=prior.identity:
@@ -96,16 +123,22 @@ def registry(inventory_path,output):
         if not row.get('launch_argv') or not Path(row['launch_argv'][0]).is_file():raise ValueError('Actual scene executable required')
         if np.any(prior.bounds[0]<field.bounds[0,:2]) or np.any(prior.bounds[1]>field.bounds[1,:2]+2):raise ValueError('Map and field frames differ')
         scenes.append(dict(row,map=str(Path(row['map']).resolve()),obstacle_field=str(Path(row['obstacle_field']).resolve()),
-            settings=str(Path(row['settings']).resolve()),map_sha256=prior.identity,field_sha256=digest(row['obstacle_field']),settings_sha256=digest(row['settings']),qualification_sha256=digest(row['qualification'])))
-    if len(scenes)<6 or scenes[0]['scene_id']!='env_airsim_16':raise ValueError('Need env_airsim_16 and five distinct compatible environments; no same-scene fallback')
-    scenes=scenes[:6]
-    for i,row in enumerate(scenes):row['split']='train' if i<3 else 'validation' if i==3 else 'test'
-    write(output,dict(schema='photo-map-scenes/v1',scenes=scenes,inventory_sha256=digest(inventory_path)))
+            settings=str(Path(row['settings']).resolve()),asset_manifest=str(Path(row['asset_manifest']).resolve()),
+            asset_manifest_sha256=asset_sha,map_sha256=prior.identity,field_sha256=digest(row['obstacle_field']),
+            settings_sha256=digest(row['settings']),qualification_sha256=digest(row['qualification'])))
+    if counts!={'train':3,'validation':1,'test':2} or not any(
+            row['scene_id']=='env_airsim_16' and row['split']=='train' for row in scenes):
+        raise ValueError('Require explicit 3/1/2 scene splits with env_airsim_16 in training')
+    if len({row['city_id'] for row in scenes if row['split']=='train'})<2:
+        raise ValueError('Training must cover at least two independent cities')
+    write(output,dict(schema='photo-map-scenes/v2',scenes=scenes,inventory_sha256=digest(inventory_path)))
 
 
 def manifests(registry_path,output,window=None):
     from dataclasses import asdict
-    cfg=config();scenes=read(registry_path)['scenes'];output=Path(output)
+    cfg=config();registry_record=read(registry_path)
+    if registry_record.get('schema')!='photo-map-scenes/v2':raise ValueError('Frozen v2 scene registry required')
+    scenes=registry_record['scenes'];output=Path(output)
     output.mkdir(parents=True,exist_ok=True);rng=np.random.default_rng(cfg['seed'])
     state_path=output/'evaluator_labels/generation-progress.json'
     identity=digest(registry_path);campaign_identity=digest(Path(__file__).with_name('campaign.json'))
