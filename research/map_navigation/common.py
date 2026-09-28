@@ -54,15 +54,27 @@ class Window:
         if not 0 < hours <= 8:
             raise ValueError('Execution windows must be in (0,8] hours')
         self.deadline = time.monotonic() + hours * 3600
+        self.stop_file = None
 
     def remaining(self):
-        return self.deadline - time.monotonic() > 30
+        return self.deadline - time.monotonic() > 30 and not (self.stop_file and Path(self.stop_file).exists())
 
 
-def reserve_memory():
+def available_memory():
+    if Path('/proc/meminfo').exists():
+        fields=dict((r.split(':')[0],int(r.split()[1])*1024) for r in Path('/proc/meminfo').read_text().splitlines())
+        return fields['MemAvailable']
     import psutil
-    if psutil.virtual_memory().available < 16 * 1024**3:
-        raise RuntimeError('Need 12 GiB available RAM plus 4 GiB checkpoint headroom')
+    return psutil.virtual_memory().available
+
+
+def reserve_memory(required_bytes=None):
+    # The entire unified pool is available. Admission supplies measured growth;
+    # there is deliberately no fixed percentage or 12-GiB reservation.
+    required = int(os.environ.get('PHOTO_REQUIRED_GROWTH_BYTES', '0')) if required_bytes is None else int(required_bytes)
+    if required < 0: raise ValueError('Negative memory estimate')
+    if available_memory() < required:
+        raise RuntimeError('Measured workload growth exceeds available unified memory')
 
 
 class FlightLock:

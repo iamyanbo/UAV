@@ -29,13 +29,23 @@ def image_tensor(rgb,device):
 
 
 class Navigator:
-    def __init__(self,package,map_folder,goal_rgb,variant,sample_policy=False,initial_subgoal=None,perception_only=False):
+    def __init__(self,package,map_folder,goal_rgb,variant,sample_policy=False,initial_subgoal=None,perception_only=False,teacher_spec=None):
         if len(goal_rgb)!=1:raise ValueError('Exactly one goal photograph required')
         if variant not in config()['variants']:raise ValueError('Unknown temporal variant')
         self.device='cuda';self.variant=variant;self.package=Path(package);self.sample_policy=sample_policy
         self.behavior_identity=digest(self.package/'model.pt')
         self.initial_subgoal=initial_subgoal
         self.perception_only=perception_only;self.session_id=uuid.uuid4().hex
+        self.teacher=None
+        if teacher_spec:
+            if not perception_only:raise ValueError('Collection teacher requires a perception-only package')
+            from .observation_teacher import ObservationTeacher
+            specification=read(teacher_spec)
+            if specification.get('schema')!='photo-map-teacher/v1':raise ValueError('Invalid teacher descriptor')
+            if specification.get('implementation_sha256')!=digest(Path(__file__).with_name('observation_teacher.py')):
+                raise ValueError('Teacher implementation changed')
+            if specification.get('perception_sha256')!=digest(self.package/'package.json'):raise ValueError('Teacher perception changed')
+            self.teacher=ObservationTeacher(goal_rgb[0],specification)
         self.branch=initial_subgoal is not None;self.started_s=None;self.branch_context_sha256=None
         self.rgb_hashes=deque(maxlen=4)
         spec=read(self.package/'package.json')
@@ -121,9 +131,15 @@ class Navigator:
             if self.map_pending is None and now-self.map_last>=1 and self.lane.slow_admitted:
                 self.map_last=now;self.map_pending=self.map_pool.submit(self._locate,current.detach(),now)
             if self.perception_only:
-                return dict(frame_id=frame,observed_s=now,context=context_record(context,None),perception_only=True,
+                result=dict(frame_id=frame,observed_s=now,context=context_record(context,None),perception_only=True,
                     belief=dict(hypotheses=[asdict(r) for r in self.map_belief],aligned=False),
                     perception_error=self.background.error,work_s=time.monotonic()-started)
+                if self.teacher:
+                    teacher=self.teacher.step(rgb,now,frame,spatial,local,float(evidence['match_logit'].sigmoid()),float(evidence['arrival_logit'].sigmoid()))
+                    result.update(teacher=teacher,source_wall=metadata['received_monotonic'],command=teacher['teacher_command'],
+                        proposed_command=teacher['teacher_command'],stop=teacher['stop'],decision_id=f'{self.session_id}:{frame}',
+                        work_s=time.monotonic()-started,flight_phase=teacher['phase'])
+                return result
             if self.initial_subgoal is not None and not warming:
                 from .contracts import Subgoal
                 # Strict matching: no claims of restored state or equivalent
@@ -179,6 +195,7 @@ class Navigator:
             branch_context_sha256=self.branch_context_sha256,warmup=warming,
             mode='settle' if agreement else 'actor',command=command.tolist(),proposed_command=proposed.tolist(),
             stop=stop,stop_probability=stop_probability,braked=not allowed,match=match,arrival=arrival,
+            safety_reason=None if allowed else 'stale_perception' if not fresh else 'unsupported_or_blocked_corridor',
             context=context_record(context,used),selected_subgoal=asdict(used) if used else None,
             speed_mps=speed,flight_phase=phase_for(command),stopping_distance_m=distance,
             work_s=time.monotonic()-started,queue_s=queue_s,slow=self.mode2.receipt,
@@ -205,6 +222,7 @@ def main():
     parser.add_argument('--variant',choices=config()['variants'],default='mode1_vlm_world')
     parser.add_argument('--sample-policy',action='store_true')
     parser.add_argument('--perception-only',action='store_true')
+    parser.add_argument('--teacher')
     parser.add_argument('--initial-subgoal')
     args=parser.parse_args();args.output.mkdir(parents=True,exist_ok=True)
     client=BrokerClient(args.socket,args.episode_id);pool=ThreadPoolExecutor(max_workers=1)
@@ -213,7 +231,7 @@ def main():
         first,raw=client.goal_view(0)
         if first.get('view_count',1)!=1:raise ValueError('One goal image required')
         nav=Navigator(args.package,args.map,[np.frombuffer(raw,np.uint8).reshape(480,640,3).copy()],args.variant,args.sample_policy,
-                      json.loads(args.initial_subgoal) if args.initial_subgoal else None,args.perception_only)
+                      json.loads(args.initial_subgoal) if args.initial_subgoal else None,args.perception_only,args.teacher)
         (args.output/'CONTROLLER_READY').touch()
         with (args.output/'decisions.jsonl').open('x') as log:
             while not (args.output/'CONTROLLER_STOP').exists():
@@ -222,7 +240,7 @@ def main():
                     active=pending.result();pending=None
                     log.write(json.dumps(active,allow_nan=False)+'\n');log.flush()
                 if pending is None:pending=pool.submit(nav.step,dict(metadata),bytes(rgb))
-                if args.perception_only:continue
+                if args.perception_only and not args.teacher:continue
                 command=[0.,0.,0.,0.];stop=False;source=last
                 if active and 0<=time.monotonic()-active['source_wall']<=.25:
                     command=active['command'];stop=active['stop'];source=active['frame_id']

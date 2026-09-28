@@ -29,9 +29,14 @@ def main():
     p.add_argument('--sources',nargs='+',choices=('expert','manoeuvre','exploration'));p.add_argument('--limit',type=int);p.add_argument('--learner-round',action='store_true')
     p.add_argument('--sample-policy',action='store_true')
     p.add_argument('--perception-package')
+    p.add_argument('--workers',type=int,default=1);p.add_argument('--profile');p.add_argument('--pilot',action='store_true')
+    p.add_argument('--teacher')
+    p.add_argument('--benchmark',action='store_true')
     p=sub.add_parser('adaptation-data');p.add_argument('--dataset',required=True);p.add_argument('--output',required=True)
     p.add_argument('--component',choices=('configurator','preferences','ppo'),required=True);p.add_argument('--behavior-checkpoint')
     p=sub.add_parser('branches');p.add_argument('--registry',required=True);p.add_argument('--flights',required=True);p.add_argument('--output',required=True)
+    p=sub.add_parser('disturbances');p.add_argument('--registry',required=True);p.add_argument('--flights',required=True);p.add_argument('--output',required=True)
+    p=sub.add_parser('intervention-audit');p.add_argument('--flights',required=True);p.add_argument('--output',required=True)
     p=sub.add_parser('dataset');p.add_argument('--registry',required=True);p.add_argument('--flights',required=True);p.add_argument('--output',required=True);p.add_argument('--banks',nargs='*',default=[])
     p=sub.add_parser('encode');p.add_argument('--dataset',required=True);p.add_argument('--output',required=True)
     p.add_argument('--upstream',default='/upstream/vjepa2');p.add_argument('--checkpoint',required=True)
@@ -46,6 +51,7 @@ def main():
     p.add_argument('--output',required=True);p.add_argument('--variant',choices=config()['variants'],default='mode1_vlm_world');p.add_argument('--perception-only',action='store_true')
     p=sub.add_parser('report');p.add_argument('--manifest',required=True);p.add_argument('--results',required=True);p.add_argument('--output',required=True)
     args=parser.parse_args();window=Window(args.hours)
+    window.stop_file=args.workspace/'STOP'
     with FlightLock(args.workspace,args.stage):
         if args.stage=='acquire':
             from .acquisition import acquire
@@ -79,13 +85,19 @@ def main():
             manifests(args.registry,args.output,window)
         elif args.stage=='collect':
             from .collect import collect
-            collect(args.registry,args.manifests,args.output,args.split,window,args.packages,args.variants,args.sources,args.limit,args.learner_round,args.sample_policy,args.perception_package)
+            collect(args.registry,args.manifests,args.output,args.split,window,args.packages,args.variants,args.sources,args.limit,args.learner_round,args.sample_policy,args.perception_package,args.workers,args.profile,args.pilot,args.teacher,args.benchmark)
         elif args.stage=='adaptation-data':
             from .adaptation_data import build
             build(args.dataset,args.output,args.component,args.behavior_checkpoint)
         elif args.stage=='branches':
             from .branches import prepare_branches
             prepare_branches(args.registry,args.flights,args.output)
+        elif args.stage=='disturbances':
+            from .disturbances import prepare
+            prepare(args.registry,args.flights,args.output)
+        elif args.stage=='intervention-audit':
+            from .disturbances import qualify_pairs
+            qualify_pairs(args.flights,args.output)
         elif args.stage=='dataset':
             from .data import build_dataset
             build_dataset(args.registry,args.flights,args.output,args.banks)

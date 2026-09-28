@@ -53,7 +53,7 @@ def body_displacement(previous,current):
 
 def build_dataset(registry_path,flight_root,output,banks=()):
     registry=read(registry_path)
-    if registry.get('schema')!='photo-map-scenes/v2':raise ValueError('Frozen v2 scene registry required')
+    if registry.get('schema')!='photo-map-scenes/v3':raise ValueError('Frozen v3 scene registry required')
     scene_by_id={s['scene_id']:s for s in registry['scenes']}
     episodes=[];windows=[];audit=[];goals_positive=goals_negative=0
     bank_records=[];bank_identities={}
@@ -66,6 +66,8 @@ def build_dataset(registry_path,flight_root,output,banks=()):
             bank_records.append(record)
     for result_path in sorted(Path(flight_root).rglob('episode/result.json')):
         episode=result_path.parent;result=read(result_path)
+        if result.get('engineering_only'):
+            audit.append(dict(episode=str(episode),reason='engineering-only timing qualification'));continue
         scene_id=result.get('scene_id')
         if scene_id not in scene_by_id:
             audit.append(dict(episode=str(episode),reason='unregistered_scene'));continue
@@ -93,6 +95,12 @@ def build_dataset(registry_path,flight_root,output,banks=()):
         if perception_path.exists() and perception_path!=correction_path:
             if not perception_receipt.exists() or read(perception_receipt).get('decisions_sha256')!=digest(perception_path):raise ValueError('Missing or stale perception replay receipt')
         estimates={r['frame_id']:r for r in lines(perception_path)} if perception_path.exists() else {}
+        annotation_path=episode/'training_labels/annotations.jsonl'
+        annotations={r['frame_id']:r for r in lines(annotation_path)} if annotation_path.exists() else {}
+        if annotations:
+            annotation_receipt=read(annotation_path.parent/'annotation-receipt.json')
+            if annotation_receipt['annotations_sha256']!=digest(annotation_path) or annotation_receipt['source_frames_sha256']!=digest(episode/'training_labels/frames.jsonl'):
+                raise ValueError('Changed annotation provenance')
         prior=MapPrior(scene['map']);commands=IndexedCommands(lines(episode/'training_labels/commands.jsonl'))
         commands.coverage_end_ns=max((r['state_sim_ns'] for r in labels),default=0)
         index=len(episodes)
@@ -103,7 +111,8 @@ def build_dataset(registry_path,flight_root,output,banks=()):
             corrections_sha256=digest(correction_path) if correction_path.exists() else None,
             perception_receipt_path=str(perception_receipt.resolve()),perception_receipt_sha256=digest(perception_receipt) if perception_receipt.exists() else None,
             perception_path=str(perception_path.resolve()),perception_sha256=digest(perception_path) if perception_path.exists() else None,
-            collection_source=result.get('collection_source','legacy_expert')))
+            collection_source=result.get('collection_source','legacy_expert'),
+            annotations_sha256=digest(annotation_path) if annotations else None))
         times=[r['sim_ns'] for r in rows];previous=-math.inf
         flight_start=result.get('start_sim_seconds',times[0]/1e9)
         collision_rows=sorted((r for r in labels if r['airsim_collision'] or r['geometry_collision']),key=lambda r:r['state_sim_ns'])
@@ -130,6 +139,11 @@ def build_dataset(registry_path,flight_root,output,banks=()):
             if correction and (correction.get('schema')!='observable-expert/v1' or not correction.get('independent')):
                 raise ValueError('Independent, grounded expert correction required')
             estimate=estimates.get(row['frame_id'],{})
+            annotation=annotations.get(row['frame_id'],{})
+            if estimate.get('teacher'):
+                correction=estimate['teacher']
+                if correction.get('schema')!='observation-teacher/v2' or not correction.get('independent'):
+                    raise ValueError('Invalid observation-based correction')
             recorded=estimate.get('context')
             spatial=snapshot_from_dict(recorded['spatial']) if recorded else SpatialSnapshot(observed_s=row['sim_ns']/1e9)
             subgoal=Subgoal(**recorded['subgoal']) if recorded and recorded.get('subgoal') else None
@@ -148,7 +162,7 @@ def build_dataset(registry_path,flight_root,output,banks=()):
                 elif candidates:
                     target_id=min(candidates,key=lambda t:np.linalg.norm(prior.tiles[t]-goal[:2]))
                     teacher_subgoal=replace(teacher_subgoal,target_source='map',target_reference=f'map-{target_id}')
-            elif teacher_subgoal and correction['intention']=='search' and spatial.tracking and spatial.poses and spatial.camera_to_body and spatial.geometry and i%2:
+            elif teacher_subgoal and correction['schema']=='observable-expert/v1' and correction['intention']=='search' and spatial.tracking and spatial.poses and spatial.camera_to_body and spatial.geometry and i%2:
                 from dataclasses import replace
                 pose=np.asarray(spatial.poses[-1]).reshape(4,4)
                 rotation=np.asarray(spatial.camera_to_body).reshape(3,3)
@@ -259,7 +273,9 @@ def build_dataset(registry_path,flight_root,output,banks=()):
                 labels=dict(offset=(position[:2]-prior.tiles[tile]).tolist(),above_surface=float(surface-position[2]),
                     yaw=[math.sin(heading),math.cos(heading)],near_goal=near,goal_valid=valid,arrival=stop,
                     command=correction['teacher_command'] if correction is not None else None,
-                    policy_valid=bool(correction is not None and recorded is not None and not label['airsim_collision'] and not label['geometry_collision']),
+                    policy_valid=bool(correction is not None and correction.get('policy_valid',False) and recorded is not None
+                        and annotation.get('label_valid',False) and not label['airsim_collision'] and not label['geometry_collision']),
+                    auxiliary=annotation,
                     terminal_value=float(bool(result.get('success')))-2*float(result.get('termination') in ('collision','geometry_collision'))
                         -.001*max(0.,result.get('elapsed_sim_seconds',0.)-(row['sim_ns']/1e9-flight_start)),
                     future_position=future_positions,future_goal=future_goal,future_collision=future_collision,future_yaw=future_yaw,
@@ -274,7 +290,7 @@ def build_dataset(registry_path,flight_root,output,banks=()):
     policy_windows=[w for w in windows if w['labels']['policy_valid']]
     quality['teacher_altitudes']=dict(Counter(w['teacher_subgoal']['altitude'] for w in policy_windows))
     quality['teacher_reference_sources']=dict(Counter(w['teacher_subgoal']['target_source'] for w in policy_windows))
-    write(output,dict(schema='photo-map-dataset/v5',data_quality=quality,bank_records=bank_records,bank_identities=bank_identities,registry_sha256=digest(registry_path),episodes=episodes,windows=windows,
+    write(output,dict(schema='photo-map-dataset/v6',data_quality=quality,bank_records=bank_records,bank_identities=bank_identities,registry_sha256=digest(registry_path),episodes=episodes,windows=windows,
           audit=audit,training_goal_positives=goals_positive,training_goal_negatives=goals_negative,
           action_semantics='post-safety dispatch intervals, not measured actuator application',
           purpose='perception, subgoal execution and transition learning; no omniscient search imitation'))
@@ -283,7 +299,7 @@ def build_dataset(registry_path,flight_root,output,banks=()):
 class Dataset:
     def __init__(self,path,stage,split='train',teacher_root=None):
         self.path=Path(path);self.spec=read(path);self.stage=stage;self.teacher_root=Path(teacher_root) if teacher_root else None
-        if self.spec['schema']!='photo-map-dataset/v5':raise ValueError('Fixed-camera temporal dataset required')
+        if self.spec['schema']!='photo-map-dataset/v6':raise ValueError('Fixed-camera temporal dataset required')
         if self.spec.get('data_quality',{}).get('schema')!='temporal-data-quality/v1':raise ValueError('Rebuild dataset with the timing/label audit')
         if split not in ('train','validation'):raise ValueError('Sealed test data cannot train or tune models')
         self.teacher_identity=None

@@ -1,18 +1,18 @@
 # Connected temporal pipeline, revision 5
 
-Status: source implementation and manual review only. No imports, tests, builds,
-training, replay, simulator flights or Spark access were performed. This is not
-a training-readiness or navigation-acceptance receipt.
+The original revision was source-only. The collection follow-up adds acquisition,
+syntax/ledger checks and Spark RGB probes; see `COLLECTION_PROGRAM.md`. Native
+perception, trained controllers and complete-flight acceptance remain pending.
 
 ## Connection trace
 
 | Boundary | Active connection | Required evidence |
 | --- | --- | --- |
-| Environment to missions | `prepare.registry/manifests`, frozen city/asset identities | Three train scenes across at least two cities, one validation scene, two held-out scenes; no city crosses splits |
+| Environment to missions | `prepare.registry/manifests`, frozen city/asset identities | 14 training, four validation and six held-out environments; reviewed geography/layout overlap; no city crosses splits |
 | RGB to spatial evidence | `BackgroundPerception.observe`: independent bounded depth and tracking jobs | Identical-frame depth establishes scale; immutable native snapshots publish before Gaussian work |
 | Evidence to actor | `assemble_context`, shared by runtime and `batch_context` | Four unique, timestamped observations; exact recorded preceding dispatches; masked initial padding |
 | Actor to simulator | Decision ID through `BrokerClient.command` and broker dispatch receipts | Proposed, safety-modified and dispatched commands remain distinct; application time remains unobserved |
-| Recording to labels | `build_dataset`, `observable_expert`, measured dispatch intervals | Independent visibility/local-search teacher; no self-imitation or hidden remaining-route steering |
+| Recording to labels | `build_dataset`, `observation_teacher`, measured dispatch intervals | Independently qualified visual/local-search teacher; geometric visibility alone is ineligible for imitation |
 | Labels to dynamics | `learning.objective`, `WindowWorld` | 80 nominal 50 ms steps, actual interval duration, unique future RGB, body-relative translation and yaw |
 | Actor to imagined outcomes | `temporal.rollout` | Recompute the frozen actor every step; update relative geometry, uncertainty and expiry; real safety is excluded |
 | Outcomes to proposal tuning | `prepare_branches`, `adaptation_data.build` | Matched settled restarts, identical goal photograph, warm-up context, seed and continuation package |
@@ -27,11 +27,11 @@ a training-readiness or navigation-acceptance receipt.
    or Qwen. `collect --perception-package PATH` runs a live RGB sidecar alongside
    the offline expert collector. The sidecar never calls the command API.
    Alternatively use explicitly diagnostic, paced `replay --perception-only`.
-3. Rebuild the v5 dataset with those recorded contexts. Train metric motion and
-   subgoal-conditioned imitation. Labels use visible goal/corridor evidence,
-   supported reference IDs, or local observation-based search. Privileged route
-   generation still supplies collection trajectories, not unresolved-search
-   imitation targets.
+3. Qualify the observation teacher independently, then collect with
+   `--perception-package PATH --teacher DESCRIPTOR`. This explicit collection
+   mode makes the teacher the sole command owner. Rebuild the v6 dataset with
+   recorded contexts and qualified corrections for metric-motion and imitation
+   training. Geometry-derived reference actions remain masked for imitation.
 4. Calibrate/package the actor for `mode1`, and collect its train/validation
    outcomes. World/value training requires those actor identities. Expert
    trajectories can supervise dynamics; only current-actor outcomes supervise
@@ -80,11 +80,12 @@ initialized perception. Such flights remain data, but are not matched evidence.
 The current branch interventions are maintain/gain/lose intentions without
 transplanted target IDs; broader proposal coverage must be collected separately.
 
-Models, datasets and packages use v5; observation/subgoal/spatial records and
-adaptation/Qwen artifacts use v2. Missions remain v4 and the frozen scene registry
-remains v2. Native Photo-SLAM stays at the existing pinned commit/bridge contract.
+Models and packages use v5, datasets v6, missions v5 and frozen scene registries
+v3. Observation/subgoal/spatial records and adaptation/Qwen artifacts use v2.
+Native Photo-SLAM stays at the existing pinned commit/bridge contract.
 Old model/data artifacts are rejected, not silently converted. Archives and
-previous evidence remain intact. Dataset quality counts and full-horizon/collision
+previous evidence summaries remain intact. Authorized obsolete RGB payload/cache
+cleanup is separately receipted on Spark. Dataset quality counts and full-horizon/collision
 gates are necessary checks, not proof of sufficient training data.
 
 ## Deferred acceptance

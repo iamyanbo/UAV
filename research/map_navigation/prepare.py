@@ -8,6 +8,7 @@ from .common import config,read,write,digest
 from .maps import MapPrior,prepare_map
 from .routing import Router, route_advantage
 from .aerial import envelope
+from .collection_protocol import SCENES, MISSIONS, LABELS, curriculum_slot, source_slot, route_complexity
 
 
 def survey(field_path,settings_path,output,window):
@@ -19,7 +20,7 @@ def survey(field_path,settings_path,output,window):
     import airsim
     from calibration import measure_color_order,canonical_rgb
     field=PrivilegedObstacleField.load(field_path);settings=read(settings_path)
-    client=airsim.MultirotorClient(timeout_value=30);vehicle='drone_1'
+    client=airsim.MultirotorClient(ip=settings.get('LocalHostIp','127.0.0.1'),port=settings.get('ApiServerPort',41451),timeout_value=30);vehicle='drone_1'
     if __import__('json').loads(client.getSettingsString())!=settings:raise ValueError('Scene settings mismatch')
     root=Path(output);raw=root/'capture';raw.mkdir(parents=True,exist_ok=True)
     identity=dict(field=digest(field_path),settings=digest(settings_path))
@@ -79,15 +80,19 @@ def survey(field_path,settings_path,output,window):
 
 
 def registry(inventory_path,output):
-    """Freeze explicit geography-disjoint splits over six qualified scene assets."""
+    """Freeze audited, geography-disjoint splits over the qualified scene pool."""
     inventory=read(inventory_path)
-    if inventory.get('schema')!='photo-map-inventory/v2':raise ValueError('Explicit v2 scene inventory required')
+    if inventory.get('schema')!='photo-map-inventory/v3':raise ValueError('Explicit v3 scene inventory required')
     rows=inventory['scenes'];scenes=[];ids=set();geographies=set();asset_hashes=set();city_splits={}
     required={'scene_id','geography_id','city_id','asset_family_id','asset_manifest',
-              'split','launch_argv','settings','obstacle_field','map','qualification'}
+              'split','launch_argv','settings','obstacle_field','map','qualification','overlap_audit','source','engine',
+              'simulator_root','simulator_binary'}
     counts={'train':0,'validation':0,'test':0}
     for row in sorted(rows,key=lambda r:r['scene_id']):
         if not required.issubset(row):raise ValueError('Incomplete scene inventory row')
+        if not row['overlap_audit'].get('reviewed') or not row['overlap_audit'].get('layout_sha256'):
+            raise ValueError('Layout/provenance overlap audit required before freezing splits')
+        if row['engine']!='Unreal/AirSim':raise ValueError('Qualify a continuous-physics adapter before adding engines')
         if row['split'] not in counts:raise ValueError('Unknown scene split')
         if not all(isinstance(row[key],str) and row[key].strip() for key in
                    ('scene_id','geography_id','city_id','asset_family_id','asset_manifest')):
@@ -126,18 +131,19 @@ def registry(inventory_path,output):
             settings=str(Path(row['settings']).resolve()),asset_manifest=str(Path(row['asset_manifest']).resolve()),
             asset_manifest_sha256=asset_sha,map_sha256=prior.identity,field_sha256=digest(row['obstacle_field']),
             settings_sha256=digest(row['settings']),qualification_sha256=digest(row['qualification'])))
-    if counts!={'train':3,'validation':1,'test':2} or not any(
+    expected={s:config()['splits'][s+'_scenes'] for s in counts}
+    if counts!=expected or not any(
             row['scene_id']=='env_airsim_16' and row['split']=='train' for row in scenes):
-        raise ValueError('Require explicit 3/1/2 scene splits with env_airsim_16 in training')
-    if len({row['city_id'] for row in scenes if row['split']=='train'})<2:
-        raise ValueError('Training must cover at least two independent cities')
-    write(output,dict(schema='photo-map-scenes/v2',scenes=scenes,inventory_sha256=digest(inventory_path)))
+        raise ValueError('Require configured 14/4/6 splits with env_airsim_16 in training')
+    layouts=[row['overlap_audit']['layout_sha256'] for row in scenes]
+    if len(set(layouts))!=len(layouts):raise ValueError('Duplicate layouts are not independent environments')
+    write(output,dict(schema=SCENES,scenes=scenes,inventory_sha256=digest(inventory_path)))
 
 
 def manifests(registry_path,output,window=None):
     from dataclasses import asdict
     cfg=config();registry_record=read(registry_path)
-    if registry_record.get('schema')!='photo-map-scenes/v2':raise ValueError('Frozen v2 scene registry required')
+    if registry_record.get('schema')!=SCENES:raise ValueError('Frozen v3 scene registry required')
     scenes=registry_record['scenes'];output=Path(output)
     output.mkdir(parents=True,exist_ok=True);rng=np.random.default_rng(cfg['seed'])
     state_path=output/'evaluator_labels/generation-progress.json'
@@ -157,7 +163,8 @@ def manifests(registry_path,output,window=None):
         rejects={};bounds=router.bounds
         while accepted<count and attempts<count*1000:
             if window is not None and not window.remaining():checkpoint();return
-            attempts+=1;attempt_counts[scene['scene_id']]=attempts;band=cfg['episodes']['distance_bands_m'][(accepted//3)%3]
+            attempts+=1;attempt_counts[scene['scene_id']]=attempts;curriculum=curriculum_slot(accepted)
+            band=curriculum['length_m']
             start_xy=rng.uniform(np.maximum(prior.bounds[0],bounds[0,:2])+4,np.minimum(prior.bounds[1],bounds[1,:2])-4)
             heading=rng.uniform(-math.pi,math.pi);distance=rng.uniform(*band)
             goal_xy=start_xy+distance*np.array([math.cos(heading),math.sin(heading)])
@@ -177,12 +184,20 @@ def manifests(registry_path,output,window=None):
                 rejects[category]=rejects.get(category,0)+1;continue
             best=routes[0];path=np.asarray(best.waypoints)
             length=sum(float(np.linalg.norm(b-a)) for a,b in zip(path,path[1:]))
-            if not 20<=length<=cfg['episodes']['maximum_reference_length_m']:continue
+            complexity=route_complexity(path)
+            if not band[0]<=length<=band[1] or complexity['artificial_loop']:
+                rejects['route_length_or_loop']=rejects.get('route_length_or_loop',0)+1;continue
+            if complexity['decision_proxy']<curriculum['minimum_decisions']:
+                rejects['insufficient_decisions']=rejects.get('insufficient_decisions',0)+1;continue
             ident=f"{scene['scene_id']}-{scene['split']}-{accepted:05d}"
-            source=cfg['collection']['source_cycle'][accepted%10] if scene['split']=='train' else 'expert'
-            timeout=max(180,4*best.estimated_seconds+180)
+            source=source_slot(accepted) if scene['split']=='train' else 'expert'
+            timeout=max(cfg['episodes']['timeout_min_s'],cfg['episodes']['timeout_factor']*best.estimated_seconds+cfg['episodes']['search_allowance_s'])
+            from .conditions import sample
+            conditions=sample(accepted,scene['split'],read(scene['qualification']).get('appearance_capabilities',{}))
             public.append(dict(episode_id=ident,scene_id=scene['scene_id'],split=scene['split'],map_sha256=prior.identity,
-                goal_views=1,goal_record='goals/'+ident,timeout_s=timeout,collection_source=source))
+                goal_views=1,goal_record='goals/'+ident,timeout_s=timeout,collection_source=source,
+                collection_stream='learner' if source=='exploration' else 'reference',curriculum=curriculum['name'],
+                conditions=conditions))
             private.append(dict(episode_id=ident,scene_id=scene['scene_id'],split=scene['split'],phase=1+accepted%3,
                 start_ned_m=start.tolist(),start_yaw_degrees=yaw,goal_ned_m=goal.tolist(),
                 goal_yaw_degrees=float(rng.uniform(-180,180)),reference_path_ned_m=path.tolist(),
@@ -191,6 +206,7 @@ def manifests(registry_path,output,window=None):
                 horizontal_separation_m=float(np.linalg.norm(goal_xy-start_xy)),
                 endpoint_kinds=['ground' if accepted%2==0 else 'roof','ground' if (accepted//2)%2==0 else 'roof'],
                 route_kind=best.family,route_advantage=category,route_alternatives=[asdict(r) for r in routes],
+                complexity=complexity,semantic_annotation=None,recognizability_audited=False,
                 collection_source=source,flight_envelope=prior.flight_envelope,camera_profile='fixed-forward-monocular/v1'))
             accepted+=1;checkpoint()
         audit.append(dict(scene_id=scene['scene_id'],accepted=accepted,requested=count,attempts=attempts,rejected_categories=rejects))
@@ -198,5 +214,5 @@ def manifests(registry_path,output,window=None):
         if accepted<count:raise RuntimeError('Missing route-category coverage; do not substitute easier missions: '+scene['scene_id'])
     checkpoint()
     for split in ('train','validation','test'):
-        write(output/(split+'.json'),dict(schema='photo-map-missions/v4',registry_sha256=digest(registry_path),episodes=[r for r in public if r['split']==split]))
-        write(output/'evaluator_labels'/(split+'.json'),dict(schema='privileged-photo-map-labels/v4',episodes=[r for r in private if r['split']==split]))
+        write(output/(split+'.json'),dict(schema=MISSIONS,registry_sha256=digest(registry_path),episodes=[r for r in public if r['split']==split]))
+        write(output/'evaluator_labels'/(split+'.json'),dict(schema=LABELS,episodes=[r for r in private if r['split']==split]))

@@ -51,6 +51,7 @@ def observable_expert(position, heading, velocity, goal, goal_heading, calibrati
         altitude='gain' if command[2]<-.1 else 'lose' if command[2]>.1 else 'maintain'
     if arrival:command=[0.]*4;intention='hold'
     return dict(schema='observable-expert/v1',teacher_command=command,intention=intention,altitude=altitude,
+                policy_valid=False,eligibility_reason='geometry does not establish visual recognizability or an observable search decision',
                 goal_visibility=float(seen),goal_evidence=float(seen)*math.exp(-float(np.linalg.norm(delta))/20.),
                 arrival=arrival,independent=True,grounding='goal_view_agreement_label' if arrival else
                 'visible_goal_and_corridor' if seen else 'observable_local_search')

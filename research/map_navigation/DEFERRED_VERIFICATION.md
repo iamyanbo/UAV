@@ -1,8 +1,9 @@
 # Deferred verification and acceptance
 
-No executable checks were run in this implementation pass: no tests, import or
-compile checks, native builds, Spark access, training, replay or simulator runs.
-Review below is an execution checklist, not a new test harness or evidence.
+The original architecture pass was source-only. The September 28 collection
+implementation adds syntax checks, queue/intervention checks and isolated Spark
+RGB probes. Those do not qualify native perception or complete navigation.
+The remaining checklist below is not acceptance evidence.
 
 ## Native and source integration
 
@@ -58,9 +59,9 @@ Review below is an execution checklist, not a new test harness or evidence.
 - Qualify restart pairs by recorded context, goal bytes, seed and continuation
   identity. Reject unmatched restarts rather than claiming causal preferences.
 
-- Create new fixed-camera v5 data; historical v2/v3 data and checkpoints must
-  fail compatibility gates. Audit three training scenes, one validation scene
-  and two held-out scenes. Keep evaluator geometry outside inference packages.
+- Create new fixed-camera v6 datasets from v5 missions; historical datasets must
+  fail compatibility gates. Audit 14 training, four validation and six held-out
+  environments. Keep evaluator geometry outside inference packages.
 - Train localization/goal/motion, temporal imitation, world prediction with
   frozen V-JEPA auxiliary targets, and actor-driven supported branch rollouts.
   World actor-rollout supervision masks actions unsupported by recorded branches.

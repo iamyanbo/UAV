@@ -1,6 +1,6 @@
 {
-  "schema": "photo-map-inventory/v2",
-  "instructions": "Replace this illustrative row with exactly six qualified scenes: three train, one validation, two test. Assign splits explicitly. Keep each city in one split and include at least two training cities. No assets are implied by this example.",
+  "schema": "photo-map-inventory/v3",
+  "instructions": "Supply 24 qualified, audited environments: 14 train, 4 validation, 6 test. This example does not imply installed or qualified assets.",
   "scenes": [
     {
       "scene_id": "env_airsim_16",
@@ -18,7 +18,15 @@
       "settings": "/absolute/path/to/settings.json",
       "obstacle_field": "/absolute/path/to/obstacle-field.npz",
       "map": "/absolute/path/to/qualification/prior",
-      "qualification": "/absolute/path/to/qualification/qualification.json"
+      "qualification": "/absolute/path/to/qualification/qualification.json",
+      "source": "OpenFly",
+      "engine": "Unreal/AirSim",
+      "simulator_root": "/absolute/path/to/env_airsim_16/LinuxNoEditor",
+      "simulator_binary": "/absolute/path/to/env_airsim_16/LinuxNoEditor/AirVLN/Binaries/Linux/AirVLN-Linux-Shipping",
+      "overlap_audit": {
+        "reviewed": false,
+        "layout_sha256": null
+      }
     }
   ]
 }

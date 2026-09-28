@@ -43,22 +43,20 @@ https://arxiv.org/abs/2508.00288.
 
 ## Freeze the environment before learning
 
-`inventory.example.json` defines v2 inventory fields. Supply real executable,
+`inventory.example.json` defines v3 inventory fields. Supply real executable,
 asset manifest, city/geography IDs, settings, map, privileged obstacle field and
 qualification receipt for every scene. `prepare.registry` now requires explicit
 splits and refuses duplicate scenes, duplicate geography, a city crossing
-splits, or fewer than two training cities. The current minimal design is three
-training scenes, one validation scene and two sealed test scenes, including
-`env_airsim_16` in training. This requires at least four independent city IDs
-under the city-disjoint rule. The six-scene registry is the current declared
-design, not a power argument. If more held-out cities and visual families can
-be qualified, revise the campaign counts and registry gate *before* data
-collection, then freeze that larger design. Changing the scene matrix after
+splits, or unreviewed layout provenance. The target is 14 training environments,
+four validation environments and six sealed test environments, including
+`env_airsim_16` in training. Candidates come from OpenFly, AerialVLN and
+UrbanScene3D. The 24-environment target is not a power argument. Freeze actual
+qualified assets before learning. Changing the scene matrix after
 inspecting test performance invalidates the primary evaluation.
 
 The inventory must be filled with actual asset identities. As of this source
-revision, only `env_airsim_16` is named; five other scenes and their cities are
-not identified or qualified. Do not claim multi-city evidence yet. A city ID
+revision, acquisition and engineering qualification are underway; the complete
+24-environment inventory is not yet qualified. Do not claim multi-city evidence. A city ID
 must mean a genuinely different geographic model, not a renamed neighborhood
 or recolored copy. Record common Unreal asset packs and repeated landmark
 meshes with `asset_family_id`; inspect cross-split overlap manually. A manifest
@@ -102,7 +100,7 @@ proposed/safety-modified/dispatched action distinction, missing-frame rates,
 collision and arrival labeling, deduplication, rejected data, altitude/route
 coverage and demographic/geographic limits of the scenes. Preserve raw data
 and private evaluator labels separately. The model package must fail if a
-privileged field or sealed test asset is present. The current v5 dataset and
+privileged field or sealed test asset is present. The current v6 dataset and
 `audit.py` provide partial provenance and coverage counts; they are not a
 complete data card or evidence of data quality.
 

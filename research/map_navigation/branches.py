@@ -39,7 +39,7 @@ def prepare_branches(registry,flights,output):
         if not 20<=length<=config()['episodes']['maximum_reference_length_m']:continue
         timeout=max(180.,4*best.estimated_seconds+180)+2.
         group=digest(episode/'training_labels/frames.jsonl')[:16]+'-'+str(sample['frame_id'])
-        for altitude in ('maintain','gain','lose'):
+        for altitude in ('maintain','gain' if int(group[:4],16)%2==0 else 'lose'):
             ident=group+'-'+altitude
             from dataclasses import replace
             from goal_io import load_goal,write_goal
@@ -49,7 +49,7 @@ def prepare_branches(registry,flights,output):
                           altitude=altitude,confidence=1.,horizon_s=5.)
             public.append(dict(episode_id=ident,scene_id=scene['scene_id'],split=scene['split'],map_sha256=scene['map_sha256'],
                 goal_views=1,goal_record='goals/'+ident,goal_path=str(goal_path.resolve()),goal_sha256=digest(goal_path/'goal.json'),
-                timeout_s=timeout,collection_source='manoeuvre',
+                timeout_s=timeout,collection_source='manoeuvre',collection_stream='subgoal_branch',
                 branch_group=group,initial_subgoal=proposal,branch_protocol='settled-restart/v2',warmup_s=2.))
             private.append(dict(task,episode_id=ident,start_ned_m=sample['true_position_ned_m'],
                 start_yaw_degrees=math.degrees(yaw(sample['true_quaternion_xyzw'])),
@@ -61,7 +61,7 @@ def prepare_branches(registry,flights,output):
                 branch_reset_semantics='settled pose; new flight, not moving-state restoration'))
     if not public:raise ValueError('No eligible settled training/validation branch states')
     for split in ('train','validation'):
-        write(Path(output)/(split+'.json'),dict(schema='photo-map-missions/v4',registry_sha256=digest(registry),
+        write(Path(output)/(split+'.json'),dict(schema='photo-map-missions/v5',registry_sha256=digest(registry),
             episodes=[r for r in public if r['split']==split]))
-        write(Path(output)/'evaluator_labels'/(split+'.json'),dict(schema='privileged-photo-map-labels/v4',
+        write(Path(output)/'evaluator_labels'/(split+'.json'),dict(schema='privileged-photo-map-labels/v5',
             episodes=[r for r in private if r['split']==split]))

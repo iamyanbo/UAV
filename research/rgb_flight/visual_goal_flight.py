@@ -42,6 +42,10 @@ def main():
     parser.add_argument('--goal-view-count',type=int,choices=(1,2,3,4),default=4)
     parser.add_argument('--photo-checkpoints',type=Path)
     parser.add_argument('--photo-perception-package',type=Path)
+    parser.add_argument('--photo-teacher',type=Path)
+    parser.add_argument('--command-replay',type=Path)
+    parser.add_argument('--wind-ned',type=float,nargs=3,default=[0.,0.,0.])
+    parser.add_argument('--conditions',type=Path)
     parser.add_argument('--map-prior',type=Path)
     parser.add_argument('--photo-variant',choices=('mode1','mode1_vlm','mode1_vlm_world'),default='mode1_vlm_world')
     parser.add_argument('--fixed-photo-camera',action='store_true')
@@ -60,6 +64,11 @@ def main():
     parser.add_argument('--depth-label-hz', type=float, default=0.,
                         help='Optional privileged depth capture; omitted depth is masked, never fabricated')
     args = parser.parse_args()
+    if args.command_replay and (args.photo_checkpoints or args.photo_teacher or args.controller_checkpoints or not args.fixed_photo_camera):
+        parser.error('Command interventions require a fixed camera and no competing controller')
+    if any(args.wind_ned) and not args.command_replay:parser.error('Wind is restricted to explicit interventions')
+    if args.photo_teacher and (not args.photo_perception_package or args.photo_checkpoints):
+        parser.error('Observation teacher requires only a perception package')
     if args.photo_sample_policy and (not args.photo_checkpoints or args.collection_source!='learner'):
         parser.error('Photo policy sampling is limited to learner collection')
     if args.photo_checkpoints and not args.fixed_photo_camera:
@@ -82,12 +91,16 @@ def main():
     label = next(row for row in json.loads(args.evaluator_labels.read_text())['episodes']
                  if row['episode_id'] == args.episode_id)
     field = PrivilegedObstacleField.load(args.obstacle_field)
+    camera_conditions=None;condition_record={}
     if args.aerial_camera or args.fixed_photo_camera:
         import sys
         sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
         from research.map_navigation.aerial import direction_pitch,phase_for
         if field.observed_free is None:raise ValueError('Aerial collection requires observed-free geometry')
-    if args.collection_source=='exploration' and not args.photo_checkpoints:
+    if args.conditions:
+        from research.map_navigation.conditions import CameraConditions
+        condition_record=json.loads(args.conditions.read_text(encoding='utf-8-sig'));camera_conditions=CameraConditions(condition_record)
+    if args.collection_source=='exploration' and not (args.photo_checkpoints or args.photo_teacher):
         raise ValueError('Exploration cannot use the privileged route follower')
     # The launcher owns the unique run directory; only the episode is new.
     output = args.output.resolve(); output.mkdir(parents=True, exist_ok=True)
@@ -96,7 +109,8 @@ def main():
     depth_dir = labels_dir/'depth'; depth_dir.mkdir()
     evaluator_dir = episode/'evaluator_labels'; evaluator_dir.mkdir()
     (evaluator_dir/'episode.json').write_text(json.dumps(label, indent=2))
-    client = airsim.MultirotorClient(timeout_value=20)
+    rpc=dict(ip=expected.get('LocalHostIp','127.0.0.1'),port=int(expected.get('ApiServerPort',41451)))
+    client = airsim.MultirotorClient(**rpc,timeout_value=20)
     vehicle = 'drone_1'
     if json.loads(client.getSettingsString()) != expected or client.simIsPause():
         raise RuntimeError('Effective settings/physics gate failed')
@@ -136,8 +150,9 @@ def main():
     if args.fixed_photo_camera:result['camera_profile']='fixed-forward-monocular/v1'
     result['route_advantage']=label.get('route_advantage')
     result['route_alternatives']=label.get('route_alternatives',[])
-    result['controller_kind']='photo_map' if args.photo_checkpoints else 'learned_mode_1' if args.controller_checkpoints else 'privileged_shortest_path_expert'
+    result['controller_kind']='photo_map_observation_teacher' if args.photo_teacher else 'photo_map' if args.photo_checkpoints else 'learned_mode_1' if args.controller_checkpoints else 'privileged_shortest_path_expert'
     result['scene_id']=label.get('scene_id','env_airsim_16')
+    result['conditions']=condition_record
     if args.photo_checkpoints:result['variant']=args.photo_variant
     depth_count = 0
     depth_local = threading.local()
@@ -145,7 +160,7 @@ def main():
         # Depth is a privileged label. Its RPC and compression cannot block
         # the RGB/command loop or make a command's source frame stale.
         if not hasattr(depth_local, 'client'):
-            depth_local.client = airsim.MultirotorClient(timeout_value=20)
+            depth_local.client = airsim.MultirotorClient(**rpc,timeout_value=20)
         response = depth_local.client.simGetImages(
             [airsim.ImageRequest('front_custom', airsim.ImageType.DepthPerspective, True, False)],
             vehicle_name=vehicle)[0]
@@ -156,10 +171,18 @@ def main():
                     shape=list(depth.shape), codec='float16-zlib-3',
                     sha256=hashlib.sha256(payload).hexdigest(), sim_ns=response.time_stamp)
     states = []
+    replay=None
+    if args.command_replay:
+        from research.map_navigation.disturbances import CommandReplay
+        replay=CommandReplay(args.command_replay)
+        result['command_replay_sha256']=hashlib.sha256(args.command_replay.read_bytes()).hexdigest()
+        result['wind_ned_mps']=args.wind_ned
     try:
         # Reset clears velocity and AirSim collision history.  The following is
         # the episode's sole pose placement and happens before any recording.
         client.reset()
+        if condition_record.get('weather_fog'):
+            client.simEnableWeather(True);client.simSetWeatherParameter(airsim.WeatherParameter.Fog,float(condition_record['weather_fog']))
         client.enableApiControl(True, vehicle); client.armDisarm(True, vehicle)
         start = label['start_ned_m']
         if field.contains_vehicle(start):
@@ -201,7 +224,7 @@ def main():
         broker = RGBBroker(episode/'ipc/rgb.sock', args.episode_id, asdict(calibration), writer,
                            raw_channel_order=color['raw_channel_order'], goal_observation=goal,camera_workers=1 if args.aerial_camera else 2,
                            camera_pitch_enabled=args.aerial_camera,
-                           maximum_horizontal_speed_mps=args.maximum_speed_mps)
+                           maximum_horizontal_speed_mps=args.maximum_speed_mps,rpc_host=rpc['ip'],rpc_port=rpc['port'],camera_conditions=camera_conditions)
         broker.start(); channel = BrokerClient(broker.socket_path, args.episode_id)
         result['runtime_isolation']=verify_live_boundary(broker.socket_path,args.episode_id,labels_dir,
                                                          episode/'runtime_boundary_evidence')
@@ -213,9 +236,13 @@ def main():
             raise RuntimeError('Broker served inconsistent goal panorama')
         if args.photo_perception_package:
             from research.map_navigation.deployment import PhotoControllerProcess
-            perception_controller=PhotoControllerProcess(broker.socket_path,args.episode_id,args.photo_perception_package,
-                args.map_prior,episode/'perception','mode1',perception_only=True)
-            perception_controller.ready()
+            instance=PhotoControllerProcess(broker.socket_path,args.episode_id,args.photo_perception_package,
+                args.map_prior,episode/('photo-controller' if args.photo_teacher else 'perception'),'mode1',
+                perception_only=True,teacher_spec=args.photo_teacher)
+            instance.ready()
+            if args.photo_teacher:
+                controller=instance;result['controller_kind']='observation_teacher';result['teacher_sha256']=hashlib.sha256(args.photo_teacher.read_bytes()).hexdigest()
+            else:perception_controller=instance
         if args.photo_checkpoints:
             import sys
             sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
@@ -236,6 +263,7 @@ def main():
         depth_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='privileged-depth')
         first = client.getMultirotorState(vehicle_name=vehicle)
         result['start_sim_seconds']=first.timestamp/1e9
+        if replay:client.simSetWind(airsim.Vector3r(*args.wind_ned))
         evaluator = FlightEvaluator(label['goal_ned_m'], label.get('flight_envelope',{}).get('bounds_ned_m',field.bounds.tolist()), first.timestamp/1e9,
                                     label['reference_length_m'],timeout_seconds=label.get('timeout_s',180),
                                     maximum_reference_length=label.get('maximum_reference_length_m',300),
@@ -351,6 +379,20 @@ def main():
                         delta_world=np.array([c*command[0]-s*command[1],s*command[0]+c*command[1],command[2]])*2
                         if field.swept_collision(position,position+delta_world):command=[0.,0.,0.,0.]
                         row['safety_modified_command']=list(command)
+                if replay:
+                    command=replay.at((state.timestamp-first.timestamp)/1e9);stop_candidate=False;pitch=None
+                    if command is None:
+                        result.update(status='intervention_finished',termination='action_script_finished',success=False)
+                        label_stream.write(json.dumps(row,allow_nan=False)+'\n');states.append(row);break
+                    row['proposed_command']=list(command)
+                    yaw=airsim.to_eularian_angles(k.orientation)[2];c,s=math.cos(yaw),math.sin(yaw)
+                    step=np.array([c*command[0]-s*command[1],s*command[0]+c*command[1],command[2]])*2
+                    if field.swept_collision(position,position+step):
+                        channel.command(last_frame,[0.]*4,stop=False)
+                        result.update(status='intervention_interrupted',termination='intervention_safety',success=False)
+                        row['safety_modified_command']=[0.]*4
+                        label_stream.write(json.dumps(row,allow_nan=False)+'\n');states.append(row);break
+                    row['safety_modified_command']=list(command)
                 try:
                     channel.command(last_frame,command,stop=stop_candidate,camera_pitch_deg=pitch)
                     if stop_candidate:
@@ -371,6 +413,12 @@ def main():
     except Exception as error:
         result.update(status='failed',error_type=type(error).__name__,error=str(error))
     finally:
+        if condition_record.get('weather_fog'):
+            try:client.simSetWeatherParameter(airsim.WeatherParameter.Fog,0.);client.simEnableWeather(False)
+            except Exception as exc:result['weather_reset_error']=type(exc).__name__
+        if replay:
+            try:client.simSetWind(airsim.Vector3r(0.,0.,0.))
+            except Exception as exc:result['wind_reset_error']=type(exc).__name__
         if perception_controller:(perception_controller.writable/'CONTROLLER_STOP').touch()
         if controller:
             # Stop capture at termination, before slow mapper cleanup; otherwise
@@ -444,9 +492,9 @@ def main():
         if label_stream:
             label_stream.close()
         if writer:
-            result['storage']=writer.close(result.get('status') in ('expert_flight_finished','learned_flight_finished'))
+            result['storage']=writer.close(result.get('status') in ('expert_flight_finished','learned_flight_finished','intervention_finished','intervention_interrupted'))
         result['training_label_frames']=len(states)
-        result['teacher_provenance']='observed-depth-motion-demonstrations/v6' if args.demonstrate else None
+        result['teacher_provenance']='observation-teacher/v2' if args.photo_teacher else 'observed-depth-motion-demonstrations/v6' if args.demonstrate else None
         if states:
             positions=np.asarray([row['true_position_ned_m'] for row in states])
             result['actual_displacement_m']=float(np.linalg.norm(positions[-1]-positions[0]))

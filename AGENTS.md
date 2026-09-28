@@ -1,5 +1,25 @@
 # CURI-UAV research invariants
 
+## Multi-environment collection - September 28, 2026
+
+The user authorized implementing and executing the revised collection programme
+on the existing Spark, including downloads, qualification and a 250-flight pilot.
+This supersedes the source-only restrictions below for this programme. Target
+14/4/6 independent environments, 10,000 training attempts (4,000 reference,
+4,000 learner/observable teacher, 1,000 subgoal branches, 1,000 disturbance
+branches). Photo goals only; one fixed forward camera. The entire shared memory
+pool is available: remove fixed percentage and 12-GiB reservation requirements,
+but admit jobs using measured peaks and disk requirements. Preserve raw evidence,
+sealed splits, independent supervision, and all earlier model training ceilings.
+Use existing checks and recorded-data/flight qualification; no autonomous agents,
+new spending, physical flight or revival of historical supervisors. Do not label
+unqualified reference or heuristic search actions as observation-grounded expert
+targets. Downloaded assets are not qualified environments.
+
+The user also authorized deleting obsolete flight payloads and disposable caches
+when they do not overlap current collection. Preserve current data, model weights,
+scene assets and historical summaries; retain a cleanup receipt.
+
 ## Connected temporal pipeline - September 28, 2026
 
 The approved connection repair is documented in `research/map_navigation/PIPELINE_CONNECTIONS.md`.

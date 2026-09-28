@@ -40,7 +40,7 @@ def acquire(settings_path, envelope_path, output, window, requests=None, base_fi
         raise ValueError('Explicit finite survey positions required')
     if np.any(positions < bounds[0]) or np.any(positions > bounds[1]):
         raise ValueError('Refinement requests leave the declared envelope')
-    client = airsim.MultirotorClient(timeout_value=30); vehicle = 'drone_1'
+    client = airsim.MultirotorClient(ip=settings.get('LocalHostIp','127.0.0.1'),port=settings.get('ApiServerPort',41451),timeout_value=30); vehicle = 'drone_1'
     if json.loads(client.getSettingsString()) != settings or settings.get('ClockSpeed') != 1. or client.simIsPause():
         raise ValueError('Survey settings/clock mismatch')
     capture = settings['CameraDefaults']['CaptureSettings'][0]
@@ -157,7 +157,8 @@ def bank(registry_path, output, split, window):
         if scene['split']!=split:continue
         prior=MapPrior(scene['map']);field=PrivilegedObstacleField.load(scene['obstacle_field'])
         with SceneProcess(scene):
-            client=airsim.MultirotorClient(timeout_value=30);vehicle='drone_1'
+            settings=read(scene['settings'])
+            client=airsim.MultirotorClient(ip=settings.get('LocalHostIp','127.0.0.1'),port=settings.get('ApiServerPort',41451),timeout_value=30);vehicle='drone_1'
             color=measure_color_order(client,vehicle)
             settings=read(scene['settings']);focal=320/math.tan(math.radians(settings['CameraDefaults']['CaptureSettings'][0].get('FOV_Degrees',90))/2)
             columns=prior.tiles[np.linspace(0,len(prior.tiles)-1,min(config()['collection']['bank_columns'],len(prior.tiles)),dtype=int)]

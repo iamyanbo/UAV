@@ -2,7 +2,9 @@
 
 Active campaign: `campaign.json`, schema v5. One goal photograph, an unknown
 starting pose, coarse overhead RGB/heights, and a fixed forward monocular camera.
-Source implementation is local and unexecuted; navigation acceptance is pending.
+Collection implementation and Spark engineering qualification are described in
+[COLLECTION_PROGRAM.md](COLLECTION_PROGRAM.md). Native perception, training and
+complete-flight navigation acceptance remain pending.
 
 Mode 1 encodes only the newest image, caches four timestamped 64-token grids
 and their preceding dispatched commands, and uses two width-256 temporal
@@ -54,7 +56,7 @@ The staged pipeline is exposed through `python -m research.map_navigation.run`:
 - Prepare fixed-camera maps, scene registry, missions and expert/manoeuvre data.
 - Follow `PIPELINE_CONNECTIONS.md` for the actor-free live perception bootstrap,
   actor-bound value labels, matched restarts and release gates.
-- Build v5 datasets and audit geography/behavior coverage. Train localization,
+- Build v6 datasets and audit geography/behavior coverage. Train localization,
   goal matching, metric motion and temporal imitation.
 - Encode frozen V-JEPA targets; train action-conditioned world prediction, then
   add actor-driven rollouts where recorded branches support the actor's actions.
@@ -74,8 +76,8 @@ Ceilings remain 10,000 collection episodes, 300,000 world updates, 200,000
 imitation updates, 10 million PPO transitions, 25,000 configuration examples
 and 2,000 preference pairs. Preserve 250/1,000/2,500/5,000/10,000 collection
 milestones and intermediate model checkpoints. A data pilot is not sufficient
-training. Training and validation are split across three and one scenes; two
-held-out scenes stay sealed. No simulator geometry, start/goal pose or expert
+training. Training and validation target 14 and four environments; six
+held-out environments stay sealed. No simulator geometry, start/goal pose or expert
 route is packaged for inference.
 
 Comparisons are `mode1`, `mode1_vlm`, and `mode1_vlm_world`, with the same
@@ -85,7 +87,8 @@ latency must be measured with uncertainty. Targets remain >=90% success,
 <=1% collisions, 20 Hz fast decisions, p95 <=50 ms and p99 <=250 ms.
 
 The prior pushed planner-first source/history and the pre-temporal working
-snapshot remain under `archive/` and Git history. Legacy RGB campaign evidence
-is unchanged. No tests, import checks, builds, training, replay, simulator runs,
-or Spark access were performed for this revision. `DEFERRED_VERIFICATION.md`
-defines the outstanding execution and acceptance work.
+snapshot remain under `archive/` and Git history. Legacy summaries and checkpoints
+are preserved. Obsolete flight payloads/caches were removed under explicit user
+authorization, with a cleanup receipt. Collection syntax/ledger checks and Spark
+RGB probes have run; native builds, training and complete-flight acceptance remain
+pending. `DEFERRED_VERIFICATION.md` defines the remaining acceptance work.

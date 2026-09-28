@@ -40,7 +40,7 @@ def package(checkpoint,vision,output,learned_local_policy=True,photo_slam=None,q
 
 
 class PhotoControllerProcess:
-    def __init__(self,socket_path,episode_id,checkpoints,map_prior,output,variant,sample_policy=False,initial_subgoal=None,perception_only=False):
+    def __init__(self,socket_path,episode_id,checkpoints,map_prior,output,variant,sample_policy=False,initial_subgoal=None,perception_only=False,teacher_spec=None):
         root=Path.home()/'uav-rgb-flight';source_root=Path(__file__).resolve().parents[2]
         self.output=Path(output);self.output.mkdir(parents=True,exist_ok=False)
         self.writable=self.output/'runtime';self.writable.mkdir()
@@ -64,9 +64,10 @@ class PhotoControllerProcess:
             for path in (source_root/'research'/folder).glob('*.py'):shutil.copyfile(path,target/path.name)
         shutil.copyfile(Path(__file__).with_name('campaign.json'),source/'research/map_navigation/campaign.json')
         write(self.output/'source_hashes.json',{str(p.relative_to(source)):digest(p) for p in source.rglob('*') if p.is_file()})
-        image=read(root/'receipts/model-stack.json')['image_id'];self.name='photo-map-'+str(os.getpid())
+        import uuid
+        image=read(root/'receipts/model-stack.json')['image_id'];self.name='photo-map-'+str(os.getpid())+'-'+uuid.uuid4().hex[:8]
         self.identity=digest(package_root/'package.json')
-        command=['docker','run','--rm','--name',self.name,'--gpus','all','--network','none','--cap-drop','ALL',
+        command=['docker','run','--rm','--name',self.name,'--cidfile',str(self.output/'container.cid'),'--gpus','all','--network','none','--cap-drop','ALL',
             '--security-opt','no-new-privileges','--user',f'{os.getuid()}:{os.getgid()}','--cpus','8','--shm-size','2g',
             '-v',str(source)+':/source:ro','-v',str(root/'assets/models')+':/models:ro',
             '-v',str(root/'deps/Metric3D')+':/upstream/metric3d:ro',
@@ -79,6 +80,16 @@ class PhotoControllerProcess:
         if sample_policy:command.append('--sample-policy')
         if perception_only:command.append('--perception-only')
         if initial_subgoal:command+=['--initial-subgoal',initial_subgoal]
+        if teacher_spec:
+            # The descriptor contains thresholds/provenance only, never labels.
+            descriptor=read(teacher_spec)
+            allowed_teacher={'schema','implementation_sha256','perception_sha256','minimum_inlier_ratio',
+                             'arrival_threshold','qualified','qualification_sha256'}
+            if set(descriptor)!=allowed_teacher:raise ValueError('Teacher descriptor has undeclared fields')
+            target=self.output/'teacher.json';write(target,descriptor)
+            image_index=command.index(image)
+            command[image_index:image_index]=['-v',str(target.resolve())+':/teacher.json:ro']
+            command+=['--teacher','/teacher.json']
         write(self.output/'request.json',dict(command=command,map_sha256=prior.identity,checkpoint_sha256=self.identity))
         self.log=(self.output/'stdout.log').open('x');self.process=subprocess.Popen(command,stdout=self.log,stderr=subprocess.STDOUT)
 

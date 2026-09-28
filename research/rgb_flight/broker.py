@@ -21,7 +21,10 @@ from calibration import canonical_rgb
 
 class RGBBroker:
     def __init__(self, socket_path, episode_id, calibration, writer=None, vehicle='drone_1', camera_workers=1,
-                 raw_channel_order=None, goal_observation=None, maximum_horizontal_speed_mps=3., camera_pitch_enabled=False):
+                 raw_channel_order=None, goal_observation=None, maximum_horizontal_speed_mps=3., camera_pitch_enabled=False,
+                 rpc_host='127.0.0.1', rpc_port=41451, camera_conditions=None):
+        self.rpc_host=rpc_host;self.rpc_port=int(rpc_port)
+        self.camera_conditions=camera_conditions
         if camera_workers not in (1,2):
             raise ValueError('Only measured one/two-request camera pipelines are supported')
         from camera_joint import PitchJoint
@@ -184,7 +187,7 @@ class RGBBroker:
         local=threading.local()
         def request_image():
             if not hasattr(local,'client'):
-                local.client=airsim.MultirotorClient(timeout_value=10)
+                local.client=airsim.MultirotorClient(ip=self.rpc_host,port=self.rpc_port,timeout_value=10)
             calibration = self.camera_joint.capture_pose(local.client,self.vehicle) if self.camera_joint else self.calibration
             started=time.monotonic()
             images=local.client.simGetImages([airsim.ImageRequest('front_custom',airsim.ImageType.Scene,False,False)],vehicle_name=self.vehicle)
@@ -217,6 +220,9 @@ class RGBBroker:
                         raise RuntimeError('Invalid RGB payload: '+json.dumps(failure))
                     consecutive_empty = 0
                     rgb = canonical_rgb(rgb, self.raw_channel_order)
+                    if self.camera_conditions:
+                        rgb=self.camera_conditions.apply(rgb,frame_id)
+                        if self.camera_conditions.delay:self.stop_event.wait(self.camera_conditions.delay)
                     if image.time_stamp <= previous_ns:
                         if self.camera_workers==1:
                             raise RuntimeError('Nonmonotonic image clock')
@@ -262,7 +268,7 @@ class RGBBroker:
 
     def actuate(self):
         import airsim
-        client = airsim.MultirotorClient(timeout_value=5)
+        client = airsim.MultirotorClient(ip=self.rpc_host,port=self.rpc_port,timeout_value=5)
         zero = Command(0, 0, 0, 0)
         try:
             while not self.stop_event.is_set():

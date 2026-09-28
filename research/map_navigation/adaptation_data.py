@@ -14,7 +14,7 @@ from .maps import MapPrior
 
 def build(dataset,output,component,behavior_checkpoint=None):
     spec=read(dataset)
-    if spec['schema']!='photo-map-dataset/v5':raise ValueError('Temporal dataset required')
+    if spec['schema']!='photo-map-dataset/v6':raise ValueError('Temporal dataset required')
     out=Path(output);out.mkdir(parents=True,exist_ok=False)
     rows=[];pairs=defaultdict(list);by_episode=defaultdict(list)
     for index,w in enumerate(spec['windows']):by_episode[w['episode']].append((index,w))
