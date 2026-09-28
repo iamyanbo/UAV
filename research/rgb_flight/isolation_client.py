@@ -31,7 +31,8 @@ if len(rgb) != 640*480*3 or set(first) != {'episode_id','frame_id','sim_ns','rec
 goal_views=0
 try:
     panorama=[]
-    for index in range(4):
+    first_goal, _ = channel.goal_view(0)
+    for index in range(first_goal.get('view_count',4)):
         metadata,goal_rgb=channel.goal_view(index)
         if len(goal_rgb)!=640*480*3 or metadata['index']!=index or 'panorama_sha256' not in metadata:
             raise RuntimeError('Unexpected coordinate-free goal schema')

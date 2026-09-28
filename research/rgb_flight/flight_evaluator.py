@@ -13,12 +13,15 @@ class EvaluationState:
 
 
 class FlightEvaluator:
-    def __init__(self, goal, boundary, start_seconds, reference_length):
+    def __init__(self, goal, boundary, start_seconds, reference_length, timeout_seconds=180):
         if not 20 <= reference_length <= 300:
             raise ValueError('Reference path outside visual-goal phase bounds')
         self.goal, self.boundary = goal, boundary
         self.start = self.previous_time = start_seconds
         self.reference_length = reference_length
+        if not math.isfinite(timeout_seconds) or timeout_seconds <= 0:
+            raise ValueError('Positive finite timeout required')
+        self.timeout_seconds = timeout_seconds
         self.previous_position = None
         self.distance = 0.
         self.stopped_since = None
@@ -45,7 +48,7 @@ class FlightEvaluator:
             reason = 'boundary_exit'
         elif tracking_lost:
             reason = 'tracking_loss'
-        elif elapsed >= 180:
+        elif elapsed >= self.timeout_seconds:
             reason = 'timeout'
         elif stop_requested and in_goal and speed < .5:
             if self.stopped_since is None:

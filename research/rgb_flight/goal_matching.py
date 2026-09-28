@@ -47,14 +47,20 @@ class CrossViewGoalMatcher(nn.Module):
         self.head = nn.Sequential(nn.Linear(dimension*3, dimension), nn.SiLU(),
                                   nn.Linear(dimension, 3))
 
-    def forward(self, current_tokens, goal_tokens, return_attention=False):
+    def forward(self, current_tokens, goal_tokens, return_attention=False, goal_valid=None):
         if (current_tokens.ndim != 3 or goal_tokens.ndim != 4 or current_tokens.shape[-1] != 256
-                or goal_tokens.shape[1] != 4 or goal_tokens.shape[2:] != current_tokens.shape[1:]):
-            raise ValueError('Expected current spatial tokens and four same-resolution goal grids')
+                or not 1 <= goal_tokens.shape[1] <= 4 or goal_tokens.shape[2:] != current_tokens.shape[1:]):
+            raise ValueError('Expected one to four same-resolution goal grids')
         batch = current_tokens.shape[0]
-        goal = self.goal_norm(goal_tokens+self.view_embedding).reshape(batch, -1, 256)
+        views = goal_tokens.shape[1]
+        goal = self.goal_norm(goal_tokens+self.view_embedding[:views]).reshape(batch, -1, 256)
+        if goal_valid is None:
+            goal_valid = torch.ones((batch, views), dtype=torch.bool, device=goal_tokens.device)
+        if goal_valid.shape != (batch, views) or not goal_valid.any(1).all():
+            raise ValueError('Every example requires a valid goal photograph')
+        mask = ~goal_valid.bool().repeat_interleave(goal_tokens.shape[2], dim=1)
         current = self.current_norm(current_tokens)
-        matched, weights = self.attention(current, goal, goal, need_weights=return_attention)
+        matched, weights = self.attention(current, goal, goal, key_padding_mask=mask, need_weights=return_attention)
         current_pool, match_pool = current.mean(1), matched.mean(1)
         raw = self.head(torch.cat((current_pool, match_pool, (current_pool-match_pool).abs()), -1))
         return dict(match_logit=raw[:,0], time_to_goal_seconds=F.softplus(raw[:,1]),
@@ -74,13 +80,13 @@ class GoalMatcherPipeline(nn.Module):
         self.encoder = SharedSpatialEncoder(backbone_checkpoint)
         self.matcher = CrossViewGoalMatcher()
 
-    def forward(self, current_rgb, goal_rgb):
-        if goal_rgb.ndim != 5 or goal_rgb.shape[1:] != (4, 3, 480, 640):
-            raise ValueError('Expected four full RGB goal views per example')
+    def forward(self, current_rgb, goal_rgb, goal_valid=None):
+        if goal_rgb.ndim != 5 or not 1 <= goal_rgb.shape[1] <= 4 or goal_rgb.shape[2:] != (3, 480, 640):
+            raise ValueError('Expected one to four full RGB goal views per example')
         batch = current_rgb.shape[0]
         current = self.encoder(current_rgb)
-        goals = self.encoder(goal_rgb.flatten(0, 1)).reshape(batch, 4, -1, 256)
-        return self.matcher(current, goals)
+        goals = self.encoder(goal_rgb.flatten(0, 1)).reshape(batch, goal_rgb.shape[1], -1, 256)
+        return self.matcher(current, goals, goal_valid=goal_valid)
 
 
 class GoalFeatureCache:
@@ -101,10 +107,10 @@ class GoalFeatureCache:
                         for view in goal.rgb_views])
         images = torch.from_numpy(rgb).permute(0, 3, 1, 2).to(next(self.encoder.parameters()).device)
         tokens = self.encoder.eval()(images).float().cpu()
-        artifact = dict(schema='goal-spatial-cache/v2', episode_id=goal.episode_id,
+        artifact = dict(schema='goal-spatial-cache/v3', episode_id=goal.episode_id, view_count=len(goal.rgb_views),
                         panorama_sha256=goal.content_sha256, tokens=tokens,
                         encoder_checkpoint_sha256=self.encoder_checkpoint_sha256,
-                        encoder='shared MobileNetV3-Large spatial encoder; four full RGB views')
+                        encoder='shared MobileNetV3-Large spatial encoder; one to four full RGB views')
         if output is not None:
             output = Path(output)
             temporary = output.with_suffix('.pending')
@@ -117,10 +123,11 @@ class GoalFeatureCache:
     @staticmethod
     def load(path, episode_id, panorama_sha256, encoder_checkpoint_sha256):
         artifact = torch.load(path, map_location='cpu', weights_only=True)
-        if (artifact.get('schema') != 'goal-spatial-cache/v2' or artifact['episode_id'] != episode_id
+        if (artifact.get('schema') not in ('goal-spatial-cache/v2','goal-spatial-cache/v3') or artifact['episode_id'] != episode_id
                 or artifact['panorama_sha256'] != panorama_sha256
                 or artifact['encoder_checkpoint_sha256'] != encoder_checkpoint_sha256
-                or artifact['tokens'].ndim != 3 or artifact['tokens'].shape[0] != 4
+                or artifact['tokens'].ndim != 3 or not 1 <= artifact['tokens'].shape[0] <= 4
+                or (artifact['schema']=='goal-spatial-cache/v2' and artifact['tokens'].shape[0]!=4)
                 or artifact['tokens'].shape[-1] != 256):
             raise ValueError('Wrong or invalid visual-goal feature cache')
         return artifact['tokens']

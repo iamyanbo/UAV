@@ -159,7 +159,8 @@ def main():
         shards.append(dict(path=path.name,sha256=checksum(path),samples=len(chunks)));chunks.clear()
     try:
         pack=CheckpointSet(args.checkpoints,integration_only=args.integration_only);views=[];identities=[]
-        for index in range(4):
+        first_goal, _ = client.goal_view(0)
+        for index in range(first_goal.get('view_count',4)):
             metadata,rgb=client.goal_view(index);identities.append(metadata['panorama_sha256'])
             views.append(np.frombuffer(rgb,np.uint8).reshape(480,640,3).copy())
         if len(set(identities))!=1:raise ValueError('Inconsistent goal panorama')

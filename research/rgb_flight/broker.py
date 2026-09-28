@@ -114,10 +114,10 @@ class RGBBroker:
         if op == 'goal':
             if set(request) != {'op', 'episode_id', 'index'} or type(request['index']) is not int:
                 raise ValueError('Invalid goal-view request')
-            if self.goal_observation is None or not 0 <= request['index'] < 4:
+            if self.goal_observation is None or not 0 <= request['index'] < len(self.goal_observation.rgb_views):
                 raise RuntimeError('Goal panorama unavailable')
             index = request['index']
-            return dict(episode_id=self.episode_id, index=index,
+            return dict(episode_id=self.episode_id, index=index, view_count=len(self.goal_observation.rgb_views),
                         captured_sim_seconds=self.goal_observation.captured_sim_seconds[index],
                         calibration=asdict(self.goal_observation.calibration),
                         panorama_sha256=self.goal_observation.content_sha256), self.goal_observation.rgb_views[index]

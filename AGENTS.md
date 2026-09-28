@@ -1,5 +1,9 @@
 # CURI-UAV research invariants
 
+## Photo-map successor — September 27, 2026
+
+The user authorized implementing `research/map_navigation/` locally while Spark is unavailable. Implement the complete successor before remote training/flight validation; do not contact Spark or run repeated tests during this coding pass. Keep execution windowless. Its task supersedes the old single-scene/no-prior/four-goal-view restrictions for this campaign: one goal photo (optionally up to four), supplied overhead RGB and approximate heights, unknown launch position/heading, no goal region, RGB-only runtime localization, multiple training and held-out environments. Do not resume historical supervisors. Keep the original campaign and evidence, simulator-label isolation, model provenance, resource reserves and no-spend/no-physical-flight restrictions. Code completion is not trained or validated navigation.
+
 ## Expanded Spark programme — September 21, 2026
 
 The latest user authorization supersedes the historical 80% Spark memory cap and sequential-heavy-stage restriction below. Use measured workload admission with 12 GiB available memory and checkpoint headroom; permit independent parallel workloads when aggregate throughput and flight latency allow. Keep eight-hour resumable windows. Expanded initial milestones are 10,000 physical training episodes, 300,000 world-model updates, 200,000 imitation updates, 10 million PPO transitions, 25,000 grounding examples, and 2,000 matched configuration pairs. Preserve original-budget checkpoints and sealed evaluation. Do not write tests or new testing harnesses. Verify through actual recorded-data processing, training, and complete flights. This authorization concerns Spark workload parallelism, not autonomous research agents.

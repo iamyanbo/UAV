@@ -1,0 +1,31 @@
+{
+  "schema": "photo-map-implementation/v1",
+  "status": "implemented-unvalidated",
+  "entrypoint": "python -m research.map_navigation.run --workspace WORKSPACE STAGE",
+  "task": "One goal photograph plus overhead RGB/coarse heights; unknown initial pose; RGB-only runtime localization",
+  "models": {
+    "shared_rgb": "MobileNetV3 spatial encoder",
+    "localization": "Cross-view retrieval, relative registration and temporal hypothesis filter",
+    "goal": "Masked one-to-four-view cross-attention and separate arrival head",
+    "world": "Action-conditioned recurrent rollout with coarse-map attention and causal RGB history",
+    "teacher": "Frozen V-JEPA 2 visual features, offline only",
+    "optional_vlm": "Frozen Qwen2.5-VL-3B asynchronous inspection requests",
+    "optional_policy": "Subgoal-conditioned imitation; single-step hidden-state reset"
+  },
+  "baselines": ["geometry", "recent_world", "map_world", "map_world_qwen"],
+  "implementation_review": "Source inspection, Python AST/JSON parsing and whitespace check; no simulator, training or model runtime executed during implementation",
+  "trained": false,
+  "runtime_validated": false,
+  "flight_validated": false,
+  "novelty_established": false,
+  "next_milestone": "Supply actual scene/map assets and train/validate components using SPARK_HANDOFF.md",
+  "remaining_evidence": [
+    "Dependency and API compatibility in the Spark image",
+    "Unknown-start and goal-photo localization on held-out scenes",
+    "Positive arrival supervision and false-stop calibration",
+    "Complete closed-loop flights under continuous physics",
+    "Measured command freshness and worker latency",
+    "Measured power and validated propulsion energy estimates",
+    "Matched ablations, satellite domain transfer and map-error stress cases"
+  ]
+}

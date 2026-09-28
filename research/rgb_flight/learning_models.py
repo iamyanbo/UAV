@@ -60,11 +60,11 @@ class WorldModel(nn.Module):
             'goal_match': nn.Linear(384, 1), 'time_to_goal': nn.Linear(384, 1)
         }) for _ in range(3)])
 
-    def forward(self, z, state, belief, memory, memory_valid, action, task, goal_tokens, target_context):
+    def forward(self, z, state, belief, memory, memory_valid, action, task, goal_tokens, target_context, goal_valid=None):
         if z.shape[1:] != (64, 256) or memory.shape[1:] != (64, 264):
             raise ValueError('Expected spatial visual grid and 64 feature+geometry memory tokens')
-        if goal_tokens.ndim != 4 or goal_tokens.shape[1] != 4 or goal_tokens.shape[-1] != 256:
-            raise ValueError('World model requires all four spatial goal grids')
+        if goal_tokens.ndim != 4 or not 1 <= goal_tokens.shape[1] <= 4 or goal_tokens.shape[-1] != 256:
+            raise ValueError('World model requires one to four spatial goal grids')
         if target_context.shape != (len(z), 264):
             raise ValueError('World model requires an observed target-memory token')
         if action.shape != (len(z),4,4):
@@ -80,7 +80,10 @@ class WorldModel(nn.Module):
         goal = self.goal_visual(goal_tokens.flatten(1, 2))
         future_visuals = [z + head['visual'](encoded[:, :64]) * self.feature_scale for head in self.heads]
         future_query = self.visual(torch.stack(future_visuals).mean(0))
-        goal_attended, _ = self.goal_attention(future_query, goal, goal, need_weights=False)
+        mask = None if goal_valid is None else ~goal_valid.bool().repeat_interleave(goal_tokens.shape[2], 1)
+        if goal_valid is not None and not goal_valid.any(1).all():
+            raise ValueError('At least one goal view is required')
+        goal_attended, _ = self.goal_attention(future_query, goal, goal, key_padding_mask=mask, need_weights=False)
         goal_pooled = self.goal_score(torch.cat((future_query.mean(1), goal_attended.mean(1)), -1))
         h = self.belief(pooled, belief)
         outputs = []
@@ -113,15 +116,18 @@ class PrimitiveCritic(nn.Module):
         self.net = nn.Sequential(nn.Linear(256 + STATE_DIM + 256 + TASK_DIM + 256 + 264, 384), nn.SiLU(),
                                  nn.Linear(384, 256), nn.SiLU(), nn.Linear(256, len(PRIMITIVES)))
 
-    def forward(self, z, state, belief, task, goal_tokens, target_context):
-        if goal_tokens.ndim != 4 or goal_tokens.shape[1] != 4:
-            raise ValueError('Critic requires four goal-view token grids')
+    def forward(self, z, state, belief, task, goal_tokens, target_context, goal_valid=None):
+        if goal_tokens.ndim != 4 or not 1 <= goal_tokens.shape[1] <= 4:
+            raise ValueError('Critic requires one to four goal-view token grids')
         if target_context.shape != (len(z), 264):
             raise ValueError('Critic requires an observed target-memory token')
         # Primitive quantities are nonnegative; information gets a negative
         # coefficient only when combining costs, never inside its target.
+        mask = None if goal_valid is None else ~goal_valid.bool().repeat_interleave(goal_tokens.shape[2], 1)
+        if goal_valid is not None and not goal_valid.any(1).all():
+            raise ValueError('At least one goal view is required')
         grounded, _ = self.goal_attention(z, goal_tokens.flatten(1,2), goal_tokens.flatten(1,2),
-                                          need_weights=False)
+                                          key_padding_mask=mask, need_weights=False)
         return F.softplus(self.net(torch.cat((z.mean(-2), state, belief, task,
                                               grounded.mean(1), target_context), -1))) * self.primitive_scale
 

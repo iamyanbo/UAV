@@ -87,29 +87,30 @@ class Configurator:
         original=owner.get_image_features
         self._goal_identity=None
         def image_features(pixel_values,image_grid_thw=None):
-            if self._goal_identity is None or image_grid_thw is None or len(image_grid_thw)<5:
-                raise ValueError('Cached visual generation requires four goals and current RGB')
-            grid=tuple(tuple(row) for row in image_grid_thw[:4].tolist())
+            count = len(self._goal_identity) if self._goal_identity is not None else 0
+            if not 1 <= count <= 4 or image_grid_thw is None or len(image_grid_thw)<count+1:
+                raise ValueError('Cached visual generation requires goal views and current RGB')
+            grid=tuple(tuple(row) for row in image_grid_thw[:count].tolist())
             key=(self._goal_identity,grid,str(pixel_values.device),str(pixel_values.dtype))
             patches=sum(t*h*w for t,h,w in grid)
             if self.goal_feature_cache is None or self.goal_feature_cache[0]!=key:
-                features=original(pixel_values[:patches],image_grid_thw[:4])
+                features=original(pixel_values[:patches],image_grid_thw[:count])
                 self.goal_feature_cache=(key,tuple(x.detach() for x in features))
                 self.goal_cache_misses+=1
             else:self.goal_cache_hits+=1
-            current=original(pixel_values[patches:],image_grid_thw[4:])
+            current=original(pixel_values[patches:],image_grid_thw[count:])
             return (*self.goal_feature_cache[1],*current)
         owner.get_image_features=image_features
 
     def inputs(self, goal_images, current_image, keyframes, frontier_thumbnails, observed, progress):
-        if len(goal_images) != 4 or len(keyframes) > 3 or len(frontier_thumbnails) > 8:
-            raise ValueError('Expected four goal views, current RGB, <=3 keyframes and <=8 frontiers')
+        if not 1 <= len(goal_images) <= 4 or len(keyframes) > 3 or len(frontier_thumbnails) > 8:
+            raise ValueError('Expected one to four goal views, current RGB, <=3 keyframes and <=8 frontiers')
         from PIL import Image
         # Shared online/training preprocessing. The four original goal views
         # and current RGB remain full resolution; retrieved history is bounded.
         thumbnails=[im.resize((160,120),Image.Resampling.BILINEAR) for im in [*keyframes,*frontier_thumbnails]]
         images = [*goal_images,current_image,*thumbnails]
-        prompt = ('The first four images are the goal panorama, followed by current RGB, retrieved episode keyframes, '
+        prompt = (f'The first {len(goal_images)} images describe the goal, followed by current RGB, retrieved episode keyframes, '
                   'then frontier thumbnails. Navigate using only this visual evidence. Return one JSON object with target_id, '
                   'grounded_kind (goal_match or observed_frontier), intention (approach, inspect, search, stop), '
                   'goal_weight, time_weight, information_weight, additional_caution (each 0.25 to 4), '
@@ -119,7 +120,7 @@ class Configurator:
                   'Never output coordinates or velocity commands.\n'
                   + json.dumps(dict(observed=observed, progress=progress), separators=(',', ':')))
         if self.output_format=='compact/v2':
-            prompt=('First four images: exact goal panorama. Fifth: current RGB. Then keyframes and frontiers. '
+            prompt=(f'First {len(goal_images)} images: goal. Image {len(goal_images)+1}: current RGB. Then keyframes and frontiers. '
                 'Observed image_position is the 1-based position of its supporting image in this sequence. '
                 'Select only an observed target ID. Return one compact JSON object with exactly these keys: '
                 't=target ID, i=intention (approach, inspect, search, stop), '

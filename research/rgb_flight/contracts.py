@@ -77,22 +77,22 @@ class Calibration:
 class GoalObservation:
     """The complete runtime destination description.
 
-    View order is the fixed panorama order (0, 90, 180, 270 degrees).  No
-    camera/world pose or destination coordinate is representable here.
+    One to four ordered photographs. Legacy four-view records use panorama
+    order; the order is not a runtime world-heading measurement.
     """
     episode_id: str
-    rgb_views: tuple[bytes, bytes, bytes, bytes]
+    rgb_views: tuple[bytes, ...]
     calibration: Calibration
-    captured_sim_seconds: tuple[float, float, float, float]
+    captured_sim_seconds: tuple[float, ...]
 
     def __post_init__(self):
         if not self.episode_id or not isinstance(self.calibration, Calibration):
             raise ValueError('Invalid goal observation identity/calibration')
-        if not isinstance(self.rgb_views, tuple) or len(self.rgb_views) != 4:
-            raise ValueError('A visual goal requires exactly four ordered RGB views')
+        if not isinstance(self.rgb_views, tuple) or not 1 <= len(self.rgb_views) <= 4:
+            raise ValueError('A visual goal requires one to four ordered RGB views')
         if any(not isinstance(view, bytes) or len(view) != 640 * 480 * 3 for view in self.rgb_views):
             raise ValueError('Goal views must be immutable uncompressed RGB24')
-        if not isinstance(self.captured_sim_seconds, tuple) or len(self.captured_sim_seconds) != 4:
+        if not isinstance(self.captured_sim_seconds, tuple) or len(self.captured_sim_seconds) != len(self.rgb_views):
             raise ValueError('Every goal view needs a capture timestamp')
         finite(self.captured_sim_seconds)
         if any(value < 0 for value in self.captured_sim_seconds):

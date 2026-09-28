@@ -122,23 +122,26 @@ def main():
             if row['split'] != 'train':
                 raise ValueError('Configurator example is outside training split')
             images = []
+            goal_count=sum(evidence.get('role')=='goal_view' for evidence in row['images'])
+            if not 1<=goal_count<=4:
+                raise ValueError('Configurator needs one to four goal photographs')
             for image_index,evidence in enumerate(row['images']):
                 path = (root / evidence['path']).resolve()
                 if evidence.get('role') not in ('goal_view','current','keyframe','frontier'):
                     raise ValueError('Configurator image needs an explicit evidence role')
-                if image_index<4 and evidence['role']!='goal_view':
-                    raise ValueError('First four configurator images must be the immutable goal panorama')
+                if (image_index<goal_count)!=(evidence['role']=='goal_view'):
+                    raise ValueError('Goal photographs must precede all current/history images')
                 if (not path.is_relative_to(root) or
                     (evidence['role']!='goal_view' and evidence['observed_ns'] > row['sim_ns']) or
                     hashlib.sha256(path.read_bytes()).hexdigest() != evidence['sha256']):
                     raise ValueError('Noncausal or invalid visual evidence')
                 images.append(Image.open(path).convert('RGB'))
-            if len(images) < 5:
-                raise ValueError('Training example lacks four goal views plus current RGB')
-            goal_images,current_image = images[:4],images[4]
-            key_count = row.get('keyframe_image_count',min(3,max(0,len(images)-5)))
-            keyframes = images[5:5+key_count]
-            frontiers = images[5+key_count:]
+            if len(images) < goal_count+1 or row['images'][goal_count]['role']!='current':
+                raise ValueError('Training example lacks goal photographs plus current RGB')
+            goal_images,current_image = images[:goal_count],images[goal_count]
+            key_count = row.get('keyframe_image_count',min(3,max(0,len(images)-goal_count-1)))
+            keyframes = images[goal_count+1:goal_count+1+key_count]
+            frontiers = images[goal_count+1+key_count:]
             inputs = model.inputs(goal_images,current_image,keyframes,frontiers,row['observed'],row['progress'])
             responses = [row['response']] if phase == 'supervised' else [row['chosen'], row['rejected']]
             for response in responses:

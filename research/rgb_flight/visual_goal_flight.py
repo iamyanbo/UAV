@@ -39,6 +39,10 @@ def main():
     parser.add_argument('--evaluator-labels', type=Path, required=True)
     parser.add_argument('--episode-id', required=True)
     parser.add_argument('--goal', type=Path)
+    parser.add_argument('--goal-view-count',type=int,choices=(1,2,3,4),default=4)
+    parser.add_argument('--photo-checkpoints',type=Path)
+    parser.add_argument('--map-prior',type=Path)
+    parser.add_argument('--photo-variant',choices=('geometry','recent_world','map_world','map_world_qwen'),default='geometry')
     parser.add_argument('--controller-checkpoints',type=Path,help='Run isolated trained Mode 1 instead of the privileged expert')
     parser.add_argument('--integration-only',action='store_true')
     parser.add_argument('--sample-policy',action='store_true')
@@ -50,6 +54,8 @@ def main():
     parser.add_argument('--depth-label-hz', type=float, default=0.,
                         help='Optional privileged depth capture; omitted depth is masked, never fabricated')
     args = parser.parse_args()
+    if args.photo_checkpoints and (args.controller_checkpoints or not args.map_prior):
+        parser.error('Photo runtime requires its map and cannot share a legacy controller')
     if not 0 <= args.bootstrap_hold_seconds <= 30:
         parser.error('Bootstrap hold must be between zero and 30 seconds')
     if (args.sample_policy or args.integration_only) and not args.controller_checkpoints:
@@ -84,7 +90,7 @@ def main():
         # episode recording. Goal pose metadata remains in evaluator_labels.
         color=measure_color_order(client,vehicle)
         views=[];times=[]
-        for yaw in (0.,90.,180.,270.):
+        for yaw in tuple(float(label.get('goal_yaw_degrees',0.))+90*i for i in range(args.goal_view_count)):
             pose=airsim.Pose(airsim.Vector3r(*label['goal_ned_m']),airsim.to_quaternion(0,0,math.radians(yaw)))
             client.simSetVehiclePose(pose,True,vehicle)
             response=client.simGetImages([airsim.ImageRequest('front_custom',airsim.ImageType.Scene,False,False)],
@@ -94,14 +100,16 @@ def main():
         goal=GoalObservation(args.episode_id,tuple(views),calibration,tuple(times))
         write_goal(episode/'goal',goal)
         (evaluator_dir/'goal_capture.json').write_text(json.dumps(dict(goal_ned_m=label['goal_ned_m'],
-            yaw_degrees=[0,90,180,270],panorama_sha256=goal.content_sha256),indent=2))
+            yaw_degrees=[float(label.get('goal_yaw_degrees',0.))+90*i for i in range(args.goal_view_count)],panorama_sha256=goal.content_sha256),indent=2))
     result = dict(status='failed', episode_id=args.episode_id, split=label['split'], phase=label['phase'],
                   runtime_goal_sha256=goal.content_sha256, pose_setting_calls_before_recording=0,
-                  pre_episode_goal_pose_setting_calls=0 if args.goal else 4,
+                  pre_episode_goal_pose_setting_calls=0 if args.goal else args.goal_view_count,
                   pose_setting_calls_after_recording=0, clock_speed=1., maximum_speed_mps=args.maximum_speed_mps)
     broker = writer = label_stream = depth_index = depth_pool = depth_future = controller = None
     broker_closed=False
-    result['controller_kind']='learned_mode_1' if args.controller_checkpoints else 'privileged_shortest_path_expert'
+    result['controller_kind']='photo_map' if args.photo_checkpoints else 'learned_mode_1' if args.controller_checkpoints else 'privileged_shortest_path_expert'
+    result['scene_id']=label.get('scene_id','env_airsim_16')
+    if args.photo_checkpoints:result['variant']=args.photo_variant
     depth_count = 0
     depth_local = threading.local()
     def capture_depth(frame_id):
@@ -167,13 +175,21 @@ def main():
         broker.start(); channel = BrokerClient(broker.socket_path, args.episode_id)
         result['runtime_isolation']=verify_live_boundary(broker.socket_path,args.episode_id,labels_dir,
                                                          episode/'runtime_boundary_evidence')
-        if result['runtime_isolation'].get('goal_views')!=4:
-            raise RuntimeError('Restricted runtime did not receive all four visual goal views')
+        if result['runtime_isolation'].get('goal_views')!=len(goal.rgb_views):
+            raise RuntimeError('Restricted runtime did not receive all visual goal views')
         # Exercise the actual runtime path and bind the served goal hash.
-        served = [channel.goal_view(index)[0] for index in range(4)]
+        served = [channel.goal_view(index)[0] for index in range(len(goal.rgb_views))]
         if any(item['panorama_sha256'] != goal.content_sha256 for item in served):
             raise RuntimeError('Broker served inconsistent goal panorama')
-        if args.controller_checkpoints:
+        if args.photo_checkpoints:
+            import sys
+            sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
+            from research.map_navigation.deployment import PhotoControllerProcess
+            controller=PhotoControllerProcess(broker.socket_path,args.episode_id,args.photo_checkpoints,
+                args.map_prior,episode/'photo-controller',args.photo_variant)
+            controller.ready()
+            result['controller_checkpoint_sha256']=controller.identity
+        elif args.controller_checkpoints:
             from live_controller_process import LiveControllerProcess
             controller=LiveControllerProcess(broker.socket_path,args.episode_id,args.controller_checkpoints,
                 episode/'learned-controller',args.maximum_speed_mps,integration_only=args.integration_only,
@@ -185,10 +201,10 @@ def main():
         depth_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='privileged-depth')
         first = client.getMultirotorState(vehicle_name=vehicle)
         evaluator = FlightEvaluator(label['goal_ned_m'], field.bounds.tolist(), first.timestamp/1e9,
-                                    label['reference_length_m'])
+                                    label['reference_length_m'],timeout_seconds=label.get('timeout_s',180))
         path = np.asarray(label['reference_path_ned_m'], dtype=np.float64)
         target_index = 1; stopped = False; previous_position = np.asarray(start, dtype=np.float64)
-        last_frame = -1; last_depth_sim = -math.inf; wall_deadline = time.monotonic()+210
+        last_frame = -1; last_depth_sim = -math.inf; wall_deadline = time.monotonic()+label.get('timeout_s',180)+30
         while time.monotonic() < wall_deadline:
             loop = time.monotonic()
             if depth_future is not None and depth_future.done():

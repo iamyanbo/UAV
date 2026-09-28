@@ -25,8 +25,8 @@ class RecordedRGBBroker:
                                 if not ready or broker.closed:return
                                 row,rgb=broker.latest
                             send(self.request,row,rgb)
-                        elif request.get('op')=='goal' and set(request)=={'op','episode_id','index'} and type(request['index']) is int and 0<=request['index']<4:
-                            index=request['index'];send(self.request,dict(episode_id=goal.episode_id,index=index,
+                        elif request.get('op')=='goal' and set(request)=={'op','episode_id','index'} and type(request['index']) is int and 0<=request['index']<len(goal.rgb_views):
+                            index=request['index'];send(self.request,dict(episode_id=goal.episode_id,index=index,view_count=len(goal.rgb_views),
                                 calibration=asdict(goal.calibration),panorama_sha256=goal.content_sha256,
                                 captured_sim_seconds=goal.captured_sim_seconds[index]),goal.rgb_views[index])
                         else:raise ValueError('Replay exposes only RGB observations and four goal views')

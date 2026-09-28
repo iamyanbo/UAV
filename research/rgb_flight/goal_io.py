@@ -19,9 +19,9 @@ def write_goal(folder, goal):
         path = folder/f'view-{index}.rgb'
         path.write_bytes(rgb)
         views.append(dict(path=path.name, sha256=digest(rgb), bytes=len(rgb)))
-    record = dict(schema='visual-goal-observation/v1', episode_id=goal.episode_id,
+    record = dict(schema='visual-goal-observation/v2', episode_id=goal.episode_id,
                   calibration=asdict(goal.calibration), captured_sim_seconds=goal.captured_sim_seconds,
-                  view_order=[0, 1, 2, 3], views=views,
+                  view_order=list(range(len(views))), views=views,
                   panorama_sha256=goal.content_sha256,
                   forbidden_metadata=['camera_pose','goal_coordinates','depth','semantic_map'])
     (folder/'goal.json').write_text(json.dumps(record, indent=2, allow_nan=False))
@@ -31,7 +31,10 @@ def write_goal(folder, goal):
 def load_goal(folder, expected_episode_id=None):
     folder = Path(folder).resolve()
     record = json.loads((folder/'goal.json').read_text())
-    if record.get('schema') != 'visual-goal-observation/v1' or record.get('view_order') != [0,1,2,3]:
+    count = len(record.get('views', []))
+    if (record.get('schema') not in ('visual-goal-observation/v1', 'visual-goal-observation/v2')
+            or not 1 <= count <= 4 or record.get('view_order') != list(range(count))
+            or (record['schema'] == 'visual-goal-observation/v1' and count != 4)):
         raise ValueError('Unsupported goal observation record')
     if expected_episode_id is not None and record['episode_id'] != expected_episode_id:
         raise ValueError('Goal observation belongs to another episode')
