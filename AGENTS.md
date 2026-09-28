@@ -1,5 +1,16 @@
 # CURI-UAV research invariants
 
+## Connected temporal pipeline - September 28, 2026
+
+The approved connection repair is documented in `research/map_navigation/PIPELINE_CONNECTIONS.md`.
+Use 80 x 50 ms world steps with a fresh frozen-actor proposal each step. Rollouts
+predict unfiltered actor risk; real safety remains independent. Active model/data/
+package schemas are v5 and the three shared records are v2. Preserve live
+perception-only bootstrap, decision-to-dispatch IDs, independent observable expert
+labels, matched restart qualification and actor-bound value/calibration provenance.
+This pass remains local source only; no executable checks, training, replay,
+simulator flights, Spark access or delegation. Existing budget ceilings persist.
+
 ## Two-mode temporal-window revision - September 28, 2026
 
 The latest user plan supersedes both GRU restoration and planner-first runtime. Active code is `research/map_navigation`: a four-frame MobileNetV3 temporal-attention actor owns every vehicle command; Qwen proposes subgoals and the six-layer world model rolls the same frozen actor forward. No GRU, separate planning critic, geometric runtime route follower, action optimization, or command arbitration. Photo-SLAM is pinned to f8bfb2f0809c003ccc3fd577dc43c576fcafa4ac, with a live native bridge, bounded Gaussian updates and asynchronous RGB-derived metric depth. One fixed forward camera and one goal photo. Preserve archived source and evidence. Local source work only: no Spark, tests, imports/compilation checks, builds, training, replay, acquisition, or simulator execution. Do not delegate. Performance and navigation acceptance remain pending.

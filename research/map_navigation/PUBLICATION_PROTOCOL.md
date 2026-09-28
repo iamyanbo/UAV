@@ -102,7 +102,7 @@ proposed/safety-modified/dispatched action distinction, missing-frame rates,
 collision and arrival labeling, deduplication, rejected data, altitude/route
 coverage and demographic/geographic limits of the scenes. Preserve raw data
 and private evaluator labels separately. The model package must fail if a
-privileged field or sealed test asset is present. The current v4 dataset and
+privileged field or sealed test asset is present. The current v5 dataset and
 `audit.py` provide partial provenance and coverage counts; they are not a
 complete data card or evidence of data quality.
 

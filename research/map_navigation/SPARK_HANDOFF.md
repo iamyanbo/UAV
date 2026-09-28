@@ -7,5 +7,5 @@ simulator execution remain deferred. Do not resume a historical supervisor.
 
 The previous planner-first handoff is preserved in archive/pre_temporal and
 Git history. Its tilting-camera, geometric-controller and v2-package commands
-are not instructions for this campaign. New artifacts use fixed-camera v4
-schemas and three shared v1 observation/subgoal/spatial records.
+are not instructions for this campaign. New artifacts use fixed-camera v5
+schemas and three shared v2 observation/subgoal/spatial records.

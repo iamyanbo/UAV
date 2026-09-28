@@ -9,11 +9,15 @@ import math
 INTENTIONS = ('goal', 'inspect', 'approach', 'search', 'recover', 'hold')
 ALTITUDES = ('maintain', 'gain', 'lose')
 SOURCES = ('none', 'keyframe', 'geometry', 'map')
+STEP_S = .05
+STEP_NS = 50_000_000
+HORIZON = 80
+FRAME_SKEW_NS = 12_500_000
 
 
 @dataclass(frozen=True)
 class SpatialSnapshot:
-    schema: str = 'spatial-snapshot/v1'
+    schema: str = 'spatial-snapshot/v2'
     observed_s: float = 0.
     publication_wall: float = 0.
     revision: int = 0
@@ -26,6 +30,8 @@ class SpatialSnapshot:
     geometry: tuple = ()              # (id, x,y,z, support_count); map units
     map_references: tuple = ()        # coarse hypotheses, never clearance
     map_hypotheses: tuple = ()        # (id, coarse height, quantization); not geometry
+    map_lookup: tuple = ()            # (id, full-map pixel x, y, role); hypothesis only
+    camera_to_body: tuple = ()        # row-major rotation, never simulator pose
 
     def references(self):
         return {'none': (), 'keyframe': tuple(r[0] for r in self.keyframes),
@@ -33,13 +39,17 @@ class SpatialSnapshot:
                 'map': self.map_references}
 
     def validate(self):
-        if self.schema != 'spatial-snapshot/v1' or self.scale_status not in ('unknown', 'metric', 'lost'):
+        if self.schema != 'spatial-snapshot/v2' or self.scale_status not in ('unknown', 'metric', 'lost'):
             raise ValueError('Incompatible spatial snapshot')
         if len(self.keyframes) > 3 or len(self.geometry) > 256 or len(self.map_references)>8:
             raise ValueError('Unbounded spatial snapshot')
+        if len(self.map_lookup)>8 or (self.camera_to_body and (len(self.camera_to_body)!=9 or not all(math.isfinite(x) for x in self.camera_to_body))):
+            raise ValueError('Invalid spatial calibration or lookup')
+        if any(len(p)!=16 or not all(math.isfinite(x) for x in p) for p in self.poses):raise ValueError('Invalid camera pose')
+        if not all(math.isfinite(t) for t in (self.observed_s,self.publication_wall)):raise ValueError('Invalid spatial clock')
         if self.scale_status == 'metric' and not (
-                self.meters_per_unit is not None and self.meters_per_unit > 0 and
-                self.scale_relative_sigma is not None and math.isfinite(self.scale_relative_sigma)):
+                self.meters_per_unit is not None and math.isfinite(self.meters_per_unit) and self.meters_per_unit > 0 and
+                self.scale_relative_sigma is not None and math.isfinite(self.scale_relative_sigma) and self.scale_relative_sigma>=0):
             raise ValueError('Metric scale needs uncertainty')
         return self
 
@@ -52,7 +62,7 @@ class SpatialSnapshot:
 
 @dataclass(frozen=True)
 class Subgoal:
-    schema: str = 'subgoal/v1'
+    schema: str = 'subgoal/v2'
     intention: str = 'goal'
     target_reference: str | None = None
     target_source: str = 'none'
@@ -64,7 +74,7 @@ class Subgoal:
     expires_s: float = 0.
 
     def valid(self, now, spatial):
-        if (self.schema != 'subgoal/v1' or self.intention not in INTENTIONS or
+        if (self.schema != 'subgoal/v2' or self.intention not in INTENTIONS or
                 self.altitude not in ALTITUDES or self.target_source not in SOURCES or
                 not math.isfinite(self.confidence) or not 0 <= self.confidence <= 1 or
                 not 0 <= now-self.source_s <= 5 or not now < self.expires_s <= self.source_s+5 or
@@ -116,7 +126,7 @@ class ObservationContext:
     source_wall: float
 
     def validate(self):
-        if self.schema != 'observation-context/v1' or not 1 <= len(self.frame_ids) <= 4:
+        if self.schema != 'observation-context/v2' or not 1 <= len(self.frame_ids) <= 4:
             raise ValueError('Incompatible observation context')
         if len(set(self.frame_ids)) != len(self.frame_ids) or any(b <= a for a,b in zip(self.timestamps,self.timestamps[1:])):
             raise ValueError('Repeated or unordered observations')
@@ -130,7 +140,7 @@ class ObservationContext:
 
 def snapshot_from_dict(value):
     value = dict(value)
-    for name in ('poses', 'keyframes', 'geometry', 'map_references', 'map_hypotheses'):
+    for name in ('poses', 'keyframes', 'geometry', 'map_references', 'map_hypotheses', 'map_lookup', 'camera_to_body'):
         value[name] = tuple(tuple(r) if isinstance(r,list) else r for r in value.get(name,()))
     return SpatialSnapshot(**value).validate()
 
@@ -140,3 +150,28 @@ def context_record(context, subgoal):
     return dict(schema=context.schema, frame_ids=context.frame_ids, timestamps=context.timestamps,
                 preceding_commands=context.commands[0,-len(context.frame_ids):].detach().cpu().tolist(),
                 spatial=asdict(context.spatial), subgoal=asdict(subgoal) if subgoal else None)
+
+
+def preceding_command(metadata):
+    rows=[r for r in metadata.get('command_history',()) if r['sim_ns']<=metadata['sim_ns']]
+    return tuple(rows[-1]['values']) if rows else (0.,)*4
+
+
+def assemble_context(history, goal_grid, spatial, source_wall):
+    """The sole tensorizer: entries are (frame, simulator seconds, Bx64x256, command)."""
+    import torch
+    if not 1<=len(history)<=4:raise ValueError('Expected one to four real frames')
+    newest=history[-1][2]
+    features=newest.new_zeros(1,4,64,256);commands=newest.new_zeros(1,4,4)
+    valid=torch.zeros(1,4,dtype=torch.bool,device=newest.device)
+    for j,(_,_,feature,command) in enumerate(history,4-len(history)):
+        features[:,j]=feature;commands[:,j]=commands.new_tensor(command);valid[:,j]=True
+    context=ObservationContext('observation-context/v2',tuple(r[0] for r in history),
+        tuple(r[1] for r in history),features,commands,valid,goal_grid,None,spatial,source_wall).validate()
+    return context
+
+
+def relative_times(context):
+    times=context.features.new_zeros(len(context.features),4)
+    times[:,-len(context.timestamps):]=times.new_tensor([t-context.timestamps[-1] for t in context.timestamps])
+    return times

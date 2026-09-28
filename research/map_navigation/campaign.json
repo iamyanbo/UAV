@@ -1,5 +1,5 @@
 {
-    "schema":  "photo-map-campaign/v4",
+    "schema":  "photo-map-campaign/v5",
     "status":  "source-implementation-unexecuted",
     "seed":  20260927,
     "runtime_inputs":  [
@@ -109,8 +109,8 @@
                    "world_width":  384,
                    "world_layers":  6,
                    "heads":  8,
-                   "horizon_steps":  20,
-                   "dt_s":  0.2,
+                   "horizon_steps":  80,
+                   "dt_s":  0.05,
                    "hypotheses":  8,
                    "qwen":  "Qwen2.5-VL-3B-Instruct",
                    "action_channels":  4,
@@ -195,6 +195,7 @@
                                  ],
                        "horizontal_tolerance_m":  3.0,
                        "vertical_tolerance_m":  2.0,
+                       "yaw_tolerance_degrees":  30.0,
                        "maximum_arrival_speed_mps":  0.5,
                        "dwell_s":  1.0,
                        "success_target":  0.9,

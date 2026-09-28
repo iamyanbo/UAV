@@ -128,6 +128,10 @@ class RGBBroker:
                         panorama_sha256=self.goal_observation.content_sha256), self.goal_observation.rgb_views[index]
         if op == 'command':
             allowed = {'op', 'episode_id', 'frame_id', 'values', 'stop'}
+            if 'decision_id' in request:
+                ident=request['decision_id']
+                if not isinstance(ident,str) or not 1<=len(ident)<=128:raise ValueError('Invalid decision ID')
+                allowed.add('decision_id')
             if self.camera_joint and 'camera_pitch_deg' in request: allowed.add('camera_pitch_deg')
             if self.camera_joint and 'candidate_id' in request:
                 if not isinstance(request['candidate_id'],str) or len(request['candidate_id'])>64:raise ValueError('Invalid candidate identity')
@@ -161,9 +165,13 @@ class RGBBroker:
                 self.pending = command
                 self.pending_source = source
                 self.pending_candidate = request.get("candidate_id")
+                ident=request.get('decision_id')
+                if ident is not None and (not isinstance(ident,str) or not 1<=len(ident)<=128):
+                    raise ValueError('Invalid decision ID')
+                self.pending_decision = ident
                 self.stop_requested |= request['stop']
                 self.accepted_command_log.append(dict(episode_id=self.episode_id,
-                    based_on_frame_id=request['frame_id'],values=list(values),stop_requested=request['stop'],
+                    based_on_frame_id=request['frame_id'],decision_id=ident,values=list(values),stop_requested=request['stop'],
                     accepted_monotonic=self.last_command_wall,latest_rgb_sim_ns=frame['sim_ns']))
                 return dict(accepted=True, episode_id=self.episode_id, based_on_frame_id=request['frame_id'],
                             accepted_monotonic=self.last_command_wall), b''
@@ -269,6 +277,7 @@ class RGBBroker:
                         command = Command(0.,0.,0.,command.yaw_dps)
                     source = None if overridden else self.pending_source
                     candidate = None if overridden else self.pending_candidate
+                    decision_id = getattr(self,'pending_decision',None)
                 # Simulator state stays inside this broker; only its clock is
                 # retained. The synchronous call also pumps the RPC event loop.
                 stamp = client.getMultirotorState(vehicle_name=self.vehicle).timestamp
@@ -281,7 +290,7 @@ class RGBBroker:
                     row['candidate_id']=candidate
                     row.update(camera_pitch_deg=self.camera_joint.target,camera_actual_pitch_deg=self.camera_joint.pitch,
                                camera_wait=camera_wait,camera_profile='pitch-rgb/v1')
-                row.update(action_semantics='post-safety-dispatch/50ms-v3',dispatch_sim_ns=stamp,
+                row.update(action_semantics='post-safety-dispatch/50ms-v4',decision_id=decision_id,dispatch_sim_ns=stamp,
                            dispatch_interval_seconds=(submitted-self.command_log[-1]['submitted_monotonic']) if self.command_log else None,
                            timing_uncertainty_seconds=time.monotonic()-started,
                            observation_age_seconds=(submitted-source['received_monotonic']) if source else None,

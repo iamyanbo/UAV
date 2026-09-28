@@ -59,7 +59,7 @@ class SceneProcess:
         else:self.settings_path.write_bytes(self.old)
 
 
-def collect(registry_path,manifests,output,split,window,packages=None,variants=None,sources=None,limit=None,learner_round=False,sample_policy=False):
+def collect(registry_path,manifests,output,split,window,packages=None,variants=None,sources=None,limit=None,learner_round=False,sample_policy=False,perception_package=None):
     if limit is not None and limit<=0:raise ValueError('Positive per-scene attempt limit required')
     registry=read(registry_path);public=read(Path(manifests)/(split+'.json'))
     if registry.get('schema')!='photo-map-scenes/v2':raise ValueError('Frozen v2 scene registry required')
@@ -68,11 +68,15 @@ def collect(registry_path,manifests,output,split,window,packages=None,variants=N
     labels=Path(manifests)/'evaluator_labels'/(split+'.json')
     output=Path(output);output.mkdir(parents=True,exist_ok=True)
     packages={} if packages is None else read(packages)['seeds']
+    if perception_package and (packages or split=='test'):raise ValueError('Perception sidecar is for expert bootstrap collection only')
     if learner_round and (not packages or split!='train'):raise ValueError('Learner round requires training split and packages')
     if sample_policy and (not packages or split=='test'):raise ValueError('Sampling is restricted to adaptation collection')
     if split=='test' and set(packages)!=set(map(str,config()['evaluation']['seeds'])):
         raise ValueError('Sealed evaluation requires three independently trained seed packages')
     variants=variants or (config()['variants'] if packages else ['expert'])
+    branching=any(m.get('branch_group') for m in public['episodes'])
+    if branching and (not packages or variants!=['mode1'] or sample_policy):
+        raise ValueError('Matched restart collection requires deterministic mode1 continuation and seed packages')
     sources=sources or (['expert','manoeuvre'] if not packages else ['exploration'])
     if split=='test': sources=['expert','exploration','manoeuvre']
     if not packages and 'exploration' in sources:raise ValueError('Exploration requires trained perception packages')
@@ -121,6 +125,10 @@ def collect(registry_path,manifests,output,split,window,packages=None,variants=N
                             if sample_policy:command+=['--photo-sample-policy']
                             if mission.get('initial_subgoal'):
                                 command+=['--photo-initial-subgoal',json.dumps(mission['initial_subgoal'])]
+                            if mission.get('goal_path'):
+                                if digest(Path(mission['goal_path'])/'goal.json')!=mission['goal_sha256']:raise ValueError('Branch goal changed')
+                                command+=['--goal',mission['goal_path']]
+                        if perception_package:command+=['--photo-perception-package',str(perception_package),'--map-prior',scene['map']]
                         write(run/'request.json',dict(command=command,seed=int(seed),variant=variant,map_sha256=scene['map_sha256'],
                               registry_sha256=digest(registry_path),mission_sha256=digest(Path(manifests)/(split+'.json'))))
                         with (run/'host.log').open('x') as log:
@@ -131,5 +139,13 @@ def collect(registry_path,manifests,output,split,window,packages=None,variants=N
                             collection_source=('learner' if learner_round else 'exploration' if mission.get('collection_source')=='exploration' and packages else 'learner' if packages else mission.get('collection_source','expert')))
                         result['branch_group']=mission.get('branch_group')
                         result['initial_subgoal']=mission.get('initial_subgoal')
+                        result['branch_protocol']=mission.get('branch_protocol')
+                        result['city_id']=scene['city_id']
+                        if branching:
+                            from .data import lines
+                            decisions=run/'episode/photo-controller/runtime/decisions.jsonl'
+                            contexts=[r['branch_context_sha256'] for r in lines(decisions) if r.get('branch_context_sha256')] if decisions.exists() else []
+                            result['branch_context_sha256']=contexts[0] if contexts else None
+                            result['branch_continuation_sha256']=digest(Path(package_root)/'package.json')
                         write(receipt,result)
                         if code not in (0,2):raise RuntimeError('Collector infrastructure failure; inspect '+str(run))

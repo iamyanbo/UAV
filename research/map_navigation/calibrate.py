@@ -68,20 +68,26 @@ def calibrate(dataset,checkpoint,backbone,output,window):
         scope='full-map single-frame estimates; temporal locking requires flight evaluation')
     selected=max(qualified,key=lambda r:(r['recall'],r['threshold']))
     saved['calibration']=dict(selected,scope=receipt['scope'],dataset_sha256=digest(dataset))
+    from .provenance import identities
+    saved['calibration']['model_identities']=identities(saved['model'])
     if {'policy','world'}<=set(saved['trained_stages']):
+        if saved.get('world_actor_identity')!=saved['calibration']['model_identities']['actor']:
+            raise ValueError('World training must follow the latest actor update')
         from contextlib import nullcontext
         from .learning import batch_context
         from .contracts import ObservationContext
         from .temporal import rollout
         from .subgoals import score_components
         world=Dataset(dataset,'odometry','validation');components=[];outcomes=[]
+        world.windows=[w for w in world.windows if w.get('behavior_actor_identity')==saved['world_actor_identity']]
+        if not world.windows:raise ValueError('Collect validation flights with this actor before world-score calibration')
         with torch.no_grad():
             for index in range(min(128,len(world))):
                 if not window.remaining():
                     receipt['complete']=False;write(out/'receipt.json',receipt);return
                 row=world.get(world.sample_index(rng))
                 x,t,c,v,g,goal,embedding=batch_context(model,[row],'cuda')
-                context=ObservationContext('observation-context/v1',tuple(row['history_ids']),tuple(row['history_times']),
+                context=ObservationContext('observation-context/v2',tuple(row['history_ids']),tuple(row['history_times']),
                     x,c,v,g,goal,row['spatial'],0.).validate()
                 refs={}
                 if row['subgoal'] and row['reference_rgb'] is not None:
@@ -95,6 +101,6 @@ def calibrate(dataset,checkpoint,backbone,output,window):
         weights=np.linalg.solve(design.T@design+np.eye(5),design.T@np.asarray(outcomes))
         weights[0]=min(weights[0],-.1);weights[3]=-.05
         saved['calibration'].update(score_scales=scales.tolist(),score_weights=weights.tolist(),
-            score_examples=len(values),score_scope='validation complete-flight outcomes; actor rollouts')
+            score_examples=len(values),score_scope='validation complete-flight outcomes; unfiltered actor risk rollouts')
     torch.save(saved,out/'calibrated.pt');receipt['selected']=selected
     write(out/'receipt.json',receipt)

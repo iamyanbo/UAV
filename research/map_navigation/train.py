@@ -6,9 +6,11 @@ from torch.nn import functional as F
 from .common import SCHEMA,config,digest,write,seed_all,reserve_memory
 from .data import Dataset
 from .models import PhotoNavigationModel
+from .contracts import HORIZON
+from .provenance import identities
 
 
-def objective(model,items,stage,device,horizon_limit=20):
+def objective(model,items,stage,device,horizon_limit=HORIZON):
     if stage not in ('localization','goal'):
         from .learning import objective as temporal_objective
         return temporal_objective(model,items,stage,device,horizon_limit)
@@ -70,7 +72,18 @@ def train(dataset,stage,backbone,output,window,updates=None,resume=None,initiali
     base_used=usage.get(budget_key,0)-(saved['updates'] if resume else 0)
     if base_used+updates>ceiling:raise ValueError('Cumulative stage budget would be exceeded; choose a remaining-budget update count')
     dependencies={'localization':set(),'goal':{'localization'},'odometry':{'localization','goal'},'policy':{'localization','goal','odometry'},'dagger':{'policy','world'},'world':{'localization','goal','policy'}}
-    if not dependencies[stage]<=set(trained):raise ValueError('Missing prior trained stages: '+str(dependencies[stage]-set(trained)))
+    required=dependencies[stage]-({'world'} if resume and stage=='dagger' else set())
+    if not required<=set(trained):raise ValueError('Missing prior trained stages: '+str(required-set(trained)))
+    if stage in ('policy','dagger','world','localization','goal'):
+        trained=[s for s in trained if s!='world']
+    invalidate={'localization':{'goal','odometry','policy','dagger','ppo'},'goal':{'policy','dagger','ppo'},
+                'policy':{'dagger','ppo'}}.get(stage,set())
+    trained=[s for s in trained if s not in invalidate]
+    if stage=='world':
+        model.assessment_actor_identity=identities(model.state_dict())['actor']
+        for data in (training,validation):
+            if not any(w.get('behavior_actor_identity')==model.assessment_actor_identity for w in data.windows):
+                raise ValueError('Collect train and validation outcomes from this actor before world/value training')
     # Later stages cannot silently invalidate localization by modifying its encoder.
     trainable={'localization':('encoder.','camera_projection.','map_projection.','registration.'),
                'goal':('goal.','arrival.'),
@@ -90,11 +103,13 @@ def train(dataset,stage,backbone,output,window,updates=None,resume=None,initiali
     if resume:best_validation=saved.get("best_validation",float("inf"))
     def checkpoint(update,is_best=False):
         stages=sorted(set(trained)|({stage} if update>=updates else set()))
-        value=dict(teacher_sha256=training.teacher_identity,calibration=saved.get('calibration') if saved and stage not in ('localization','goal') else None,schema=SCHEMA,model=model.state_dict(),optimizer=optimizer.state_dict(),stage=stage,updates=update,
+        value=dict(teacher_sha256=training.teacher_identity,calibration=None,schema=SCHEMA,model=model.state_dict(),optimizer=optimizer.state_dict(),stage=stage,updates=update,
             trained_stages=stages,seed=seed,dataset_sha256=data_identity,backbone_sha256=source_identity,
             python_rng=random.getstate(),torch_rng=torch.get_rng_state(),cuda_rng=torch.cuda.get_rng_state_all(),
             validation_loss=last_validation,accepted=False,target_updates=updates,fine_tune=fine_tune,best_validation=best_validation)
         value['budget_usage']=dict(usage,**{budget_key:base_used+update})
+        value['world_actor_identity']=identities(value['model'])['actor'] if stage=='world' else (saved or {}).get('world_actor_identity')
+        value['data_quality']=training.spec.get('data_quality',{})
         temporary=output/'latest.pending';torch.save(value,temporary);temporary.replace(output/'latest.pt')
         if is_best:
             temporary=output/'best.pending';torch.save(value,temporary);temporary.replace(output/'best.pt')
@@ -109,10 +124,13 @@ def train(dataset,stage,backbone,output,window,updates=None,resume=None,initiali
     with (output/'loss.jsonl').open('a') as log:
         for update in range(start,updates):
             if not window.remaining():checkpoint(update);return
-            reserve_memory();model.train()
-            if stage!='localization':model.encoder.eval()
-            indices=[training.sample_index(random,learner_mix=fine_tune) for _ in range(cfg['batch_size'])]
-            horizon=20 if fine_tune or (update+1)/updates>.5 else 5 if (update+1)/updates<=.2 else 10
+            reserve_memory();model.eval()
+            for name,module in model.named_children():
+                if any((name+'.').startswith(prefix) for prefix in trainable):module.train()
+            # objective augmentation is explicit even with frozen modules in eval.
+            model.training=True
+            indices=[training.sample_index(random,learner_mix=fine_tune or stage=='dagger') for _ in range(cfg['batch_size'])]
+            horizon=80 if fine_tune or (update+1)/updates>.5 else 20 if (update+1)/updates<=.2 else 40
             optimizer.zero_grad(set_to_none=True)
             items=[training.get(i) for i in indices]
             loss=objective(model,items,stage,'cuda',horizon)
@@ -128,7 +146,7 @@ def train(dataset,stage,backbone,output,window,updates=None,resume=None,initiali
                 model.eval()
                 # Validation always uses the full horizon, including during curriculum.
                 with torch.inference_mode():
-                    values=[float(objective(model,[validation.get(i)],stage,'cuda',20)) for i in validation_indices]
+                    values=[float(objective(model,[validation.get(i)],stage,'cuda',HORIZON)) for i in validation_indices]
                 last_validation=sum(values)/len(values)
                 if last_validation<best_validation:best_validation=last_validation;is_best=True
             if (update+1)%cfg['save_every']==0 or update+1==updates or is_best:

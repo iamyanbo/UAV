@@ -28,7 +28,7 @@ def answer_logprob(proposer,row,answer):
 
 def train_external(dataset,stage,backbone,output,window,updates,resume,initialize,seed):
     spec=read(dataset);cfg=config()['training'];seed_all(seed);reserve_memory()
-    if spec.get('schema')!='temporal-adaptation/v1':raise ValueError('Causal adaptation dataset required')
+    if spec.get('schema')!='temporal-adaptation/v2':raise ValueError('Causal adaptation dataset required')
     if spec['component']!=stage:raise ValueError('Adaptation component mismatch')
     if digest(spec['base_dataset'])!=spec['base_dataset_sha256']:raise ValueError('Base temporal dataset changed')
     if any(r['split'] not in ('train','validation') for r in spec['rows']):raise ValueError('Sealed geography in adaptation data')
@@ -52,7 +52,7 @@ def train_external(dataset,stage,backbone,output,window,updates,resume,initializ
         from .data import Dataset
         if spec.get('behavior_checkpoint_sha256')!=digest(initialize or spec['behavior_checkpoint']):raise ValueError('PPO behavior checkpoint mismatch')
         model,_=load_model(backbone,source)
-        if not {'policy','world'}<=set(saved['trained_stages']):raise ValueError('Train actor/world before PPO')
+        if not ({'policy'} if resume else {'policy','world'})<=set(saved['trained_stages']):raise ValueError('Train actor/world before PPO')
         for name,param in model.named_parameters():param.requires_grad_(name.startswith('policy.'))
         data=Dataset(spec['base_dataset'],'odometry','train')
         # Window indices refer to the unfiltered specification, not sampling indices.
@@ -76,10 +76,10 @@ def train_external(dataset,stage,backbone,output,window,updates,resume,initializ
         modules=None
     else:
         from .subgoals import QwenProposer
-        if saved.get('schema') not in (SCHEMA,'subgoal-qwen/v1'):raise ValueError('Unrecognized preceding checkpoint')
-        proposer=QwenProposer(TrainingLane(),source if saved.get('schema')=='subgoal-qwen/v1' else None)
+        if saved.get('schema') not in (SCHEMA,'subgoal-qwen/v2'):raise ValueError('Unrecognized preceding checkpoint')
+        proposer=QwenProposer(TrainingLane(),source if saved.get('schema')=='subgoal-qwen/v2' else None)
         model=proposer.model;modules=proposer.modules
-        if stage=='preferences' and saved.get('schema')!='subgoal-qwen/v1':raise ValueError('Preference learning requires supervised Qwen adapter')
+        if stage=='preferences' and saved.get('schema')!='subgoal-qwen/v2':raise ValueError('Preference learning requires supervised Qwen adapter')
         for name,param in model.named_parameters():param.requires_grad_(name.endswith(('.a','.b')))
         ceiling=cfg['budgets']['configuration_examples'] if stage=='configurator' else cfg['budgets']['preference_pairs']
         updates=updates or min(ceiling,len(rows))
@@ -89,7 +89,7 @@ def train_external(dataset,stage,backbone,output,window,updates,resume,initializ
         if stage=='preferences':
             with torch.no_grad():
                 for index,row in enumerate(rows+validation):
-                    if row['chosen_success']<=row['rejected_success'] and row['chosen_cost']>=row['rejected_cost']:
+                    if row['chosen_utility']<=row['rejected_utility']:
                         raise ValueError('Preference not supported by complete-flight outcomes')
                     references[row['id']]=(answer_logprob(proposer,row,row['chosen'])-answer_logprob(proposer,row,row['rejected'])).detach()
             if resume:
@@ -119,9 +119,10 @@ def train_external(dataset,stage,backbone,output,window,updates,resume,initializ
         if (update+1)%cfg['save_every']==0 or update+1==updates or not window.remaining():
             with torch.no_grad():validation_loss=sum(float(loss_for(r)) for r in validation[:32])/min(32,len(validation))
             if stage=='ppo':
-                state=dict(saved,model=model.state_dict(),trained_stages=sorted(set(saved['trained_stages'])|({'ppo'} if update+1==updates else set())))
+                state=dict(saved,model=model.state_dict(),calibration=None,
+                    trained_stages=sorted((set(saved['trained_stages'])-{'world'})|({'ppo'} if update+1==updates else set())))
             else:
-                state=dict(schema='subgoal-qwen/v1',modules=modules,base_identity=proposer.base_identity,
+                state=dict(schema='subgoal-qwen/v2',modules=modules,base_identity=proposer.base_identity,
                     adapter={n:p.detach().cpu() for n,p in model.named_parameters() if n.endswith(('.a','.b'))})
             state.update(stage=stage,updates=update+1,target_updates=updates,optimizer=optimizer.state_dict(),
                 dataset_sha256=digest(dataset),python_rng=random.getstate(),torch_rng=torch.get_rng_state(),

@@ -7,15 +7,16 @@ import math
 import time
 from pathlib import Path
 import torch
+import numpy as np
 from PIL import Image
-from .contracts import Subgoal, INTENTIONS, ALTITUDES
+from .contracts import Subgoal, INTENTIONS, ALTITUDES, STEP_S
 from .temporal import rollout
 
 
 def score_components(predicted):
     reached=(predicted['goal'].sigmoid()[0]>=.8)&(predicted['visibility'].sigmoid()[0]>=.7)
     indices=reached.nonzero().flatten()
-    duration=.2*(int(indices[0])+1) if len(indices) else 4.
+    duration=STEP_S*(int(indices[0])+1) if len(indices) else 4.
     return [float(predicted['collision'].sigmoid().amax()),
             float(predicted['goal'].sigmoid()[0,-1]-predicted['goal'].sigmoid()[0,0]),
             float(predicted['progress'][0].sum()),duration,float(predicted['value'][0,-1])]
@@ -23,7 +24,8 @@ def score_components(predicted):
 
 def prompt(spatial):
     return ('Propose at most four photo-goal navigation subgoals for a fixed forward camera. '
-        'Images are current RGB, goal photograph, coarse overhead RGB, then up to three keyframes. '
+        'Images are current RGB, goal photograph, annotated coarse overhead RGB, then up to three keyframes. '
+        'map_lookup gives reference IDs, full raster pixel positions and goal/current hypothesis roles. '
         'The overhead map is a hypothesis and cannot establish obstacle clearance. '
         'Gain/lose height is an intention, not clearance to ascend/descend. '
         'Return JSON only: {"reasoning":string,"proposals":[{"intention":string,'
@@ -49,7 +51,7 @@ class QwenProposer:
         self.modules=install_lora(self.model)
         if adapter:
             saved=torch.load(adapter,map_location='cpu',weights_only=True)
-            if saved.get('schema')!='subgoal-qwen/v1' or saved['modules']!=self.modules:
+            if saved.get('schema')!='subgoal-qwen/v2' or saved['modules']!=self.modules:
                 raise ValueError('Qwen adapter uses incompatible proposal contract')
             if saved.get('base_identity')!=self.base_identity:raise ValueError('Qwen base weights/tokenizer changed')
             params=dict(self.model.named_parameters())
@@ -95,6 +97,29 @@ class Mode2:
         self.qwen=QwenProposer(lane,adapter) if variant!='mode1' else None
         self.pool=ThreadPoolExecutor(max_workers=1,thread_name_prefix='subgoals')
         self.pending=None;self.active=None;self.last_request=-math.inf;self.receipt=None
+        self.completion_key=None;self.completion_pose=None;self.completion_count=0
+
+    def completed(self,context,references,match,arrival,speed):
+        g=self.active;s=context.spatial
+        if g is None or not g.valid(context.timestamps[-1],s):return False
+        if g!=self.completion_key:
+            self.completion_key=g;self.completion_count=0
+            self.completion_pose=s.poses[-1] if s.poses else None
+        supported=False
+        if g.intention in ('goal','approach') and g.altitude=='maintain':
+            supported=min(match,arrival)>=self.calibration['threshold'] and speed is not None and speed<.5
+        if s.tracking and s.scale_status=='metric' and s.poses and (s.scale_relative_sigma or 1.)<=.35:
+            pose=np.asarray(s.poses[-1]).reshape(4,4)
+            if g.target_source=='geometry':
+                point=next((r for r in s.geometry if r[0]==g.target_reference and r[4]>=2),None)
+                supported=bool(point and np.linalg.norm(np.asarray(point[1:4])-pose[:3,3])*s.meters_per_unit<2.)
+            if self.completion_pose and s.camera_to_body and g.altitude!='maintain':
+                initial=np.asarray(self.completion_pose).reshape(4,4)
+                body=np.asarray(s.camera_to_body).reshape(3,3)@initial[:3,:3].T@(pose[:3,3]-initial[:3,3])*s.meters_per_unit
+                supported=body[2]<-1. if g.altitude=='gain' else body[2]>1.
+        self.completion_count=self.completion_count+1 if supported else 0
+        if self.completion_count<3:return False
+        self.active=None;return True
 
     def update(self, context, images, triggered=False):
         now=context.timestamps[-1]
@@ -134,6 +159,7 @@ class Mode2:
         eligible=[(s,g) for s,g in zip(scores,goals) if math.isfinite(s) and g.valid(current.timestamps[-1],current.spatial)]
         selected=max(eligible,key=lambda p:p[0])[1] if eligible else None
         return selected,dict(raw=raw,scores=scores,proposals=[asdict(g) for g in goals],
+            rollout_semantics='unfiltered actor; independent real safety excluded',
             source_frame=request.frame_ids[-1],assessment_frame=context.frame_ids[-1],
             queue_s=started-queued,execution_s=time.monotonic()-started,
             selected=asdict(selected) if selected else None)

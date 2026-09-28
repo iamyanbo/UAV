@@ -10,10 +10,11 @@ class EvaluationState:
     velocity: tuple
     collided: bool
     geometry_collided: bool = False
+    yaw_rad: float | None = None
 
 
 class FlightEvaluator:
-    def __init__(self, goal, boundary, start_seconds, reference_length, timeout_seconds=180, maximum_reference_length=300):
+    def __init__(self, goal, boundary, start_seconds, reference_length, timeout_seconds=180, maximum_reference_length=300, goal_yaw_rad=None):
         if not 20 <= reference_length <= maximum_reference_length:
             raise ValueError('Reference path outside visual-goal phase bounds')
         self.goal, self.boundary = goal, boundary
@@ -26,6 +27,7 @@ class FlightEvaluator:
         self.distance = 0.
         self.stopped_since = None
         self.result = None
+        self.goal_yaw_rad=goal_yaw_rad
 
     def update(self, state, stop_requested, tracking_lost=False):
         if self.result is not None:
@@ -40,6 +42,9 @@ class FlightEvaluator:
         self.previous_position, self.previous_time = state.position, state.sim_seconds
         elapsed = state.sim_seconds - self.start
         in_goal = math.dist(state.position[:2], self.goal[:2]) <= 3 and abs(state.position[2] - self.goal[2]) <= 2
+        if self.goal_yaw_rad is not None:
+            in_goal=in_goal and state.yaw_rad is not None and math.isfinite(state.yaw_rad) and abs(
+                (state.yaw_rad-self.goal_yaw_rad+math.pi)%(2*math.pi)-math.pi)<=math.radians(30)
         speed = math.sqrt(sum(v*v for v in state.velocity))
         reason = None
         if state.collided or state.geometry_collided:

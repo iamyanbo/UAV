@@ -12,37 +12,42 @@ from .common import SCHEMA,read,write,digest,contained
 from .maps import MapPrior
 
 
-def package(checkpoint,vision,output,learned_local_policy=True,photo_slam=None,qwen=None):
+def package(checkpoint,vision,output,learned_local_policy=True,photo_slam=None,qwen=None,perception_only=False):
     import torch
     saved=torch.load(checkpoint,map_location='cpu',weights_only=True)
-    if saved.get('schema')!=SCHEMA or not {'localization','goal','policy'}<=set(saved['trained_stages']):
+    required={'localization','goal'}|({'policy'} if not perception_only else set())
+    if saved.get('schema')!=SCHEMA or not required<=set(saved['trained_stages']):
         raise ValueError('Train temporal actor and perception before packaging')
     if photo_slam is None:raise ValueError('Pinned Photo-SLAM deployment descriptor required')
     mapping=read(photo_slam)
     if mapping.get('upstream_commit')!='f8bfb2f0809c003ccc3fd577dc43c576fcafa4ac' or mapping.get('schema')!='photo-slam-live/v1':
         raise ValueError('Incompatible native dependency descriptor')
     if not saved.get('calibration'):raise ValueError('Calibrate arrival on validation data before packaging')
+    from .provenance import verify_release
+    verify_release(saved,world='world' in saved['trained_stages'] and not perception_only,perception_only=perception_only)
     out=Path(output);out.mkdir(parents=True,exist_ok=False)
     # Strip labels, optimizer and training-only identities from inference package.
-    torch.save({key:saved[key] for key in ('schema','model','trained_stages','backbone_sha256','calibration','budget_usage')},out/'model.pt')
+    torch.save({key:saved[key] for key in ('schema','model','trained_stages','backbone_sha256','calibration','budget_usage','world_actor_identity') if key in saved},out/'model.pt')
     shutil.copyfile(vision,out/'vision.json')
     shutil.copyfile(photo_slam,out/'photo-slam.json')
     if qwen:
         adapter=torch.load(qwen,map_location='cpu',weights_only=True)
-        if adapter.get('schema')!='subgoal-qwen/v1':raise ValueError('Incompatible Qwen adapter')
+        if adapter.get('schema')!='subgoal-qwen/v2':raise ValueError('Incompatible Qwen adapter')
         torch.save({k:adapter[k] for k in ('schema','modules','adapter','base_identity','budget_usage')},out/'qwen.pt')
-    write(out/'package.json',dict(schema='photo-map-package/v4',trained_stages=saved['trained_stages'],
-          learned_local_policy=True,accepted=False,files={p.name:digest(p) for p in out.iterdir()}))
+    write(out/'package.json',dict(schema='photo-map-package/v5',trained_stages=saved['trained_stages'],
+          capability='perception' if perception_only else 'navigation',
+          learned_local_policy=not perception_only,accepted=False,files={p.name:digest(p) for p in out.iterdir()}))
 
 
 class PhotoControllerProcess:
-    def __init__(self,socket_path,episode_id,checkpoints,map_prior,output,variant,sample_policy=False,initial_subgoal=None):
+    def __init__(self,socket_path,episode_id,checkpoints,map_prior,output,variant,sample_policy=False,initial_subgoal=None,perception_only=False):
         root=Path.home()/'uav-rgb-flight';source_root=Path(__file__).resolve().parents[2]
         self.output=Path(output);self.output.mkdir(parents=True,exist_ok=False)
         self.writable=self.output/'runtime';self.writable.mkdir()
         package_root=Path(checkpoints).resolve();spec=read(package_root/'package.json')
         required={'model.pt','vision.json','photo-slam.json'}
-        if spec['schema']!='photo-map-package/v4' or not required<=set(spec['files']) or set(spec['files'])-required-{'qwen.pt'}:raise ValueError('Unexpected inference assets')
+        if spec['schema']!='photo-map-package/v5' or not required<=set(spec['files']) or set(spec['files'])-required-{'qwen.pt'}:raise ValueError('Unexpected inference assets')
+        if spec.get('capability')!=('perception' if perception_only else 'navigation'):raise ValueError('Package capability mismatch')
         allowed={'package.json',*spec['files']}
         if {p.name for p in package_root.iterdir()}!=allowed:raise ValueError('Inference package has undeclared files')
         for name,sha in spec['files'].items():
@@ -72,6 +77,7 @@ class PhotoControllerProcess:
             '-v',str(socket_path.parent)+':/ipc:ro','-v',str(self.writable)+':/output',
             '-w','/source',image,'python','-m','research.map_navigation.runtime','--episode-id',episode_id,'--variant',variant]
         if sample_policy:command.append('--sample-policy')
+        if perception_only:command.append('--perception-only')
         if initial_subgoal:command+=['--initial-subgoal',initial_subgoal]
         write(self.output/'request.json',dict(command=command,map_sha256=prior.identity,checkpoint_sha256=self.identity))
         self.log=(self.output/'stdout.log').open('x');self.process=subprocess.Popen(command,stdout=self.log,stderr=subprocess.STDOUT)

@@ -1,6 +1,6 @@
 # Two-mode photo-goal navigation
 
-Active campaign: `campaign.json`, schema v4. One goal photograph, an unknown
+Active campaign: `campaign.json`, schema v5. One goal photograph, an unknown
 starting pose, coarse overhead RGB/heights, and a fixed forward monocular camera.
 Source implementation is local and unexecuted; navigation acceptance is pending.
 
@@ -15,7 +15,8 @@ agreement, estimated speed below 0.5 m/s and a one-second settling period.
 
 Mode 2 generates up to four grounded Qwen2.5-VL-3B proposals, then optionally
 rolls the same frozen actor through a six-layer width-384 world transformer for
-20 steps of 200 ms. The world predicts visual features, relative motion,
+80 steps of 50 ms using unfiltered actor proposals. Real safety is evaluated
+separately. The world predicts visual features, relative motion,
 collision, visibility, goal/progress and terminal flight outcome. Frozen V-JEPA
 2 targets are used offline only. Validation-fitted scales combine risk,
 progress, estimated duration and terminal value. There is no action optimizer,
@@ -45,12 +46,15 @@ is pending, requests are separated by at least three seconds, and proposals
 expire within five seconds of their source observation. Assessment starts from
 the newest available context after language generation. Publication checks
 current targets and revision again. Optional GPU work is suspended after a
-slice overrun; this is an admission policy, not proof of latency isolation.
+slice overrun and readmitted after cooldown; this is an admission policy,
+not proof of latency isolation.
 
 The staged pipeline is exposed through `python -m research.map_navigation.run`:
 
 - Prepare fixed-camera maps, scene registry, missions and expert/manoeuvre data.
-- Build v4 datasets and audit geography/behavior coverage. Train localization,
+- Follow `PIPELINE_CONNECTIONS.md` for the actor-free live perception bootstrap,
+  actor-bound value labels, matched restarts and release gates.
+- Build v5 datasets and audit geography/behavior coverage. Train localization,
   goal matching, metric motion and temporal imitation.
 - Encode frozen V-JEPA targets; train action-conditioned world prediction, then
   add actor-driven rollouts where recorded branches support the actor's actions.

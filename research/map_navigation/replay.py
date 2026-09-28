@@ -13,11 +13,15 @@ def replay(episode,package,map_folder,output,variant,window,perception_only=Fals
     episode=Path(episode);output=Path(output);output.mkdir(parents=True,exist_ok=False)
     verified_rgb_storage(episode/'observations');goal=load_goal(episode/'goal')
     views=[np.frombuffer(raw,np.uint8).reshape(480,640,3).copy() for raw in goal.rgb_views]
-    navigator=Navigator(package,map_folder,views,variant);count=0
+    navigator=Navigator(package,map_folder,views,variant,perception_only=perception_only);count=0
+    started=time.monotonic();first_stamp=None
     try:
         with (output/'decisions.jsonl').open('x') as stream:
             for metadata,rgb in frames(episode/'observations'):
                 if not window.remaining():break
+                if first_stamp is None:first_stamp=metadata['sim_ns']
+                remaining=started+(metadata['sim_ns']-first_stamp)/1e9-time.monotonic()
+                if remaining>0:time.sleep(remaining)
                 metadata=dict(metadata,received_monotonic=time.monotonic())
                 decision=navigator.step(metadata,rgb,perception_only=perception_only)
                 stream.write(json.dumps(decision,allow_nan=False)+'\n');count+=1

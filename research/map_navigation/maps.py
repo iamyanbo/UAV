@@ -73,6 +73,21 @@ class MapPrior:
         crop = Image.fromarray(self.rgb).crop((*start, *(start+size)))
         return np.asarray(crop.resize((640, 480), Image.Resampling.BILINEAR)).copy()
 
+    def reference_lookup(self, goal_ids, current_ids=()):
+        ids=list(dict.fromkeys(list(goal_ids)[:4]+list(current_ids)[:4]))
+        return tuple((f'map-{i}',float((self.tiles[i,0]-self.origin[0])/self.rgb_mpp),
+            float((self.tiles[i,1]-self.origin[1])/self.rgb_mpp),
+            'goal_and_current' if i in goal_ids and i in current_ids else 'goal' if i in goal_ids else 'current') for i in ids)
+
+    def annotated(self, lookup):
+        from PIL import ImageDraw
+        image=Image.fromarray(self.rgb).resize((640,480));draw=ImageDraw.Draw(image)
+        for ident,x,y,role in lookup:
+            x=x*640/self.rgb.shape[1];y=y*480/self.rgb.shape[0]
+            draw.ellipse((x-3,y-3,x+3,y+3),fill='yellow')
+            draw.text((x+4,y),ident+' '+role,fill='yellow',stroke_width=1,stroke_fill='black')
+        return image
+
     def free_segment(self, a, b, margin=3.0, observed_obstacles=()):
         a, b = np.asarray(a), np.asarray(b)
         count = max(2, int(np.linalg.norm(b-a)/max(.5, self.mpp/2))+1)

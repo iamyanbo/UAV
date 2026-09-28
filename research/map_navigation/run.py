@@ -28,6 +28,7 @@ def main():
     p.add_argument('--split',choices=('train','validation','test'),required=True);p.add_argument('--packages');p.add_argument('--variants',nargs='+',choices=config()['variants'])
     p.add_argument('--sources',nargs='+',choices=('expert','manoeuvre','exploration'));p.add_argument('--limit',type=int);p.add_argument('--learner-round',action='store_true')
     p.add_argument('--sample-policy',action='store_true')
+    p.add_argument('--perception-package')
     p=sub.add_parser('adaptation-data');p.add_argument('--dataset',required=True);p.add_argument('--output',required=True)
     p.add_argument('--component',choices=('configurator','preferences','ppo'),required=True);p.add_argument('--behavior-checkpoint')
     p=sub.add_parser('branches');p.add_argument('--registry',required=True);p.add_argument('--flights',required=True);p.add_argument('--output',required=True)
@@ -39,6 +40,7 @@ def main():
     p.add_argument('--updates',type=int);p.add_argument('--resume');p.add_argument('--initialize');p.add_argument('--teacher-root');p.add_argument('--seed',type=int,default=0);p.add_argument('--fine-tune',action='store_true')
     p=sub.add_parser('package');p.add_argument('--checkpoint',required=True);p.add_argument('--vision',required=True);p.add_argument('--output',required=True)
     p.add_argument('--learned-local-policy',action='store_true')
+    p.add_argument('--perception-only',action='store_true')
     p.add_argument('--photo-slam',required=True);p.add_argument('--qwen')
     p=sub.add_parser('replay');p.add_argument('--episode',required=True);p.add_argument('--package',required=True);p.add_argument('--map',required=True)
     p.add_argument('--output',required=True);p.add_argument('--variant',choices=config()['variants'],default='mode1_vlm_world');p.add_argument('--perception-only',action='store_true')
@@ -77,7 +79,7 @@ def main():
             manifests(args.registry,args.output,window)
         elif args.stage=='collect':
             from .collect import collect
-            collect(args.registry,args.manifests,args.output,args.split,window,args.packages,args.variants,args.sources,args.limit,args.learner_round,args.sample_policy)
+            collect(args.registry,args.manifests,args.output,args.split,window,args.packages,args.variants,args.sources,args.limit,args.learner_round,args.sample_policy,args.perception_package)
         elif args.stage=='adaptation-data':
             from .adaptation_data import build
             build(args.dataset,args.output,args.component,args.behavior_checkpoint)
@@ -95,7 +97,7 @@ def main():
             train(args.dataset,args.component,args.backbone,args.output,window,args.updates,args.resume,args.initialize,args.teacher_root,args.seed,args.fine_tune)
         elif args.stage=='package':
             from .deployment import package
-            package(args.checkpoint,args.vision,args.output,True,args.photo_slam,args.qwen)
+            package(args.checkpoint,args.vision,args.output,True,args.photo_slam,args.qwen,args.perception_only)
         elif args.stage=='replay':
             from .replay import replay
             replay(args.episode,args.package,args.map,args.output,args.variant,window,args.perception_only)

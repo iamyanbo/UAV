@@ -1,16 +1,16 @@
 {
-  "schema": "photo-map-implementation/v4",
+  "schema": "photo-map-implementation/v5",
   "architecture": "two-mode-temporal-window",
   "models": {
     "encoder": "MobileNetV3-Large; encode newest image once; cached full goal grid",
     "actor": "4 masked frames x 64 spatial tokens; 2 x 256 temporal attention; four velocities and stop probability",
-    "world": "6 x 384 transformer; bounded feature/action history; 20 x 200 ms; visual/motion/risk/visibility/goal/progress/terminal heads",
+    "world": "6 x 384 transformer; bounded feature/action history; 80 x 50 ms; unfiltered actor risk trajectories; visual/motion/risk/visibility/goal/progress/terminal heads",
     "mode2": "Qwen2.5-VL-3B grounded subgoals assessed by frozen deployed actor rollouts",
     "teacher": "frozen V-JEPA 2 auxiliary targets; offline only",
     "mapping": "Photo-SLAM f8bfb2f0809c003ccc3fd577dc43c576fcafa4ac; headless native live RGB bridge",
     "safety": "asynchronous RGB-derived metric depth; observed corridor; 250 ms source freshness"
   },
-  "interfaces": ["observation-context/v1", "subgoal/v1", "spatial-snapshot/v1"],
+  "interfaces": ["observation-context/v2", "subgoal/v2", "spatial-snapshot/v2"],
   "variants": ["mode1", "mode1_vlm", "mode1_vlm_world"],
   "source_review": "manual source and diff review only",
   "tests_run": false,

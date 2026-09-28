@@ -19,6 +19,16 @@ Review below is an execution checklist, not a new test harness or evidence.
 
 ## Temporal and asynchronous behavior
 
+- Trace a decision ID from its immutable context through proposal, safety and
+  broker dispatch. Reject undispatched PPO samples. Inspect measured segment
+  durations and terminal collisions that have no future image.
+- Verify 80 distinct 50 ms actor/world steps, matching training durations,
+  expiry and moving relative geometry. Confirm the risk rollout excludes the
+  real safety filter and never borrows labels from unsupported action branches.
+- Verify perception-only packages collect live contexts without actor/Qwen
+  execution or any command requests. Depth must publish despite tracking failure
+  or delayed Gaussian work; optional-work admission must recover after cooldown.
+
 - Initial one/two/three-frame histories use masks, with unique source frames.
   Instrument the encoder: one new RGB encoding per decision; goal grids cached.
 - Check irregular observation spacing and epoch-scale timestamps: network timing
@@ -42,7 +52,13 @@ Review below is an execution checklist, not a new test harness or evidence.
 
 ## Staged learning and provenance
 
-- Create new fixed-camera v4 data; historical v2/v3 data and checkpoints must
+- Follow `PIPELINE_CONNECTIONS.md` for the bootstrap order. Verify actor-bound
+  value labels and validation score calibration. Change actor/perception weights
+  and confirm stale world qualification/calibration cannot be released.
+- Qualify restart pairs by recorded context, goal bytes, seed and continuation
+  identity. Reject unmatched restarts rather than claiming causal preferences.
+
+- Create new fixed-camera v5 data; historical v2/v3 data and checkpoints must
   fail compatibility gates. Audit three training scenes, one validation scene
   and two held-out scenes. Keep evaluator geometry outside inference packages.
 - Train localization/goal/motion, temporal imitation, world prediction with

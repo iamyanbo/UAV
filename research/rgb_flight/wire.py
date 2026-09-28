@@ -88,7 +88,8 @@ class BrokerClient:
         """Fetch one immutable panorama view; the protocol never exposes its pose."""
         return self.request('goal', index=index)
 
-    def command(self, frame_id, values, stop=False, camera_pitch_deg=None, candidate_id=None):
+    def command(self, frame_id, values, stop=False, camera_pitch_deg=None, candidate_id=None, decision_id=None):
         fields = {} if camera_pitch_deg is None else {'camera_pitch_deg': float(camera_pitch_deg)}
         if candidate_id is not None:fields['candidate_id']=candidate_id
+        if decision_id is not None:fields['decision_id']=decision_id
         return self.request('command', frame_id=frame_id, values=list(values), stop=stop, **fields)[0]

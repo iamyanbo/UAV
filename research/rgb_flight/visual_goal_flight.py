@@ -41,6 +41,7 @@ def main():
     parser.add_argument('--goal', type=Path)
     parser.add_argument('--goal-view-count',type=int,choices=(1,2,3,4),default=4)
     parser.add_argument('--photo-checkpoints',type=Path)
+    parser.add_argument('--photo-perception-package',type=Path)
     parser.add_argument('--map-prior',type=Path)
     parser.add_argument('--photo-variant',choices=('mode1','mode1_vlm','mode1_vlm_world'),default='mode1_vlm_world')
     parser.add_argument('--fixed-photo-camera',action='store_true')
@@ -63,6 +64,8 @@ def main():
         parser.error('Photo policy sampling is limited to learner collection')
     if args.photo_checkpoints and not args.fixed_photo_camera:
         parser.error('Photo campaign requires --fixed-photo-camera')
+    if args.photo_perception_package and (args.photo_checkpoints or args.controller_checkpoints or not args.fixed_photo_camera or not args.map_prior):
+        parser.error('Perception sidecar requires an expert fixed-camera flight and map')
     if args.fixed_photo_camera and (args.aerial_camera or args.goal_view_count!=1):
         parser.error('Fixed camera campaign requires one goal view and no camera joint')
     if args.fixed_photo_camera and args.controller_checkpoints:
@@ -126,6 +129,7 @@ def main():
                   pre_episode_goal_pose_setting_calls=0 if args.goal else args.goal_view_count,
                   pose_setting_calls_after_recording=0, clock_speed=1., maximum_speed_mps=args.maximum_speed_mps)
     broker = writer = label_stream = depth_index = depth_pool = depth_future = controller = None
+    perception_controller=None
     broker_closed=False
     result['collection_source']=args.collection_source
     result['camera_profile']='pitch-rgb/v1' if args.aerial_camera else 'fixed'
@@ -207,6 +211,11 @@ def main():
         served = [channel.goal_view(index)[0] for index in range(len(goal.rgb_views))]
         if any(item['panorama_sha256'] != goal.content_sha256 for item in served):
             raise RuntimeError('Broker served inconsistent goal panorama')
+        if args.photo_perception_package:
+            from research.map_navigation.deployment import PhotoControllerProcess
+            perception_controller=PhotoControllerProcess(broker.socket_path,args.episode_id,args.photo_perception_package,
+                args.map_prior,episode/'perception','mode1',perception_only=True)
+            perception_controller.ready()
         if args.photo_checkpoints:
             import sys
             sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
@@ -226,14 +235,17 @@ def main():
         depth_index = (depth_dir/'index.jsonl').open('x', encoding='utf-8')
         depth_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='privileged-depth')
         first = client.getMultirotorState(vehicle_name=vehicle)
+        result['start_sim_seconds']=first.timestamp/1e9
         evaluator = FlightEvaluator(label['goal_ned_m'], label.get('flight_envelope',{}).get('bounds_ned_m',field.bounds.tolist()), first.timestamp/1e9,
                                     label['reference_length_m'],timeout_seconds=label.get('timeout_s',180),
-                                    maximum_reference_length=label.get('maximum_reference_length_m',300))
+                                    maximum_reference_length=label.get('maximum_reference_length_m',300),
+                                    goal_yaw_rad=math.radians(float(label.get('goal_yaw_degrees',0.))) if args.fixed_photo_camera else None)
         path = np.asarray(label['reference_path_ned_m'], dtype=np.float64)
         target_index = 1; stopped = False; previous_position = np.asarray(start, dtype=np.float64)
         last_frame = -1; last_depth_sim = -math.inf; wall_deadline = time.monotonic()+label.get('timeout_s',180)+30
         while time.monotonic() < wall_deadline:
             loop = time.monotonic()
+            if perception_controller:perception_controller.check()
             if depth_future is not None and depth_future.done():
                 depth_index.write(json.dumps(depth_future.result(), allow_nan=False)+'\n')
                 depth_count += 1; depth_future = None
@@ -242,7 +254,8 @@ def main():
             position = np.array([k.position.x_val,k.position.y_val,k.position.z_val]); velocity = np.array([k.linear_velocity.x_val,k.linear_velocity.y_val,k.linear_velocity.z_val])
             geometry_collision = field.swept_collision(previous_position, position)
             previous_position = position.copy()
-            sample = EvaluationState(state.timestamp/1e9, tuple(position), tuple(velocity), collision.has_collided, geometry_collision)
+            sample = EvaluationState(state.timestamp/1e9, tuple(position), tuple(velocity), collision.has_collided, geometry_collision,
+                                     airsim.to_eularian_angles(k.orientation)[2])
             if controller:
                 controller.check();stopped=broker.stop_requested
             outcome = evaluator.update(sample, stopped)
@@ -266,6 +279,12 @@ def main():
                        goal_distance_m=float(np.linalg.norm(position-np.asarray(label['goal_ned_m']))),
                        airsim_collision=bool(collision.has_collided), geometry_collision=geometry_collision,
                        depth=None)
+            row['true_angular_velocity_radps']=[k.angular_velocity.x_val,k.angular_velocity.y_val,k.angular_velocity.z_val]
+            if args.fixed_photo_camera:
+                from research.map_navigation.supervision import observable_expert
+                row['expert_label']=observable_expert(position,airsim.to_eularian_angles(k.orientation)[2],velocity,
+                    label['goal_ned_m'],math.radians(float(label.get('goal_yaw_degrees',0.))),metadata['calibration'],field,
+                    row['true_quaternion_xyzw'])
             if collision.has_collided:
                 row['airsim_contact_details']=dict(object_name=collision.object_name,object_id=collision.object_id,
                     sim_ns=collision.time_stamp,penetration_depth_m=collision.penetration_depth,
@@ -324,16 +343,7 @@ def main():
                         if abs(command[2])>0:
                             command[0]=max(command[0],2*abs(command[2]))
                             command[1]=0.
-                        row['observable_execution_intention']=dict(
-                            intention='hold' if stop_candidate else 'inspect',
-                            altitude='gain' if command[2]<-.1 else 'lose' if command[2]>.1 else 'maintain')
                         row['proposed_command']=list(command)
-                        from dataclasses import asdict
-                        from research.map_navigation.contracts import Subgoal,SpatialSnapshot
-                        now=metadata['sim_ns']/1e9
-                        row['subgoal']=asdict(Subgoal(**row['observable_execution_intention'],confidence=1.,
-                            source_observation=last_frame,source_s=now,expires_s=now+5))
-                        row['spatial_snapshot']=asdict(SpatialSnapshot(observed_s=now))
                         # A label-side final veto cannot certify unseen ascent;
                         # it only excludes privileged geometry collisions from
                         # expert demonstrations of visible forward manoeuvres.
@@ -361,6 +371,7 @@ def main():
     except Exception as error:
         result.update(status='failed',error_type=type(error).__name__,error=str(error))
     finally:
+        if perception_controller:(perception_controller.writable/'CONTROLLER_STOP').touch()
         if controller:
             # Stop capture at termination, before slow mapper cleanup; otherwise
             # post-flight hovering would silently extend the recorded episode.
@@ -373,6 +384,9 @@ def main():
             if corrections.exists():shutil.copyfile(corrections,labels_dir/'dagger.jsonl')
         if broker:
             if not broker_closed:broker.close()
+            if perception_controller:
+                try:result['perception_recorder']=perception_controller.close()
+                except Exception as error:result['perception_cleanup_error']=str(error)
             result['broker_errors']=broker.errors
             result['commands']=len(broker.command_log)
             first_change=next((r for r in broker.command_log if any(r['values'])),None)
