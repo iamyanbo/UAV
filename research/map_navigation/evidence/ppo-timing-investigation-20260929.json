@@ -1,0 +1,627 @@
+{
+  "checked_utc": "2026-09-29T15:19:36.974629+00:00",
+  "scope": "Live PPO diagnostic, actual rendered flights, no fault injection",
+  "source": "ffc7890",
+  "freshness_limit_s": 0.25,
+  "old_faults": [
+    {
+      "attempt_id": "train-81044a5f3fb14c029a2939bdb1edb0d8",
+      "telemetry": "/home/iamyanbo/uav-photo-map/ppo-endpoint-20260929-retry1/recordings/training-0-f6de4c11c3f04abab49b58d27bf88285/train-81044a5f3fb14c029a2939bdb1edb0d8/telemetry.jsonl",
+      "telemetry_sha256": "4e008c9b8d9e1594fe7ca10c23a9bf5639986faff32cdd77076c6b89264f3573",
+      "stale_age_s": 0.2569350281264633,
+      "command": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dispatch_rpc_s": 0.000623075058683753,
+      "nearby_rows": [
+        {
+          "kind": "dispatch",
+          "id": 287,
+          "wall": 1791175.876439136,
+          "source_frame": 280,
+          "age_s": 0.05625255010090768,
+          "command": [
+            0.24631600283983604,
+            -0.12633817786257345,
+            0.15755547445512252,
+            12.513761972789545
+          ],
+          "stale": false,
+          "active_policy": true,
+          "rpc_wall_s": 0.0006447869818657637
+        },
+        {
+          "kind": "dispatch",
+          "id": 288,
+          "wall": 1791175.926634999,
+          "source_frame": 280,
+          "age_s": 0.10644841310568154,
+          "command": [
+            0.24631600283983604,
+            -0.12633817786257345,
+            0.15755547445512252,
+            12.513761972789545
+          ],
+          "stale": false,
+          "active_policy": true,
+          "rpc_wall_s": 0.0005841790698468685
+        },
+        {
+          "kind": "dispatch",
+          "id": 289,
+          "wall": 1791175.976832095,
+          "source_frame": 280,
+          "age_s": 0.15664550918154418,
+          "command": [
+            0.24631600283983604,
+            -0.12633817786257345,
+            0.15755547445512252,
+            12.513761972789545
+          ],
+          "stale": false,
+          "active_policy": true,
+          "rpc_wall_s": 0.00043825781904160976
+        },
+        {
+          "kind": "dispatch",
+          "id": 290,
+          "wall": 1791176.027022774,
+          "source_frame": 280,
+          "age_s": 0.2068361882120371,
+          "command": [
+            0.24631600283983604,
+            -0.12633817786257345,
+            0.15755547445512252,
+            12.513761972789545
+          ],
+          "stale": false,
+          "active_policy": true,
+          "rpc_wall_s": 0.0006758279632776976
+        },
+        {
+          "kind": "observation",
+          "frame": 281,
+          "capture_sim_ns": 1790692043765327104,
+          "source_wall": 1791175.870253553,
+          "preceding_command": [
+            0.24631600283983604,
+            -0.12633817786257345,
+            0.15755547445512252,
+            12.513761972789545
+          ],
+          "state": {
+            "sim_ns": 1790692043768327168,
+            "position": [
+              23.048843383789062,
+              28.39975929260254,
+              -28.9622745513916
+            ],
+            "velocity": [
+              -0.3320135772228241,
+              0.19471924006938934,
+              0.16299758851528168
+            ],
+            "attitude_deg": [
+              0.502069106196596,
+              0.4287418219134127,
+              -171.11885140843805
+            ],
+            "speed": 0.4179914015566513,
+            "collision": false,
+            "collision_ns": 0,
+            "contact": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "collision_object": ""
+          },
+          "camera_pose": {
+            "position": [
+              22.616107940673828,
+              28.29853630065918,
+              -29.09747314453125
+            ],
+            "attitude_deg": [
+              -0.10638428108193314,
+              0.4498088895091391,
+              -172.51634156756015
+            ],
+            "sim_ns": 1790692043765327104
+          }
+        },
+        {
+          "kind": "dispatch",
+          "id": 291,
+          "wall": 1791176.077121614,
+          "source_frame": 280,
+          "age_s": 0.2569350281264633,
+          "command": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "stale": true,
+          "active_policy": true,
+          "rpc_wall_s": 0.000623075058683753
+        }
+      ]
+    },
+    {
+      "attempt_id": "train-392c8f72870a4182a0d7a6d524221fa2",
+      "telemetry": "/home/iamyanbo/uav-photo-map/ppo-endpoint-20260929-retry1/recordings/training-0-b87522fc531540dab2486693dc96cc00/train-392c8f72870a4182a0d7a6d524221fa2/telemetry.jsonl",
+      "telemetry_sha256": "4806ef6105c47bb5d79aea659721c69aeafd851566de06b430204c2affd35082",
+      "stale_age_s": 0.27194239804521203,
+      "command": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dispatch_rpc_s": 0.000853491947054863,
+      "nearby_rows": [
+        {
+          "kind": "observation",
+          "frame": 132,
+          "capture_sim_ns": 1790691965626137088,
+          "source_wall": 1791097.862692622,
+          "preceding_command": [
+            0.144517367491169,
+            0.01943667406247651,
+            0.12291146541119778,
+            4.895375877460491
+          ],
+          "state": {
+            "sim_ns": 1790691965632137216,
+            "position": [
+              -22.766286849975586,
+              62.60251998901367,
+              -12.649195671081543
+            ],
+            "velocity": [
+              -0.2904212176799774,
+              -0.14360952377319336,
+              0.09219430387020111
+            ],
+            "attitude_deg": [
+              0.7613702968337243,
+              1.2437270175592756,
+              -132.09409252774373
+            ],
+            "speed": 0.33685006852187993,
+            "collision": false,
+            "collision_ns": 0,
+            "contact": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "collision_object": ""
+          },
+          "camera_pose": {
+            "position": [
+              -23.090307235717773,
+              62.237918853759766,
+              -12.762962341308594
+            ],
+            "attitude_deg": [
+              0.8647054382475567,
+              1.1895866191415794,
+              -132.27267868480607
+            ],
+            "sim_ns": 1790691965626137088
+          }
+        },
+        {
+          "kind": "dispatch",
+          "id": 139,
+          "wall": 1791097.934026228,
+          "source_frame": 132,
+          "age_s": 0.07133360602892935,
+          "command": [
+            0.05196770093135622,
+            -0.01843890144031253,
+            0.07291146541119778,
+            9.395375877460491
+          ],
+          "stale": false,
+          "active_policy": true,
+          "rpc_wall_s": 0.0003741779364645481
+        },
+        {
+          "kind": "dispatch",
+          "id": 140,
+          "wall": 1791097.98418599,
+          "source_frame": 132,
+          "age_s": 0.12149336794391274,
+          "command": [
+            0.05196770093135622,
+            -0.01843890144031253,
+            0.07291146541119778,
+            9.395375877460491
+          ],
+          "stale": false,
+          "active_policy": true,
+          "rpc_wall_s": 0.00044697802513837814
+        },
+        {
+          "kind": "dispatch",
+          "id": 141,
+          "wall": 1791098.034280264,
+          "source_frame": 132,
+          "age_s": 0.1715876420494169,
+          "command": [
+            0.05196770093135622,
+            -0.01843890144031253,
+            0.07291146541119778,
+            9.395375877460491
+          ],
+          "stale": false,
+          "active_policy": true,
+          "rpc_wall_s": 0.00040760193951427937
+        },
+        {
+          "kind": "dispatch",
+          "id": 142,
+          "wall": 1791098.084461514,
+          "source_frame": 132,
+          "age_s": 0.2217688919045031,
+          "command": [
+            0.05196770093135622,
+            -0.01843890144031253,
+            0.07291146541119778,
+            9.395375877460491
+          ],
+          "stale": false,
+          "active_policy": true,
+          "rpc_wall_s": 0.0005060341209173203
+        },
+        {
+          "kind": "dispatch",
+          "id": 143,
+          "wall": 1791098.13463502,
+          "source_frame": 132,
+          "age_s": 0.27194239804521203,
+          "command": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "stale": true,
+          "active_policy": true,
+          "rpc_wall_s": 0.000853491947054863
+        },
+        {
+          "kind": "observation",
+          "frame": 133,
+          "capture_sim_ns": 1790691965842141696,
+          "source_wall": 1791097.912765792,
+          "preceding_command": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "state": {
+            "sim_ns": 1790691965884142592,
+            "position": [
+              -22.831768035888672,
+              62.5687255859375,
+              -12.628823280334473
+            ],
+            "velocity": [
+              -0.22943297028541565,
+              -0.12257898598909378,
+              0.06623014807701111
+            ],
+            "attitude_deg": [
+              0.636365103766421,
+              1.3237147317030413,
+              -130.4450175358335
+            ],
+            "speed": 0.2684241572109442,
+            "collision": false,
+            "collision_ns": 0,
+            "contact": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "collision_object": ""
+          },
+          "camera_pose": {
+            "position": [
+              -23.103437423706055,
+              62.2291374206543,
+              -12.758459091186523
+            ],
+            "attitude_deg": [
+              0.7726379105568455,
+              1.2553131823292494,
+              -131.99144335663414
+            ],
+            "sim_ns": 1790691965842141696
+          }
+        }
+      ]
+    },
+    {
+      "attempt_id": "train-134a1d972b094469907ed2833811991b",
+      "telemetry": "/home/iamyanbo/uav-photo-map/ppo-endpoint-20260929-retry1/recordings/training-0-1e0733fea9d44a83b4242ef9cd8464ce/train-134a1d972b094469907ed2833811991b/telemetry.jsonl",
+      "telemetry_sha256": "0eb4646e600d77d9b788e1cfdc19d72c9171e42073b9032871ae4fd970629978",
+      "stale_age_s": 0.2500806760508567,
+      "command": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dispatch_rpc_s": 0.0006218759808689356,
+      "nearby_rows": [
+        {
+          "kind": "dispatch",
+          "id": 866,
+          "wall": 1791040.312237567,
+          "source_frame": 847,
+          "age_s": 0.15141142206266522,
+          "command": [
+            0.03073699231342067,
+            -0.19321213015816685,
+            -0.0468252437681136,
+            7.427598877352496
+          ],
+          "stale": false,
+          "active_policy": true,
+          "rpc_wall_s": 0.0005427398718893528
+        },
+        {
+          "kind": "dispatch",
+          "id": 867,
+          "wall": 1791040.36251868,
+          "source_frame": 847,
+          "age_s": 0.20169253507629037,
+          "command": [
+            0.03073699231342067,
+            -0.19321213015816685,
+            -0.0468252437681136,
+            7.427598877352496
+          ],
+          "stale": false,
+          "active_policy": true,
+          "rpc_wall_s": 0.0008476530201733112
+        },
+        {
+          "kind": "observation",
+          "frame": 848,
+          "capture_sim_ns": 1790691908106394368,
+          "source_wall": 1791040.21271762,
+          "preceding_command": [
+            0.03073699231342067,
+            -0.19321213015816685,
+            -0.0468252437681136,
+            7.427598877352496
+          ],
+          "state": {
+            "sim_ns": 1790691908109394432,
+            "position": [
+              -75.39308166503906,
+              64.9924087524414,
+              -51.828826904296875
+            ],
+            "velocity": [
+              -0.3096771836280823,
+              -0.17141278088092804,
+              -0.05021882802248001
+            ],
+            "attitude_deg": [
+              0.5308082274662091,
+              1.2355701637286383,
+              -107.81137233294268
+            ],
+            "speed": 0.3574971750896858,
+            "collision": false,
+            "collision_ns": 0,
+            "contact": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "collision_object": ""
+          },
+          "camera_pose": {
+            "position": [
+              -75.50994110107422,
+              64.54962158203125,
+              -51.93458938598633
+            ],
+            "attitude_deg": [
+              0.5927016054240376,
+              0.8837990510927092,
+              -109.47320316395847
+            ],
+            "sim_ns": 1790691908106394368
+          }
+        },
+        {
+          "kind": "dispatch",
+          "id": 868,
+          "wall": 1791040.412713201,
+          "source_frame": 848,
+          "age_s": 0.19999558106064796,
+          "command": [
+            -0.06613344961975909,
+            -0.16839041628360837,
+            -0.009638189830463995,
+            2.927598877352496
+          ],
+          "stale": false,
+          "active_policy": true,
+          "rpc_wall_s": 0.0005618270952254534
+        },
+        {
+          "kind": "observation",
+          "frame": 849,
+          "capture_sim_ns": 1790691908187396096,
+          "source_wall": 1791040.389974042,
+          "preceding_command": [
+            -0.06613344961975909,
+            -0.16839041628360837,
+            -0.009638189830463995,
+            2.927598877352496
+          ],
+          "state": {
+            "sim_ns": 1790691908190396160,
+            "position": [
+              -75.41766357421875,
+              64.97913360595703,
+              -51.833251953125
+            ],
+            "velocity": [
+              -0.29777631163597107,
+              -0.1564532220363617,
+              -0.04942646250128746
+            ],
+            "attitude_deg": [
+              0.4662615396053458,
+              1.360653666111089,
+              -107.02856440919511
+            ],
+            "speed": 0.33998723160211947,
+            "collision": false,
+            "collision_ns": 0,
+            "contact": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "collision_object": ""
+          },
+          "camera_pose": {
+            "position": [
+              -75.55054473876953,
+              64.5130844116211,
+              -51.94138717651367
+            ],
+            "attitude_deg": [
+              0.501532816422258,
+              1.2793283096968902,
+              -107.54289513736234
+            ],
+            "sim_ns": 1790691908187396096
+          }
+        },
+        {
+          "kind": "dispatch",
+          "id": 869,
+          "wall": 1791040.462798296,
+          "source_frame": 848,
+          "age_s": 0.2500806760508567,
+          "command": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "stale": true,
+          "active_policy": true,
+          "rpc_wall_s": 0.0006218759808689356
+        }
+      ]
+    }
+  ],
+  "old_policy_inference": {
+    "count": 4842,
+    "median_s": 0.020579333882778883,
+    "p99_s": 0.0235464652068913,
+    "max_s": 0.025525009026750922
+  },
+  "diagnostic_rollout": "/home/iamyanbo/uav-photo-map/ppo-endpoint-20260929-retry1/training/rollout-000003-a3f08b3c-worker0.jsonl",
+  "diagnostic_rollout_sha256": "f589db987cf043b2fc947acef3cd9a94db8e2cdf70b895c937582fe0f831006d",
+  "diagnostic_metrics": {
+    "image_rpc_s": {
+      "count": 4042,
+      "median_s": 0.02821898995898664,
+      "p99_s": 0.06676566507667303,
+      "max_s": 0.1199713961686939
+    },
+    "state_rpc_s": {
+      "count": 4042,
+      "median_s": 0.0013140649534761906,
+      "p99_s": 0.001793842064216733,
+      "max_s": 0.0022308179177343845
+    },
+    "reserve_s": {
+      "count": 4042,
+      "median_s": 0.0005319358315318823,
+      "p99_s": 0.0013239700347185135,
+      "max_s": 0.022722870111465454
+    },
+    "confirm_s": {
+      "count": 4042,
+      "median_s": 0.0005434411577880383,
+      "p99_s": 0.0013243858702480793,
+      "max_s": 0.010380203137174249
+    },
+    "worker_roundtrip_s": {
+      "count": 4042,
+      "median_s": 0.03545086784288287,
+      "p99_s": 0.0717350710183382,
+      "max_s": 0.13066364801488817
+    },
+    "policy_inference": {
+      "count": 4042,
+      "median_s": 0.020328996935859323,
+      "p99_s": 0.023395159980282187,
+      "max_s": 0.11527732713147998
+    }
+  },
+  "native_crash": {
+    "log": "/home/iamyanbo/uav-photo-map/ppo-endpoint-20260929-retry1/recordings/training-0-80b78cc6ee7f4d6b89c0eefaced8c3f0/scene-rjdq9upw/simulator.log",
+    "sha256": "c221afb4f7ea5c8b17a17834e1ea06908ccb5042446cd71f3abdff0949f41c46",
+    "tail": "kahead = 1.000000\nlookahead = 0.750000, adaptive_lookahead = 1.000000\nlookahead = 0.750000, adaptive_lookahead = 1.000000\nlookahead = 0.750000, adaptive_lookahead = 1.000000\nlookahead = 0.750000, adaptive_lookahead = 1.000000\nlookahead = 0.750000, adaptive_lookahead = 1.000000\nlookahead = 0.750000, adaptive_lookahead = 1.000000\nSignal 11 caught.\nMalloc Size=65538 LargeMemoryPoolOffset=65554 \nFailed to find symbol file, expected location:\n\"/home/iamyanbo/uav-photo-map/ppo-endpoint-20260929-retry1/recordings/training-0-80b78cc6ee7f4d6b89c0eefaced8c3f0/scene-rjdq9upw/runtime/AirVLN/Binaries/Linux/AirVLN-Linux-Shipping.sym\"\nCommonUnixCrashHandler: Signal=11\nEngine crash handling finished; re-raising signal 11 for the default handler. Good bye.\n"
+  },
+  "status": {
+    "status": "stopped",
+    "counts": {
+      "iteration": 2,
+      "transitions": 16384
+    },
+    "mixture": {
+      "mission": 20329,
+      "arrival": 4939
+    },
+    "budget": {
+      "campaign": {
+        "prior_receipt_sha256": "a4dc922aa53dfe1173ec4f28bcb668a9ba9cd49a18304fb8028550d0a390c912",
+        "training_attempts": 156,
+        "learner_attempts": 67,
+        "ppo_transitions": 45059
+      },
+      "overnight_ledger": {
+        "reserved": 40963,
+        "dispatch_reserved": 32606,
+        "observed": 32602,
+        "optimized": 16384,
+        "unobserved_discarded": 3
+      }
+    },
+    "trained_navigation_accepted": false,
+    "world_selector": false,
+    "photo_slam_operational_claim": false
+  },
+  "failure": {
+    "reason": "TimeoutError: Request timed out",
+    "type": "RuntimeError",
+    "counts": {
+      "iteration": 2,
+      "transitions": 16384
+    }
+  },
+  "conclusion": "Old faults: overdue observation-to-command pipeline, with fast inference and dispatch. New timing isolates image RPC as slowest stage but did not reproduce a watchdog fault. Diagnostic terminated when native Unreal process caught SIGSEGV during reset. Exact native cause is unresolved; neither Box64 nor GPU saturation is established as the cause.",
+  "fixed_claim": false
+}

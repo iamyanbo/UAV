@@ -14,6 +14,7 @@ import queue
 import shutil
 import threading
 import time
+import traceback
 import numpy as np
 from .common import read,write,digest
 from .collect import SceneProcess
@@ -189,7 +190,12 @@ class PilotEnvironment:
 
     def image(self):
         a=self.airsim;started=time.monotonic()
-        rgb=self.client.simGetImages([a.ImageRequest('front_custom',a.ImageType.Scene,False,False)],self.vehicle)[0]
+        try:
+            rgb=self.client.simGetImages([a.ImageRequest('front_custom',a.ImageType.Scene,False,False)],self.vehicle)[0]
+        except Exception:
+            if self.recorder:self.recorder.put('image_error',dict(kind='image_error',request_wall=started,
+                failed_wall=time.monotonic(),traceback=traceback.format_exc()))
+            raise
         self.capture_timing=dict(request_wall=started,response_wall=time.monotonic())
         if (rgb.width,rgb.height)!=(640,480) or len(rgb.image_data_uint8)!=640*480*3:
             raise ValueError('Invalid camera payload')
@@ -391,9 +397,25 @@ def serve(scene,output,cfg,address,authfile,sim_port=43551):
                         else:raise ValueError('Unknown worker operation')
                         connection.send(dict(ok=True,result=answer))
                     except Exception as error:
+                        detail=dict(operation=op,error=type(error).__name__+': '+str(error),
+                            traceback=traceback.format_exc(),wall=time.monotonic())
                         if env:
                             with env.lock:env.command=[0.]*4
-                        connection.send(dict(ok=False,error=type(error).__name__+': '+str(error)))
+                            process=env.owned.process
+                            detail['simulator_exit_code']=process.poll() if process else None
+                            if env.owned.log:
+                                log=Path(env.owned.log.name);detail['simulator_log']=str(log)
+                                with log.open('rb') as stream:
+                                    stream.seek(max(0,log.stat().st_size-8192))
+                                    tail=stream.read().decode('utf-8',errors='replace')
+                                detail['simulator_log_tail']=tail
+                                detail['native_crash_evidence']=('Signal 11 caught' in tail or
+                                    'CommonUnixCrashHandler: Signal=' in tail)
+                            write(env.root/'worker-failure.json',detail)
+                        message=detail['error']
+                        if detail.get('native_crash_evidence') or detail.get('simulator_exit_code') is not None:
+                            message='Native simulator failure during '+op+': '+message
+                        connection.send(dict(ok=False,error=message,diagnostic=detail))
             except EOFError:pass
             finally:
                 if env:env.__exit__(None,None,None)

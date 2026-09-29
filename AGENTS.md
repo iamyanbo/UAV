@@ -1,5 +1,20 @@
 # CURI-UAV research invariants
 
+## Timing investigation: September 29
+
+Training remains STOPPED. Source ffc7890 resumed the actual pipeline with timing
+instrumentation, preserving all weights, budgets, deadline and three prior faults.
+It collected 4,042 fresh diagnostic transitions without another freshness fault,
+then the native AirVLN/Unreal process caught SIGSEGV during reset at 15:17 UTC.
+That batch is archived; accepted training remains two updates / 16,384 transitions.
+Detailed evidence is `research/map_navigation/evidence/ppo-timing-investigation-20260929.json`.
+Image RPC median/p99/max: 28/67/120 ms; state RPC max 2.3 ms. Earlier faulting
+batch inference max 26 ms, dispatch RPC below 1 ms near faults. Do not claim
+Box64 is the proven cause, or that the native engine issue has been fixed.
+The new native-crash reporting patch is source-checked, not live-qualified.
+See `research/map_navigation/PPO_TIMING_POSTMORTEM.md`. Do not blindly restart or
+relax the watchdog. Active pointer describes last launch, not running status.
+
 ## Latest status: September 29, 11:00 Toronto
 
 Training is STOPPED. Two accepted updates used 16,384 fresh transitions and
