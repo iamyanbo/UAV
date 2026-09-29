@@ -92,7 +92,26 @@ def corridor(start,goal,captures):
         supported[ids]|=(np.isfinite(local).all(0)&(measured>np.linalg.norm(optical[ids],axis=1)+.35)&(local.max(0)<200))
     return dict(swept_volume_free=bool(supported.all()),supported_fraction=float(supported.mean()),
         samples=len(points),spacing_m=spacing,half_extent_m=radius,depth_margin_m=.35,
+        centre_support=supported.reshape(len(centres),-1).all(1).tolist(),
         method='opposed measured radial-depth views; 3x3 minimum range; finite observed support')
+
+
+def supported_crop(task,captures):
+    """Select a >=10 m contiguous supported portion, then check it afresh."""
+    evidence=corridor(task['start'],task['goal'],captures)
+    if evidence['swept_volume_free']:return evidence
+    support=evidence['centre_support'];centres=np.linspace(task['start'],task['goal'],len(support))
+    runs=[];begin=None
+    for i,good in enumerate(support+[False]):
+        if good and begin is None:begin=i
+        if not good and begin is not None:
+            if math.dist(centres[begin],centres[i-1])>=10:runs.append((begin,i-1))
+            begin=None
+    for begin,end in sorted(runs,key=lambda r:r[1]-r[0],reverse=True):
+        candidate=corridor(centres[begin],centres[end],captures)
+        if candidate['swept_volume_free']:
+            task['start']=centres[begin].tolist();task['goal']=centres[end].tolist();return candidate
+    return evidence
 
 
 def physical_flight(env,task,root):
@@ -117,6 +136,25 @@ def physical_flight(env,task,root):
     return record
 
 
+def candidate_inputs(args,descriptor,cfg):
+    if not args.observed_candidates:
+        for task in proposals(args.annotations,descriptor['scene_id'],args.split,args.height_offset):yield task,None,None
+        return
+    root=Path(args.observed_candidates);saved=read(root/'tasks-candidate.json')
+    if Path(saved['descriptor']).resolve()!=Path(args.scene).resolve():raise ValueError('Observed candidate scene differs')
+    for row in saved['rejected']:
+        task=dict(row['task']);path=root/task['id']/'geometry.json'
+        if not path.exists():continue
+        geometry=read(path)
+        if task['scene_id']!=descriptor['scene_id'] or task['split']!=args.split or geometry['camera']!=cfg['camera']:
+            raise ValueError('Observed candidate provenance differs')
+        captures=[]
+        for record in geometry['captures']:
+            if digest(record['path'])!=record['sha256']:raise ValueError('Observed depth changed')
+            captures.append((np.load(record['path'],allow_pickle=False),record))
+        yield task,captures,dict(path=str(path.resolve()),sha256=digest(path))
+
+
 def prepare(args):
     cfg=read(Path(__file__).with_name('ppo_pilot.json'));descriptor=read(args.scene)
     out=Path(args.output);out.mkdir(parents=True,exist_ok=False);window=Window(args.hours)
@@ -129,24 +167,17 @@ def prepare(args):
     try:
         with PilotEnvironment(descriptor,out/'worker',cfg,port=args.port) as env:
             env.calibrate()
-            for index,task in enumerate(proposals(args.annotations,descriptor['scene_id'],args.split,args.height_offset)):
+            for index,(task,captures,source_geometry) in enumerate(candidate_inputs(args,descriptor,cfg)):
                 if not window.remaining() or all(n>=args.per_behavior for n in counts.values()):break
                 if counts[task['behavior']]>=args.per_behavior:continue
                 if index>=args.max_candidates:break
                 root=out/task['id'];root.mkdir();print('candidate',task['id'],flush=True)
                 try:
-                    captures=[capture_depth(env,task['start'],task['start_yaw_deg'],root,'from-start'),
-                              capture_depth(env,task['goal'],task['goal_yaw_deg']+180,root,'from-goal')]
-                    evidence=corridor(task['start'],task['goal'],captures)
-                    if not evidence['swept_volume_free'] and math.dist(task['start'],task['goal'])>=14:
-                        # Source endpoints often hug facades. Qualify the inner
-                        # segment independently; never relax the body margin.
-                        start=np.asarray(task['start']);goal=np.asarray(task['goal']);direction=(goal-start)/np.linalg.norm(goal-start)
-                        inner_start=start+2*direction;inner_goal=goal-2*direction
-                        inner=corridor(inner_start,inner_goal,captures)
-                        if inner['swept_volume_free']:
-                            task['start']=inner_start.tolist();task['goal']=inner_goal.tolist();evidence=inner
-                    if not evidence['swept_volume_free'] and evidence['supported_fraction']>.95:
+                    if captures is None:
+                        captures=[capture_depth(env,task['start'],task['start_yaw_deg'],root,'from-start'),
+                                  capture_depth(env,task['goal'],task['goal_yaw_deg']+180,root,'from-goal')]
+                    evidence=supported_crop(task,captures)
+                    if not evidence['swept_volume_free'] and evidence['supported_fraction']>.95 and len(captures)==2:
                         delta=np.asarray(task['goal'])-task['start'];side=np.array([-delta[1],delta[0],0.])
                         side*=4/np.linalg.norm(side);mid=(np.asarray(task['start'])+task['goal'])/2
                         for sign in (-1,1):
@@ -154,8 +185,9 @@ def prepare(args):
                             yaw=math.degrees(math.atan2(direction[1],direction[0]))
                             try:captures.append(capture_depth(env,position.tolist(),yaw,root,'side-'+str(sign)))
                             except RuntimeError as error:write(root/('side-'+str(sign)+'-failure.json'),dict(error=str(error)))
-                        evidence=corridor(task['start'],task['goal'],captures)
+                        evidence=supported_crop(task,captures)
                     evidence.update(task_id=task['id'],start=task['start'],goal=task['goal'],camera=cfg['camera'],captures=[r for _,r in captures])
+                    if source_geometry:evidence['reused_observations']=source_geometry
                     write(root/'geometry.json',evidence)
                     if not evidence['swept_volume_free']:raise RuntimeError('Unsupported corridor: '+str(evidence['supported_fraction']))
                     env.reset_pose(task['goal'],task['goal_yaw_deg']);rgb,stamp,_=env.image()
@@ -185,6 +217,7 @@ if __name__=='__main__':
     p.add_argument('--port',type=int,default=43551)
     p.add_argument('--seed-tasks',help='Reuse immutable accepted task receipts from an earlier preparation run')
     p.add_argument('--height-offset',type=float,default=2.,help='Candidate height above reference, still subject to identical clearance checks')
+    p.add_argument('--observed-candidates',help='Reassess preserved depth receipts; goal capture and physical execution remain fresh')
     args=p.parse_args()
     if args.per_behavior<1 or args.max_candidates<1:p.error('Positive task/candidate limits required')
     if not math.isfinite(args.height_offset) or not 0<=args.height_offset<=20:p.error('Height offset must be between 0 and 20 m')
