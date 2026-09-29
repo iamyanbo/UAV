@@ -268,6 +268,7 @@
     "view_count": 1
   },
   "collection": {
+    "bulk_reference_paused": true,
     "initial_attempts_per_scene": 150,
     "expanded_attempts_per_scene": 500,
     "learner_attempts_per_scene": 100,

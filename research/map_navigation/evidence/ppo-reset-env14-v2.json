@@ -1,0 +1,872 @@
+﻿{
+  "schema": "photo-map-ppo-qualification/v1",
+  "scene_sha256": "e0f0740df2b6774e33420e856544c1a47cc490c2d0f19e6354b1e57fef2851d7",
+  "config": {
+    "schema": "photo-map-ppo/v1",
+    "capability": "simulation-only",
+    "seed": 0,
+    "step_s": 0.05,
+    "freshness_s": 0.25,
+    "episode_s": 60,
+    "stop_grace_s": 3,
+    "gamma": 0.9995,
+    "gae_lambda": 0.95,
+    "learning_rate": 0.0003,
+    "clip": 0.2,
+    "epochs": 4,
+    "minibatch": 256,
+    "rollout_steps": 2048,
+    "value_coefficient": 0.5,
+    "entropy_coefficient": 0.01,
+    "gradient_clip": 0.5,
+    "target_kl": 0.02,
+    "reward_scale": 0.1,
+    "limits": [
+      3,
+      3,
+      1,
+      45
+    ],
+    "acceleration": [
+      2,
+      2,
+      1,
+      90
+    ],
+    "camera": {
+      "profile": "fixed-forward-monocular/ppo-v1",
+      "x": 0.5,
+      "y": 0,
+      "z": -0.1,
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 0,
+      "width": 640,
+      "height": 480,
+      "fov": 90
+    },
+    "reset": {
+      "attempts": 3,
+      "position_m": 0.25,
+      "heading_deg": 5,
+      "speed_mps": 0.1,
+      "dwell_s": 1,
+      "timeout_s": 15,
+      "qualification_repetitions": 20
+    },
+    "arrival": {
+      "horizontal_m": 3,
+      "vertical_m": 2,
+      "heading_deg": 30,
+      "speed_mps": 0.5,
+      "dwell_s": 1
+    },
+    "smoke_transitions": 200000,
+    "smoke_attempts": 250,
+    "first_run_transitions": 1000000,
+    "extension_transitions": 2000000,
+    "learner_attempts": 4000,
+    "campaign_transitions": 10000000,
+    "campaign_attempts": 10000,
+    "eval_every": 10,
+    "eval_episodes": 50,
+    "candidate_train_scenes": [
+      2,
+      5,
+      10,
+      14
+    ],
+    "candidate_validation_scenes": [
+      6,
+      13
+    ],
+    "minimum_train_scenes": 2,
+    "minimum_validation_scenes": 1
+  },
+  "qualified": false,
+  "camera_reviewed": false,
+  "geometry_reviewed": false,
+  "resets": [
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.2445235149934888,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646047988157184,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5519051551818848
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.012402535416185856
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.012402535416185856,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1188097789417952,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646050529211392,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5700128078460693
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.008771617896854877
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.008771617896854877,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1138300490565598,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646051642235136,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5674502849578857
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.008969603106379509
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.008969603106379509,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1159885458182544,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646052758258944,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.567349672317505
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.0090462202206254
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.0090462202206254,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1145211060065776,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646053871282688,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5674548149108887
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.008969486691057682
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.008969486691057682,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1114826889242977,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646054984306432,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5673227310180664
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.008978651836514473
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.008978651836514473,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1119777131825686,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646056097330176,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5673227310180664
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.008979023434221745
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.008979023434221745,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1112744971178472,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646057207353856,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.567295789718628
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.008910703472793102
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.008910703472793102,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1109528329689056,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646058317377536,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5674262046813965
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.008900877088308334
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.008900877088308334,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1154500821139663,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646059433401344,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5673489570617676
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.009046319872140884
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.009046319872140884,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1088115849997848,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646060543425024,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5672967433929443
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.008910605683922768
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.008910605683922768,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.114757857983932,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646061659448832,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5673489570617676
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.009046311490237713
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.009046311490237713,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1137138740159571,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646062772472576,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.567323684692383
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.00897892750799656
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.00897892750799656,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1155063060577959,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646063888496384,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5674805641174316
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.009037340991199017
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.009037340991199017,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.110508032841608,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646064998520064,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5672967433929443
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.008910621516406536
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.008910621516406536,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.110934079857543,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646066108543744,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5674262046813965
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.008900877088308334
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.008900877088308334,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.113152720965445,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646067218567424,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5672950744628906
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.008910427801311016
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.008910427801311016,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.113554481882602,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646068334591232,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.5673227310180664
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.008979023434221745
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.008979023434221745,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1134595698677003,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646069450615040,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.567349672317505
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.009046599268913269
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.009046599268913269,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ],
+    [
+      {
+        "attempt": 0,
+        "passed": true,
+        "duration_s": 1.1143240979872644,
+        "requested": [
+          36.17993,
+          9.04845,
+          -2.59939
+        ],
+        "actual": {
+          "sim_ns": 1790646070563638784,
+          "position": [
+            36.179931640625,
+            9.048450469970703,
+            -2.567323684692383
+          ],
+          "velocity": [
+            0.0,
+            0.0,
+            -0.008978920057415962
+          ],
+          "attitude_deg": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "speed": 0.008978920057415962,
+          "collision": false,
+          "collision_ns": 0,
+          "contact": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "collision_object": ""
+        }
+      }
+    ]
+  ],
+  "reset_passed": true
+}

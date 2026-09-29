@@ -27,6 +27,8 @@ def answer_logprob(proposer,row,answer):
 
 
 def train_external(dataset,stage,backbone,output,window,updates,resume,initialize,seed):
+    if stage=='ppo':
+        raise ValueError('Saved-record PPO is historical. Use python -m research.map_navigation.ppo_pilot for fresh on-policy training')
     spec=read(dataset);cfg=config()['training'];seed_all(seed);reserve_memory()
     if spec.get('schema')!='temporal-adaptation/v2':raise ValueError('Causal adaptation dataset required')
     if spec['component']!=stage:raise ValueError('Adaptation component mismatch')

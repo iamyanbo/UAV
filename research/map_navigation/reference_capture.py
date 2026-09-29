@@ -15,7 +15,9 @@ from .collect import SceneProcess
 from .collection_protocol import AttemptQueue
 
 
-def capture(root, scene_id, output, port=43551):
+def capture(root, scene_id, output, port=43551, engineering_only=False):
+    if not engineering_only:
+        raise ValueError('Demonstration follower retired from automatic collection; explicit engineering_only is required')
     import airsim
     import numpy as np
     from PIL import Image
@@ -124,4 +126,5 @@ def capture(root, scene_id, output, port=43551):
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--root',required=True)
     parser.add_argument('--scene',type=int,required=True);parser.add_argument('--output',required=True)
-    args=parser.parse_args();print(json.dumps(capture(args.root,args.scene,args.output)))
+    parser.add_argument('--engineering-only',action='store_true')
+    args=parser.parse_args();print(json.dumps(capture(args.root,args.scene,args.output,engineering_only=args.engineering_only)))

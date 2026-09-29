@@ -1,5 +1,28 @@
 # Collection implementation and measured status — September 28, 2026
 
+## Actor-first PPO implementation
+
+Bulk reference collection is now disabled for normal collector runs; explicit
+engineering benchmarks remain separate. See [postmortem](COLLECTION_POSTMORTEM.md)
+and [PPO pilot instructions](PPO_PILOT.md). The new simulation-only path has a
+fresh rollout/update loop, joint motion/stop likelihood, learned critic,
+duration-aware returns, bounded asynchronous recording and independent watchdog.
+The GPU actor cannot read simulator state through its tensor interface.
+
+The revised reset order passed twenty repetitions each in env_5, env_10 and
+env_14. Receipts are `evidence/ppo-reset-env5-v1.json`,
+`evidence/ppo-reset-env10-v2.json`, `evidence/ppo-reset-env14-v2.json`. All remain
+unqualified for training: these are reset checks, not swept-clearance or full
+camera/motion/collision/timing acceptance. Subsequent source adds measured camera
+attitude verification to avoid mistaking stale paused renders for tilt coverage.
+
+Python syntax, duration/termination/acceleration checks, and a CPU numerical
+update using the actual architecture with random fixture weights passed. The
+fixture is not training evidence. No PPO learning flight or trained navigation
+checkpoint exists yet. `ppo_video` is wired to the first actual rollout/update
+receipt; a training video is pending that qualified run, not substituted with the
+earlier privileged flight video.
+
 Source is implemented for the revised collection programme. Engineering reference
 flights are now recorded; no accepted pilot flights, new trained models or learned
 navigation acceptance results exist yet.

@@ -1,5 +1,18 @@
 # CURI-UAV research invariants
 
+## Actor-first PPO pilot - September 28, 2026
+
+The user approved implementing the revised PPO pilot and simulator postmortem.
+Pause bulk expert collection. Qualify resets, fixed-camera mounting, motion,
+collision/stop semantics and timing before any learning flights. Use the separate
+simulation-only photo-map-ppo/v1 capability; do not bypass deployment safety or
+claim SLAM/world/Qwen readiness. Keep pretrained MobileNet frozen and train its
+new adapters, goal matcher, actor, stop and training-only critic with fresh PPO.
+The first 200k transitions/250 attempts are a smoke test, not a learning success
+requirement. Qualified extensions remain within 2M pilot transitions, 4,000
+learner attempts and the existing 10M/10,000 campaign ceilings. Preserve failures,
+sealed geography and original evidence. No autonomous agents or physical flights.
+
 ## Multi-environment collection - September 28, 2026
 
 The user authorized implementing and executing the revised collection programme

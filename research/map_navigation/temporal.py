@@ -19,14 +19,17 @@ class TemporalActor(nn.Module):
         self.action = nn.Sequential(nn.Linear(256+256+64,256),nn.SiLU(),nn.Linear(256,5))
         self.register_buffer('limits',torch.tensor([3.,3.,1.,45.]))
 
-    def forward(self, features, times, commands, valid, goal_context, subgoal):
+    def representation(self, features, times, commands, valid, goal_context, subgoal):
         # All rows contain a real newest frame. Missing initial frames are zeros,
         # and excluded as keys; pooling uses only the newest 64 query tokens.
         age = (times-times[:,-1:]).clamp(-10,0)
         timing = self.timing_action(torch.cat((age[...,None],commands/self.limits),-1))
         x = features+self.position+timing[:,:,None]
         x = self.attention(x.flatten(1,2),src_key_padding_mask=(~valid)[:,:,None].expand(-1,-1,64).flatten(1))
-        raw = self.action(torch.cat((x[:,-64:].mean(1),goal_context,subgoal),-1))
+        return torch.cat((x[:,-64:].mean(1),goal_context,subgoal),-1)
+
+    def forward(self, features, times, commands, valid, goal_context, subgoal):
+        raw = self.action(self.representation(features,times,commands,valid,goal_context,subgoal))
         command = raw[:,:4].tanh()*self.limits
         horizontal = command[:,:2]/(command[:,:2].norm(dim=-1,keepdim=True)/3).clamp_min(1)
         return torch.cat((horizontal,command[:,2:]),-1), raw[:,4]

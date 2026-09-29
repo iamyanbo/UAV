@@ -138,6 +138,8 @@ def _collect(registry_path,manifests,output,split,window,packages=None,variants=
     if branching and (not packages or variants!=['mode1'] or sample_policy):
         raise ValueError('Matched restart collection requires deterministic mode1 continuation and seed packages')
     sources=sources or (['exploration'] if teacher_spec else ['expert','manoeuvre'] if not packages else ['exploration'])
+    if config()['collection'].get('bulk_reference_paused') and not packages and not teacher_spec and not benchmark:
+        raise ValueError('Bulk reference collection is paused for the actor-first PPO pilot; engineering benchmarks remain separate')
     if split=='test': sources=['expert','exploration','manoeuvre']
     if not packages and 'exploration' in sources and not teacher_spec:raise ValueError('Exploration requires an observation teacher or learned actor')
     if not packages and variants!=['expert']:raise ValueError('Learned variants require model packages')
