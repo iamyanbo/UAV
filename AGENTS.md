@@ -1,5 +1,22 @@
 # CURI-UAV research invariants
 
+## Endpoint Mode 1 launch — September 29, 2026
+
+After discussing that PPO needs checked A/B endpoints and a goal photo rather
+than exhaustive graph preparation, the user instructed us to start training
+within their one-hour absence. This authorizes a separately labeled endpoint
+Mode 1 pilot. It supersedes full graph coverage and Mode 2 admission as launch
+requirements for this pilot, not for the two-mode research experiment. The user
+was explicitly told Qwen and the world model are outside this run.
+Use `ppo_endpoint.json`, `ppo_endpoint_prepare`, and `ppo_overnight --endpoint-pilot`.
+Retain qualified simulator/camera/reset/collision/stop semantics, capture actual
+endpoint photos, 8,192 fresh transitions/update, minibatch 512, stop prior .0005,
+budget accounting and immutable checkpoints. Euclidean potential is privileged
+reward-only. Mixed mission/arrival data are labeled separately. At update boundaries
+truncate with bootstrap and brake before gradients; no unqualified physics pause.
+No held-out generalization or two-mode acceptance claim. Verify an actual optimizer
+update before reporting that training is established. Historical raw data stay intact.
+
 ## Active geometry regeneration — September 29, 2026
 
 The user authorized fixing the failed generator and reusing the saved surveys.

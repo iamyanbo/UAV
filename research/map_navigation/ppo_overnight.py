@@ -25,7 +25,7 @@ from .common import read,write,digest,FlightLock,Window,seed_all
 from .compute import ComputeLane
 from .ppo_admission import quality_gate,workload_gate
 from .ppo_budget import Budget
-from .ppo_core import ActorCritic,command_from_latent,transition_reward,update
+from .ppo_core import ActorCritic,command_from_latent,transition_reward,update,potential
 from .ppo_guidance import RegionProposer,Guidance
 from .ppo_pilot import Worker
 from .ppo_scheduler import FeatureBank,Inference,batch_for
@@ -48,6 +48,16 @@ def preflight(args):
     cfg=read(args.config);manifest=read(args.manifest)
     if cfg['schema']!='photo-map-ppo/v2' or cfg['rollout_steps']!=8192 or cfg['minibatch']!=512:
         raise ValueError('Expected the fixed 8192/512 overnight configuration')
+    if cfg.get('endpoint_pilot'):
+        from .ppo_endpoint_prepare import validate_endpoint_manifest
+        if not args.endpoint_pilot:raise ValueError('Endpoint pilot requires explicit --endpoint-pilot')
+        if args.benchmark:raise ValueError('Endpoint pilot is not two-mode workload admission')
+        if len(args.worker)!=1 or len(args.authfile)!=1:raise ValueError('Endpoint pilot starts with one measured worker')
+        scenes=validate_endpoint_manifest(manifest,cfg,args.config)
+        return cfg,manifest,scenes,identity_for(args),dict(passed=False,mode2_enabled=False,scope='endpoint-mode1-pilot')
+    if args.endpoint_pilot:raise ValueError('Endpoint flag requires its dedicated configuration')
+    if not all((args.audit,args.grades,args.evaluation_worker,args.evaluation_authfile)):
+        raise ValueError('Two-mode experiment requires audit, grades and isolated evaluation endpoint')
     if len(args.worker) not in (1,2) or len(args.worker)!=len(args.authfile):raise ValueError('One or two isolated workers required')
     if len(set(args.worker+[args.evaluation_worker]))!=len(args.worker)+1:raise ValueError('Evaluation needs a separate worker endpoint')
     scenes=validate_tasks(manifest,cfg);identity=identity_for(args)
@@ -127,10 +137,10 @@ class Collector:
         if not evaluate:self.budget.attempt(self.attempt,self.index)
         self.guidance.forget(self.index)
         path=self.task['field']
-        if path not in self.fields:self.fields[path]=ObservedVolume.load(path)
+        if not self.cfg.get('endpoint_pilot') and path not in self.fields:self.fields[path]=ObservedVolume.load(path)
         # Load evaluator assets before releasing reset control, never while a
         # freshly captured command source is aging.
-        self.costs=CostField.load(self.task['cost_field'])
+        if not self.cfg.get('endpoint_pilot'):self.costs=CostField.load(self.task['cost_field'])
         with Image.open(self.task['goal_image']) as im:image=im.convert('RGB').copy()
         self.scheduler.call('initialize',worker=self.index,image=image,path=self.task['goal_image'],
             exercise=self.task.get('exercise'),task_kind=self.task.get('kind','mission'))
@@ -141,7 +151,10 @@ class Collector:
         visible={k:obs[k] for k in ('rgb','rgb_path','sim_s','preceding_command')}
         return self.scheduler.call('observation',worker=self.index,obs=visible,execution=self.task.get('kind')=='execution',replace=replace)
 
-    def phi(self,obs):return self.fields[self.task['field']].potential(obs['state']['position'],self.costs,self.task['reference_s'])
+    def phi(self,obs):
+        if self.cfg.get('endpoint_pilot'):
+            return potential(obs['state']['position'],self.task['goal'],math.dist(self.task['start'],self.task['goal']))
+        return self.fields[self.task['field']].potential(obs['state']['position'],self.costs,self.task['reference_s'])
 
     def step(self,freeze=False,evaluate=False,batch=None,iteration=0):
         obs=self.obs;decision=self.decision;context=decision['context']
@@ -211,7 +224,20 @@ class Collector:
                 if self.obs is None:self.begin()
                 elif self.paused:
                     self.obs=self.worker.call('refresh_boundary');self.decision=self.infer(self.obs,replace=True)
-                row=self.step(freeze=len(rows)==quota-1,batch=batch,iteration=iteration)
+                boundary=len(rows)==quota-1
+                row=self.step(freeze=boundary and not self.cfg.get('endpoint_pilot'),batch=batch,iteration=iteration)
+                if boundary and self.cfg.get('endpoint_pilot') and self.obs is not None:
+                    # Explicit training truncation with bootstrap; no pause or
+                    # unrecorded continuation across an optimizer update.
+                    self.worker.call('end_episode')
+                    row['truncated']=True;row['rollout_boundary']=True
+                    summary=dict(attempt_id=self.attempt,task_id=self.task['id'],kind=self.task.get('kind','mission'),
+                        scene_id=self.scene['scene_id'],difficulty=self.task.get('difficulty'),distance_bin=self.task.get('distance_bin'),
+                        event='rollout_boundary',reward=self.episode_reward,steps=self.episode_steps,
+                        duration_s=self.obs['elapsed_s'],reset_wall_s=self.obs['reset_wall_s'],pause_wall_s=0,
+                        stops=self.stop_attempts,goal_region_observations=self.goal_visits)
+                    self.episodes.append(summary);write(self.root/(self.attempt+'-outcome.json'),summary)
+                    self.obs=None;self.decision=None
                 stream.write(json.dumps(row,allow_nan=False)+'\n');stream.flush()
                 if not row['valid_for_ppo']:
                     if rows and rows[-1]['attempt_id']==row['attempt_id']:rows[-1]['truncated']=True
@@ -273,9 +299,19 @@ def run(args):
         lane=ComputeLane();log_lock=threading.Lock()
         def proposal_log(row):
             with log_lock,(root/'proposals.jsonl').open('a',encoding='utf-8') as f:f.write(json.dumps(row,allow_nan=False)+'\n')
-        proposer=RegionProposer(lane,path=args.qwen_model)
-        if proposer.base_identity!=quality['model_identity']:raise ValueError('Live Qwen differs from independently audited weights')
-        guidance=Guidance(proposer,proposal_log)
+        if cfg.get('endpoint_pilot'):
+            class NoGuidance:
+                receipts=[]
+                def __bool__(self):return False
+                def forget(self,*args):pass
+                def invalidate(self):pass
+                def close(self):pass
+            guidance=NoGuidance()
+            model.execution_value.requires_grad_(False)
+        else:
+            proposer=RegionProposer(lane,path=args.qwen_model)
+            if proposer.base_identity!=quality['model_identity']:raise ValueError('Live Qwen differs from independently audited weights')
+            guidance=Guidance(proposer,proposal_log)
         resources.callback(guidance.close)
         banks={i:FeatureBank() for i in range(len(args.worker)+1)}
         scheduler=Inference(model,lane,banks,guidance)
@@ -287,8 +323,8 @@ def run(args):
         workers=[]
         for address,auth in zip(args.worker,args.authfile):
             worker=Worker(address,auth);workers.append(worker);resources.callback(worker.close)
-        evaluation=Worker(args.evaluation_worker,args.evaluation_authfile)
-        resources.callback(evaluation.close)
+        evaluation=Worker(args.evaluation_worker,args.evaluation_authfile) if not cfg.get('endpoint_pilot') else None
+        if evaluation:resources.callback(evaluation.close)
         train_scenes=[s for s in scenes.values() if s['split']=='train'];collectors=[];sanity=[t for t in manifest['tasks'] if t.get('sanity_validation')]
         for i,worker in enumerate(workers):
             collectors.append(Collector(i,worker,train_scenes[i%len(train_scenes)],scheduler,banks[i],budget,curriculum,cfg,root,window,guidance))
@@ -366,6 +402,7 @@ def run(args):
             return
         def save():
             saved=dict(schema=cfg['schema'],capability='simulation-only',identity=identity,model=model.state_dict(),optimizer=optimizer.state_dict(),
+                experiment=cfg.get('experiment','proposal-conditioned'),mode2_enabled=bool(guidance),
                 counts=counts,evaluated=evaluated,mixture=dict(curriculum.counts),lineage=lineage,
                 curriculum_indices=list(curriculum.indices.items()),
                 python_rng=random.getstate(),numpy_rng=np.random.get_state(),torch_rng=torch.get_rng_state(),
@@ -388,7 +425,7 @@ def run(args):
             guidance.invalidate();save()
         status='not_started';batch=None;pre_model=None;pre_optimizer=None
         try:
-            if 0 not in evaluated:evaluate(0)
+            if not cfg.get('endpoint_pilot') and 0 not in evaluated:evaluate(0)
             if args.hours*3600-(window.deadline-time.monotonic())>3600:raise RuntimeError('Admission/warm-up exceeded one hour')
             with ThreadPoolExecutor(max_workers=len(workers),thread_name_prefix='collector') as pool:
                 while window.remaining():
@@ -399,6 +436,8 @@ def run(args):
                     policy_path=root/f'policy-{counts["iteration"]:06d}.pt'
                     if not policy_path.exists():shutil.copyfile(checkpoint,policy_path)
                     start=time.monotonic();by_worker={c.index:[] for c in collectors};quota=8192//len(workers)
+                    write(root/'status.json',dict(status='collecting',counts=counts,batch=batch,mode2_enabled=bool(guidance),
+                        scope='endpoint-mode1-pilot' if cfg.get('endpoint_pilot') else 'proposal-conditioned',training_running=True))
                     while any(len(r)<quota for r in by_worker.values()):
                         active=[c for c in collectors if len(by_worker[c.index])<quota]
                         futures=[(c,pool.submit(c.collect,quota-len(by_worker[c.index]),batch,counts['iteration'])) for c in active]
@@ -419,6 +458,7 @@ def run(args):
                         path.rename(root/f'archived-{path.stem}-{uuid.uuid4().hex}.jsonl')
                     with path.open('x',encoding='utf-8') as f:
                         for r in rows:f.write(json.dumps(r,allow_nan=False)+'\n')
+                    write(root/'status.json',dict(status='optimizing',counts=counts,batch=batch,fresh_transitions=len(rows),training_running=True))
                     pre_model=copy.deepcopy(model.state_dict());pre_optimizer=copy.deepcopy(optimizer.state_dict());pre_counts=dict(counts);optimized=time.monotonic()
                     with lane.fast():report=update(model,optimizer,rows,lambda ids:batch_for([rows[i] for i in ids],banks,args.device),cfg)
                     report.update(update_wall_s=time.monotonic()-optimized,collection_wall_s=optimized-start,
@@ -462,7 +502,7 @@ def run(args):
                         baseline=np.median([r['normalized_value_mse'] for r in reports[:3]])
                         if all(r['explained_variance'] is not None and r['explained_variance']<-1 and r['normalized_value_mse']>10*baseline for r in reports[-3:]):
                             raise RuntimeError('Persistent combined critic divergence')
-                    for mark in (50000,100000):
+                    for mark in (() if cfg.get('endpoint_pilot') else (50000,100000)):
                         if budget.campaign['ppo_transitions']>=mark and mark not in evaluated:evaluate(mark)
                     for b in banks.values():b.trim()
                 else:status='window_complete'
@@ -474,7 +514,7 @@ def run(args):
             if batch:budget.finish(batch,False)
             raise
         finally:
-            for w in workers+[evaluation]:w.close()
+            for w in workers+([evaluation] if evaluation else []):w.close()
             scheduler.close();guidance.close();save();budget_snapshot=budget.snapshot();budget.close()
             write(root/'status.json',dict(status=status,counts=counts,mixture=dict(curriculum.counts),
                 budget=budget_snapshot,
@@ -485,7 +525,9 @@ def run(args):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--config',default=str(Path(__file__).with_name('ppo_overnight.json')))
-    for name in ('manifest','backbone','output','workspace','audit','grades','evaluation-worker','evaluation-authfile'):p.add_argument('--'+name,required=True)
+    for name in ('manifest','backbone','output','workspace'):p.add_argument('--'+name,required=True)
+    for name in ('audit','grades','evaluation-worker','evaluation-authfile'):p.add_argument('--'+name)
+    p.add_argument('--endpoint-pilot',action='store_true',help='Explicit Mode 1 pilot using checked endpoints and Euclidean shaping')
     p.add_argument('--admission');p.add_argument('--benchmark',action='store_true')
     p.add_argument('--recordings-root',help='Private recording root for this workload qualification only')
     p.add_argument('--worker',action='append',required=True);p.add_argument('--authfile',action='append',required=True)
