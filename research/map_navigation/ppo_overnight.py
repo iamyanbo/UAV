@@ -160,15 +160,19 @@ class Collector:
         obs=self.obs;decision=self.decision;context=decision['context']
         command=command_from_latent(decision['latent'],obs['preceding_command'],self.cfg['step_s'],self.cfg['limits'],self.cfg['acceleration'])
         phi=self.phi(obs)
+        reserve_started=time.monotonic()
         if not evaluate:self.budget.transition(batch,self.index)
+        reserve_s=time.monotonic()-reserve_started
         age=time.monotonic()-obs['source_wall']
         if age>=self.cfg['freshness_s']:raise RuntimeError('Active control freshness fault')
         op='resume_boundary' if self.paused else 'step'
         payload=dict(command=command,stop=bool(decision['stop']),frame=obs['frame'])
         if op=='step':payload['freeze_after']=freeze
         elif freeze:raise ValueError('Cannot freeze immediately on a resumed first step')
-        response=self.worker.call(op,**payload);self.paused=freeze
+        rpc_started=time.monotonic()
+        response=self.worker.call(op,**payload);rpc_finished=time.monotonic();self.paused=freeze
         if not evaluate:self.budget.confirm(batch,self.index)
+        confirm_s=time.monotonic()-rpc_finished
         nxt=response['observation'];next_decision=self.infer(nxt)
         unsupported=False
         try:next_phi=self.phi(nxt)
@@ -188,6 +192,9 @@ class Collector:
             rgb_path=obs['rgb_path'],next_rgb_path=nxt['rgb_path'],sim_s=obs['sim_s'],next_sim_s=nxt['sim_s'],
             state=obs['state'],next_state=nxt['state'],decision_s=decision['decision_s'],source_age_s=age,
             step_wall_s=nxt['source_wall']-obs['source_wall'],
+            pipeline_timing=dict(observation=obs.get('timing'),next_observation=nxt.get('timing'),
+                reserve_s=reserve_s,confirm_s=confirm_s,worker_roundtrip_s=rpc_finished-rpc_started,
+                worker_received_wall=rpc_finished),
             action_saturation_fraction=float(np.mean(np.abs(np.tanh(decision['latent']))>.95)),
             attempt_id=self.attempt,policy_iteration=iteration,valid_for_ppo=not unsupported)
         self.obs=nxt;self.decision=next_decision;self.episode_reward+=reward;self.episode_steps+=1;self.stop_attempts+=decision['stop']

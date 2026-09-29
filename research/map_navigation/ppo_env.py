@@ -190,6 +190,7 @@ class PilotEnvironment:
     def image(self):
         a=self.airsim;started=time.monotonic()
         rgb=self.client.simGetImages([a.ImageRequest('front_custom',a.ImageType.Scene,False,False)],self.vehicle)[0]
+        self.capture_timing=dict(request_wall=started,response_wall=time.monotonic())
         if (rgb.width,rgb.height)!=(640,480) or len(rgb.image_data_uint8)!=640*480*3:
             raise ValueError('Invalid camera payload')
         raw=np.frombuffer(rgb.image_data_uint8,np.uint8).reshape(480,640,3)
@@ -235,7 +236,9 @@ class PilotEnvironment:
 
     def observe(self,frozen=False):
         if self.fault:raise RuntimeError('Dispatcher failed: '+self.fault)
-        rgb,stamp,source=self.image();s=self.state()
+        rgb,stamp,source=self.image();state_started=time.monotonic();s=self.state();state_finished=time.monotonic()
+        timing=dict(self.capture_timing,state_started_wall=state_started,state_finished_wall=state_finished,
+            image_rpc_s=self.capture_timing['response_wall']-source,state_rpc_s=state_finished-state_started)
         if not frozen and self.previous_state is not None and s['sim_ns']<=self.previous_state['sim_ns']:
             raise RuntimeError('Nonadvancing simulator clock')
         with self.lock:
@@ -244,9 +247,9 @@ class PilotEnvironment:
         self.last_source=source;self.previous_state=s
         self.recorder.put(f'{self.frame:06d}.png',rgb)
         self.recorder.put('observation',dict(kind='observation',frame=self.frame,capture_sim_ns=stamp,
-            source_wall=source,preceding_command=preceding,state=s,camera_pose=self.capture_pose))
+            source_wall=source,preceding_command=preceding,state=s,camera_pose=self.capture_pose,timing=timing))
         return dict(rgb=rgb.tobytes(),frame=self.frame,sim_s=stamp/1e9,preceding_command=preceding,
-            state=s,source_wall=source,elapsed_s=(s['sim_ns']-self.start_sim_ns)/1e9,
+            state=s,source_wall=source,timing=timing,elapsed_s=(s['sim_ns']-self.start_sim_ns)/1e9,
             reset_wall_s=self.reset_wall_s,pause_wall_s=self.pause_wall_s,
             rgb_path=str((self.recorder.root/f'{self.frame:06d}.png').resolve()))
 
