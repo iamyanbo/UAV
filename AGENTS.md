@@ -2,6 +2,19 @@
 
 ## Endpoint Mode 1 launch — September 29, 2026
 
+Live launch pointer: `/home/iamyanbo/uav-photo-map/ppo-active.json`. The current
+run is `/home/iamyanbo/uav-photo-map/ppo-endpoint-20260929-retry1`, source `e30055f`,
+units `uav-ppo-endpoint-train-retry1-20260929` and
+`uav-ppo-endpoint-worker-retry1-20260929`. Original deadline is 21:29:36 UTC.
+The first run under `ppo-endpoint-20260929` stopped after 7,334 observed transitions
+because a camera RPC delay tripped the 250 ms watchdog; it produced no PPO update.
+Preserve that run and all budget charges. The retry collects a fresh complete batch.
+Endpoint-only bounded recovery keeps immediate braking, censors the uncertain
+dispatch, bootstraps the confirmed prefix and resets the episode. More than two
+freshness faults per batch or five per run stop for review. Other failures remain
+fatal. The graph-regeneration service below is frozen to isolate training; do not
+start another trainer or silently thaw competing work without checking live status.
+
 After discussing that PPO needs checked A/B endpoints and a goal photo rather
 than exhaustive graph preparation, the user instructed us to start training
 within their one-hour absence. This authorizes a separately labeled endpoint
