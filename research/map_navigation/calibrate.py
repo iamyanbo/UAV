@@ -87,7 +87,7 @@ def calibrate(dataset,checkpoint,backbone,output,window):
                     receipt['complete']=False;write(out/'receipt.json',receipt);return
                 row=world.get(world.sample_index(rng))
                 x,t,c,v,g,goal,embedding=batch_context(model,[row],'cuda')
-                context=ObservationContext('observation-context/v2',tuple(row['history_ids']),tuple(row['history_times']),
+                context=ObservationContext('observation-context/v3',tuple(row['history_ids']),tuple(row['history_times']),
                     x,c,v,g,goal,row['spatial'],0.).validate()
                 refs={}
                 if row['subgoal'] and row['reference_rgb'] is not None:

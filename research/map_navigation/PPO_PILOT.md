@@ -1,3 +1,9 @@
+# Current implementation
+
+The revised entry point and launch gates are in [PPO_OVERNIGHT.md](PPO_OVERNIGHT.md).
+The material below records the earlier corridor integration pilot and its actual
+evidence. Its 2,048-transition configuration is not the overnight configuration.
+
 # Actor-first PPO pilot
 
 `ppo_pilot.json` is the versioned, simulation-only experiment configuration.

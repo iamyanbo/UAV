@@ -1,5 +1,23 @@
 # CURI-UAV research invariants
 
+## Proposal-conditioned overnight PPO — September 29, 2026
+
+The user approved implementing the revised overnight plan. The entry point is
+`research.map_navigation.ppo_overnight`; its specification and commands are in
+`research/map_navigation/PPO_OVERNIGHT.md`. Use exactly 8,192 fresh transitions,
+512 minibatches, and a learnable initial stop prior of 0.0005. Training-only
+physics pauses preserve unfinished episodes at update boundaries; evaluation
+is continuous and has its own worker. This supersedes continuous-training-only
+restrictions below, not evaluation timing requirements. Qwen is frozen and
+proposal-only, with a 30-context independent quality gate and concurrent workload
+admission. No world selector or Photo-SLAM readiness claim in this experiment.
+Shared records are v3 and full model/package schemas are v6; historical sources,
+weights, recordings and budget usage remain intact. Old PPO samples are never
+replayed for gradients. Nontrivial observed-volume task coverage, geographic
+review, physical qualification, and Qwen/workload admission must pass before
+launch. Do not replace missing coverage with corridor tasks or silently disable
+Mode 2. No autonomous agents, physical flights, new spending, or new test harnesses.
+
 ## Actor-first PPO pilot - September 28, 2026
 
 The user approved implementing the revised PPO pilot and simulator postmortem.

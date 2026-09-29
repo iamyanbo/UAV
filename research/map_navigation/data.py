@@ -175,7 +175,7 @@ def build_dataset(registry_path,flight_root,output,banks=()):
                         math.degrees(math.atan2(body_direction[1],body_direction[0]))*1.5,-45,45))])
             if recorded:
                 by_frame={r['frame_id']:j for j,r in enumerate(rows[max(0,i-256):i+1],max(0,i-256))}
-                if recorded['schema']!='observation-context/v2':raise ValueError('Historical observation record')
+                if recorded['schema']!='observation-context/v3':raise ValueError('Historical observation record')
                 if any(f not in by_frame for f in recorded['frame_ids']):raise ValueError('Missing recorded history frame')
                 history=[by_frame[f] for f in recorded['frame_ids']]
                 if recorded['timestamps']!=[rows[j]['sim_ns']/1e9 for j in history]:raise ValueError('History clock mismatch')
@@ -267,7 +267,7 @@ def build_dataset(registry_path,flight_root,output,banks=()):
                 teacher_subgoal=asdict(teacher_subgoal) if teacher_subgoal else None,
                 intervals=intervals,future_observed=future_observed,decision_id=estimate.get('decision_id'),context_recorded=recorded is not None,
                 behavior_actor_identity=estimate.get('actor_identity'),
-                observation_schema='observation-context/v2',
+                observation_schema='observation-context/v3',
                 runtime_state=estimate.get('predictor_state'),estimated_tile=estimated_tile,flight_phase=(estimate.get('flight_phase') if estimate.get('flight_phase') not in (None,'unlabelled') else label.get('flight_phase','unlabelled')),
                 camera_pitch_deg=camera_pitch(row['calibration']),
                 labels=dict(offset=(position[:2]-prior.tiles[tile]).tolist(),above_surface=float(surface-position[2]),
@@ -456,6 +456,7 @@ class Dataset:
         past=[snapshot for stamp,snapshot in self.spatial_history(window['episode']) if 0<now-stamp<=3]
         value['delayed_spatial']=past[::max(1,len(past)//3)][:3]
         value['reference_rgb']=None
+        value['reference_roi']=None
         if value['subgoal'] and value['subgoal'].target_source=='map':
             ref=value['subgoal'].target_reference
             if ref not in value['spatial'].map_references:raise ValueError('Unsupported recorded map target')
@@ -465,6 +466,10 @@ class Dataset:
             index=next(i for i,r in enumerate(rows) if r['frame_id']==source)
             value['reference_rgb']=tensor(rgb_at(ep['path'],rows[index]))
         elif value['subgoal'] and value['subgoal'].target_source=='geometry':value['reference_rgb']=current
+        elif value['subgoal'] and value['subgoal'].target_source=='image_region':
+            region=next(r for r in value['spatial'].image_regions if r[0]==value['subgoal'].target_reference)
+            index=next(i for i,r in enumerate(rows) if r['frame_id']==region[1])
+            value['reference_rgb']=tensor(rgb_at(ep['path'],rows[index]));value['reference_roi']=region[3:]
         value['future_rgb']=[tensor(rgb_at(ep['path'],rows[i])) if observed else torch.zeros_like(current)
             for i,observed in zip(window['future'],window['future_observed'])]
         if self.stage=='world':

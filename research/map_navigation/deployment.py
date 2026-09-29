@@ -32,9 +32,9 @@ def package(checkpoint,vision,output,learned_local_policy=True,photo_slam=None,q
     shutil.copyfile(photo_slam,out/'photo-slam.json')
     if qwen:
         adapter=torch.load(qwen,map_location='cpu',weights_only=True)
-        if adapter.get('schema')!='subgoal-qwen/v2':raise ValueError('Incompatible Qwen adapter')
+        if adapter.get('schema')!='subgoal-qwen/v3':raise ValueError('Incompatible Qwen adapter')
         torch.save({k:adapter[k] for k in ('schema','modules','adapter','base_identity','budget_usage')},out/'qwen.pt')
-    write(out/'package.json',dict(schema='photo-map-package/v5',trained_stages=saved['trained_stages'],
+    write(out/'package.json',dict(schema='photo-map-package/v6',trained_stages=saved['trained_stages'],
           capability='perception' if perception_only else 'navigation',
           learned_local_policy=not perception_only,accepted=False,files={p.name:digest(p) for p in out.iterdir()}))
 
@@ -46,7 +46,7 @@ class PhotoControllerProcess:
         self.writable=self.output/'runtime';self.writable.mkdir()
         package_root=Path(checkpoints).resolve();spec=read(package_root/'package.json')
         required={'model.pt','vision.json','photo-slam.json'}
-        if spec['schema']!='photo-map-package/v5' or not required<=set(spec['files']) or set(spec['files'])-required-{'qwen.pt'}:raise ValueError('Unexpected inference assets')
+        if spec['schema']!='photo-map-package/v6' or not required<=set(spec['files']) or set(spec['files'])-required-{'qwen.pt'}:raise ValueError('Unexpected inference assets')
         if spec.get('capability')!=('perception' if perception_only else 'navigation'):raise ValueError('Package capability mismatch')
         allowed={'package.json',*spec['files']}
         if {p.name for p in package_root.iterdir()}!=allowed:raise ValueError('Inference package has undeclared files')

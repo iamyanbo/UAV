@@ -1,0 +1,51 @@
+﻿{
+  "schema": "ppo-source-verification/v1",
+  "backbone_sha256": "e81b053d726d7a8c4398664ec926218d5cc9da1f22c7e4930a1a79a5d9e81515",
+  "recorded_rollout_sha256": "a0cd58bb0c710ad48dd2ec7f06744f590b7df5892b8eb8d71c817b8acef9288e",
+  "migration_source": "eb84df9be304bcc323db62f3a101a8e4be4cd584dd4f7b3873c4aabdb1313708",
+  "checks": {
+    "actual_recorded_rgb_forward": true,
+    "selected_subgoal_changes_logprob": true,
+    "frozen_backbone": true,
+    "initial_stop_bias": 0.0005000000237487257,
+    "stale_subgoal_rejected": true,
+    "revision_mismatch_rejected": true,
+    "boundary_replaces_history": true,
+    "recorded_duration_gae_finite": true,
+    "python_compileall": true,
+    "pyflakes_new_modules": true,
+    "cli_entrypoints_load": true,
+    "recorded_rgb_execution_roi_forward": true,
+    "shared_subgoal_width": 16,
+    "actor_inputs_exclude_privileged_state": true
+  },
+  "training_executed": false,
+  "simulator_executed": false,
+  "latency_qualified": false,
+  "source_files": {
+    "research\\map_navigation\\ppo_actions.py": "91bae83217bcbd9a9b6be4408dfa3b07dcbe511852077c1ab1d5e97cc22c20d3",
+    "research\\map_navigation\\ppo_admission.py": "7b1d477e27af18ca40e5cad012c3df796f9c8cc8261e31c707802e50f2b821bf",
+    "research\\map_navigation\\ppo_artifacts.py": "12c5afdc86d7bcfc3ecfa97b4f937cd3dca3d52edacf5c0a56ffb2be6a1b59a2",
+    "research\\map_navigation\\ppo_bootstrap.py": "509b25b5db65703f554654c49f0c1d0c8cdbfbcd73640d67ce2294b14d6e267e",
+    "research\\map_navigation\\ppo_budget.py": "04a82f591fb6160454170d13259362e74826674de7483b2b9804c7e72a376d88",
+    "research\\map_navigation\\ppo_core.py": "7cb04f501230e2131a7adb5abee6eee7b7e660bc41585acea9ddcfd8b2ac5825",
+    "research\\map_navigation\\ppo_env.py": "87265bffaebe5b52a83a579c472a8735bd447b5d48f6f7e101e790a4fcde6710",
+    "research\\map_navigation\\ppo_guidance.py": "ce8e82e91975c1c003d6af805bace6d5de3b72fac32496339e66775450db6a7e",
+    "research\\map_navigation\\ppo_overnight.py": "f45ebe73592407c0245f4248ba58c265141a929c965b3c9a24e00a1b8ff68e29",
+    "research\\map_navigation\\ppo_pilot.py": "f800f9dda948d12ff972e61b92dcb1850790f7d04677afef541268be31f48fee",
+    "research\\map_navigation\\ppo_prepare.py": "9b8b553b867ebaf7766b3a53c106a6aca98109d1cdddca277ede210d882325f6",
+    "research\\map_navigation\\ppo_qualify.py": "04b5ece580dfc582735bc9cf6bbfb3a784fd40edfe3aef233a42b49a4aed674a",
+    "research\\map_navigation\\ppo_report.py": "032636301b174c6c380a3d29bdf13a56ebafb520ed3c75e1ef99d41f48902a8a",
+    "research\\map_navigation\\ppo_scheduler.py": "a0f35a2ccad9899d2bb0bfb8c96a57e130d468d4cb5f016a0ac7ef49a5b3d621",
+    "research\\map_navigation\\ppo_task_capture.py": "cebdc0963f8c9f4b68a88d11ef77c20c399fa28a679a5bee9099621ef0e3712c",
+    "research\\map_navigation\\ppo_tasks.py": "8c54c53dd422da6193d11a4eff08946a159cdf88c03b0517b025a06acd1b60e7",
+    "research\\map_navigation\\ppo_video.py": "529e3649ac28cd23e0e9da556bec2d2587a2dfc5916b8825d276bbf1e3be9f22"
+  },
+  "deferred": [
+    "observed-volume survey and nontrivial task coverage",
+    "native pause/resume and recorder qualification",
+    "independent 30-context Qwen grading",
+    "concurrent one/two-worker Spark benchmark",
+    "new training and held-out navigation acceptance"
+  ]
+}

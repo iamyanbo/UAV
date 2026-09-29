@@ -40,7 +40,7 @@ def audit_dataset(dataset, output):
         entry['windows_by_phase'][row.get('flight_phase','unlabelled')]+=1
         entry['camera_pitch_bins'][str(round(row['camera_pitch_deg']/15)*15)]+=1
         entry['height_bins'][str(int(np.floor(row['labels']['above_surface']/10)*10))]+=1
-        entry['world_windows']+=int(bool(row['future']) and row.get('observation_schema')=='observation-context/v2')
+        entry['world_windows']+=int(bool(row['future']) and row.get('observation_schema')=='observation-context/v3')
         entry['collision_windows']+=int(any(row['labels']['future_collision']))
         if row['labels']['arrival']:entry['positive_episodes'].add(ep['path'])
     for entry in by_scene.values():entry['positive_episodes']=len(entry['positive_episodes'])

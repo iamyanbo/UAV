@@ -78,10 +78,10 @@ def train_external(dataset,stage,backbone,output,window,updates,resume,initializ
         modules=None
     else:
         from .subgoals import QwenProposer
-        if saved.get('schema') not in (SCHEMA,'subgoal-qwen/v2'):raise ValueError('Unrecognized preceding checkpoint')
-        proposer=QwenProposer(TrainingLane(),source if saved.get('schema')=='subgoal-qwen/v2' else None)
+        if saved.get('schema') not in (SCHEMA,'subgoal-qwen/v3'):raise ValueError('Unrecognized preceding checkpoint')
+        proposer=QwenProposer(TrainingLane(),source if saved.get('schema')=='subgoal-qwen/v3' else None)
         model=proposer.model;modules=proposer.modules
-        if stage=='preferences' and saved.get('schema')!='subgoal-qwen/v2':raise ValueError('Preference learning requires supervised Qwen adapter')
+        if stage=='preferences' and saved.get('schema')!='subgoal-qwen/v3':raise ValueError('Preference learning requires supervised Qwen adapter')
         for name,param in model.named_parameters():param.requires_grad_(name.endswith(('.a','.b')))
         ceiling=cfg['budgets']['configuration_examples'] if stage=='configurator' else cfg['budgets']['preference_pairs']
         updates=updates or min(ceiling,len(rows))
@@ -124,7 +124,7 @@ def train_external(dataset,stage,backbone,output,window,updates,resume,initializ
                 state=dict(saved,model=model.state_dict(),calibration=None,
                     trained_stages=sorted((set(saved['trained_stages'])-{'world'})|({'ppo'} if update+1==updates else set())))
             else:
-                state=dict(schema='subgoal-qwen/v2',modules=modules,base_identity=proposer.base_identity,
+                state=dict(schema='subgoal-qwen/v3',modules=modules,base_identity=proposer.base_identity,
                     adapter={n:p.detach().cpu() for n,p in model.named_parameters() if n.endswith(('.a','.b'))})
             state.update(stage=stage,updates=update+1,target_updates=updates,optimizer=optimizer.state_dict(),
                 dataset_sha256=digest(dataset),python_rng=random.getstate(),torch_rng=torch.get_rng_state(),

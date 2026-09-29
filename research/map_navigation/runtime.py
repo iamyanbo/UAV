@@ -49,7 +49,7 @@ class Navigator:
         self.branch=initial_subgoal is not None;self.started_s=None;self.branch_context_sha256=None
         self.rgb_hashes=deque(maxlen=4)
         spec=read(self.package/'package.json')
-        if spec['schema']!='photo-map-package/v5':raise ValueError('Temporal-window package required')
+        if spec['schema']!='photo-map-package/v6':raise ValueError('Temporal-window package required')
         if not perception_only and spec.get('capability')!='navigation':raise ValueError('Perception package cannot control a vehicle')
         required={'model.pt','vision.json','photo-slam.json'}
         if not required<=set(spec['files']) or set(spec['files'])-required-{'qwen.pt'}:raise ValueError('Unexpected assets')
@@ -127,6 +127,9 @@ class Navigator:
             for ident,source,_ in spatial.keyframes:
                 if source in self.feature_cache:references[('keyframe',ident)]=self.feature_cache[source]
             for row in spatial.geometry:references[('geometry',row[0])]=current.mean(1)
+            from .subgoal_encoding import reference_descriptor
+            for ident,source,stamp,*roi in spatial.image_regions:
+                if source==frame:references[('image_region',ident)]=reference_descriptor(current,roi)
             with self.lock:self.context=context;self.current_references=references
             if self.map_pending is None and now-self.map_last>=1 and self.lane.slow_admitted:
                 self.map_last=now;self.map_pending=self.map_pool.submit(self._locate,current.detach(),now)

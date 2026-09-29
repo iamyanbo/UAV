@@ -38,10 +38,9 @@ def prompt(spatial):
 
 
 class QwenProposer:
-    def __init__(self, lane, adapter=None):
+    def __init__(self, lane, adapter=None, path='/models/qwen2.5-vl-3b'):
         from transformers import AutoProcessor,Qwen2_5_VLForConditionalGeneration
-        from configurator import install_lora
-        path='/models/qwen2.5-vl-3b'
+        from ..rgb_flight.configurator import install_lora
         from .common import digest
         self.base_identity={p.name:digest(p) for p in sorted(Path(path).iterdir()) if p.suffix in ('.json','.safetensors')}
         self.processor=AutoProcessor.from_pretrained(path,local_files_only=True,
@@ -51,7 +50,7 @@ class QwenProposer:
         self.modules=install_lora(self.model)
         if adapter:
             saved=torch.load(adapter,map_location='cpu',weights_only=True)
-            if saved.get('schema')!='subgoal-qwen/v2' or saved['modules']!=self.modules:
+            if saved.get('schema')!='subgoal-qwen/v3' or saved['modules']!=self.modules:
                 raise ValueError('Qwen adapter uses incompatible proposal contract')
             if saved.get('base_identity')!=self.base_identity:raise ValueError('Qwen base weights/tokenizer changed')
             params=dict(self.model.named_parameters())

@@ -5,6 +5,7 @@ from torch.nn import functional as F
 from dataclasses import replace
 from .contracts import Subgoal,assemble_context,relative_times,HORIZON,STEP_S
 from .temporal import pool,shift,geometry_embedding,embed_subgoal,advance_spatial
+from .subgoal_encoding import reference_descriptor
 
 
 def batch_context(model, items, device, augment=False):
@@ -24,7 +25,7 @@ def batch_context(model, items, device, augment=False):
         vector=subgoal.vector(now,row['spatial'])
         vectors.append(vector)
         reference=row.get('reference_rgb')
-        ref=model.encode(reference[None].to(device)).mean(1) if reference is not None and subgoal.valid(now,row['spatial']) else p.new_zeros(1,256)
+        ref=reference_descriptor(model.encode(reference[None].to(device)),row.get('reference_roi')) if reference is not None and subgoal.valid(now,row['spatial']) else p.new_zeros(1,256)
         if subgoal.valid(now,row['spatial']):ref=ref+geometry_embedding(model,subgoal,row['spatial'],ref,now)
         references.append(ref[0])
     features=torch.stack(features);times=torch.stack(times);commands=torch.stack(commands);valid=torch.stack(masks)
@@ -60,7 +61,7 @@ def objective(model,items,stage,device,horizon_limit=HORIZON,actor_rollouts=Fals
     for row in items:
         reference={};g=row['subgoal']
         if g and row.get('reference_rgb') is not None:
-            reference[(g.target_source,g.target_reference)]=model.encode(row['reference_rgb'][None].to(device)).mean(1)
+            reference[(g.target_source,g.target_reference)]=reference_descriptor(model.encode(row['reference_rgb'][None].to(device)),row.get('reference_roi'))
         reference_features.append(reference)
     elapsed=[0.]*len(items);supported_steps=0
     supported=torch.ones(len(items),dtype=torch.bool,device=device)

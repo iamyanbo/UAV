@@ -6,15 +6,32 @@ from pathlib import Path,PurePosixPath
 import subprocess
 
 
-def render(run,iteration,output,source_root=None,local_root=None,attempt_id=None):
+def render(run,iteration,output,source_root=None,local_root=None,attempt_id=None,example_kind=None):
     from PIL import Image,ImageDraw,ImageFont
     from .common import read,digest
-    run=Path(run);request=read(run/'video-request.json')
-    if request['schema']!='photo-map-ppo-video/v1' or request['iteration']!=iteration:
-        raise ValueError('A completed real PPO update receipt is required')
-    rollout=run/f'rollout-{iteration:06d}.jsonl'
-    if digest(rollout)!=request['rollout_sha256']:raise ValueError('Rollout differs from update receipt')
-    rows=[json.loads(s) for s in rollout.read_text().splitlines()]
+    run=Path(run)
+    if example_kind:
+        outcomes=sorted((read(p) for p in run.glob('train-*-outcome.json')),key=lambda r:r['attempt_id'])
+        candidates=[r for r in outcomes if r['kind']==example_kind]
+        all_rows=[]
+        for receipt in sorted(run.glob('update-*.json')):
+            spec=read(receipt);i=spec['iteration'];rollout=run/f'rollout-{i:06d}.jsonl'
+            if not spec['accepted'] or digest(rollout)!=spec['rollout_sha256'] or digest(run/f'update-{i:06d}.pt')!=spec['checkpoint_sha256']:
+                raise ValueError('Accepted update evidence changed')
+            all_rows.extend(json.loads(s) for s in rollout.read_text().splitlines())
+        complete=[]
+        for candidate in candidates:
+            selected=[r for r in all_rows if r['attempt_id']==candidate['attempt_id']]
+            if len(selected)==candidate['steps'] and selected and (selected[-1]['terminated'] or selected[-1]['truncated']):complete.append((candidate,selected))
+        if not complete:raise ValueError('No complete accepted episode of this kind; do not substitute a partial/best-looking clip')
+        candidate,rows=complete[0];attempt_id=candidate['attempt_id'];iteration=rows[-1]['policy_iteration']+1
+    else:
+        request=read(run/'video-request.json')
+        if request['schema']!='photo-map-ppo-video/v1' or request['iteration']!=iteration:
+            raise ValueError('A completed real PPO update receipt is required')
+        rollout=run/f'rollout-{iteration:06d}.jsonl'
+        if digest(rollout)!=request['rollout_sha256']:raise ValueError('Rollout differs from update receipt')
+        rows=[json.loads(s) for s in rollout.read_text().splitlines()]
     if attempt_id is not None:
         rows=[r for r in rows if r['attempt_id']==attempt_id]
         if not rows:raise ValueError('Requested episode is absent from verified rollout')
@@ -64,7 +81,10 @@ def render(run,iteration,output,source_root=None,local_root=None,attempt_id=None
             text(d,(12,639),f'Displacement: {math.dist(trail[0],position):.2f} m | path length: {distance:.2f} m')
             text(d,(12,669),f'Height change: {trail[0][2]-position[2]:+.2f} m | speed: {row["next_state"]["speed"]:.2f} m/s')
             text(d,(12,704),f'Recorded successful arrivals: {successes}; navigation acceptance pending.','#fbbf24')
-            text(d,(12,735),'One selected full episode' if attempt_id else 'All episodes in this update')
+            guidance=row.get('guidance',{}).get('subgoal')
+            caption=(f'Subgoal: {guidance["intention"]}, {guidance["altitude"]}, {guidance["target_reference"]}'
+                if guidance else 'Subgoal: none (goal-conditioned actor)')
+            text(d,(12,735),caption if 'guidance' in row else 'One selected full episode' if attempt_id else 'All episodes in this update')
             points=bounds[episode];xmin=min(p[0] for p in points);ymin=min(p[1] for p in points)
             span=max(max(p[0] for p in points)-xmin,max(p[1] for p in points)-ymin,1.)
             def plot(p):return (685+150*(p[1]-ymin)/span,775-150*(p[0]-xmin)/span)
@@ -92,6 +112,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--run',required=True);p.add_argument('--iteration',type=int,default=1)
     p.add_argument('--output',required=True);p.add_argument('--source-root');p.add_argument('--local-root')
     p.add_argument('--attempt-id',help='Select one full recorded episode; explicitly labelled in video')
+    p.add_argument('--example-kind',choices=['mission','execution','arrival'],help='First complete accepted episode across updates, chosen by stable attempt ID')
     a=p.parse_args()
     if bool(a.source_root)!=bool(a.local_root):p.error('Provide both remapping roots or neither')
-    render(a.run,a.iteration,a.output,a.source_root,a.local_root,a.attempt_id)
+    render(a.run,a.iteration,a.output,a.source_root,a.local_root,a.attempt_id,a.example_kind)

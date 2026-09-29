@@ -5,8 +5,9 @@ New heads require training. Loading a backbone never marks them qualified.
 import torch
 from torch import nn
 from torch.nn import functional as F
-from goal_matching import SharedSpatialEncoder, CrossViewGoalMatcher
+from ..rgb_flight.goal_matching import SharedSpatialEncoder, CrossViewGoalMatcher
 from .temporal import TemporalActor, WindowWorld, pool
+from .subgoal_encoding import make_subgoal_encoder
 
 
 class PhotoNavigationModel(nn.Module):
@@ -20,7 +21,7 @@ class PhotoNavigationModel(nn.Module):
         self.arrival = nn.Sequential(nn.Linear(768,256),nn.SiLU(),nn.Linear(256,1))
         self.motion = nn.Sequential(nn.Linear(512,256),nn.SiLU(),nn.Linear(256,8))
         self.policy = TemporalActor()
-        self.subgoal_encoder = nn.Sequential(nn.Linear(15+256,128),nn.SiLU(),nn.Linear(128,64))
+        self.subgoal_encoder = make_subgoal_encoder()
         self.world = WindowWorld()
         self.reference_geometry = nn.Linear(6,256)
 

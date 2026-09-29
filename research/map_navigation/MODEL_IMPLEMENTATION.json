@@ -1,5 +1,5 @@
 {
-  "schema": "photo-map-implementation/v5",
+  "schema": "photo-map-implementation/v6",
   "architecture": "two-mode-temporal-window",
   "models": {
     "encoder": "MobileNetV3-Large; encode newest image once; cached full goal grid",
@@ -10,7 +10,7 @@
     "mapping": "Photo-SLAM f8bfb2f0809c003ccc3fd577dc43c576fcafa4ac; headless native live RGB bridge",
     "safety": "asynchronous RGB-derived metric depth; observed corridor; 250 ms source freshness"
   },
-  "interfaces": ["observation-context/v2", "subgoal/v2", "spatial-snapshot/v2"],
+  "interfaces": ["observation-context/v3", "subgoal/v3", "spatial-snapshot/v3"],
   "variants": ["mode1", "mode1_vlm", "mode1_vlm_world"],
   "source_review": "manual source and diff review only",
   "tests_run": false,

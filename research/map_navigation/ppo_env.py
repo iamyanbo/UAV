@@ -1,7 +1,8 @@
 """Host AirSim worker for the simulation-only PPO pilot.
 
 Run separately from the GPU trainer. Each RPC thread owns its own AirSim client.
-Only initialization may place poses/pause. Privileged info is a reward sidecar.
+Only initialization may place poses. Training may freeze physics at an update
+boundary; evaluation never pauses. Privileged info is a reward sidecar.
 """
 import argparse
 from collections import deque
@@ -58,7 +59,8 @@ class Recorder:
                     item=self.queue.get()
                     if item is None:break
                     name,value=item
-                    if name.endswith('.png'):Image.fromarray(value).save(self.root/name,compress_level=1)
+                    if name=='barrier':stream.flush();value.set()
+                    elif name.endswith('.png'):Image.fromarray(value).save(self.root/name,compress_level=1)
                     else:stream.write(json.dumps(value,allow_nan=False)+'\n')
         except Exception as error:self.error=str(error)
 
@@ -68,6 +70,10 @@ class Recorder:
             except queue.Full:continue
         self.thread.join(timeout=30)
         if self.thread.is_alive() or self.error:raise RuntimeError('Recorder did not finish cleanly')
+
+    def flush(self):
+        done=threading.Event();self.put('barrier',done)
+        if not done.wait(30) or self.error:raise RuntimeError('Recorder flush failed')
 
 
 class PilotEnvironment:
@@ -84,6 +90,7 @@ class PilotEnvironment:
         self.dispatch_idle=threading.Event();self.dispatch_idle.set()
         self.command=[0.]*4;self.sent=[0.]*4;self.source_wall=0.;self.fault=None
         self.dispatches=deque(maxlen=256);self.sequence=0;self.command_frame=0
+        self.phase='engineering';self.paused=False;self.pause_wall_s=0.;self.settling=False
 
     def __enter__(self):
         self.owned.__enter__()
@@ -128,9 +135,12 @@ class PilotEnvironment:
                         self.sent=command;self.sequence+=1
                         row=dict(kind='dispatch',id=self.sequence,wall=start,
                             source_frame=frame,age_s=age,command=command,stale=stale,
+                            active_policy=not getattr(self,'done',True) and not self.settling,
                             rpc_wall_s=time.monotonic()-start)
                         self.dispatches.append(row)
                         if self.recorder:self.recorder.put('dispatch',row)
+                        if stale and row['active_policy'] and self.cfg.get('schema')=='photo-map-ppo/v2':
+                            self.fault='Active control watchdog exceeded source freshness'
             except Exception as error:self.fault=str(error)
             finally:self.dispatch_idle.set()
             self.shutdown.wait(max(0,self.cfg['step_s']-(time.monotonic()-start)))
@@ -199,27 +209,34 @@ class PilotEnvironment:
                 time.sleep(2)
 
     def reset(self,task,attempt_id):
+        if self.paused:raise RuntimeError('Cannot reset a suspended training episode')
         if str(task['scene_id'])!=str(self.scene['scene_id']):raise ValueError('Task/scene mismatch')
         if Path(attempt_id).name!=attempt_id:raise ValueError('Invalid attempt identifier')
-        required=int((self.cfg['episode_s']+self.cfg['stop_grace_s'])/self.cfg['step_s']*640*480*3)+64*1024**2
+        self.episode_limit=float(task.get('timeout_s',self.cfg['episode_s']))
+        if not 0<self.episode_limit<=self.cfg['episode_s']:raise ValueError('Invalid episode limit')
+        required=int((self.episode_limit+self.cfg['stop_grace_s'])/self.cfg['step_s']*640*480*3)+64*1024**2
         if shutil.disk_usage(self.root).free<required:raise RuntimeError('Insufficient recording disk for a full episode')
         with self.lock:self.active=False
         if self.recorder:self.recorder.close();self.recorder=None
         self.task=task;self.frame=0;self.fault=None
-        reports=self.reset_pose(task['start'],task['start_yaw_deg']);self.calibrate()
+        reset_started=time.monotonic()
+        reports=self.reset_pose(task['start'],task['start_yaw_deg'])
+        if not hasattr(self,'color'):self.calibrate()
+        self.reset_wall_s=time.monotonic()-reset_started
         self.recorder=Recorder(self.root/attempt_id)
         self.recorder.put('reset',dict(kind='reset',attempts=reports,task_id=task['id']))
         self.start=time.monotonic();self.initial_distance=math.dist(task['start'],task['goal'])
-        self.collision_baseline=self.state()['collision_ns'];self.previous_state=None
-        self.done=False
+        initial=self.state();self.start_sim_ns=initial['sim_ns']
+        self.collision_baseline=initial['collision_ns'];self.previous_state=None
+        self.done=False;self.settling=False
         with self.lock:
             self.command=self.sent=[0.]*4;self.source_wall=time.monotonic();self.active=True;self.dispatches.clear()
         return self.observe()
 
-    def observe(self):
+    def observe(self,frozen=False):
         if self.fault:raise RuntimeError('Dispatcher failed: '+self.fault)
         rgb,stamp,source=self.image();s=self.state()
-        if self.previous_state is not None and s['sim_ns']<=self.previous_state['sim_ns']:
+        if not frozen and self.previous_state is not None and s['sim_ns']<=self.previous_state['sim_ns']:
             raise RuntimeError('Nonadvancing simulator clock')
         with self.lock:
             preceding=list(self.sent)
@@ -229,7 +246,8 @@ class PilotEnvironment:
         self.recorder.put('observation',dict(kind='observation',frame=self.frame,capture_sim_ns=stamp,
             source_wall=source,preceding_command=preceding,state=s,camera_pose=self.capture_pose))
         return dict(rgb=rgb.tobytes(),frame=self.frame,sim_s=stamp/1e9,preceding_command=preceding,
-            state=s,source_wall=source,elapsed_s=time.monotonic()-self.start,
+            state=s,source_wall=source,elapsed_s=(s['sim_ns']-self.start_sim_ns)/1e9,
+            reset_wall_s=self.reset_wall_s,pause_wall_s=self.pause_wall_s,
             rgb_path=str((self.recorder.root/f'{self.frame:06d}.png').resolve()))
 
     def event(self,s):
@@ -244,7 +262,10 @@ class PilotEnvironment:
             heading_error(s['attitude_deg'][2],self.task['goal_yaw_deg'])<=c['heading_deg'] and
             (not speed or s['speed']<=c['speed_mps']))
 
-    def step(self,command,stop,frame):
+    def step(self,command,stop,frame,freeze_after=False):
+        if self.paused:raise RuntimeError('Resume with a fresh decision before stepping')
+        if freeze_after and (self.phase!='training' or not self.cfg.get('training_pause')):
+            raise RuntimeError('Physics pause forbidden outside admitted training')
         if self.done:raise RuntimeError('Reset required after terminal/truncated episode')
         if frame!=self.frame:raise ValueError('Action observation mismatch')
         if len(command)!=4 or not np.isfinite(command).all():raise ValueError('Invalid command')
@@ -253,6 +274,7 @@ class PilotEnvironment:
             raise ValueError('Command exceeds envelope')
         started=time.monotonic();before=self.previous_state
         if started-self.last_source>self.cfg['freshness_s']:raise RuntimeError('Stale policy decision; watchdog brakes')
+        self.settling=bool(stop)
         with self.lock:
             self.command=[0.]*4 if stop else list(command);self.source_wall=self.last_source;self.command_frame=frame
         event=self.event(before)
@@ -268,16 +290,61 @@ class PilotEnvironment:
                     time.sleep(self.cfg['step_s'])
                 event=event or 'false_stop'
         if not stop and not event:time.sleep(max(0,self.cfg['step_s']-(time.monotonic()-self.last_source)))
+        if freeze_after:
+            # Freeze before the boundary capture, so there is no unrecorded
+            # physical interval between the final transition and optimization.
+            self.client.simPause(True)
+            with self.lock:self.active=False
+            if not self.dispatch_idle.wait(3):raise RuntimeError('Dispatcher failed to suspend')
+            self.paused=True;self.pause_started=time.monotonic()
         observation=self.observe();event=self.event(observation['state']) or event
-        truncated=not event and observation['elapsed_s']>=self.cfg['episode_s']
+        if not event and self.task.get('kind')=='execution':
+            delta=np.asarray(observation['state']['position'])-self.task['goal']
+            if np.linalg.norm(delta[:2])<=1.5 and abs(delta[2])<=1.:event='subgoal_success'
+        truncated=not event and observation['elapsed_s']>=self.episode_limit
         self.done=bool(event or truncated)
         if self.done:
             with self.lock:self.command=[0.]*4
         dt=(observation['state']['sim_ns']-before['sim_ns'])/1e9
         return dict(observation=observation,event=event,terminated=bool(event),truncated=truncated,dt=dt)
 
+    def refresh_boundary(self):
+        if not self.paused or self.phase!='training':raise RuntimeError('No training boundary to refresh')
+        before=self.previous_state
+        obs=self.observe(frozen=True)
+        if obs['state']!=before:raise RuntimeError('Physics/state advanced during optimization pause')
+        return obs
 
-def serve(scene,output,cfg,address,authfile):
+    def resume_boundary(self,command,stop,frame):
+        if not self.paused or self.phase!='training' or self.done:raise RuntimeError('Invalid boundary resume')
+        if frame!=self.frame or time.monotonic()-self.last_source>self.cfg['freshness_s']:
+            raise RuntimeError('Fresh boundary observation required')
+        if len(command)!=4 or not np.isfinite(command).all():raise ValueError('Invalid resume command')
+        limits=self.cfg['limits']
+        if np.linalg.norm(command[:2])>limits[0]+1e-5 or abs(command[2])>limits[2] or abs(command[3])>limits[3]:
+            raise ValueError('Resume command exceeds limits')
+        # Service the new command RPC while still frozen; never unpause onto
+        # an old command or inject a brake into a continuing transition.
+        actual=[0.]*4 if stop else command
+        self.client.moveByVelocityBodyFrameAsync(*actual[:3],.2,
+            drivetrain=self.airsim.DrivetrainType.MaxDegreeOfFreedom,
+            yaw_mode=self.airsim.YawMode(True,actual[3]),vehicle_name=self.vehicle)
+        self.client.ping()
+        self.pause_wall_s+=time.monotonic()-self.pause_started
+        with self.lock:
+            self.command=list(actual);self.source_wall=self.last_source;self.command_frame=frame;self.active=True
+        self.paused=False;self.client.simPause(False)
+        return self.step(command,stop,frame)
+
+    def release_terminal(self):
+        if not self.paused or not self.done:raise RuntimeError('Only terminal boundaries can be released')
+        self.client.moveByVelocityAsync(0.,0.,0.,.2,vehicle_name=self.vehicle);self.client.ping()
+        self.pause_wall_s+=time.monotonic()-self.pause_started
+        self.paused=False;self.client.simPause(False)
+        return dict(released=True)
+
+
+def serve(scene,output,cfg,address,authfile,sim_port=43551):
     host,port=address.rsplit(':',1)
     if host!='127.0.0.1':raise ValueError('Pilot worker must bind loopback only')
     env=None
@@ -292,12 +359,27 @@ def serve(scene,output,cfg,address,authfile):
                             if Path(request['session']).name!=request['session']:raise ValueError('Invalid worker session')
                             if env:env.__exit__(None,None,None);env=None
                             descriptor=request.get('scene') or read(scene)
-                            env=PilotEnvironment(descriptor,Path(output)/request['session'],cfg)
-                            env.__enter__();answer=dict(scene_id=descriptor['scene_id'])
+                            env=PilotEnvironment(descriptor,Path(output)/request['session'],cfg,port=sim_port)
+                            env.phase=request.get('phase','engineering')
+                            env.__enter__();answer=dict(scene_id=descriptor['scene_id'],config=cfg,sim_port=sim_port,
+                                source_sha256=digest(__file__))
                         elif op=='reset':answer=env.reset(request['task'],request['attempt_id'])
-                        elif op=='step':answer=env.step(request['command'],request['stop'],request['frame'])
-                        elif op=='brake':
+                        elif op=='step':answer=env.step(request['command'],request['stop'],request['frame'],request.get('freeze_after',False))
+                        elif op=='refresh_boundary':answer=env.refresh_boundary()
+                        elif op=='flush':
+                            if env.recorder:env.recorder.flush()
+                            answer=dict(flushed=True)
+                        elif op=='finish_session':
+                            if env:env.__exit__(None,None,None);env=None
+                            answer=dict(finished=True)
+                        elif op=='resume_boundary':answer=env.resume_boundary(request['command'],request['stop'],request['frame'])
+                        elif op=='release_terminal':answer=env.release_terminal()
+                        elif op=='end_episode':
+                            env.done=True;env.settling=True
                             with env.lock:env.command=[0.]*4
+                            answer=env.release_terminal() if env.paused else dict(ended=True)
+                        elif op=='brake':
+                            with env.lock:env.command=[0.]*4;env.settling=True
                             answer=dict(braking=True)
                         else:raise ValueError('Unknown worker operation')
                         connection.send(dict(ok=True,result=answer))
@@ -354,11 +436,12 @@ if __name__=='__main__':
     p.add_argument('--scene',required=True);p.add_argument('--output',required=True)
     p.add_argument('--config',default=str(Path(__file__).with_name('ppo_pilot.json')))
     p.add_argument('--address',default='127.0.0.1:43651');p.add_argument('--authfile')
+    p.add_argument('--sim-port',type=int,default=43551)
     p.add_argument('--position',nargs=3,type=float);p.add_argument('--yaw',type=float,default=0)
     a=p.parse_args();cfg=read(a.config)
     if a.stage=='serve':
         if not a.authfile:p.error('--authfile is required')
-        serve(a.scene,a.output,cfg,a.address,a.authfile)
+        serve(a.scene,a.output,cfg,a.address,a.authfile,a.sim_port)
     else:
         if a.position is None:p.error('--position is required')
         qualify(a.scene,a.output,cfg,a.position,a.yaw)
