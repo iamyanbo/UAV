@@ -1,0 +1,188 @@
+# Handoff — September 29, 2026
+
+## Start here
+
+The user is moving to another computer. All active source is on branch
+`refactor/photo-goal-native` at https://github.com/iamyanbo/UAV.git. The code baseline
+before this handoff is `0180712`. Read `AGENTS.md`, `README.md`, `STATUS.md` and
+`verification.json`. This document describes measured state, not a successful
+training setup.
+
+```sh
+git clone --branch refactor/photo-goal-native https://github.com/iamyanbo/UAV.git
+cd UAV
+```
+
+There were no simulator or training jobs running at handoff. Verify current process
+state before starting work; do not restart historical Spark trainers.
+
+## Objective and scope
+
+We are back to our photo-goal UAV project, not an APEX reproduction. Given an
+unknown start and a goal photograph, the intended architecture has a temporal
+Mode 1 actor, asynchronous Qwen subgoals assessed by a learned world model, and
+background spatial perception. Mode 1 owns vehicle commands.
+
+The immediate milestone is narrower: qualify native Windows CityEnviron, obtain
+real A/B photographs and useful flight videos, then run two fresh 8,192-transition
+PPO updates. The PC runs simulation and actor inference; Spark performs gradient
+updates only between complete batches. Mode 2, world-model assessment and
+Photo-SLAM are retained in source but inactive for this milestone. They have not
+been trained or validated by this work.
+
+Preserve the existing actor, frozen MobileNet, four-frame observation masking,
+action likelihoods, checkpoint/optimizer state and campaign budget. Do not mix
+old rollouts into fresh on-policy batches. Actor inputs exclude privileged pose
+and depth; those are allowed for reset, reward and qualification labels.
+
+## What is actually complete
+
+- Repository cleanup reduced tracked files from 4,086 to 78 before this handoff.
+  The active package is `photo_goal`; generated data and assets are outside Git.
+- Old source is preserved at tag `archive/photo-goal-before-cleanup-20260929`.
+  Branch `reproduction/apex-audit` remains a separate reference.
+- Official Windows CityEnviron v1.8.1 was extracted and checked. Native launch,
+  camera capture, resets, commanded motion and collision reporting work.
+- Twelve real A/B pairs were captured: four around 60 m, four around 140 m,
+  four around 240 m; five have 10 m altitude differences. Five invalid candidate
+  pairs were rejected. Endpoint validity does not establish route feasibility,
+  meaningful turns, initial occlusion or navigation difficulty.
+- Four qualification attempts each passed 20 reset cycles. The first measured
+  mean reset time was 1.79 seconds. No native simulator crash was observed.
+- Original and refactored actors gave exactly matching outputs on the first
+  real A/B pair; all 308 backbone tensors matched the saved pretrained weights.
+- Verified duplicate archives totaling 98.26 GiB were deleted across PC and
+  Spark. Extracted environments and unique evidence were retained.
+
+## Training blocker and evidence
+
+Continuous camera/control qualification fails the independent **250 ms command
+source freshness brake**. The sequential image acquisition, inference and command
+cycle can leave the previous command based on an old observation while the next
+image is being fetched. The brake works; the integration remains unqualified.
+
+Latest attempt: 398 observations across 25.88 simulated seconds, actor decision
+p95 26.5 ms / p99 29.4 ms, maximum recorded image RPC 164.7 ms, and held command
+source age 276.5 ms at braking. Actor latency, new-decision observation age and
+held-command age are different metrics. This is not evidence of a native engine
+crash or a PPO algorithm failure.
+
+Changes already tried: high-resolution timing with `perf_counter`, Windows 1 ms
+timer resolution, Unreal 60 FPS cap, VSync/background idling disabled, removal of
+unused Mode 2 work, and zero batching wait for the single inference worker.
+They improved inference timing but did not fix qualification. A NumPy boolean
+report serialization bug was also fixed.
+
+Next engineering work should inspect camera delivery and control scheduling,
+including separate acquisition/control and defensible capture timestamps. The
+current source wall timestamp is the image RPC request start. Do not substitute
+response arrival time and call it capture time. Any simulator-to-host timestamp
+mapping needs measurement. Preserve the independent brake and continuous physics;
+do not raise the threshold, silently pause simulation during flights, or bypass
+the qualification gate to claim progress.
+
+No new native PPO update occurred. Existing accepted history remains two updates
+and 16,384 transitions. Imported campaign charges are 45,059 reserved transitions
+and 156 training attempts; preserve the ledger, including failed attempts.
+
+## Assets outside Git — transfer required
+
+Original PC data root: `D:/uav-research/photo-goal`.
+
+| Location under that root | Contents |
+| --- | --- |
+| `scenes/CityEnviron/WindowsNoEditor` | Extracted native Windows simulator |
+| `weights/previous-update-000002.pt` | Existing actor/optimizer checkpoint |
+| `weights/mobilenet-v3-large-imagenet1k-v2.pt` | Verified official frozen backbone |
+| `scene.json`, `settings.json`, `config.json` | Scene identity and runtime configuration |
+| `tasks.json`, `tasks/` | Task records and actual start/goal PNGs |
+| `ab-pictures.jpg` | Contact sheet of all 12 A/B pairs |
+| `campaign/budget.json` | Required cumulative campaign ledger |
+| `qualification.json`, `qualification-workers/`, `records/` | Failed qualification reports, frames, telemetry and receipts |
+| `reference/`, `reference-proof.*` | Short failed reference attempts, not useful flight proof |
+| `history/before-cleanup-20260929` | Unique old evidence and original source snapshot |
+
+Copy the full data root if practical, excluding `venv` (recreate it). At minimum
+retain the scene, verified weights, tasks/images, configuration, ledger and
+qualification evidence. Keep the original data until the copy is verified.
+Do not use the older `weights/mobilenet-v3-large.pt` file in place of the verified
+`mobilenet-v3-large-imagenet1k-v2.pt` file.
+
+Spark: `iamyanbo@10.31.12.8` (private network; remote access may require the same
+network or an existing VPN). Original assets and earlier runs remain under
+`/home/iamyanbo/uav-photo-map`; extracted scenes are under
+`assets/extracted-20260928/{aerialvln,urbanscene}`. The earlier accepted checkpoint
+is in `ppo-endpoint-20260929-retry1/training/update-000002.pt` under that root.
+The new batch optimizer targets `/home/iamyanbo/photo-goal-native` and Docker image
+`rgb-flight-models:25.11-native`; this transfer/optimization path is implemented
+but has not completed an end-to-end native training run.
+
+SSH credentials are not in Git. The previous PC uses
+`C:/Users/yanbo/.ssh/gx10_codex_ed25519`; configure authorized access on the new
+computer and pass `--ssh-key` as needed. Never commit private keys.
+
+## New computer setup
+
+The measured simulator host was Windows with an RTX 3060 Ti. A different OS/GPU
+needs its own qualification. WSL on the previous PC exposed only CPU Vulkan
+rendering and was not used for simulation. Spark is not the new simulator host.
+
+Use Python 3.10 and a fresh virtual environment. The measured PyTorch version was
+2.5.1+cu121; install a compatible CUDA-enabled PyTorch/torchvision pair for the new
+host. Then install the package and AirSim dependencies in this order:
+
+```sh
+python -m pip install -e ".[video]"
+python -m pip install msgpack-rpc-python==0.4.1
+python -m pip install airsim==1.8.1
+```
+
+AirSim metadata imports its RPC dependency, so the order matters. These old RPC
+dependencies should remain isolated in the virtual environment. The old PC venv
+inherited system packages; it is not a portable environment lockfile.
+
+If the data root changes, inspect embedded paths in scene/config/task manifests
+and update them deliberately. `--root` alone does not guarantee rebasing every
+stored path. The measured executable was:
+`scenes/CityEnviron/WindowsNoEditor/CityEnviron/Binaries/Win64/CityEnviron.exe`.
+Source: https://github.com/microsoft/AirSim/releases/tag/v1.8.1-windows.
+
+Public entry point (global `--root` goes before the subcommand):
+
+```sh
+python -m photo_goal --help
+python -m photo_goal --root D:/uav-research/photo-goal qualify --seconds 1800
+```
+
+Do not treat copied qualification as evidence for different hardware. Training
+must follow a successful matching qualification; the current report is failed.
+After the blocker is fixed and qualification passes, the intended command is:
+
+```sh
+python -m photo_goal --root D:/uav-research/photo-goal train --checkpoint D:/uav-research/photo-goal/weights/previous-update-000002.pt --backbone D:/uav-research/photo-goal/weights/mobilenet-v3-large-imagenet1k-v2.pt --updates 2 --spark iamyanbo@10.31.12.8 --ssh-key PATH_TO_AUTHORIZED_KEY
+```
+
+## Code map and remaining acceptance work
+
+- `photo_goal/native.py`: capture, native qualification and bounded reference run.
+- `photo_goal/ppo_env.py`: reset, camera RPC, recording and independent dispatcher.
+- `photo_goal/ppo_scheduler.py`: feature cache and inference scheduling.
+- `photo_goal/native_training.py`: fresh batch collection and Spark optimizer transfer.
+- `photo_goal/ppo_core.py`, `ppo_actions.py`: existing PPO and action distributions.
+- `photo_goal/video.py`: video from actual recorded frames with task/checkpoint labels.
+- `photo_goal/runtime.py`, `subgoals.py`, `perception.py`, `native/`: retained later
+  architecture paths, not validated by this milestone.
+
+Outstanding: reliable 30-minute continuous qualification, a useful reference-flight
+video, two actual fresh PPO updates with optimizer diagnostics, and an actual
+policy-flight video. Failed reference clips lasted only a fraction of a second;
+do not present them as navigation proof. Two updates would demonstrate the training
+plumbing, not learned navigation. Current A/B pairs and one scene do not establish
+a research curriculum or geographic generalization. Larger task generation,
+independent train/validation/test environments and full architecture training
+remain future work.
+
+Use actual simulator/checkpoint evidence for verification. No new testing
+frameworks, delegation, paid services, physical flights, history rewrites or
+unverified archive deletions. Keep progress reports concise and distinguish
+implemented source, measured operation and pending acceptance.

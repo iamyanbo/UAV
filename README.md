@@ -1,5 +1,8 @@
 # Photo-goal UAV navigation
 
+Moving to another computer: read [HANDOFF.md](HANDOFF.md) for asset transfer,
+setup, current blockers and the next acceptance steps.
+
 Navigate from A to B using a fixed-camera photograph of B. The architecture retains
 the temporal Mode 1 actor, asynchronous Mode 2 proposals/world-model assessment,
 and background perception. The current milestone qualifies native simulation and
