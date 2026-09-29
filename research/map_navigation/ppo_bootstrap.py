@@ -13,7 +13,7 @@ import time
 import zipfile
 import numpy as np
 from PIL import Image
-from .common import read,write,digest,Window
+from .common import read,write,digest,Window,FlightLock
 from .ppo_env import PilotEnvironment
 
 
@@ -156,6 +156,14 @@ def candidate_inputs(args,descriptor,cfg):
 
 
 def prepare(args):
+    if args.workspace:
+        campaign=Path(args.workspace)/'ppo-campaign'
+        if not (campaign/'budget.json').exists():raise ValueError('Reconciled campaign budget required')
+        with FlightLock(campaign,'ppo-task-preparation'):return _prepare(args)
+    return _prepare(args)
+
+
+def _prepare(args):
     cfg=read(Path(__file__).with_name('ppo_pilot.json'));descriptor=read(args.scene)
     out=Path(args.output);out.mkdir(parents=True,exist_ok=False);window=Window(args.hours)
     tasks=read(args.seed_tasks)['tasks'] if args.seed_tasks else [];rejected=[]
@@ -195,6 +203,12 @@ def prepare(args):
                     lo=np.minimum(task['start'],task['goal'])-np.array([8,8,5]);hi=np.maximum(task['start'],task['goal'])+np.array([8,8,5])
                     task.update(bounds=[lo.tolist(),hi.tolist()],camera=cfg['camera'],unobstructed=True,
                         goal_image=str(image.resolve()),goal_sha256=digest(image),goal_capture_sim_ns=stamp)
+                    if args.workspace and args.split=='train':
+                        ledger=Path(args.workspace)/'ppo-campaign/budget.json';budget=read(ledger)
+                        if budget['training_attempts']>=cfg['campaign_attempts']:raise RuntimeError('Campaign attempt ceiling reached')
+                        budget['training_attempts']+=1;write(ledger,budget)
+                        write(root/'attempt-reservation.json',dict(task_id=task['id'],kind='engineering-task-qualification',
+                            campaign_ledger=str(ledger.resolve()),campaign_attempt=budget['training_attempts']))
                     physical_flight(env,task,root)
                     evidence['physical_evidence']=str((root/'physical-flight.json').resolve())
                     evidence['physical_sha256']=digest(root/'physical-flight.json');write(root/'geometry.json',evidence)
@@ -218,6 +232,7 @@ if __name__=='__main__':
     p.add_argument('--seed-tasks',help='Reuse immutable accepted task receipts from an earlier preparation run')
     p.add_argument('--height-offset',type=float,default=2.,help='Candidate height above reference, still subject to identical clearance checks')
     p.add_argument('--observed-candidates',help='Reassess preserved depth receipts; goal capture and physical execution remain fresh')
+    p.add_argument('--workspace',help='After PPO starts, share its campaign lock and reserve engineering flights in its existing ledger')
     args=p.parse_args()
     if args.per_behavior<1 or args.max_candidates<1:p.error('Positive task/candidate limits required')
     if not math.isfinite(args.height_offset) or not 0<=args.height_offset<=20:p.error('Height offset must be between 0 and 20 m')

@@ -1,0 +1,94 @@
+{
+  "schema": "photo-map-ppo-training-evidence/v1",
+  "source_commit": "73d17fb",
+  "counts": {
+    "transitions": 4096,
+    "attempts": 8,
+    "iteration": 2,
+    "evaluation_attempts": 0
+  },
+  "optimizer_steps": 64,
+  "finite_parameters": true,
+  "frozen_backbone_equal": true,
+  "checkpoint_path": "/home/iamyanbo/uav-photo-map/ppo-first-update/update-000002.pt",
+  "checkpoint_sha256": "849a1331412f3f34b51da9db32ad17a8f9a64e10324d4645bd1bb32d78438ffd",
+  "first_checkpoint_sha256": "eb84df9be304bcc323db62f3a101a8e4be4cd584dd4f7b3873c4aabdb1313708",
+  "rollouts": {
+    "rollout-000001.jsonl": "a0cd58bb0c710ad48dd2ec7f06744f590b7df5892b8eb8d71c817b8acef9288e",
+    "rollout-000002.jsonl": "84c6a023b4d11a211302af8e52121d67ec1f0be0635d87e5dc8556e553988281"
+  },
+  "recorded_flight_seconds": 233.7799872,
+  "learner_episodes": 7,
+  "learner_scenes": [
+    "env_14",
+    "env_5"
+  ],
+  "terminal_events": {
+    "false_stop": 3
+  },
+  "truncated_episodes": 4,
+  "updates": [
+    {
+      "policy_loss": -0.0145063356612809,
+      "value_loss": 0.010805814971718064,
+      "kl": 0.00969521066872403,
+      "clip_fraction": 0.142578125,
+      "gaussian_entropy": 1.676039446145296,
+      "stop_entropy": 0.008459189673885703,
+      "gradient_norm": 1.0177107332274318,
+      "early_kl_stop": false,
+      "optimizer_steps": 32,
+      "explained_variance": 0.14849178145014796,
+      "advantage_mean": 1.1175870895385742e-08,
+      "advantage_std": 0.9999999403953552,
+      "counts": {
+        "transitions": 2048,
+        "attempts": 3,
+        "iteration": 1,
+        "evaluation_attempts": 0
+      },
+      "update_wall_s": 23.656300307018682,
+      "decision_p95_s": 0.007892497233115137,
+      "source_age_p99_s": 0.09335300577804444,
+      "reward_components": {
+        "terminal": 0.0,
+        "time": -1.19363546368,
+        "shaping": 0.8666375486222768
+      },
+      "action_saturation_fraction": 0.0
+    },
+    {
+      "policy_loss": -0.003960050729801878,
+      "value_loss": 0.0010172330257773865,
+      "kl": 0.007327593601075932,
+      "clip_fraction": 0.0958251953125,
+      "gaussian_entropy": 1.6811077296733856,
+      "stop_entropy": 0.0086386080365628,
+      "gradient_norm": 0.8946512108668685,
+      "early_kl_stop": false,
+      "optimizer_steps": 32,
+      "explained_variance": 0.22806042737890597,
+      "advantage_mean": -7.450580596923828e-09,
+      "advantage_std": 0.9999999403953552,
+      "counts": {
+        "transitions": 4096,
+        "attempts": 8,
+        "iteration": 2,
+        "evaluation_attempts": 0
+      },
+      "update_wall_s": 25.498975523049012,
+      "decision_p95_s": 0.007731196330860257,
+      "source_age_p99_s": 0.08519673590082673,
+      "reward_components": {
+        "terminal": -6.0,
+        "time": -1.14416440832,
+        "shaping": 4.327045481463092
+      },
+      "action_saturation_fraction": 0.0
+    }
+  ],
+  "navigation_accepted": false,
+  "held_out_policy_evaluation_run": false,
+  "initial_native_crashes": 1,
+  "scope": "Two bounded integration updates. Expand task diversity before a longer learning run."
+}

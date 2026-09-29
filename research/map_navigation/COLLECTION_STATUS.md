@@ -1,6 +1,6 @@
 # Collection implementation and measured status — September 28, 2026
 
-## Actor-first PPO implementation
+## Actor-first PPO: two real updates completed
 
 Bulk reference collection is now disabled for normal collector runs; explicit
 engineering benchmarks remain separate. See [postmortem](COLLECTION_POSTMORTEM.md)
@@ -9,23 +9,38 @@ fresh rollout/update loop, joint motion/stop likelihood, learned critic,
 duration-aware returns, bounded asynchronous recording and independent watchdog.
 The GPU actor cannot read simulator state through its tensor interface.
 
-The revised reset order passed twenty repetitions each in env_5, env_10 and
-env_14. Receipts are `evidence/ppo-reset-env5-v1.json`,
-`evidence/ppo-reset-env10-v2.json`, `evidence/ppo-reset-env14-v2.json`. All remain
-unqualified for training: these are reset checks, not swept-clearance or full
-camera/motion/collision/timing acceptance. Subsequent source adds measured camera
-attitude verification to avoid mistaking stale paused renders for tilt coverage.
+Env_5 and env_14 (training) and env_13 (source unseen validation) now have measured
+camera, reset, swept-clearance, physical execution, collision, stop, watchdog and
+timing qualification. Each has level, climb and descent tasks. See
+[qualification evidence](evidence/ppo-live-qualification-20260928.json).
+The nine tasks are a small integration curriculum, not sufficient research data.
+Env_6 candidates failed the same clearance criteria; those failures are preserved.
 
-Python syntax, duration/termination/acceleration checks, and a CPU numerical
-update using the actual architecture with random fixture weights passed. The
-fixture is not training evidence. No PPO learning flight or trained navigation
-checkpoint exists yet. `ppo_video` is wired to the first actual rollout/update
-receipt; a training video is pending that qualified run, not substituted with the
-earlier privileged flight video.
+Immutable source `73d17fb` completed the first actual PPO update: 2,048 fresh
+transitions, 32 optimizer steps, 119.36 seconds of recorded flight. The two
+recorded episodes were in env_14. A preceding simulator reset crashed before any
+transition; its failed attempt remains counted. Actor decision p95 was 7.89 ms;
+source age p99 was 93.35 ms. These are single-worker measurements, not evidence of
+concurrency isolation or a sustained 20 Hz end-to-end rate.
 
-Source is implemented for the revised collection programme. Engineering reference
-flights are now recorded; no accepted pilot flights, new trained models or learned
-navigation acceptance results exist yet.
+The checkpoint audit confirms finite parameters/optimizer state and exact equality
+of all 308 frozen-backbone tensors to the pretrained weights. Navigation acceptance
+and held-out learned-policy evaluation remain pending. The first video is tied to
+the real rollout and checkpoint, rather than the earlier privileged demonstration.
+
+A second bounded update brought the total to **4,096 transitions and 64 optimizer
+steps**, using both training scenes. Seven recorded episodes produced three false
+stops and four truncations (time limits or rollout boundaries); no arrival success
+was established. One earlier reset crash makes eight reserved learner attempts.
+See [training evidence](evidence/ppo-two-updates-20260928.json).
+The verified PC video is `artifacts/collection-proof/ppo-first-update.mp4`
+(124.35 seconds, H.264, 960×600): 119.35 seconds of learner footage and a five-second
+optimizer diagnostics card. Its original checkpoint is preserved separately.
+Broader measured task preparation precedes longer training; repeatedly fitting
+these nine tasks would not establish generalization.
+
+The following sections preserve earlier engineering/acquisition snapshots. They
+must not override the current PPO evidence above.
 
 ## First recorded reference flights
 

@@ -33,4 +33,12 @@ it is not a complete mounting qualification.
 The PPO math/gradient check uses the real architecture with explicitly random
 fixture weights on CPU. It verifies likelihood recomputation, gradients through
 new adapters and a frozen backbone. It is not pretrained performance or a trained
-navigation checkpoint. No PPO learning flight has started.
+navigation checkpoint. That initial fixture check has since been followed by a
+real 2,048-transition PPO batch and 32 optimizer steps; see `COLLECTION_STATUS.md`.
+
+The first combined GPU/simulator launch crashed with native signal 11 during
+reset, before any policy observation. It consumed one attempt and zero transitions.
+A fresh process with the same source/configuration completed the first learner
+batch. Preserve the crash log in Spark `ppo-first-update-worker` and the initial
+trainer failure receipt; one successful retry does not establish simulator
+reliability. Longer runs need crash-rate monitoring and bounded recovery.

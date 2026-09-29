@@ -1,0 +1,18 @@
+{
+  "schema": "photo-map-ppo-video-proof/v1",
+  "video_path": "C:\\Users\\yanbo\\Downloads\\reports\\artifacts\\uav-photo-map-review\\artifacts\\collection-proof\\ppo-first-update.mp4",
+  "video_sha256": "4780689724d5fe3bdc34d6902c057f56f47fc36c861fbcda7d27fcb4d5d22152",
+  "video_bytes": 37317713,
+  "width": 960,
+  "height": 600,
+  "fps": 20,
+  "duration_s": 124.35,
+  "recorded_flight_s": 119.35,
+  "diagnostics_s": 5,
+  "source_commit": "73d17fb",
+  "rollout_sha256": "a0cd58bb0c710ad48dd2ec7f06744f590b7df5892b8eb8d71c817b8acef9288e",
+  "checkpoint_sha256": "eb84df9be304bcc323db62f3a101a8e4be4cd584dd4f7b3873c4aabdb1313708",
+  "optimizer_steps": 32,
+  "review": "Frame and diagnostics-card inspection passed; no visible airframe in inspected learner frame. Reset/optimizer gaps explicitly labeled.",
+  "scope": "First actual PPO rollout; early exploration, not accepted navigation."
+}

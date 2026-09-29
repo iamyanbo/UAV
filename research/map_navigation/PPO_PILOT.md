@@ -103,11 +103,14 @@ Preserve every episode and reward component; do not choose videos as acceptance
 evidence. Initial rollout-boundary resets prevent gradient time from being hidden
 inside a learning transition; those boundaries bootstrap as truncations.
 
-The source path is implemented; a qualified task registry/goal capture pipeline,
-complete motion/collision/timing qualification and measured concurrent GPU flights
-are still needed before training. Random/zero-action baseline reports, automatic
-curriculum promotion, multi-worker scaling and altitude/failure video automation
-remain outstanding. The first source pass must not be called a completed pilot.
+The initial registry now has nine qualified integration tasks across train env_5,
+train env_14 and validation env_13. The first real 2,048-transition batch completed
+32 optimizer steps with the pretrained backbone verified unchanged. This is
+integration evidence, not a completed learning pilot. A broader task distribution,
+random/zero-action baselines, held-out policy evaluation, curriculum promotion,
+multi-worker qualification and altitude/failure video automation remain pending.
+The second bounded update reached 4,096 transitions and 64 optimizer steps across
+both train scenes; no held-out policy evaluation or navigation acceptance is claimed.
 
 The integration pass adds `ppo_bootstrap` for measured short corridors and
 `ppo_qualify` for live motion, contact, stop, watchdog, timing and camera evidence.
@@ -124,6 +127,9 @@ distribution. `--max-updates 1` bounds the first real PPO run for inspection;
 subsequent `--resume` uses the same model, RNG state and campaign ledger. GPU
 warmup and goal encoding precede the live reset, and each rollout logs decision
 time and source age. Interrupted rollout metadata is retained for diagnosis.
+After PPO has started, task preparation must use `ppo_bootstrap --workspace` with
+that same campaign root: it holds the shared lock and reserves training-scene
+engineering flights in the global attempt ledger before physical execution.
 
 `ppo_prepare tasks` now constructs candidate level/climb/descent tasks from
 released training/validation paths, rejects segments without observed sparse-field
@@ -152,5 +158,6 @@ root. The video includes real sampled actions/rewards, goal image, terminal even
 and an actual optimizer diagnostics card. It refuses missing or altered rollout
 receipts and does not turn an engineering demonstration into a PPO training video.
 The renderer uses recorded transition durations; reset/optimizer gaps are omitted
-and explicitly labeled. Video generation is ready; the actual first learning
-rollout is still pending qualification.
+and explicitly labeled. The first actual learning rollout and optimizer receipt
+are available in Spark `ppo-first-update`; preserve `update-000001.pt` when
+resuming so the video remains tied to its original checkpoint.
