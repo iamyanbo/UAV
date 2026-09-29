@@ -131,5 +131,7 @@
   "experiment": "endpoint-mode1-pilot",
   "mode2_enabled": false,
   "reward_potential": "negative_normalized_euclidean_distance",
-  "evaluation_scope": "training diagnostics only; held-out acceptance pending"
+  "evaluation_scope": "training diagnostics only; held-out acceptance pending",
+  "max_recoverable_freshness_faults_per_batch": 2,
+  "max_recoverable_freshness_faults_total": 5
 }

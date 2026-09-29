@@ -47,7 +47,12 @@ ceilings and eight-hour service deadline remain in force.
 Per-update artifacts retain the collection policy, raw rollout, accepted weights,
 optimizer metrics and hashes. Nonfinite gradients, excessive final KL, persistent
 action saturation, combined critic divergence, recording failures or control
-freshness faults stop the run. Training outcomes are diagnostics, not a substitute
+freshness faults brake immediately. In this endpoint pilot, a rare freshness
+interruption ends the episode, excludes the uncertain dispatch, bootstraps the
+last confirmed transition, and reserves a replacement. More than two such faults
+in one batch or five in the run stop for review. Unconfirmed dispatches are
+accounted separately, never reported as observed transitions. Other infrastructure
+failures remain fatal. Training outcomes are diagnostics, not a substitute
 for the separate held-out evaluation. No success-rate milestone is inferred from
 the first optimizer update.
 

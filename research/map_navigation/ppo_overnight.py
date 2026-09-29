@@ -225,7 +225,28 @@ class Collector:
                 elif self.paused:
                     self.obs=self.worker.call('refresh_boundary');self.decision=self.infer(self.obs,replace=True)
                 boundary=len(rows)==quota-1
-                row=self.step(freeze=boundary and not self.cfg.get('endpoint_pilot'),batch=batch,iteration=iteration)
+                try:
+                    row=self.step(freeze=boundary and not self.cfg.get('endpoint_pilot'),batch=batch,iteration=iteration)
+                except RuntimeError as error:
+                    freshness=any(s in str(error) for s in ('Active control watchdog exceeded source freshness',
+                        'Active control freshness fault','Stale policy decision; watchdog brakes'))
+                    if not self.cfg.get('endpoint_pilot') or not freshness:raise
+                    self.worker.call('end_episode')
+                    self.budget.discard_unobserved(batch,self.index)
+                    self.window.freshness_faults+=1;self.window.freshness_by_batch[batch]+=1
+                    if rows and rows[-1]['attempt_id']==self.attempt:rows[-1]['truncated']=True
+                    summary=dict(attempt_id=self.attempt,task_id=self.task['id'],kind=self.task.get('kind','mission'),
+                        scene_id=self.scene['scene_id'],event='infrastructure_freshness_failure',reason=str(error),
+                        reward=self.episode_reward,steps=self.episode_steps,duration_s=self.obs['elapsed_s'],
+                        reset_wall_s=self.obs['reset_wall_s'],pause_wall_s=0,stops=self.stop_attempts,
+                        goal_region_observations=self.goal_visits,uncertain_transition_excluded=True,
+                        last_confirmed_rgb=self.obs['rgb_path'])
+                    self.episodes.append(summary);write(self.root/(self.attempt+'-outcome.json'),summary)
+                    self.obs=None;self.decision=None
+                    if (self.window.freshness_by_batch[batch]>self.cfg['max_recoverable_freshness_faults_per_batch'] or
+                        self.window.freshness_faults>self.cfg['max_recoverable_freshness_faults_total']):
+                        raise RuntimeError('Repeated endpoint pilot freshness faults; operator review required') from error
+                    break
                 if boundary and self.cfg.get('endpoint_pilot') and self.obs is not None:
                     # Explicit training truncation with bootstrap; no pause or
                     # unrecorded continuation across an optimizer update.
@@ -294,6 +315,8 @@ def run(args):
             if torch.cuda.is_available():torch.cuda.set_rng_state_all([v.cpu() for v in saved['cuda_rng']])
         elif args.resume:raise ValueError('No checkpoint to resume')
         elif args.migrate:lineage=migrate(model,args.migrate,args.backbone,budget.campaign);write(root/'migration.json',lineage)
+        window.freshness_faults=saved.get('freshness_faults',0) if args.resume else 0
+        window.freshness_by_batch=Counter()
         optimizer=torch.optim.Adam([p for p in model.parameters() if p.requires_grad],lr=cfg['learning_rate'])
         if checkpoint.exists():optimizer.load_state_dict(saved['optimizer'])
         lane=ComputeLane();log_lock=threading.Lock()
@@ -403,6 +426,7 @@ def run(args):
         def save():
             saved=dict(schema=cfg['schema'],capability='simulation-only',identity=identity,model=model.state_dict(),optimizer=optimizer.state_dict(),
                 experiment=cfg.get('experiment','proposal-conditioned'),mode2_enabled=bool(guidance),
+                freshness_faults=window.freshness_faults,
                 counts=counts,evaluated=evaluated,mixture=dict(curriculum.counts),lineage=lineage,
                 curriculum_indices=list(curriculum.indices.items()),
                 python_rng=random.getstate(),numpy_rng=np.random.get_state(),torch_rng=torch.get_rng_state(),
@@ -471,7 +495,7 @@ def run(args):
                         guidance_fraction=float(np.mean([r['guidance']['subgoal'] is not None for r in rows])),
                         mean_reward=float(np.mean([r['reward'] for r in rows])),mixture=dict(curriculum.counts))
                     complete=[e for c in collectors for e in c.episodes]
-                    missions=[e for e in complete if e['kind']=='mission']
+                    missions=[e for e in complete if e['kind']=='mission' and not e['event'].startswith('infrastructure_')]
                     report.update(mean_episode_length_steps=float(np.mean([e['steps'] for e in complete])) if complete else None,
                         success_rate=sum(e['event']=='success' for e in missions)/len(missions) if missions else None,
                         outcome_counts_by_kind={kind:dict(Counter(e['event'] for e in complete if e['kind']==kind)) for kind in ('mission','execution','arrival')},
@@ -482,6 +506,7 @@ def run(args):
                         reset_mean_s=float(np.mean([e['reset_wall_s'] for e in complete])) if complete else None,
                         value_warning=report['explained_variance'] is not None and report['explained_variance']<0,
                         gaussian_std=model.log_std.detach().clamp(-3,.5).exp().cpu().tolist())
+                    report['freshness_faults']=window.freshness_faults
                     with (root/'updates.jsonl').open('a',encoding='utf-8') as f:f.write(json.dumps(report,allow_nan=False)+'\n')
                     if report['final_rollout_kl']>.1:
                         torch.save(dict(model=model.state_dict(),optimizer=optimizer.state_dict(),report=report),root/f'rejected-{batch}.pt')

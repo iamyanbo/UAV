@@ -297,7 +297,11 @@ class PilotEnvironment:
             with self.lock:self.active=False
             if not self.dispatch_idle.wait(3):raise RuntimeError('Dispatcher failed to suspend')
             self.paused=True;self.pause_started=time.monotonic()
-        observation=self.observe();event=self.event(observation['state']) or event
+        observation=self.observe()
+        # The watchdog can fire while a camera RPC is blocked. Never return
+        # that safety-modified interval as an ordinary valid policy transition.
+        if self.fault:raise RuntimeError('Dispatcher failed: '+self.fault)
+        event=self.event(observation['state']) or event
         if not event and self.task.get('kind')=='execution':
             delta=np.asarray(observation['state']['position'])-self.task['goal']
             if np.linalg.norm(delta[:2])<=1.5 and abs(delta[2])<=1.:event='subgoal_success'

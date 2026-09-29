@@ -15,6 +15,8 @@ class Budget:
           (id TEXT PRIMARY KEY, requested INTEGER, issued INTEGER DEFAULT 0, actual INTEGER DEFAULT 0, optimized INTEGER DEFAULT 0, status TEXT);
           CREATE TABLE IF NOT EXISTS attempts (id TEXT PRIMARY KEY, kind TEXT, worker INTEGER);
           CREATE TABLE IF NOT EXISTS events (id INTEGER PRIMARY KEY, batch TEXT, worker INTEGER, kind TEXT);''')
+        if 'unobserved_discarded' not in {r[1] for r in self.db.execute('PRAGMA table_info(batches)')}:
+            self.db.execute('ALTER TABLE batches ADD COLUMN unobserved_discarded INTEGER DEFAULT 0')
         self.db.commit()
 
     def reserve_batch(self,ident,ceiling):
@@ -42,8 +44,16 @@ class Budget:
 
     def snapshot(self):
         with self.lock:
-            row=self.db.execute('SELECT SUM(requested),SUM(issued),SUM(actual),SUM(optimized) FROM batches').fetchone()
-            return dict(campaign=dict(self.campaign),overnight_ledger=dict(zip(('reserved','dispatch_reserved','observed','optimized'),[v or 0 for v in row])))
+            row=self.db.execute('SELECT SUM(requested),SUM(issued),SUM(actual),SUM(optimized),SUM(unobserved_discarded) FROM batches').fetchone()
+            return dict(campaign=dict(self.campaign),overnight_ledger=dict(zip(('reserved','dispatch_reserved','observed','optimized','unobserved_discarded'),[v or 0 for v in row])))
+
+    def discard_unobserved(self,batch,worker):
+        with self.lock,self.db:
+            issued,actual,discarded=self.db.execute('SELECT issued,actual,unobserved_discarded FROM batches WHERE id=?',(batch,)).fetchone()
+            if issued<=actual+discarded:raise RuntimeError('No unconfirmed dispatch to discard')
+            self.db.execute('UPDATE batches SET unobserved_discarded=unobserved_discarded+1 WHERE id=?',(batch,))
+            self.db.execute('INSERT INTO events(batch,worker,kind) VALUES (?,?,?)',(batch,worker,'unconfirmed_dispatch_discarded'))
+        self.replace_invalid(batch)
 
     def replace_invalid(self,batch):
         with self.lock:
@@ -64,8 +74,8 @@ class Budget:
 
     def finish(self,batch,optimized):
         with self.lock,self.db:
-            row=self.db.execute('SELECT requested,actual FROM batches WHERE id=?',(batch,)).fetchone()
-            if optimized and row[0]!=row[1]:raise ValueError('Cannot optimize an incomplete reservation')
+            row=self.db.execute('SELECT requested,actual,unobserved_discarded FROM batches WHERE id=?',(batch,)).fetchone()
+            if optimized and row[0]!=row[1]+row[2]:raise ValueError('Cannot optimize an incomplete reservation')
             self.db.execute('UPDATE batches SET optimized=?,status=? WHERE id=?',
                 (self.cfg['rollout_steps'] if optimized else 0,'optimized' if optimized else 'archived',batch))
 
