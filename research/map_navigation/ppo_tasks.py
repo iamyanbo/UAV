@@ -146,10 +146,14 @@ def fuse(receipts,output):
             supported=(inside&(np.linalg.norm(optical,axis=-1)<observed-.35)).all(axis=1)
             free.update(map(tuple,k[supported]))
         sources.append(dict(path=str(Path(receipt).resolve()),sha256=digest(receipt)))
+        write(str(output)+'.progress.json',dict(stage='fusion',processed=len(sources),total=len(receipts),
+            free_voxels=len(free),occupied_voxels=len(occupied),complete=False))
     volume=ObservedVolume(free,occupied)
     np.savez_compressed(output,free=np.asarray(sorted(volume.free)),occupied=np.asarray(sorted(occupied)),resolution=.5)
     write(str(output)+'.json',dict(schema='ppo-observed-volume/v1',sources=sources,sha256=digest(output),
         radius_m=1,unknown_is_free=False,free_voxels=len(volume.free),clear_centres=len(volume.centres)))
+    write(str(output)+'.progress.json',dict(stage='fusion',processed=len(sources),total=len(receipts),complete=True,
+        free_voxels=len(volume.free),clear_centres=len(volume.centres)))
 
 
 def decisions(path):
@@ -166,6 +170,12 @@ def generate(field,output,scene_id,split,seed=0,per_cell=20,max_candidates=20000
     volume=ObservedVolume.load(field);rng=np.random.default_rng(seed)
     root=Path(output);root.mkdir(parents=True,exist_ok=False)
     keys=sorted(volume.centres);counts=Counter();tasks=[];rejected=Counter();seen=set()
+    def save_candidates(complete=False):
+        write(root/'candidates.json',dict(schema='ppo-task-candidates/v2',tasks=tasks,seed=seed,
+            coverage={f'{d}/{c}':counts[(d,c)] for d in DISTANCES for c in DIFFICULTIES},rejected=dict(rejected),
+            generation_complete=complete,training_qualified=False,
+            missing='endpoint images, physical route checks, reviewed geography and scene qualification'))
+    save_candidates()
     for index in range(max_candidates):
         if all(counts[(d,c)]>=per_cell for d in DISTANCES for c in DIFFICULTIES):break
         start,goal=[volume.position(keys[i]) for i in rng.choice(len(keys),2,replace=False)]
@@ -205,10 +215,10 @@ def generate(field,output,scene_id,split,seed=0,per_cell=20,max_candidates=20000
                 bounds=[(np.min(np.asarray(keys),axis=0)*.5).tolist(),(np.max(np.asarray(keys),axis=0)*.5).tolist()],
                 start_yaw_sampling='uniform_360_independent',goal_yaw_sampling='uniform_360_independent'))
             counts[(d,category)]+=1
+            save_candidates()
         except ValueError as error:rejected[str(error)]+=1
-    write(root/'candidates.json',dict(schema='ppo-task-candidates/v2',tasks=tasks,seed=seed,
-        coverage={f'{d}/{c}':counts[(d,c)] for d in DISTANCES for c in DIFFICULTIES},rejected=dict(rejected),
-        training_qualified=False,missing='endpoint images, physical route checks, reviewed geography and scene qualification'))
+        if index%100==0:save_candidates()
+    save_candidates(complete=True)
 
 
 def validate_tasks(manifest,cfg):

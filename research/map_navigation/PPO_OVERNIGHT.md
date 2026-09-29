@@ -5,6 +5,22 @@ This is a simulation-only experiment with a new checkpoint lineage. The old
 4,096 transitions and the 59 corridor task candidates remain historical evidence;
 they are not new training samples or qualified long-navigation tasks.
 
+Live preparation on September 29 exposed a scene-selection error: released
+validation routes in env_13 have a 116.6 m bounding-box diagonal, so that coverage
+cannot provide 200–300 m endpoint pairs. This is a bound on the released routes,
+not a measurement of the entire rendered environment. Preparation now examines
+env_5 and env_2 (training) and env_9 (validation), selected by available geographic
+extent before any learner outcomes. These are candidates, not newly qualified
+geographies. Existing env_13 evidence remains intact.
+
+`python -m research.map_navigation.ppo_prepare_overnight --workspace WORK
+--annotations ANNOTATIONS.zip --output NEW_RUN --hours 8` runs bounded live depth
+survey and offline task preparation. It uses one simulator plus one CPU processing
+lane, stores raw failures and incremental candidates, and writes a morning report.
+Run it in a dedicated systemd cgroup with an eight-hour runtime limit so native
+simulator descendants are also stopped. **This command does not train**: independent
+review, physical qualification and Qwen/workload admission still precede PPO.
+
 ## Fixed choices
 
 * Exactly **8,192 valid, fresh transitions per update**, collected under one frozen
