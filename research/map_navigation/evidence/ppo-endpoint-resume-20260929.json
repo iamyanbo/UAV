@@ -1,0 +1,25 @@
+{
+  "checked_utc": "2026-09-29T14:06:31.154021+00:00",
+  "status": {
+    "status": "collecting",
+    "counts": {
+      "iteration": 1,
+      "transitions": 8192
+    },
+    "batch": "rollout-000002-6df230d9",
+    "mode2_enabled": false,
+    "scope": "endpoint-mode1-pilot",
+    "training_running": true
+  },
+  "batch": {
+    "id": "rollout-000002-6df230d9",
+    "requested": 8192,
+    "issued": 518,
+    "actual": 518,
+    "optimized": 0,
+    "unobserved_discarded": 0,
+    "status": "collecting"
+  },
+  "failure_present": false,
+  "service": "active"
+}

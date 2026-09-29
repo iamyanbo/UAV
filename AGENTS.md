@@ -3,12 +3,19 @@
 ## Endpoint Mode 1 launch — September 29, 2026
 
 Live launch pointer: `/home/iamyanbo/uav-photo-map/ppo-active.json`. The current
-run is `/home/iamyanbo/uav-photo-map/ppo-endpoint-20260929-retry1`, source `e30055f`,
-units `uav-ppo-endpoint-train-retry1-20260929` and
-`uav-ppo-endpoint-worker-retry1-20260929`. Original deadline is 21:29:36 UTC.
+run is `/home/iamyanbo/uav-photo-map/ppo-endpoint-20260929-retry1`, source `7efad5e`,
+units `uav-ppo-endpoint-train-resume1-20260929` and
+`uav-ppo-endpoint-worker-resume1-20260929`. Original deadline is 21:29:36 UTC.
 The first run under `ppo-endpoint-20260929` stopped after 7,334 observed transitions
 because a camera RPC delay tripped the 250 ms watchdog; it produced no PPO update.
-Preserve that run and all budget charges. The retry collects a fresh complete batch.
+Preserve that run and all budget charges. The retry accepted its first fresh
+8,192-transition update: 52 model tensors changed, 308 frozen-backbone tensors
+unchanged. The update took one Adam step before the KL early-stop; final KL .0298.
+No successful missions in this first batch. A subsequent unused-feature-bank
+cleanup error stopped the loop; source 7efad5e initializes those fields. Resume
+preserves model, optimizer, counts and RNG with a recorded source-identity patch,
+retaining the original checkpoint and failure. Evidence is in
+`research/map_navigation/evidence/ppo-endpoint-checkpoint-20260929.json`.
 Endpoint-only bounded recovery keeps immediate braking, censors the uncertain
 dispatch, bootstraps the confirmed prefix and resets the episode. More than two
 freshness faults per batch or five per run stop for review. Other failures remain

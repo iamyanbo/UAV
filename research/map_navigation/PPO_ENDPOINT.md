@@ -58,7 +58,7 @@ the first optimizer update.
 
 Current launch details live on Spark at
 `/home/iamyanbo/uav-photo-map/ppo-active.json`. The run root is
-`/home/iamyanbo/uav-photo-map/ppo-endpoint-20260929`. Check `training/updates.jsonl`
+`/home/iamyanbo/uav-photo-map/ppo-endpoint-20260929-retry1`. Check `training/updates.jsonl`
 and immutable `update-*.pt` receipts to distinguish actual learning updates from
 collection or merely loading a model. The actor-only pilot does not activate a
 full navigation deployment package.
