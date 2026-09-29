@@ -56,7 +56,7 @@ def candidates(episodes,scene_id,field,limit):
     return buckets
 
 
-def reconcile(ledger,output):
+def reconcile(ledger,output,engineering_roots=()):
     """Read-only reconciliation of the existing engineering attempt database."""
     uri=Path(ledger).resolve().as_uri()+'?mode=ro'
     with sqlite3.connect(uri,uri=True) as db:
@@ -64,9 +64,46 @@ def reconcile(ledger,output):
     # This helper only recognizes the pre-PPO reference ledger, not arbitrary
     # training sources. Refuse to silently treat another stream as zero PPO use.
     if any(stream!='reference' for stream,_,_ in rows):raise ValueError('Mixed ledger requires broader reconciliation')
+    engineering={}
+    for root in engineering_roots:
+        for path in Path(root).rglob('telemetry.jsonl'):
+            # Each recording starts only after reset qualification, including
+            # failed physical checks. Keep the source evidence and count once.
+            first=path.open(encoding='utf-8-sig').readline()
+            if first and json.loads(first).get('kind')=='reset':engineering[str(path.resolve())]=digest(path)
     write(output,dict(schema='photo-map-pilot-budget/v1',source=str(Path(ledger).resolve()),
-        source_sha256=digest(ledger),rows=rows,training_attempts=sum(n for _,_,n in rows),
+        source_sha256=digest(ledger),rows=rows,engineering_recordings=engineering,
+        training_attempts=sum(n for _,_,n in rows)+len(engineering),
         learner_attempts=0,ppo_transitions=0))
+
+
+def assemble(inventory,budget,output):
+    """Seal reviewed measured-task receipts without rewriting raw qualification."""
+    cfgpath=Path(__file__).with_name('ppo_pilot.json');cfg=read(cfgpath)
+    root=Path(output);root.mkdir(parents=True,exist_ok=False);tasks=[];scenes=[]
+    for entry in read(inventory)['scenes']:
+        q=read(entry['qualification']);review=read(entry['review']);candidate=read(entry['tasks'])
+        if review['qualification_sha256']!=digest(entry['qualification']):raise ValueError('Review is for different qualification')
+        if not review.get('camera_clear') or not review.get('geography_reviewed') or not review.get('notes'):
+            raise ValueError('Explicit camera/geography review required')
+        if q.get('semantic_error') or not all(q.get('checks',{}).get(k) for k in ('camera','geometry','motion','collision','stop','stale_frame','timing')):
+            raise ValueError('Live qualification checks failed')
+        if q['tasks_sha256']!=digest(entry['tasks']) or q['config']!=cfg:raise ValueError('Task/config provenance differs')
+        if q['scene_sha256']!=digest(entry['descriptor']):raise ValueError('Descriptor differs')
+        scene_id=read(entry['descriptor'])['scene_id'];qualified=root/(scene_id+'-qualified.json')
+        q.update(qualified=True,camera_reviewed=True,geometry_reviewed=True,pending=None,
+            review=str(Path(entry['review']).resolve()),review_sha256=digest(entry['review']),
+            raw_qualification=str(Path(entry['qualification']).resolve()),raw_qualification_sha256=digest(entry['qualification']))
+        write(qualified,q)
+        scenes.append(dict(scene_id=scene_id,split=entry['split'],geography_id=review['geography_id'],
+            descriptor=str(Path(entry['descriptor']).resolve()),qualification=str(qualified.resolve()),qualification_sha256=digest(qualified)))
+        for task in candidate['tasks']:
+            if task['scene_id']!=scene_id or task['split']!=entry['split']:raise ValueError('Candidate split mismatch')
+            tasks.append(task)
+    write(root/'tasks.json',dict(schema='photo-map-ppo-tasks/v1',config_sha256=digest(cfgpath),
+        scenes=scenes,tasks=tasks,inventory_sha256=digest(inventory),
+        prior_budget_usage=dict(receipt=str(Path(budget).resolve()),sha256=digest(budget)),
+        scope='small integration curriculum; not sufficient for generalization claims'))
 
 
 def prepare(inventory,annotations,output,budget,limit,hours):
@@ -102,7 +139,7 @@ def prepare(inventory,annotations,output,budget,limit,hours):
                             rgb,stamp,_=env.image()
                             goal_path=root/(task['id']+'-goal.png');Image.fromarray(rgb).save(goal_path)
                             evidence=root/(task['id']+'-geometry.json')
-                            write(evidence,dict(task_id=task['id'],camera=cfg['camera'],swept_volume_free=True,
+                            write(evidence,dict(task_id=task['id'],start=task['start'],goal=task['goal'],camera=cfg['camera'],swept_volume_free=True,
                                 source_field=str(Path(scene['field']).resolve()),source_field_sha256=digest(scene['field']),
                                 clearance_model='observed sparse field, conservative body-and-camera sphere',
                                 radius_m=float(field.collision_radii[0]),resolution_m=field.resolution,
@@ -123,10 +160,13 @@ def prepare(inventory,annotations,output,budget,limit,hours):
 if __name__=='__main__':
     p=argparse.ArgumentParser();sub=p.add_subparsers(dest='stage',required=True)
     a=sub.add_parser('budget');a.add_argument('--ledger',required=True);a.add_argument('--output',required=True)
+    a.add_argument('--engineering-root',action='append',default=[],help='Prior training-scene engineering recordings to count conservatively')
+    a=sub.add_parser('assemble');a.add_argument('--inventory',required=True);a.add_argument('--budget',required=True);a.add_argument('--output',required=True)
     a=sub.add_parser('tasks');a.add_argument('--inventory',required=True);a.add_argument('--annotations',required=True)
     a.add_argument('--output',required=True);a.add_argument('--budget',required=True);a.add_argument('--per-behavior',type=int,default=20);a.add_argument('--hours',type=float,default=8)
     a=p.parse_args()
-    if a.stage=='budget':reconcile(a.ledger,a.output)
+    if a.stage=='budget':reconcile(a.ledger,a.output,a.engineering_root)
+    elif a.stage=='assemble':assemble(a.inventory,a.budget,a.output)
     else:
         if a.per_behavior<1:p.error('Positive per-behavior count required')
         prepare(a.inventory,a.annotations,a.output,a.budget,a.per_behavior,a.hours)

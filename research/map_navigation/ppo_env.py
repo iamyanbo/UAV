@@ -34,6 +34,8 @@ def camera_settings(settings,cfg,port):
     camera.update(X=c['x'],Y=c['y'],Z=c['z'],Pitch=c['pitch'],Roll=c['roll'],Yaw=c['yaw'])
     for capture in camera['CaptureSettings']:
         capture.update(Width=c['width'],Height=c['height'],FOV_Degrees=c['fov'],MotionBlurAmount=0)
+        if capture['ImageType']==2:
+            capture['Width'],capture['Height']=cfg['qualification_depth_size']
     return settings
 
 
@@ -79,6 +81,7 @@ class PilotEnvironment:
         self.scene.update(settings=str((self.root/'settings.json').resolve()),worker_root=str(self.root.resolve()))
         self.owned=SceneProcess(self.scene);self.thread=None;self.recorder=None
         self.lock=threading.Lock();self.shutdown=threading.Event();self.active=False
+        self.dispatch_idle=threading.Event();self.dispatch_idle.set()
         self.command=[0.]*4;self.sent=[0.]*4;self.source_wall=0.;self.fault=None
         self.dispatches=deque(maxlen=256);self.sequence=0;self.command_frame=0
 
@@ -101,21 +104,35 @@ class PilotEnvironment:
 
     def dispatch(self):
         a=self.airsim;client=a.MultirotorClient(ip='127.0.0.1',port=self.port,timeout_value=2)
+        pending=deque()
         while not self.shutdown.is_set():
             start=time.monotonic()
             try:
                 with self.lock:
-                    if self.active:
-                        age=start-self.source_wall;stale=age>self.cfg['freshness_s']
-                        command=[0.]*4 if stale else list(self.command)
-                        client.moveByVelocityBodyFrameAsync(*command[:3],.2,
-                            drivetrain=a.DrivetrainType.MaxDegreeOfFreedom,
-                            yaw_mode=a.YawMode(True,command[3]),vehicle_name=self.vehicle)
+                    active=self.active;age=start-self.source_wall;stale=age>self.cfg['freshness_s']
+                    command=[0.]*4 if stale else list(self.command);frame=self.command_frame
+                    if active:self.dispatch_idle.clear()
+                if active:
+                    future=client.moveByVelocityBodyFrameAsync(*command[:3],.2,
+                        drivetrain=a.DrivetrainType.MaxDegreeOfFreedom,
+                        yaw_mode=a.YawMode(True,command[3]),vehicle_name=self.vehicle)
+                    pending.append(future)
+                    # msgpackrpc's asynchronous call queues work on this client's
+                    # IOLoop. A synchronous ping services it without waiting for
+                    # the 200 ms motion duration. Another thread's client cannot
+                    # service this connection. Check completed futures for errors.
+                    if not client.ping():raise RuntimeError('Command RPC ping failed')
+                    while pending and pending[0]._set_flag:pending.popleft().get()
+                    if len(pending)>16:raise RuntimeError('Command acknowledgements stalled')
+                    with self.lock:
                         self.sent=command;self.sequence+=1
                         row=dict(kind='dispatch',id=self.sequence,wall=start,
-                            source_frame=self.command_frame,age_s=age,command=command,stale=stale)
+                            source_frame=frame,age_s=age,command=command,stale=stale,
+                            rpc_wall_s=time.monotonic()-start)
+                        self.dispatches.append(row)
                         if self.recorder:self.recorder.put('dispatch',row)
             except Exception as error:self.fault=str(error)
+            finally:self.dispatch_idle.set()
             self.shutdown.wait(max(0,self.cfg['step_s']-(time.monotonic()-start)))
 
     def state(self):
@@ -133,6 +150,7 @@ class PilotEnvironment:
         for attempt in range(cfg['attempts']):
             started=time.monotonic()
             with self.lock:self.active=False
+            if not self.dispatch_idle.wait(3):raise RuntimeError('Command thread did not quiesce before reset')
             # Arming after placement can reset SimpleFlight state in some forks.
             # Arm first, then place while paused and issue hover before release.
             self.client.enableApiControl(True,self.vehicle);self.client.armDisarm(True,self.vehicle)
@@ -311,13 +329,16 @@ def qualify(scene,output,cfg,position,yaw):
             a=env.airsim;env.client.simPause(True)
             record['camera_attitudes']=[]
             try:
+                env.client.armDisarm(False,env.vehicle)
                 for roll in (-20,0,20):
                     for pitch in (-20,0,20):
-                        env.client.simSetVehiclePose(a.Pose(a.Vector3r(*position),
-                            a.to_quaternion(math.radians(pitch),math.radians(roll),math.radians(yaw))),True,env.vehicle)
+                        k=a.KinematicsState();k.position=a.Vector3r(*position)
+                        k.orientation=a.to_quaternion(math.radians(pitch),math.radians(roll),math.radians(yaw))
+                        k.linear_velocity=k.angular_velocity=k.linear_acceleration=k.angular_acceleration=a.Vector3r()
+                        env.client.simSetKinematics(k,True,env.vehicle)
                         # A render/physics tick is necessary on forks whose
                         # image camera transform otherwise remains stale paused.
-                        env.client.simContinueForTime(.05)
+                        env.client.simContinueForTime(.01)
                         rgb,_,_=env.image();image_path=out/f'camera-roll{roll}-pitch{pitch}.png';Image.fromarray(rgb).save(image_path)
                         measured=env.capture_pose['attitude_deg']
                         record['camera_attitudes'].append(dict(requested=[roll,pitch,yaw],measured=measured,

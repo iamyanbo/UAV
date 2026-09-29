@@ -109,6 +109,22 @@ are still needed before training. Random/zero-action baseline reports, automatic
 curriculum promotion, multi-worker scaling and altitude/failure video automation
 remain outstanding. The first source pass must not be called a completed pilot.
 
+The integration pass adds `ppo_bootstrap` for measured short corridors and
+`ppo_qualify` for live motion, contact, stop, watchdog, timing and camera evidence.
+Released references propose candidates only. Opposing depth views (and additional
+side views when necessary) must cover a sampled conservative body/mount volume;
+each accepted corridor is then physically executed. This privileged preparation
+never supplies actor actions or tensors. Auxiliary depth is 160×120, while the
+fixed RGB input and independently captured goal photos remain 640×480.
+
+`ppo_prepare assemble` seals explicit camera/geography reviews together with raw
+qualification and task receipts. It does not manufacture passing flags. The
+initial registry is a small integration curriculum, not the final research data
+distribution. `--max-updates 1` bounds the first real PPO run for inspection;
+subsequent `--resume` uses the same model, RNG state and campaign ledger. GPU
+warmup and goal encoding precede the live reset, and each rollout logs decision
+time and source age. Interrupted rollout metadata is retained for diagnosis.
+
 `ppo_prepare tasks` now constructs candidate level/climb/descent tasks from
 released training/validation paths, rejects segments without observed sparse-field
 clearance, and independently captures goal photos after verified hover resets.

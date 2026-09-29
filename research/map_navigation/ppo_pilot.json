@@ -4,6 +4,7 @@
   "seed": 0,
   "step_s": 0.05,
   "freshness_s": 0.25,
+  "qualification_depth_size": [160, 120],
   "episode_s": 60,
   "stop_grace_s": 3,
   "gamma": 0.9995,

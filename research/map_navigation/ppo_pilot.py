@@ -63,6 +63,13 @@ def validate_manifest(path,cfg):
         geometry=read(t['geometry_evidence'])
         if geometry.get('task_id')!=t['id'] or not geometry.get('swept_volume_free') or geometry.get('camera')!=cfg['camera']:
             raise ValueError('Task requires observed swept-volume clearance including camera mount')
+        if geometry.get('start')!=t['start'] or geometry.get('goal')!=t['goal']:
+            raise ValueError('Clearance evidence does not bind the task endpoints')
+        if 'captures' in geometry:
+            for capture in geometry['captures']:
+                if digest(capture['path'])!=capture['sha256']:raise ValueError('Geometry capture changed')
+            if digest(geometry['physical_evidence'])!=geometry['physical_sha256'] or not read(geometry['physical_evidence'])['passed']:
+                raise ValueError('Physical task qualification changed or failed')
         if t['behavior'] not in ('level','climb','descent'):raise ValueError('Unknown curriculum category')
         distance=math.dist(t['start'],t['goal'])
         if not 10<=distance<=30:raise ValueError('Initial curriculum requires 10–30 m tasks')
@@ -169,6 +176,13 @@ def _train(args,workspace):
     cfg=read(Path(__file__).with_name('ppo_pilot.json'));manifest,scenes,prior=validate_manifest(args.manifest,cfg)
     out=Path(args.output);out.mkdir(parents=True,exist_ok=True)
     seed_all(cfg['seed']);model=ActorCritic(args.backbone).to(args.device).eval()
+    # Compile/cache first-use GPU kernels before a live observation ages.
+    with torch.no_grad():
+        for _ in range(8):
+            raw=model.encode_backbone(torch.zeros(1,3,480,640,device=args.device,dtype=torch.uint8))
+            model(raw[:,None].expand(-1,4,-1,-1,-1),raw,raw.new_zeros(1,4),
+                  raw.new_zeros(1,4,4),torch.ones(1,4,device=args.device,dtype=torch.bool))
+    if str(args.device).startswith('cuda'):torch.cuda.synchronize()
     optimizer=torch.optim.Adam([p for p in model.parameters() if p.requires_grad],lr=cfg['learning_rate'])
     files=list(Path(__file__).parent.glob('ppo_*.py'))+[Path(__file__).with_name('temporal.py'),Path(__file__).parents[1]/'rgb_flight/goal_matching.py']
     identity=dict(config=digest(Path(__file__).with_name('ppo_pilot.json')),manifest=digest(args.manifest),backbone=digest(args.backbone),
@@ -234,10 +248,12 @@ def _train(args,workspace):
         if evaluate:count['evaluation_attempts']+=1
         else:reserve('attempt');count['attempts']+=1
         journal();attempt=('eval-' if evaluate else 'train-')+uuid.uuid4().hex
-        obs=worker.call('reset',task=task,attempt_id=attempt);bank.reset(task['goal_image']);context=bank.observe(obs)
+        bank.reset(task['goal_image'])
+        obs=worker.call('reset',task=task,attempt_id=attempt);context=bank.observe(obs)
         return obs,context,attempt
 
     def rollout_step(task,obs,context,evaluate=False):
+        decision_started=time.monotonic()
         with torch.no_grad():
             normal,stop_dist,value=model(**bank.batch([context]))
             latent=normal.mean if evaluate else normal.sample()
@@ -246,6 +262,7 @@ def _train(args,workspace):
         command=command_from_latent(latent[0].cpu().tolist(),obs['preceding_command'],cfg['step_s'],cfg['limits'],cfg['acceleration'])
         # Reserve before dispatch so crashes cannot undercount executed transitions.
         if not evaluate:reserve('transition');count['transitions']+=1;journal()
+        decision_s=time.monotonic()-decision_started;source_age_s=time.monotonic()-obs['source_wall']
         response=worker.call('step',command=command,stop=bool(stop.item()),frame=obs['frame'])
         nxt=response['observation'];next_context=bank.observe(nxt)
         with torch.no_grad():next_value=float(model(**bank.batch([next_context]))[2].item())
@@ -257,6 +274,7 @@ def _train(args,workspace):
             proposed_command=command,dispatched_command=nxt['preceding_command'],event=response['event'],task_id=task['id'],
             scene_id=task['scene_id'],rgb_path=obs['rgb_path'],next_rgb_path=nxt['rgb_path'],
             sim_s=obs['sim_s'],next_sim_s=nxt['sim_s'],state=obs['state'],next_state=nxt['state'],
+            decision_s=decision_s,source_age_s=source_age_s,
             action_saturated=bool((latent.tanh().abs()>.95).any().item()))
         return row,nxt,next_context
 
@@ -264,7 +282,9 @@ def _train(args,workspace):
     try:
         with (out/'updates.jsonl').open('a') as metrics:
             obs=context=task=attempt=None
-            while window.remaining() and count['transitions']<ceiling and count['attempts']<cap:
+            starting_iteration=count['iteration']
+            while (window.remaining() and count['transitions']<ceiling and count['attempts']<cap and
+                   (args.max_updates is None or count['iteration']-starting_iteration<args.max_updates)):
                 if campaign['training_attempts']>=cfg['campaign_attempts'] or campaign['ppo_transitions']>=cfg['campaign_transitions']:break
                 rows=[]
                 while len(rows)<cfg['rollout_steps'] and window.remaining() and count['transitions']<ceiling:
@@ -286,6 +306,8 @@ def _train(args,workspace):
                 update_started=time.monotonic()
                 report=update(model,optimizer,rows,lambda ids:bank.batch([rows[i] for i in ids]),cfg)
                 report.update(counts=dict(count),update_wall_s=time.monotonic()-update_started,
+                    decision_p95_s=float(np.percentile([r['decision_s'] for r in rows],95)),
+                    source_age_p99_s=float(np.percentile([r['source_age_s'] for r in rows],99)),
                     reward_components={k:sum(r['reward_parts'][k] for r in rows) for k in ('terminal','time','shaping')},
                     action_saturation_fraction=sum(r['action_saturated'] for r in rows)/len(rows))
                 metrics.write(json.dumps(report,allow_nan=False)+'\n');metrics.flush()
@@ -315,6 +337,9 @@ def _train(args,workspace):
             if not window.remaining():status='window_complete'
     except Exception as error:
         status='infrastructure_or_numerical_failure';write(out/'failure.json',dict(error_type=type(error).__name__,error=str(error),counts=count))
+        if 'rows' in locals() and rows:
+            with (out/('interrupted-'+uuid.uuid4().hex+'.jsonl')).open('w') as stream:
+                for row in rows:stream.write(json.dumps(row)+'\n')
         raise
     finally:
         worker.close();journal();save();write(out/'status.json',dict(status=status,counts=count,trained_navigation_accepted=False))
@@ -325,5 +350,6 @@ if __name__=='__main__':
     p.add_argument('--output',required=True);p.add_argument('--worker',default='127.0.0.1:43651');p.add_argument('--authfile',required=True)
     p.add_argument('--phase',choices=['smoke','million','extension'],default='smoke');p.add_argument('--resume',action='store_true')
     p.add_argument('--hours',type=float,default=8);p.add_argument('--device',default='cuda')
+    p.add_argument('--max-updates',type=int,help='Bound an initial integration run; resume preserves the campaign budget')
     p.add_argument('--workspace',help='Shared campaign workspace for all seeds/runs; defaults to output parent')
     train(p.parse_args())
