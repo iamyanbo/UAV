@@ -1,10 +1,25 @@
 # CURI-UAV research invariants
 
-## Active Spark preparation — September 29, 2026
+## Active geometry regeneration — September 29, 2026
+
+The user authorized fixing the failed generator and reusing the saved surveys.
+Source `f66aa14` replaces per-voxel Python objects/fixed node ceilings with compact
+arrays and exact six-neighbour CSR; infrastructure errors fail the scene instead
+of retrying endpoint pairs. Independent saved-data clearance/cost verification is
+in `research/map_navigation/evidence/ppo-geometry-recorded-verification-20260929.json`.
+Two offline CPU workers are running under
+`uav-ppo-regeneration-20260929t131655z.service`, output
+`/home/iamyanbo/uav-photo-map/ppo-task-regeneration-20260929T131655Z`.
+Read `/home/iamyanbo/uav-photo-map/geometry-repair-active.json` and its current
+status before starting another regeneration. No simulator, recapture or PPO
+optimization is running in this job. It preserves original data and cost-file
+contracts. Qualification/Qwen/workload gates still apply after candidate generation.
+
+## Completed Spark survey — September 29, 2026
 
 The user's overnight launch request uncovered missing live admission and an
 undersized released-route validation footprint (env_13: 116.6 m bounding-box
-diagonal). A bounded preparation service is running, **not PPO optimization**:
+diagonal). The original preparation service completed with failed task generation:
 `uav-ppo-preparation-20260929t051605z.service`, source `ac4f908`, under
 `/home/iamyanbo/uav-photo-map/ppo-overnight-preparation-20260929T051605Z`.
 Read `/home/iamyanbo/uav-photo-map/overnight-active.json` and that run's
@@ -12,8 +27,9 @@ Read `/home/iamyanbo/uav-photo-map/overnight-active.json` and that run's
 It surveys candidate train env_5/env_2 and validation env_9, then fuses observed
 geometry and generates task candidates; scene selection uses extent, not policy
 performance. Eight-hour systemd cgroup deadline includes native children.
-Independent review, physical task qualification and Qwen/workload gates still
-precede training. Do not report this preparation job as a training run.
+It saved 2,282 captures and all three geometry maps, but zero tasks because of
+the old two-million-node limit. It performed no PPO optimization. Its original
+report understated the failure; retain that report as historical evidence.
 
 ## Proposal-conditioned overnight PPO — September 29, 2026
 

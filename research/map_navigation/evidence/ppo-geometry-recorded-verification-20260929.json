@@ -1,0 +1,65 @@
+﻿{
+  "schema": "ppo-recorded-geometry-verification/v1",
+  "source_commit": "f66aa14",
+  "field_sha256": "0a57563751a5c1defbf64065bed19b70c2f750324d515d772ed0f940c0f83061",
+  "tasks": [
+    {
+      "id": "env_5-0-000001",
+      "difficulty": "detour",
+      "distance_bin": "40-100",
+      "clearance_checked_samples": 657,
+      "raw_voxel_clearance_passed": true,
+      "goal_cost_zero": true,
+      "bellman_samples": 2000,
+      "max_bellman_residual_s": 0.0,
+      "cost_sha256": "8172cae5b9163977a29d1910ff396379bb9c3aa96e75fe1223c0837ef05a7c1f"
+    },
+    {
+      "id": "env_5-0-000002",
+      "difficulty": "multiple_decisions",
+      "distance_bin": "100-200",
+      "clearance_checked_samples": 1340,
+      "raw_voxel_clearance_passed": true,
+      "goal_cost_zero": true,
+      "bellman_samples": 2000,
+      "max_bellman_residual_s": 0.0,
+      "cost_sha256": "8172cae5b9163977a29d1910ff396379bb9c3aa96e75fe1223c0837ef05a7c1f"
+    },
+    {
+      "id": "env_5-0-000007",
+      "difficulty": "multiple_decisions",
+      "distance_bin": "40-100",
+      "clearance_checked_samples": 651,
+      "raw_voxel_clearance_passed": true,
+      "goal_cost_zero": true,
+      "bellman_samples": 2000,
+      "max_bellman_residual_s": 0.0,
+      "cost_sha256": "8172cae5b9163977a29d1910ff396379bb9c3aa96e75fe1223c0837ef05a7c1f"
+    },
+    {
+      "id": "env_5-0-000008",
+      "difficulty": "detour",
+      "distance_bin": "100-200",
+      "clearance_checked_samples": 1092,
+      "raw_voxel_clearance_passed": true,
+      "goal_cost_zero": true,
+      "bellman_samples": 2000,
+      "max_bellman_residual_s": 0.0,
+      "cost_sha256": "b86a2c212e9af57a4cdceb771868fee5ca5b79631fc19ca20ad50e1053e247f5"
+    },
+    {
+      "id": "env_5-0-000048",
+      "difficulty": "direct",
+      "distance_bin": "40-100",
+      "clearance_checked_samples": 340,
+      "raw_voxel_clearance_passed": true,
+      "goal_cost_zero": true,
+      "bellman_samples": 2000,
+      "max_bellman_residual_s": 0.0,
+      "cost_sha256": "a8a5b02113452f6c29500c1859c171f0e7c0fca59c6f7200bc7853e2efb15836"
+    }
+  ],
+  "task_count": 5,
+  "purpose": "independent saved-data clearance and cost-field audit; no simulator or gradients",
+  "passed": true
+}
