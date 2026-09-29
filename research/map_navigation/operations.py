@@ -87,6 +87,78 @@ def probe(scene_path,output,workers=1,seconds=20):
         pending=['continuous-flight/collision qualification','perception workload','source-to-dispatch latency','recording disk peaks']))
 
 
+def inspect_live(scene_path,output,port=43451):
+    """Inspect real scene sensors and identity without executing a mission."""
+    import re
+    import numpy as np
+    import airsim
+    from PIL import Image
+    from calibration import measure_color_order,canonical_rgb
+    from .collect import SceneProcess
+    scene=read(scene_path);out=Path(output);out.mkdir(parents=True,exist_ok=False)
+    settings=mission_settings(read(scene['settings']));settings['ApiServerPort']=port
+    settings_path=out/'settings.json';write(settings_path,settings)
+    scene=dict(scene,settings=str(settings_path.resolve()),worker_root=str(out.resolve()))
+    owned=SceneProcess(scene)
+    receipt=dict(schema='photo-map-scene-preflight/v1',scene_id=scene['scene_id'],
+        scene_descriptor_sha256=digest(scene_path),settings_sha256=digest(settings_path),
+        implementation_sha256=digest(__file__),sensor_interfaces_passed=False,
+        qualified=False,flight_evidence=False,pose_placement_calls=0)
+    try:
+        with owned:
+            client=airsim.MultirotorClient(ip='127.0.0.1',port=port,timeout_value=20)
+            # Some builds expose RPC before their first useful rendered frame.
+            # Keep the exact color check, with bounded warm-up and PNG evidence.
+            calibration_errors=[]
+            for attempt in range(5):
+                try:
+                    color=measure_color_order(client)
+                    break
+                except RuntimeError as error:
+                    calibration_errors.append(str(error))
+                    preview=client.simGetImages([airsim.ImageRequest(
+                        'front_custom',airsim.ImageType.Scene,False,True)],vehicle_name='drone_1')
+                    if preview and preview[0].image_data_uint8:
+                        (out/f'calibration-{attempt}.png').write_bytes(bytes(preview[0].image_data_uint8))
+                    receipt['calibration_attempt_errors']=calibration_errors
+                    if attempt==4:raise
+                    time.sleep(2.)
+            images=client.simGetImages([
+                airsim.ImageRequest('front_custom',airsim.ImageType.Scene,False,False),
+                airsim.ImageRequest('front_custom',airsim.ImageType.DepthPerspective,True,False),
+                airsim.ImageRequest('front_custom',airsim.ImageType.Segmentation,False,False)],vehicle_name='drone_1')
+            if len(images)!=3 or any((r.width,r.height)!=(640,480) for r in images):raise ValueError('Sensor dimensions differ')
+            rgb,depth,segmentation=images
+            if len(rgb.image_data_uint8)!=640*480*3 or len(segmentation.image_data_uint8)!=640*480*3 or len(depth.image_data_float)!=640*480:
+                raise ValueError('Incomplete sensor payload')
+            pixels=np.frombuffer(canonical_rgb(rgb.image_data_uint8,color['raw_channel_order']),np.uint8).reshape(480,640,3)
+            Image.fromarray(pixels).save(out/'spawn-rgb.png')
+            values=np.asarray(depth.image_data_float,np.float32).reshape(480,640)
+            np.save(out/'spawn-depth.npy',values)
+            useful=values[np.isfinite(values)&(values>0)&(values<200)]
+            first=client.getMultirotorState(vehicle_name='drone_1');start=time.monotonic()
+            time.sleep(2.)
+            last=client.getMultirotorState(vehicle_name='drone_1');elapsed=time.monotonic()-start
+            k=last.kinematics_estimated;collision=client.simGetCollisionInfo(vehicle_name='drone_1')
+            receipt.update(color_calibration=color,preview_sha256=digest(out/'spawn-rgb.png'),
+                depth_sha256=digest(out/'spawn-depth.npy'),rgb_std=float(pixels.std()),
+                depth_supported_fraction=float(len(useful)/values.size),
+                depth_percentiles_m=np.quantile(useful,[.05,.5,.95]).tolist() if len(useful) else None,
+                capture_skew_s=(max(r.time_stamp for r in images)-min(r.time_stamp for r in images))/1e9,
+                sim_wall_ratio=(last.timestamp-first.timestamp)/1e9/elapsed,
+                spawn_ned_m=[k.position.x_val,k.position.y_val,k.position.z_val],
+                spawn_collision=bool(collision.has_collided),sensor_interfaces_passed=bool(last.timestamp>first.timestamp and pixels.std()>1))
+    except Exception as error:
+        receipt.update(error_type=type(error).__name__,reason=str(error))
+    finally:
+        if owned.log:
+            path=Path(owned.log.name)
+            receipt['simulator_log']=str(path)
+            receipt['loaded_maps']=sorted(set(re.findall(r'LoadMap:\s+(\S+)',path.read_text(errors='replace'))))
+        write(out/'preflight.json',receipt)
+    return receipt
+
+
 def teacher_descriptor(package,output,audit=None):
     """Audits must independently judge observable support, not teacher confidence."""
     spec=dict(schema='photo-map-teacher/v1',implementation_sha256=digest(Path(__file__).with_name('observation_teacher.py')),
@@ -109,10 +181,12 @@ def main():
     p=argparse.ArgumentParser();sub=p.add_subparsers(dest='stage',required=True)
     a=sub.add_parser('inspect');a.add_argument('--root',required=True);a.add_argument('--output',required=True);a.add_argument('--box64');a.add_argument('--source',choices=('OpenFly','AerialVLN','UrbanScene3D'),default='AerialVLN')
     a=sub.add_parser('probe');a.add_argument('--scene',required=True);a.add_argument('--output',required=True);a.add_argument('--workers',type=int,default=1);a.add_argument('--seconds',type=int,default=20)
+    a=sub.add_parser('preflight');a.add_argument('--scene',required=True);a.add_argument('--output',required=True);a.add_argument('--port',type=int,default=43451)
     a=sub.add_parser('teacher');a.add_argument('--package',required=True);a.add_argument('--output',required=True);a.add_argument('--audit')
     a=p.parse_args()
     if a.stage=='inspect':inspect_scenes(a.root,a.output,a.box64,a.source)
     elif a.stage=='probe':probe(a.scene,a.output,a.workers,a.seconds)
+    elif a.stage=='preflight':inspect_live(a.scene,a.output,a.port)
     else:teacher_descriptor(a.package,a.output,a.audit)
 
 if __name__=='__main__':main()

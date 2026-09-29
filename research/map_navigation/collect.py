@@ -29,10 +29,20 @@ class SceneProcess:
         # Old AirSim binaries may ignore -settings. Isolate both adjacent and
         # HOME settings and the executable path; never mutate shared assets.
         source=Path(self.scene['simulator_root']).resolve()
+        original_binary=Path(self.scene['simulator_binary']).resolve()
+        binary_relative=original_binary.relative_to(source)
         worker=Path(tempfile.mkdtemp(prefix='scene-',dir=self.scene.get('worker_root')))
         runtime=worker/'runtime'
-        shutil.copytree(source,runtime,copy_function=os.link,ignore=shutil.ignore_patterns('Saved','settings.json'))
-        binary=runtime/Path(self.scene['simulator_binary']).resolve().relative_to(source)
+        # Some released ZIPs strip executable bits. Copy the executable so
+        # permission repair cannot mutate the shared source through a hard link.
+        def copy_asset(src,dst):
+            return shutil.copy2(src,dst) if Path(src).resolve()==original_binary else os.link(src,dst)
+        shutil.copytree(source,runtime,copy_function=copy_asset,ignore=shutil.ignore_patterns('Saved','settings.json'))
+        binary=runtime/binary_relative
+        if os.name!='nt' and not os.access(binary,os.X_OK):
+            with binary.open('rb') as stream:
+                if stream.read(4)!=b'\x7fELF':raise ValueError('Linux scene entry point is not an ELF binary')
+            binary.chmod(binary.stat().st_mode|0o100)
         settings=binary.parent/'settings.json';settings.write_text(json.dumps(requested),encoding='utf-8')
         home_settings=worker/'home/Documents/AirSim/settings.json';home_settings.parent.mkdir(parents=True)
         home_settings.write_text(json.dumps(requested),encoding='utf-8')

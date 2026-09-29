@@ -1,0 +1,248 @@
+﻿{
+  "schema": "photo-map-preflight-summary/v1",
+  "scenes": [
+    {
+      "schema": "photo-map-scene-preflight/v1",
+      "scene_id": "env_1",
+      "scene_descriptor_sha256": "321497d482ecaf13c83dc8fc6b6a192ffdfd480aa313ac6b25fda46800ce03cf",
+      "settings_sha256": "8100e6b800dbd23e7035dcc1f574145d66c87b1be3ee00a65b7aaca9294067b2",
+      "implementation_sha256": "df9f6612890ca8174c578348f87e1eafdfbf610713403760c1b0b4a675012fb2",
+      "sensor_interfaces_passed": true,
+      "qualified": false,
+      "flight_evidence": false,
+      "pose_placement_calls": 0,
+      "calibration_attempt_errors": [
+        "Camera color calibration is ambiguous or captures differ: {'RGB': 0.0, 'BGR': 0.0}",
+        "Camera color calibration is ambiguous or captures differ: {'RGB': 0.0, 'BGR': 0.0}"
+      ],
+      "color_calibration": {
+        "raw_channel_order": "BGR",
+        "canonical_pixel_format": "RGB24",
+        "mean_absolute_channel_errors": {
+          "RGB": 23.246733940972224,
+          "BGR": 0.0
+        },
+        "exact_png_agreement": true,
+        "raw_sha256": "3ddabf58739af0cccf795c7b389470effe1c9145866513078fc3ca7ea6b852fa",
+        "reference_rgb_sha256": "a15252627dd008b2d75fe02e5dcb8195c3e48768685a5e99f54990b42d543820",
+        "raw_sim_ns": 1790640904900817152,
+        "png_sim_ns": 1790640904903817216,
+        "source": "actual binary raw/PNG comparison; no pose/depth consumed"
+      },
+      "preview_sha256": "06953ecd030a1107aa6407093bd20f164d79747a9b8aaff975ee61391aad83b0",
+      "depth_sha256": "d9aaa118457bb82ff46fbe464b1538ffc94d9cfa21d68834aa356a6ff15333f9",
+      "rgb_std": 68.10657287329283,
+      "depth_supported_fraction": 1.0,
+      "depth_percentiles_m": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "capture_skew_s": 0.042000896,
+      "sim_wall_ratio": 1.000654498456443,
+      "spawn_ned_m": [
+        0.0,
+        0.0,
+        0.5494958162307739
+      ],
+      "spawn_collision": true,
+      "simulator_log": "/home/iamyanbo/uav-photo-map/qualification/aerialvln-preflight-warmup/env_1/scene-45ktmhvu/simulator.log",
+      "loaded_maps": []
+    },
+    {
+      "schema": "photo-map-scene-preflight/v1",
+      "scene_id": "env_6",
+      "scene_descriptor_sha256": "d3b6ed3454f8dda932d9e1fd8bd40f263609f139bcaba576a58d9031a332afb1",
+      "settings_sha256": "8100e6b800dbd23e7035dcc1f574145d66c87b1be3ee00a65b7aaca9294067b2",
+      "implementation_sha256": "df9f6612890ca8174c578348f87e1eafdfbf610713403760c1b0b4a675012fb2",
+      "sensor_interfaces_passed": true,
+      "qualified": false,
+      "flight_evidence": false,
+      "pose_placement_calls": 0,
+      "calibration_attempt_errors": [
+        "Camera color calibration is ambiguous or captures differ: {'RGB': 0.0, 'BGR': 0.0}",
+        "Camera color calibration is ambiguous or captures differ: {'RGB': 0.0, 'BGR': 0.0}"
+      ],
+      "color_calibration": {
+        "raw_channel_order": "BGR",
+        "canonical_pixel_format": "RGB24",
+        "mean_absolute_channel_errors": {
+          "RGB": 13.732471788194445,
+          "BGR": 0.0
+        },
+        "exact_png_agreement": true,
+        "raw_sha256": "4196435a73460ab929adb2f59f31d4a27cb712068dcf252e4d2b6ac799c90430",
+        "reference_rgb_sha256": "303e6b4204aaa67737da68b3782dbadbeb3a0bd1e827ddc6b731a3e48e64997f",
+        "raw_sim_ns": 1790640928794915072,
+        "png_sim_ns": 1790640928797915136,
+        "source": "actual binary raw/PNG comparison; no pose/depth consumed"
+      },
+      "preview_sha256": "235c2241b926b615a52049f613ad250a7bacc30cded070536e1c4931f043b92f",
+      "depth_sha256": "e66fc8fb197791e286d67fe529ee3ef21ff8a3fde9d67573493b620d2f4dfee6",
+      "rgb_std": 113.30430361120649,
+      "depth_supported_fraction": 0.5863802083333334,
+      "depth_percentiles_m": [
+        1.4189453125,
+        7.50390625,
+        38.0625
+      ],
+      "capture_skew_s": 0.051001088,
+      "sim_wall_ratio": 0.9992062941700338,
+      "spawn_ned_m": [
+        0.0,
+        0.0,
+        1.0410929918289185
+      ],
+      "spawn_collision": true,
+      "simulator_log": "/home/iamyanbo/uav-photo-map/qualification/aerialvln-preflight-warmup/env_6/scene-nhyn6puh/simulator.log",
+      "loaded_maps": []
+    },
+    {
+      "schema": "photo-map-scene-preflight/v1",
+      "scene_id": "env_23",
+      "scene_descriptor_sha256": "40f7bd6fca341f15160abdb2abe88bf5d077c1f87d104bbd4d0eefba12ab6e4e",
+      "settings_sha256": "8100e6b800dbd23e7035dcc1f574145d66c87b1be3ee00a65b7aaca9294067b2",
+      "implementation_sha256": "df9f6612890ca8174c578348f87e1eafdfbf610713403760c1b0b4a675012fb2",
+      "sensor_interfaces_passed": true,
+      "qualified": false,
+      "flight_evidence": false,
+      "pose_placement_calls": 0,
+      "calibration_attempt_errors": [
+        "Camera color calibration is ambiguous or captures differ: {'RGB': 0.0, 'BGR': 0.0}",
+        "Camera color calibration is ambiguous or captures differ: {'RGB': 0.0, 'BGR': 0.0}"
+      ],
+      "color_calibration": {
+        "raw_channel_order": "BGR",
+        "canonical_pixel_format": "RGB24",
+        "mean_absolute_channel_errors": {
+          "RGB": 9.03546875,
+          "BGR": 0.0
+        },
+        "exact_png_agreement": true,
+        "raw_sha256": "2e8054f737d5dbe6646b8ed4989e1a6de18311a1f585b9fae179ded153d217b0",
+        "reference_rgb_sha256": "b42239c6fc3d92cc92033145427b6e8b90675a9000328a9db6f5d6564a3bffde",
+        "raw_sim_ns": 1790640950290808064,
+        "png_sim_ns": 1790640950293808128,
+        "source": "actual binary raw/PNG comparison; no pose/depth consumed"
+      },
+      "preview_sha256": "0e157a5bd5759994da5889cca5f37fe661534d38e07b68fdf06885705213599e",
+      "depth_sha256": "0ee1ecd7ab10df48d30a83480d98db8c278e6c8b0efb19267ca7ad1c8ddcd690",
+      "rgb_std": 19.544193429052548,
+      "depth_supported_fraction": 0.996708984375,
+      "depth_percentiles_m": [
+        0.42724609375,
+        8.9921875,
+        58.8125
+      ],
+      "capture_skew_s": 0.048001024,
+      "sim_wall_ratio": 1.000589501950642,
+      "spawn_ned_m": [
+        0.0,
+        0.0,
+        0.9626768231391907
+      ],
+      "spawn_collision": true,
+      "simulator_log": "/home/iamyanbo/uav-photo-map/qualification/aerialvln-preflight-warmup/env_23/scene-xfwpe6jx/simulator.log",
+      "loaded_maps": []
+    },
+    {
+      "schema": "photo-map-scene-preflight/v1",
+      "scene_id": "env_4",
+      "scene_descriptor_sha256": "2bc38187cebdde4e107ab0ed321b1a7fa6cc9a4c88f5bc422bfdec546b0a0583",
+      "settings_sha256": "83013772f376dc1734486fad22ceb34923b44855ec1821b524cc865e12283e0b",
+      "implementation_sha256": "df9f6612890ca8174c578348f87e1eafdfbf610713403760c1b0b4a675012fb2",
+      "sensor_interfaces_passed": true,
+      "qualified": false,
+      "flight_evidence": false,
+      "pose_placement_calls": 0,
+      "calibration_attempt_errors": [
+        "Camera color calibration is ambiguous or captures differ: {'RGB': 0.0, 'BGR': 0.0}",
+        "Camera color calibration is ambiguous or captures differ: {'RGB': 0.0, 'BGR': 0.0}"
+      ],
+      "color_calibration": {
+        "raw_channel_order": "BGR",
+        "canonical_pixel_format": "RGB24",
+        "mean_absolute_channel_errors": {
+          "RGB": 42.3348046875,
+          "BGR": 0.0
+        },
+        "exact_png_agreement": true,
+        "raw_sha256": "fd9db62a83f9b1af6e64325d47b81bb91361ab4e97063b65ab87baa8d785620f",
+        "reference_rgb_sha256": "d2c12fcf35bd1557351430e336451617c1a15cbfd67edb27b69491af7dcda777",
+        "raw_sim_ns": 1790640887282320640,
+        "png_sim_ns": 1790640887288320768,
+        "source": "actual binary raw/PNG comparison; no pose/depth consumed"
+      },
+      "preview_sha256": "d3adbfb95bfd844a22ddf43e71f95b5acb2ef240090998746af35084ea582955",
+      "depth_sha256": "e7c99a0d1646ee11710798b16e398d934631dd31cee09ae5bab437d9ed10586b",
+      "rgb_std": 36.10639828710613,
+      "depth_supported_fraction": 0.23548828125,
+      "depth_percentiles_m": [
+        102.4375,
+        127.84375,
+        189.25
+      ],
+      "capture_skew_s": 0.048001024,
+      "sim_wall_ratio": 0.9992232415740181,
+      "spawn_ned_m": [
+        0.0,
+        0.0,
+        117.0500259399414
+      ],
+      "spawn_collision": false,
+      "simulator_log": "/home/iamyanbo/uav-photo-map/qualification/aerialvln-preflight-warmup/env_4/scene-d_vetpb8/simulator.log",
+      "loaded_maps": []
+    },
+    {
+      "schema": "photo-map-scene-preflight/v1",
+      "scene_id": "env_11",
+      "scene_descriptor_sha256": "924a1562606d99ad210898da4994d491936ea1741ec79b1794b7a6715025d76b",
+      "settings_sha256": "83013772f376dc1734486fad22ceb34923b44855ec1821b524cc865e12283e0b",
+      "implementation_sha256": "df9f6612890ca8174c578348f87e1eafdfbf610713403760c1b0b4a675012fb2",
+      "sensor_interfaces_passed": true,
+      "qualified": false,
+      "flight_evidence": false,
+      "pose_placement_calls": 0,
+      "calibration_attempt_errors": [
+        "Camera color calibration is ambiguous or captures differ: {'RGB': 0.0, 'BGR': 0.0}",
+        "Camera color calibration is ambiguous or captures differ: {'RGB': 0.0, 'BGR': 0.0}"
+      ],
+      "color_calibration": {
+        "raw_channel_order": "BGR",
+        "canonical_pixel_format": "RGB24",
+        "mean_absolute_channel_errors": {
+          "RGB": 21.31930989583333,
+          "BGR": 0.0
+        },
+        "exact_png_agreement": true,
+        "raw_sha256": "cb5a379abcdf74aba51beecd26dfc03ae45605122f0cd2c51bca1faeb6ba1f6a",
+        "reference_rgb_sha256": "2008ee5e663fc895a86aad31c23607b8cc0f9b9d53d1b47857214c2612d35060",
+        "raw_sim_ns": 1790640909673878528,
+        "png_sim_ns": 1790640909676878592,
+        "source": "actual binary raw/PNG comparison; no pose/depth consumed"
+      },
+      "preview_sha256": "618b7914a59346f21d84d5de3099177f31a762f803186f5025baf552e1978ee9",
+      "depth_sha256": "873312c997095a91b421143d190671966c3bca673e51098470c41f758f73806b",
+      "rgb_std": 27.04931564519641,
+      "depth_supported_fraction": 0.17119466145833334,
+      "depth_percentiles_m": [
+        94.0625,
+        119.125,
+        151.125
+      ],
+      "capture_skew_s": 0.03000064,
+      "sim_wall_ratio": 1.000560822367955,
+      "spawn_ned_m": [
+        0.0,
+        0.0,
+        113.89076232910156
+      ],
+      "spawn_collision": false,
+      "simulator_log": "/home/iamyanbo/uav-photo-map/qualification/aerialvln-preflight-warmup/env_11/scene-ipyyzzsx/simulator.log",
+      "loaded_maps": []
+    }
+  ],
+  "sensor_interface_passes": 5,
+  "qualified": false,
+  "flight_evidence": false
+}

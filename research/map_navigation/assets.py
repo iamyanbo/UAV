@@ -17,9 +17,10 @@ REPO = 'IPEC-COMMUNITY/OpenFly_DataGen'
 SCENES = ('16', '18', '23', '26', 'gz', 'sh')
 
 
-def request(url, token=None):
+def request(url, token=None, headers=None):
     return urllib.request.urlopen(urllib.request.Request(url, headers={
-        'User-Agent': 'photo-map-research/1', **({'Authorization':'Bearer '+token} if token else {})}), timeout=60)
+        'User-Agent': 'photo-map-research/1', **({'Authorization':'Bearer '+token} if token else {}),
+        **(headers or {})}), timeout=60)
 
 
 def token_value():
@@ -110,19 +111,65 @@ def aerialvln(output, urban=False):
     name='urbanscene3d' if urban else 'aerialvln';limit=(75 if urban else 45)*1024**3
     if urban:url='https://www.dropbox.com/scl/fi/3t4ghehoo9k6xg4qy3p7x/Simulator.zip?rlkey=xy87u2wpz31vvdlletr9n4cto&dl=1'
     receipt=out/(name+'.json');part=out/(name+'.zip.partial');target=out/(name+'.zip')
+    lock=out/(name+'.download-lock')
+    fd=os.open(lock,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+    os.write(fd,str(os.getpid()).encode())
+    try:return _public_archive(url,receipt,part,target,limit,'UrbanScene3D' if urban else 'AerialVLN')
+    finally:os.close(fd);lock.unlink()
+
+
+def _public_archive(url,receipt,part,target,limit,source):
+    """Resume only the same HTTP entity, validating an overlapping byte range."""
     if target.exists():raise ValueError('Existing archive needs explicit verification, not overwrite')
-    if shutil.disk_usage(out).free<limit:raise RuntimeError('Need space for the published simulator archive')
-    record=dict(source='UrbanScene3D' if urban else 'AerialVLN',url=url,status='downloading',qualified=False,sha256_source='local-download')
-    write(receipt,record);h=hashlib.sha256();size=0;started=time.monotonic()
+    size=part.stat().st_size if part.exists() else 0
+    if size>limit:raise ValueError('Partial archive exceeds download budget')
+    previous=read(receipt) if receipt.exists() else {}
+    etag=previous.get('etag')
+    if size and (previous.get('url')!=url or not etag or etag.startswith('W/')):
+        raise ValueError('Partial archive has no matching strong entity identity; preserve it for inspection')
+    if shutil.disk_usage(part.parent).free<limit-size:raise RuntimeError('Need space for remaining archive bytes')
+    record=dict(source=source,url=url,status='downloading',qualified=False,sha256_source='local-download',
+                bytes=size,resumed_from_bytes=size,etag=etag)
+    if previous:
+        # Preserve the failure receipt before replacing it with live progress.
+        history=receipt.with_name(receipt.stem+'-attempt-'+str(time.time_ns())+'.json')
+        write(history,previous)
+    write(receipt,record);h=hashlib.sha256();started=time.monotonic()
     try:
-        with request(url) as response,part.open('wb') as stream:
-            record['etag']=response.headers.get('ETag');expected=int(response.headers.get('Content-Length',0))
+        if size:
+            with part.open('rb') as saved:
+                while block:=saved.read(8*1024**2):h.update(block)
+        overlap=min(size,64*1024)
+        headers={'Range':f'bytes={size-overlap}-','If-Range':etag} if size else {}
+        with request(url,headers=headers) as response:
+            current_etag=response.headers.get('ETag')
+            if size:
+                match=re.fullmatch(r'bytes (\d+)-(\d+)/(\d+)',response.headers.get('Content-Range',''))
+                if response.status!=206 or current_etag!=etag or not match:
+                    raise ValueError('Server did not confirm the unchanged ranged entity; partial archive preserved')
+                begin,end,expected=map(int,match.groups())
+                if begin!=size-overlap or end<begin or end>=expected or expected<size:
+                    raise ValueError('Unexpected response range; partial archive preserved')
+                data=b''
+                while len(data)<overlap:
+                    chunk=response.read(overlap-len(data))
+                    if not chunk:raise ValueError('Incomplete overlap response')
+                    data+=chunk
+                with part.open('rb') as saved:
+                    saved.seek(size-overlap)
+                    if saved.read(overlap)!=data:raise ValueError('Resume boundary content differs; partial archive preserved')
+            else:
+                if response.status!=200:raise ValueError('Unexpected initial response status')
+                expected=int(response.headers.get('Content-Length',0))
+            record.update(etag=current_etag,expected_bytes=expected)
             if expected>limit:raise ValueError('Unexpected archive size')
-            while block:=response.read(8*1024**2):
-                size+=len(block)
-                if size>limit or time.monotonic()-started>8*3600:raise ValueError('Archive budget exceeded')
-                stream.write(block);h.update(block)
-                if size//(1024**3)!=(size-len(block))//(1024**3):write(receipt,dict(record,bytes=size,seconds=time.monotonic()-started))
+            write(receipt,record)
+            with part.open('ab' if part.exists() else 'xb') as stream:
+                while block:=response.read(8*1024**2):
+                    if size+len(block)>limit or (expected and size+len(block)>expected) or time.monotonic()-started>8*3600:
+                        raise ValueError('Archive budget exceeded')
+                    stream.write(block);h.update(block);size+=len(block)
+                    if size//(1024**3)!=(size-len(block))//(1024**3):write(receipt,dict(record,bytes=size,seconds=time.monotonic()-started))
         if expected and expected!=size:raise ValueError('Incomplete response')
         with zipfile.ZipFile(part) as archive:
             members=archive.infolist()
@@ -131,7 +178,8 @@ def aerialvln(output, urban=False):
         part.replace(target)
         write(receipt,dict(record,status='downloaded',bytes=size,sha256=h.hexdigest(),path=str(target.resolve()),seconds=time.monotonic()-started))
     except Exception as exc:
-        write(receipt,dict(record,status='failed',bytes=size,error_type=type(exc).__name__,http_status=getattr(exc,'code',None)))
+        write(receipt,dict(record,status='failed',bytes=size,error_type=type(exc).__name__,
+                          reason=str(exc) if isinstance(exc,ValueError) else None,http_status=getattr(exc,'code',None)))
         raise
 
 

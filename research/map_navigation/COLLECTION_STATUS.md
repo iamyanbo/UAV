@@ -3,6 +3,54 @@
 Source is implemented for the revised collection programme. No accepted pilot
 flights, new trained models or navigation acceptance results exist yet.
 
+## Acquisition and compatibility update
+
+AerialVLN is downloaded and extracted: 34,809,808,002 archive bytes,
+SHA-256 `48921c09e51feb854be5ee072a8470ea87832adaa53473dc98dec1cc84afb22f`,
+25 candidate executables. These are not yet 25 independent qualified geographies.
+Its env_16 PAK is identical to the existing OpenFly env_airsim_16 PAK
+(`cb75dd0231f3099699df5680c1df68c1d0bbd63235c44551ad69c2af8a797705`);
+count that environment once and retain its historical training assignment.
+
+The archive stripped executable permissions. Workers now copy and repair only
+their private ELF executable, leaving shared assets unchanged. The first corrected
+launch pass produced 20 sensor-interface passes out of 25; five failed the exact
+raw/PNG color calibration on initial frames. All five passed after bounded
+rendering warm-up; the [rerun evidence](evidence/aerialvln-preflight-warmup-20260928.json)
+is preserved separately under Spark `qualification/aerialvln-preflight-warmup`.
+This preserves failed PNG diagnostics and the same exact calibration criterion.
+These checks use no flight commands or pose placement and do not qualify routes,
+collision handling, policies or collection throughput.
+Default spawns still need scene-specific inspection: env_1 reported a collision
+and constant one-metre depth, while env_11 descended far below its initial NED
+origin during startup. Sensor interface success does not certify useful spawn
+geometry or accurate depth labels.
+See [initial preflight evidence](evidence/aerialvln-preflight-20260928.json).
+
+UrbanScene3D's initial transfer ended at 40,574,435,157 bytes. The downloader now
+resumes only with matching entity identity, HTTP range validation and an exact
+64-KiB overlap comparison; it preserves partial files and prior receipts on
+failure. The resumed transfer remains in progress toward 68,698,995,262 bytes.
+The Spark receipt `assets/urbanscene/urbanscene3d.json` is authoritative for current
+progress. Extraction and inspection follow download verification.
+
+The official AerialVLN annotation release is also acquired for metadata auditing.
+Its training split has 16,386 instruction episodes but 7,326 distinct trajectory
+IDs across 17 scenes, so instruction paraphrases must not count as independent
+paths. Released env_1 training references span approximately 540–3,266 metres;
+other scenes have much shorter paths, including zero-length references needing
+filtering. The [route metadata audit](evidence/aerialvln-route-audit-20260928.json)
+records source splits separately; test references are absent. Source splits are
+not our frozen geography splits, and these paths are not admitted training data
+or physics-qualified expert trajectories.
+
+Oracle imitation, PPO-only and imitation followed by PPO remain a proposed
+matched comparison. Geometry-derived imitation labels are currently masked by
+the implementation below; that conservative choice is not evidence that oracle
+imitation is invalid. Revising eligibility requires explicit supervision provenance
+and a comparison, not describing all privileged labels as observation-grounded.
+No PPO-only training or model training was started by this acquisition update.
+
 The source connects scene provenance and 14/4/6 split gates, stratified 50–2,000 m
 missions, isolated simulator workers, atomic attempt/disk reservations, measured
 resource receipts, domain interventions, qualified observation-teacher corrections,

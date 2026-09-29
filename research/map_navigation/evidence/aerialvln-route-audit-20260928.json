@@ -1,0 +1,370 @@
+{
+  "schema": "photo-map-released-route-audit/v1",
+  "training_admission": false,
+  "units": "released coordinates, nominal metres; not physics-qualified",
+  "splits": {
+    "train.json": {
+      "episodes": 16386,
+      "scenes": {
+        "5": {
+          "unique_trajectories": 446,
+          "routes_with_reference": 446,
+          "min_length": 150.99999999999991,
+          "max_length": 834.9999999999999,
+          "median_length": 351.0
+        },
+        "1": {
+          "unique_trajectories": 1065,
+          "routes_with_reference": 1065,
+          "min_length": 540.0000000000002,
+          "max_length": 3266.0000000000014,
+          "median_length": 1237.9999999999993
+        },
+        "10": {
+          "unique_trajectories": 520,
+          "routes_with_reference": 520,
+          "min_length": 148.0,
+          "max_length": 889.9999999999999,
+          "median_length": 345.0
+        },
+        "8": {
+          "unique_trajectories": 369,
+          "routes_with_reference": 369,
+          "min_length": 0,
+          "max_length": 335.0,
+          "median_length": 117.0
+        },
+        "12": {
+          "unique_trajectories": 316,
+          "routes_with_reference": 316,
+          "min_length": 69.0,
+          "max_length": 365.0,
+          "median_length": 178.00000000000003
+        },
+        "11": {
+          "unique_trajectories": 532,
+          "routes_with_reference": 532,
+          "min_length": 90.0,
+          "max_length": 1242.0000000000002,
+          "median_length": 554.9999999999997
+        },
+        "16": {
+          "unique_trajectories": 1032,
+          "routes_with_reference": 1032,
+          "min_length": 0,
+          "max_length": 2733.999999999999,
+          "median_length": 1124.9999999999977
+        },
+        "14": {
+          "unique_trajectories": 270,
+          "routes_with_reference": 270,
+          "min_length": 12.0,
+          "max_length": 884.0,
+          "median_length": 161.0
+        },
+        "23": {
+          "unique_trajectories": 460,
+          "routes_with_reference": 460,
+          "min_length": 317.00000000000006,
+          "max_length": 1459.9999999999998,
+          "median_length": 622.9999999999999
+        },
+        "20": {
+          "unique_trajectories": 337,
+          "routes_with_reference": 337,
+          "min_length": 269.0,
+          "max_length": 1084.0,
+          "median_length": 478.00000000000017
+        },
+        "25": {
+          "unique_trajectories": 229,
+          "routes_with_reference": 229,
+          "min_length": 357.99999999999994,
+          "max_length": 1756.0000000000002,
+          "median_length": 954.0
+        },
+        "3": {
+          "unique_trajectories": 299,
+          "routes_with_reference": 299,
+          "min_length": 44.99999999999999,
+          "max_length": 278.0,
+          "median_length": 119.0
+        },
+        "2": {
+          "unique_trajectories": 461,
+          "routes_with_reference": 461,
+          "min_length": 12.000000000000012,
+          "max_length": 664.0000000000002,
+          "median_length": 269.00000000000006
+        },
+        "26": {
+          "unique_trajectories": 204,
+          "routes_with_reference": 204,
+          "min_length": 658.9999999999982,
+          "max_length": 3097.0000000000414,
+          "median_length": 1464.0000000000018
+        },
+        "4": {
+          "unique_trajectories": 384,
+          "routes_with_reference": 384,
+          "min_length": 276.99999999999994,
+          "max_length": 1214.0000000000002,
+          "median_length": 504.00000000000017
+        },
+        "17": {
+          "unique_trajectories": 217,
+          "routes_with_reference": 217,
+          "min_length": 0,
+          "max_length": 268.0,
+          "median_length": 108.0
+        },
+        "22": {
+          "unique_trajectories": 185,
+          "routes_with_reference": 185,
+          "min_length": 72.0,
+          "max_length": 420.00000000000006,
+          "median_length": 183.0
+        }
+      }
+    },
+    "val_seen.json": {
+      "episodes": 1818,
+      "scenes": {
+        "26": {
+          "unique_trajectories": 35,
+          "routes_with_reference": 35,
+          "min_length": 570.9999999999985,
+          "max_length": 2665.999999999993,
+          "median_length": 1636.999999999995
+        },
+        "16": {
+          "unique_trajectories": 238,
+          "routes_with_reference": 238,
+          "min_length": 490.00000000000017,
+          "max_length": 2368.9999999999986,
+          "median_length": 1161.9999999999986
+        },
+        "17": {
+          "unique_trajectories": 70,
+          "routes_with_reference": 70,
+          "min_length": 54.99999999999999,
+          "max_length": 313.0,
+          "median_length": 128.0
+        },
+        "1": {
+          "unique_trajectories": 34,
+          "routes_with_reference": 34,
+          "min_length": 687.9999999999997,
+          "max_length": 2518.999999999996,
+          "median_length": 1207.0000000000018
+        },
+        "5": {
+          "unique_trajectories": 123,
+          "routes_with_reference": 123,
+          "min_length": 182.99999999999997,
+          "max_length": 754.0,
+          "median_length": 374.0
+        },
+        "12": {
+          "unique_trajectories": 45,
+          "routes_with_reference": 45,
+          "min_length": 125.00000000000004,
+          "max_length": 358.00000000000006,
+          "median_length": 178.00000000000003
+        },
+        "23": {
+          "unique_trajectories": 24,
+          "routes_with_reference": 24,
+          "min_length": 407.9999999999999,
+          "max_length": 1333.9999999999998,
+          "median_length": 626.0
+        },
+        "8": {
+          "unique_trajectories": 86,
+          "routes_with_reference": 86,
+          "min_length": 68.0,
+          "max_length": 317.0,
+          "median_length": 127.00000000000001
+        },
+        "3": {
+          "unique_trajectories": 48,
+          "routes_with_reference": 48,
+          "min_length": 64.0,
+          "max_length": 202.0,
+          "median_length": 144.0
+        },
+        "14": {
+          "unique_trajectories": 36,
+          "routes_with_reference": 36,
+          "min_length": 75.99999999999999,
+          "max_length": 400.0,
+          "median_length": 166.0
+        },
+        "2": {
+          "unique_trajectories": 45,
+          "routes_with_reference": 45,
+          "min_length": 178.0,
+          "max_length": 451.0,
+          "median_length": 248.99999999999997
+        },
+        "11": {
+          "unique_trajectories": 84,
+          "routes_with_reference": 84,
+          "min_length": 332.00000000000006,
+          "max_length": 1078.9999999999995,
+          "median_length": 560.0000000000001
+        },
+        "20": {
+          "unique_trajectories": 27,
+          "routes_with_reference": 27,
+          "min_length": 344.0,
+          "max_length": 842.0,
+          "median_length": 579.0
+        },
+        "10": {
+          "unique_trajectories": 98,
+          "routes_with_reference": 98,
+          "min_length": 159.00000000000006,
+          "max_length": 861.0000000000001,
+          "median_length": 381.00000000000006
+        },
+        "4": {
+          "unique_trajectories": 145,
+          "routes_with_reference": 145,
+          "min_length": 322.0,
+          "max_length": 1113.0,
+          "median_length": 570.0
+        },
+        "22": {
+          "unique_trajectories": 16,
+          "routes_with_reference": 16,
+          "min_length": 126.0,
+          "max_length": 272.00000000000006,
+          "median_length": 165.0
+        }
+      }
+    },
+    "val_unseen.json": {
+      "episodes": 2310,
+      "scenes": {
+        "6": {
+          "unique_trajectories": 107,
+          "routes_with_reference": 107,
+          "min_length": 243.99999999999997,
+          "max_length": 1201.0,
+          "median_length": 488.9999999999997
+        },
+        "9": {
+          "unique_trajectories": 108,
+          "routes_with_reference": 108,
+          "min_length": 198.99999999999994,
+          "max_length": 646.9999999999997,
+          "median_length": 323.0000000000001
+        },
+        "13": {
+          "unique_trajectories": 67,
+          "routes_with_reference": 67,
+          "min_length": 40.99999999999999,
+          "max_length": 333.0,
+          "median_length": 95.0
+        },
+        "24": {
+          "unique_trajectories": 30,
+          "routes_with_reference": 30,
+          "min_length": 76.00000000000001,
+          "max_length": 251.99999999999997,
+          "median_length": 127.99999999999997
+        },
+        "15": {
+          "unique_trajectories": 129,
+          "routes_with_reference": 129,
+          "min_length": 10.0,
+          "max_length": 1150.0000000000002,
+          "median_length": 655.0000000000002
+        },
+        "21": {
+          "unique_trajectories": 75,
+          "routes_with_reference": 75,
+          "min_length": 292.0000000000001,
+          "max_length": 994.9999999999999,
+          "median_length": 527.9999999999994
+        },
+        "7": {
+          "unique_trajectories": 130,
+          "routes_with_reference": 130,
+          "min_length": 94.99999999999997,
+          "max_length": 674.0000000000001,
+          "median_length": 259.00000000000006
+        },
+        "18": {
+          "unique_trajectories": 296,
+          "routes_with_reference": 296,
+          "min_length": 656.000000000001,
+          "max_length": 3172.0000000000027,
+          "median_length": 1381.9999999999993
+        }
+      }
+    },
+    "test.json": {
+      "episodes": 4830,
+      "scenes": {
+        "6": {
+          "unique_trajectories": 273,
+          "routes_with_reference": 0,
+          "min_length": null,
+          "max_length": null,
+          "median_length": null
+        },
+        "9": {
+          "unique_trajectories": 254,
+          "routes_with_reference": 0,
+          "min_length": null,
+          "max_length": null,
+          "median_length": null
+        },
+        "13": {
+          "unique_trajectories": 149,
+          "routes_with_reference": 0,
+          "min_length": null,
+          "max_length": null,
+          "median_length": null
+        },
+        "24": {
+          "unique_trajectories": 72,
+          "routes_with_reference": 0,
+          "min_length": null,
+          "max_length": null,
+          "median_length": null
+        },
+        "15": {
+          "unique_trajectories": 297,
+          "routes_with_reference": 0,
+          "min_length": null,
+          "max_length": null,
+          "median_length": null
+        },
+        "7": {
+          "unique_trajectories": 341,
+          "routes_with_reference": 0,
+          "min_length": null,
+          "max_length": null,
+          "median_length": null
+        },
+        "18": {
+          "unique_trajectories": 758,
+          "routes_with_reference": 0,
+          "min_length": null,
+          "max_length": null,
+          "median_length": null
+        },
+        "21": {
+          "unique_trajectories": 177,
+          "routes_with_reference": 0,
+          "min_length": null,
+          "max_length": null,
+          "median_length": null
+        }
+      }
+    }
+  }
+}
