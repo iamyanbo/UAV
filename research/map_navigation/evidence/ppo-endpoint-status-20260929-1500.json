@@ -1,0 +1,186 @@
+{
+  "status": {
+    "status": "stopped",
+    "counts": {
+      "iteration": 2,
+      "transitions": 16384
+    },
+    "mixture": {
+      "mission": 17024,
+      "arrival": 4202
+    },
+    "budget": {
+      "campaign": {
+        "prior_receipt_sha256": "a4dc922aa53dfe1173ec4f28bcb668a9ba9cd49a18304fb8028550d0a390c912",
+        "training_attempts": 149,
+        "learner_attempts": 60,
+        "ppo_transitions": 36867
+      },
+      "overnight_ledger": {
+        "reserved": 32771,
+        "dispatch_reserved": 28564,
+        "observed": 28560,
+        "optimized": 16384,
+        "unobserved_discarded": 3
+      }
+    },
+    "trained_navigation_accepted": false,
+    "world_selector": false,
+    "photo_slam_operational_claim": false
+  },
+  "failure": {
+    "reason": "Repeated endpoint pilot freshness faults; operator review required",
+    "type": "RuntimeError",
+    "counts": {
+      "iteration": 2,
+      "transitions": 16384
+    }
+  },
+  "video-selection": {
+    "attempt_id": "train-933ebe22ca084d5b94973489879e07ff",
+    "selection": "first complete mission in second accepted batch, in recorded order",
+    "outcome": {
+      "attempt_id": "train-933ebe22ca084d5b94973489879e07ff",
+      "task_id": "env_5-0-000001",
+      "kind": "mission",
+      "scene_id": "env_5",
+      "difficulty": "detour",
+      "distance_bin": "40-100",
+      "event": "collision",
+      "reward": -0.9232278751289625,
+      "steps": 518,
+      "duration_s": 29.223623424,
+      "reset_wall_s": 2.534536127001047,
+      "pause_wall_s": 0.0,
+      "stops": 0.0,
+      "goal_region_observations": 0
+    },
+    "steps": 518,
+    "flight_seconds": 29.175622399999998,
+    "exported_utc": "2026-09-29T15:00:46.599575+00:00"
+  },
+  "updates": [
+    {
+      "policy_loss": 0.010749729350209236,
+      "value_loss": 0.0072607798501849174,
+      "kl": 6.28642737865448e-09,
+      "clip_fraction": 0.0,
+      "gaussian_entropy": 1.6864359378814697,
+      "stop_entropy": 0.004301427863538265,
+      "gradient_norm": 0.7631703615188599,
+      "early_kl_stop": true,
+      "optimizer_steps": 1,
+      "explained_variance": -0.043623621873509766,
+      "advantage_mean": -1.1175870895385742e-08,
+      "advantage_std": 1.0,
+      "final_rollout_kl": 0.029784755515720462,
+      "return_variance": 0.0066298553720116615,
+      "normalized_value_mse": 8.975291177677105,
+      "update_wall_s": 16.303733338834718,
+      "collection_wall_s": 668.7276601421181,
+      "collection_policy_sha256": "e9af1e8e5471307cc1428452e03f34de59bbd8106d64800227744d4b47d964f1",
+      "rollout_sha256": "49317c87c2bba86c501ea0209b4b6c75129bd211ba249e2fd90a98859534b1bd",
+      "counts": {
+        "iteration": 1,
+        "transitions": 8192
+      },
+      "decision_p95_s": 0.02279111642856151,
+      "source_age_p99_s": 0.08402081933338196,
+      "action_saturation_fraction": 0.0,
+      "guidance_fraction": 0.0,
+      "mean_reward": -0.0006501481376481221,
+      "mixture": {
+        "mission": 6499,
+        "arrival": 1693
+      },
+      "mean_episode_length_steps": 585.1428571428571,
+      "success_rate": 0.0,
+      "outcome_counts_by_kind": {
+        "mission": {
+          "collision": 4,
+          "false_stop": 3,
+          "rollout_boundary": 1
+        },
+        "execution": {},
+        "arrival": {
+          "timeout": 4,
+          "false_stop": 2
+        }
+      },
+      "collisions": 4,
+      "false_stops": 5,
+      "correct_stops": 0,
+      "goal_visits_without_stop": 4,
+      "reset_mean_s": 8.575857862015255,
+      "value_warning": true,
+      "gaussian_std": [
+        0.3680954873561859,
+        0.36851057410240173,
+        0.3693788945674896,
+        0.36969122290611267
+      ],
+      "freshness_faults": 0
+    },
+    {
+      "policy_loss": 0.0045999748338209955,
+      "value_loss": 0.025846516860550957,
+      "kl": 0.007379800399863406,
+      "clip_fraction": 0.09868421052631579,
+      "gaussian_entropy": 1.690090719022249,
+      "stop_entropy": 0.00437718879823622,
+      "gradient_norm": 0.8931839685691031,
+      "early_kl_stop": true,
+      "optimizer_steps": 19,
+      "explained_variance": 0.2595212672215146,
+      "advantage_mean": 0.0,
+      "advantage_std": 1.0,
+      "final_rollout_kl": 0.0216138333271374,
+      "return_variance": 0.005220341961830854,
+      "normalized_value_mse": 1.105908672063884,
+      "update_wall_s": 39.03328006295487,
+      "collection_wall_s": 744.4685780759901,
+      "collection_policy_sha256": "a7369f1a5de7b6362556466c09ada9611b7652fc7f655ac1e6c3f1a8f0241109",
+      "rollout_sha256": "87b320db6fd8b1da10f7ff20d8b6d797d7ae5906c0080044437613fe709cc76b",
+      "counts": {
+        "iteration": 2,
+        "transitions": 16384
+      },
+      "decision_p95_s": 0.023074292740784586,
+      "source_age_p99_s": 0.09136974843218924,
+      "action_saturation_fraction": 0.0,
+      "guidance_fraction": 0.0,
+      "mean_reward": -0.0005317895315096659,
+      "mixture": {
+        "mission": 13135,
+        "arrival": 3249
+      },
+      "mean_episode_length_steps": 512.0,
+      "success_rate": 0.0,
+      "outcome_counts_by_kind": {
+        "mission": {
+          "collision": 4,
+          "false_stop": 6
+        },
+        "execution": {},
+        "arrival": {
+          "success": 1,
+          "timeout": 4,
+          "rollout_boundary": 1
+        }
+      },
+      "collisions": 4,
+      "false_stops": 6,
+      "correct_stops": 1,
+      "goal_visits_without_stop": 5,
+      "reset_mean_s": 9.527607620635536,
+      "value_warning": false,
+      "gaussian_std": [
+        0.36750006675720215,
+        0.37008902430534363,
+        0.3701840341091156,
+        0.37025710940361023
+      ],
+      "freshness_faults": 0
+    }
+  ]
+}
