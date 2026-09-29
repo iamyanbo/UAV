@@ -17,13 +17,13 @@ from .common import read,write,digest,Window
 from .ppo_env import PilotEnvironment
 
 
-def proposals(annotations,scene_id,split):
+def proposals(annotations,scene_id,split,height_offset=2.):
     with zipfile.ZipFile(annotations) as archive:
         rows=json.loads(archive.read('train.json' if split=='train' else 'val_unseen.json'))['episodes']
     seen=set();endpoints=set()
     for row in sorted(rows,key=lambda r:str(r['trajectory_id'])):
         if int(row['scene_id'])!=int(str(scene_id).replace('env_','')) or row['trajectory_id'] in seen:continue
-        seen.add(row['trajectory_id']);path=row['reference_path']
+        seen.add(row['trajectory_id']);path=row['reference_path'];proposed=False
         for i in range(2,len(path)-2,5):
             start=np.asarray(path[i][:3],float)
             for j in range(i+1,min(len(path),i+20)):
@@ -31,7 +31,7 @@ def proposals(annotations,scene_id,split):
                 if not 12<=np.linalg.norm((goal-start)[:2])<=18 or abs(goal[2]-start[2])>2:continue
                 # Extra height is only a candidate. Depth and physical flight
                 # must qualify it; a source path supplies no clearance labels.
-                start[2]-=2;goal[2]=start[2]
+                start[2]-=height_offset;goal[2]=start[2]
                 key=tuple(np.round(np.r_[start,goal],2))
                 if key in endpoints:break
                 endpoints.add(key)
@@ -41,10 +41,14 @@ def proposals(annotations,scene_id,split):
                     if behavior=='descent':
                         begin=goal.copy();begin[2]-=dz;end=start.copy();heading=(yaw+360)%360-180
                     else:end[2]+=dz
-                    yield dict(id=f'{scene_id}-{row["trajectory_id"]}-{i}-{j}-{behavior}',
+                    yield dict(id=f'{scene_id}-{row["trajectory_id"]}-{i}-{j}-{behavior}-h{height_offset:g}',
                         start=begin.tolist(),goal=end.tolist(),start_yaw_deg=heading,goal_yaw_deg=heading,
                         behavior=behavior,reference_id=row['trajectory_id'],scene_id=scene_id,split=split)
+                proposed=True
                 break
+            # Spread a bounded preparation batch across distinct source routes
+            # instead of exhausting it on many nearby legs of the first route.
+            if proposed:break
 
 
 def capture_depth(env,position,yaw,root,name):
@@ -125,7 +129,7 @@ def prepare(args):
     try:
         with PilotEnvironment(descriptor,out/'worker',cfg,port=args.port) as env:
             env.calibrate()
-            for index,task in enumerate(proposals(args.annotations,descriptor['scene_id'],args.split)):
+            for index,task in enumerate(proposals(args.annotations,descriptor['scene_id'],args.split,args.height_offset)):
                 if not window.remaining() or all(n>=args.per_behavior for n in counts.values()):break
                 if counts[task['behavior']]>=args.per_behavior:continue
                 if index>=args.max_candidates:break
@@ -180,4 +184,8 @@ if __name__=='__main__':
     p.add_argument('--hours',type=float,default=2)
     p.add_argument('--port',type=int,default=43551)
     p.add_argument('--seed-tasks',help='Reuse immutable accepted task receipts from an earlier preparation run')
-    prepare(p.parse_args())
+    p.add_argument('--height-offset',type=float,default=2.,help='Candidate height above reference, still subject to identical clearance checks')
+    args=p.parse_args()
+    if args.per_behavior<1 or args.max_candidates<1:p.error('Positive task/candidate limits required')
+    if not math.isfinite(args.height_offset) or not 0<=args.height_offset<=20:p.error('Height offset must be between 0 and 20 m')
+    prepare(args)
