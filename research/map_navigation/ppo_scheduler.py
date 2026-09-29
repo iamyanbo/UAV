@@ -16,6 +16,7 @@ class FeatureBank:
     def __init__(self):
         self.frames={};self.paths={};self.history=deque(maxlen=4);self.memory=RGBMemory();self.next_id=0
         self.goal=None;self.goal_image=None
+        self.exercise=None;self.exercise_record=None;self.kind='mission'
 
     def add(self,raw,path):
         ident=self.next_id;self.next_id+=1;self.frames[ident]=raw.detach().cpu().half();self.paths[ident]=path
