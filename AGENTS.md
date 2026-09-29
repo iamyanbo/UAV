@@ -1,5 +1,16 @@
 # CURI-UAV research invariants
 
+## Latest status: September 29, 11:00 Toronto
+
+Training is STOPPED. Two accepted updates used 16,384 fresh transitions and
+20 Adam steps. Three freshness faults stopped batch three at 14:27:23 UTC;
+4,842 confirmed rows remain archived without optimization. No mission successes;
+one arrival-only exercise succeeded. Preserve checkpoints and diagnose timing
+before restarting; do not relax the watchdog or reset counters. Evidence:
+`research/map_navigation/evidence/ppo-endpoint-status-20260929-1500.json`.
+Local video: `artifacts/ppo-proof/ppo-update2-mission.mp4` (ends in collision).
+Launch descriptions below are historical, not current running status.
+
 ## Endpoint Mode 1 launch — September 29, 2026
 
 Live launch pointer: `/home/iamyanbo/uav-photo-map/ppo-active.json`. The current
