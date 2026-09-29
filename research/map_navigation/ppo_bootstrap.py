@@ -37,11 +37,12 @@ def proposals(annotations,scene_id,split):
                 endpoints.add(key)
                 yaw=math.degrees(math.atan2(*(goal-start)[[1,0]]))
                 for behavior,dz in [('level',0),('climb',-3),('descent',3)]:
-                    begin=start.copy();end=goal.copy()
-                    if behavior=='descent':begin[2]-=dz
+                    begin=start.copy();end=goal.copy();heading=yaw
+                    if behavior=='descent':
+                        begin=goal.copy();begin[2]-=dz;end=start.copy();heading=(yaw+360)%360-180
                     else:end[2]+=dz
                     yield dict(id=f'{scene_id}-{row["trajectory_id"]}-{i}-{j}-{behavior}',
-                        start=begin.tolist(),goal=end.tolist(),start_yaw_deg=yaw,goal_yaw_deg=yaw,
+                        start=begin.tolist(),goal=end.tolist(),start_yaw_deg=heading,goal_yaw_deg=heading,
                         behavior=behavior,reference_id=row['trajectory_id'],scene_id=scene_id,split=split)
                 break
 
@@ -115,7 +116,12 @@ def physical_flight(env,task,root):
 def prepare(args):
     cfg=read(Path(__file__).with_name('ppo_pilot.json'));descriptor=read(args.scene)
     out=Path(args.output);out.mkdir(parents=True,exist_ok=False);window=Window(args.hours)
-    tasks=[];rejected=[];counts={k:0 for k in ('level','climb','descent')}
+    tasks=read(args.seed_tasks)['tasks'] if args.seed_tasks else [];rejected=[]
+    for task in tasks:
+        if task['scene_id']!=descriptor['scene_id'] or task['split']!=args.split or task['camera']!=cfg['camera']:
+            raise ValueError('Seed tasks must retain scene, split and calibration')
+        if digest(task['geometry_evidence'])!=task['geometry_evidence_sha256']:raise ValueError('Seed geometry changed')
+    counts={k:sum(t['behavior']==k for t in tasks) for k in ('level','climb','descent')}
     try:
         with PilotEnvironment(descriptor,out/'worker',cfg,port=args.port) as env:
             env.calibrate()
@@ -173,4 +179,5 @@ if __name__=='__main__':
     p.add_argument('--per-behavior',type=int,default=2);p.add_argument('--max-candidates',type=int,default=30)
     p.add_argument('--hours',type=float,default=2)
     p.add_argument('--port',type=int,default=43551)
+    p.add_argument('--seed-tasks',help='Reuse immutable accepted task receipts from an earlier preparation run')
     prepare(p.parse_args())
