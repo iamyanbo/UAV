@@ -1,7 +1,49 @@
 # Collection implementation and measured status — September 28, 2026
 
-Source is implemented for the revised collection programme. No accepted pilot
-flights, new trained models or navigation acceptance results exist yet.
+Source is implemented for the revised collection programme. Engineering reference
+flights are now recorded; no accepted pilot flights, new trained models or learned
+navigation acceptance results exist yet.
+
+## First recorded reference flights
+
+`reference_capture.py` started a bounded engineering collection on September 28.
+It uses released AerialVLN training references, explicit initial placement and
+continuous-physics velocity commands thereafter. It is a privileged data-collection
+controller, not an alternative runtime policy. RGB, timestamped commands and
+simulator telemetry are retained separately from accepted v6 training data.
+Its attempt ledger is Spark `engineering-reference.sqlite3`; these reservations
+must be reconciled with the overall 250/10,000 budgets before broader collection.
+
+- env_5 attempt2 completed its 151-metre released reference: 152.19 metres measured,
+  102.63 seconds, 1,023 RGB frames and no recorded collision flags. No pose placement
+  occurred during recording. Completion means reaching the reference endpoint,
+  not learned visual arrival or verified landing.
+- env_2 attempt2 stopped on collision after 21.32 metres and 19.46 seconds. Preserve
+  it as failed reference data; do not count only successful captures.
+
+The env_5 loop-cycle p50/p95/p99 were 65.1/81.5/101.8 ms, including telemetry,
+dispatch, capture and PNG storage. These are not actor decision latency metrics;
+this 10-Hz engineering capture does not meet the proposed 20-Hz collection target.
+Its verified H.264 video is 102.6 seconds, 960x560 at 10 fps, with original camera
+frames and a trajectory overlay, stored locally in `artifacts/collection-proof`.
+- env_5 attempt1 was interrupted after full-resolution synchronous depth requests
+  stretched cycles to about three seconds. Its partial recording remains preserved.
+- env_16 did not launch a flight because no source route met this small demo's
+  100–250 metre filter. This does not mean env_16 is unusable.
+
+The revised capture uses canonical raw RGB converted to PNG outside the simulator,
+short-lived commands and a camera at body Z=-0.1 m, instead of the previous +1 m
+offset below the vehicle. Depth is absent from the revised flight recordings;
+asynchronous depth and complete shared training contracts remain outstanding.
+The camera currently includes parts of the airframe in view. These recordings
+demonstrate physical reference execution and diagnose collection, not full data
+readiness or latency acceptance. Further bounded checks were queued for env_10
+and env_14; consult Spark `collection-reference-20260928/job-more.log` for results.
+
+Raw recordings live under Spark `collection-reference-20260928`. The local video
+renderer `reference_video.py` preserves wall-clock timing and overlays measured
+trajectory against the released route; it labels the privileged controller.
+See [download access and UrbanScene3D integration](ACQUISITION_ACCESS.md).
 
 ## Acquisition and compatibility update
 

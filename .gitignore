@@ -39,3 +39,4 @@ domains/finance_realdata/local/
 .autoresearch-legacy-remnants-*/
 .quant-trials.sqlite*
 .quant-harness/
+/artifacts/collection-proof/
