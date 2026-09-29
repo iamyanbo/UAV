@@ -1,0 +1,470 @@
+{
+  "audit_date": "2026-09-29",
+  "paper": "https://arxiv.org/html/2602.00551v1",
+  "upstream": {
+    "url": "https://github.com/4amGodvzx/apex.git",
+    "commit": "303de3e2f580ed8546164e4f329a5e5d81dd32f3"
+  },
+  "benchmark_url": "https://github.com/iLearn-Lab/ACMMM25-UAV_ON",
+  "assets": [
+    {
+      "repository": "Kyaren/UAV-ON-envs-train",
+      "revision": "377913c457811ba33eccc60cc72fdcf51dc7ed71",
+      "files": [
+        {
+          "path": ".gitattributes",
+          "bytes": 2461,
+          "sha256": null
+        },
+        {
+          "path": "BrushifyUrban.zip",
+          "bytes": 3792665479,
+          "sha256": "93fa6dc013acc555eabc5f454d353ccbfbad4e96f9e6ae732c80d5c5d0ab7b8b"
+        },
+        {
+          "path": "CabinLake.zip",
+          "bytes": 2119909078,
+          "sha256": "f223998a871b32fe6ecce5a8117fb3bd57ac0d4f2aab80335cbc6bb67b2e14f6"
+        },
+        {
+          "path": "CityPark.zip",
+          "bytes": 3917792819,
+          "sha256": "15dbcc634998063981dd1a7c3e02d24b6548ffd9afe7acb65d263e22fb9737c8"
+        },
+        {
+          "path": "DownTown.zip",
+          "bytes": 2460691922,
+          "sha256": "2551a3f677f311f5aa2d7411ea42cc6f44674a0739038d1abf352ab10fe43f3b"
+        },
+        {
+          "path": "Neighborhood.zip",
+          "bytes": 3448814995,
+          "sha256": "84b29c9fdcc534065022dd01df168dd9754ae5b851d58c95936328b75124f22a"
+        },
+        {
+          "path": "README.md",
+          "bytes": 30,
+          "sha256": null
+        },
+        {
+          "path": "Slum.zip",
+          "bytes": 1193701743,
+          "sha256": "79b6794793fba5b30bd2c2e9d7aa1767590657d321bc20f9d0332f3a24cb89cc"
+        },
+        {
+          "path": "UrbanJapan.zip",
+          "bytes": 3023841193,
+          "sha256": "27ea01a9d48adcfca74b1dbd9be5d472945d914a9d5ce3f464894c19981f5482"
+        },
+        {
+          "path": "Venice.zip",
+          "bytes": 2064672310,
+          "sha256": "dd9cb5d53d2106ca6491e96e6e868dbeb028a2f14ad58bff3022a94e5b7218a3"
+        },
+        {
+          "path": "WesternTown.zip",
+          "bytes": 1587660686,
+          "sha256": "d0a487c01a7b3794f6a123297c1fb96877c23d421c4c1ec00cb586cfb4f950de"
+        },
+        {
+          "path": "WinterTown.zip",
+          "bytes": 3190493911,
+          "sha256": "dfeda8a46cf976ff88d148efdf99a5e99c79a41a1d3f4dae33a8de3c0e831ec4"
+        }
+      ],
+      "downloaded": false
+    },
+    {
+      "repository": "Kyaren/UAV-ON-envs-test",
+      "revision": "7b20a481d36fe6c0746d4e1acbb6ca9663b40a40",
+      "files": [
+        {
+          "path": ".gitattributes",
+          "bytes": 2461,
+          "sha256": null
+        },
+        {
+          "path": "Barnyard.zip",
+          "bytes": 4074047431,
+          "sha256": "a9de3d0307a2e76ff64633277cbce1b145e9a895d75fe696e8965a510be448af"
+        },
+        {
+          "path": "BrushifyRoad.zip",
+          "bytes": 2709796118,
+          "sha256": "06d5934da1f1c842308f908afbbef689fd689f15485485892def6164058df9cc"
+        },
+        {
+          "path": "BrushifyUrban.zip",
+          "bytes": 3793848953,
+          "sha256": "d323c8cb88e321d630ece1adb1299f2077794456a65c271284937ea8ba1bb5ff"
+        },
+        {
+          "path": "CabinLake.zip",
+          "bytes": 2119930744,
+          "sha256": "d1c76d363f49b07146549fe3257f654625579b55a73ad8f991815db8e63f8035"
+        },
+        {
+          "path": "CityPark.zip",
+          "bytes": 3918830991,
+          "sha256": "689fba04266333f4fbb8b799edb64110c4d67ace125da396dd50e4614fa93ba8"
+        },
+        {
+          "path": "CityStreet.zip",
+          "bytes": 5184325126,
+          "sha256": "8c3915bcd69e9d18bf858c9099e01b1dea641fba9a4927c8a21ac9cf5e4e803a"
+        },
+        {
+          "path": "DownTown.zip",
+          "bytes": 2187572438,
+          "sha256": "c66eb2c19b6df0adb1b1fe290b7e7a2627a01689cf06ca004cd41d5771d40b41"
+        },
+        {
+          "path": "NYC.zip",
+          "bytes": 4284198991,
+          "sha256": "e649f4b661d358c887dd1fa52cbc4bdfdd266afaa353e1a28c5dbca3385f2f85"
+        },
+        {
+          "path": "Neighborhood.zip",
+          "bytes": 3448814562,
+          "sha256": "9b3f01814e83daa3f4c99584568d15579f832ee8ee56b19709a8263ff98a7efd"
+        },
+        {
+          "path": "README.md",
+          "bytes": 30,
+          "sha256": null
+        },
+        {
+          "path": "Slum.zip",
+          "bytes": 1530218515,
+          "sha256": "a9dacdb11c9bb5a8f65175a1e6db79469812243adfc4bceffb5e1a42586d6bc0"
+        },
+        {
+          "path": "UrbanJapan.zip",
+          "bytes": 3023606335,
+          "sha256": "73d6105f04df94ae64741fffac9a855fb8f1c1fa0174a407fa6c0e2855f3d89e"
+        },
+        {
+          "path": "Venice.zip",
+          "bytes": 1824187891,
+          "sha256": "145a28ee3104a8cbb8b026370ba07d08926ea60c54fee17426869ec5d6b2ffbb"
+        },
+        {
+          "path": "WesternTown.zip",
+          "bytes": 2061651255,
+          "sha256": "ac9b08ceaf7ae75c200a2fc9dc837dec42941cb8862d160ce4f46c3576bc28da"
+        },
+        {
+          "path": "WinterTown.zip",
+          "bytes": 3890685283,
+          "sha256": "f57d3e1ca513e0cce1e346d7d2c41a9750f4c91ce5860cc3c9df64bcee3ef0b5"
+        }
+      ],
+      "downloaded": false
+    },
+    {
+      "repository": "Kyaren/UAV-ON-dataset",
+      "revision": "401767d69eca1643adf6690ad86160f2a09275d7",
+      "files": [
+        {
+          "path": ".gitattributes",
+          "bytes": 2461,
+          "sha256": null
+        },
+        {
+          "path": "README.md",
+          "bytes": 30,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/trainset/BrushifyUrban_train.json",
+          "bytes": 1418715,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/trainset/CabinLake_train.json",
+          "bytes": 956577,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/trainset/CityPark_train.json",
+          "bytes": 1130250,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/trainset/DownTown_train.json",
+          "bytes": 1049957,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/trainset/NeighborhoodTrain.json",
+          "bytes": 700280,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/trainset/Slum_train.json",
+          "bytes": 1440591,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/trainset/UrbanJapan_train.json",
+          "bytes": 581977,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/trainset/Venice_train.json",
+          "bytes": 835592,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/trainset/WesternTown_train.json",
+          "bytes": 856887,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/trainset/WinterTown_train.json",
+          "bytes": 1169385,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/Barnyard.json",
+          "bytes": 101064,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/BrushifyRoad.json",
+          "bytes": 74788,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/BrushifyUrban.json",
+          "bytes": 63739,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/CabinLake.json",
+          "bytes": 54689,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/CityPark.json",
+          "bytes": 54073,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/CityStreet.json",
+          "bytes": 101438,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/DownTown.json",
+          "bytes": 52541,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/NYC.json",
+          "bytes": 164030,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/Neighborhood.json",
+          "bytes": 54523,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/Slum.json",
+          "bytes": 103132,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/UrbanJapan.json",
+          "bytes": 59657,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/Venice.json",
+          "bytes": 53159,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/WesternTown.json",
+          "bytes": 50519,
+          "sha256": null
+        },
+        {
+          "path": "UAV-ON-data/valset/WinterTown.json",
+          "bytes": 84507,
+          "sha256": null
+        }
+      ],
+      "downloaded": true
+    }
+  ],
+  "task_downloads": [
+    {
+      "path": "UAV-ON-data/trainset/BrushifyUrban_train.json",
+      "sha256": "3306a3d1610b243c852d8d5aa82a589f86182635076e25fd7ec02ae08ba41508",
+      "bytes": 1418715,
+      "records": 1575
+    },
+    {
+      "path": "UAV-ON-data/trainset/CabinLake_train.json",
+      "sha256": "416080b1d15b9e8a8935b981a77008e1685b3ea4c60a050c8d5db15ca074dd0e",
+      "bytes": 956577,
+      "records": 1100
+    },
+    {
+      "path": "UAV-ON-data/trainset/CityPark_train.json",
+      "sha256": "22d509e14dfec646fdf52687d639c1ed19ba86c3a6153554937bd9d55fd3aaf5",
+      "bytes": 1130250,
+      "records": 1275
+    },
+    {
+      "path": "UAV-ON-data/trainset/DownTown_train.json",
+      "sha256": "6f366883aba0719756db3ca1945f2824679f6f463148a27aedf811236cbe6006",
+      "bytes": 1049957,
+      "records": 984
+    },
+    {
+      "path": "UAV-ON-data/trainset/NeighborhoodTrain.json",
+      "sha256": "58f5973aff9d4171fd10f93c4e8887ea46a8517a63b117347117b2b1f69a8871",
+      "bytes": 700280,
+      "records": 775
+    },
+    {
+      "path": "UAV-ON-data/trainset/Slum_train.json",
+      "sha256": "15b32cf4ef7fc2b8cf38f645673a6d6bf185075c2522bd2aba10ae1b6a0b359e",
+      "bytes": 1440591,
+      "records": 1360
+    },
+    {
+      "path": "UAV-ON-data/trainset/UrbanJapan_train.json",
+      "sha256": "293bddcdecebf9dd00bf4d0a019e81f029919373e64cb646a77b3e739a5d4057",
+      "bytes": 581977,
+      "records": 650
+    },
+    {
+      "path": "UAV-ON-data/trainset/Venice_train.json",
+      "sha256": "eee0cdc2202c3cb0772ccf46b4649e90345cd64c8e1250c470348868df6994e3",
+      "bytes": 835592,
+      "records": 776
+    },
+    {
+      "path": "UAV-ON-data/trainset/WesternTown_train.json",
+      "sha256": "2fa2718cf88ab11ccdc4b5b3dba87fa7bf4c11004e4c0d506f20f75a09c93a4a",
+      "bytes": 856887,
+      "records": 796
+    },
+    {
+      "path": "UAV-ON-data/trainset/WinterTown_train.json",
+      "sha256": "0f89b682370fb0912db090b13eca946d2c11fcace3d821ac438766d2e575de4a",
+      "bytes": 1169385,
+      "records": 1084
+    },
+    {
+      "path": "UAV-ON-data/valset/Barnyard.json",
+      "sha256": "7bb499bd861653ed1046e590e14c47c4fc8436c5c6905caafbb5530ae3a7a0bd",
+      "bytes": 101064,
+      "records": 94
+    },
+    {
+      "path": "UAV-ON-data/valset/BrushifyRoad.json",
+      "sha256": "a07a9efa831abf11801afb6b9f23679455fb3749eb0870f3e948072589de8ad4",
+      "bytes": 74788,
+      "records": 70
+    },
+    {
+      "path": "UAV-ON-data/valset/BrushifyUrban.json",
+      "sha256": "13041d2f1dcd4f169a401083ec7c5dd1b7182a4850179b9c2df8b5fe66f857e9",
+      "bytes": 63739,
+      "records": 60
+    },
+    {
+      "path": "UAV-ON-data/valset/CabinLake.json",
+      "sha256": "dca095559d78420e70a28b617d9010e627825d9ad5f791a94d455b4d2078007f",
+      "bytes": 54689,
+      "records": 51
+    },
+    {
+      "path": "UAV-ON-data/valset/CityPark.json",
+      "sha256": "1e9533373749e90316be12cc38aa5cbb3eae252d3f4ba067f93e7f332afae614",
+      "bytes": 54073,
+      "records": 50
+    },
+    {
+      "path": "UAV-ON-data/valset/CityStreet.json",
+      "sha256": "81ac460386b83a5eeec24b992f79418d992a54dfad16f801e9b9deebad9b3052",
+      "bytes": 101438,
+      "records": 95
+    },
+    {
+      "path": "UAV-ON-data/valset/DownTown.json",
+      "sha256": "a83ae3500eb7cd93583f3a171a8b8a877c52aadf4b6c51cd40e576b0d93502bb",
+      "bytes": 52541,
+      "records": 49
+    },
+    {
+      "path": "UAV-ON-data/valset/NYC.json",
+      "sha256": "c13777ec166b7356be5a04ae91cb2bba195581057d35db719e06d0ab6b550864",
+      "bytes": 164030,
+      "records": 152
+    },
+    {
+      "path": "UAV-ON-data/valset/Neighborhood.json",
+      "sha256": "503de6558e02aa0a43ad400e2f66010ed37b1d8895bcdcd1d11d5b5a30f2c894",
+      "bytes": 54523,
+      "records": 50
+    },
+    {
+      "path": "UAV-ON-data/valset/Slum.json",
+      "sha256": "deceb069b864cf14028694cc696badfbfca448ee0eb20f7bc2f6860f652321f2",
+      "bytes": 103132,
+      "records": 98
+    },
+    {
+      "path": "UAV-ON-data/valset/UrbanJapan.json",
+      "sha256": "344435606e4050b542a73ecf8d51368f6204ce7b9da91e9173345789b4e74b37",
+      "bytes": 59657,
+      "records": 55
+    },
+    {
+      "path": "UAV-ON-data/valset/Venice.json",
+      "sha256": "3622c3850ebcefac6435d6743a67902d8b6faf3edb9eaba449811e5306c8cd15",
+      "bytes": 53159,
+      "records": 50
+    },
+    {
+      "path": "UAV-ON-data/valset/WesternTown.json",
+      "sha256": "34992633c1659d8e7e945ad31edae95d95e37ef5b112ba0bb857d44114ef15e7",
+      "bytes": 50519,
+      "records": 47
+    },
+    {
+      "path": "UAV-ON-data/valset/WinterTown.json",
+      "sha256": "86db0ce300e0a30c2cb7c8f7486e55751e11cca3bf3918afd0051b5dfd31f9e6",
+      "bytes": 84507,
+      "records": 79
+    }
+  ],
+  "missing_exact_identifiers": [
+    "APEX scene package hashes and train/test variant mapping",
+    "GroundingDINO model revision",
+    "SAM model revision",
+    "qwen-vl-max historical service version",
+    "two-stage training launcher/configuration/seeds and first-stage checkpoint",
+    "normalizer paired with released checkpoint"
+  ],
+  "task_correspondence": {
+    "canonical_revision": "401767d69eca1643adf6690ad86160f2a09275d7",
+    "method": "Compare scene, Euclidean start distance and target-position distance; exact threshold 0.001 m; nearby target threshold 1 m.",
+    "evaluation_exact_start_and_target_matches": 120,
+    "evaluation_tasks": 120,
+    "training_exact_start_and_target_matches": 0,
+    "training_near_target_matches": 34,
+    "training_tasks": 36,
+    "unmatched_training_task_ids": [
+      17,
+      21
+    ],
+    "caveat": "Task-coordinate agreement does not verify simulator asset identity or physical feasibility."
+  }
+}

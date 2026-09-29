@@ -1,0 +1,510 @@
+{
+  "upstream_url": "https://github.com/4amGodvzx/apex",
+  "commit": "303de3e2f580ed8546164e4f329a5e5d81dd32f3",
+  "upstream_clean": true,
+  "checkpoint_sha256": "eaba4099a0ce8957162afc1f9b3bba47bc5bb479cd0bf08149c295d7ff3344dc",
+  "normalizer_sha256": "8d5598cee957b3ac909ded3a20a8091930dd8236316cbbb270324bae598c1e9a",
+  "checkpoint_runtime": "- OS: Linux-6.8.0-51-generic-x86_64-with-glibc2.35 # 52~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Mon Dec  9 15:00:52 UTC 2\n- Python: 3.10.18\n- Stable-Baselines3: 2.7.0\n- PyTorch: 2.6.0+cu124\n- GPU Enabled: True\n- Numpy: 2.2.6\n- Cloudpickle: 3.1.1\n- Gymnasium: 1.2.1\n",
+  "audit_runtime": {
+    "python": "3.10.6",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "torch": "2.5.1+cu121",
+    "numpy": "2.2.6",
+    "stable_baselines3": "2.7.0",
+    "gymnasium": "1.2.1",
+    "cloudpickle": "3.1.1",
+    "device": "cpu"
+  },
+  "hyperparameters": {
+    "num_timesteps": 401408,
+    "_total_timesteps": 400000,
+    "n_envs": 4,
+    "n_steps": 2048,
+    "batch_size": 64,
+    "n_epochs": 10,
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "normalize_advantage": true,
+    "ent_coef": 0.0,
+    "vf_coef": 0.5,
+    "max_grad_norm": 0.5,
+    "target_kl": null,
+    "seed": null,
+    "learning_rate": 0.0003,
+    "policy_kwargs": {},
+    "_n_updates": 1210
+  },
+  "clip_range": 0.2,
+  "policy": "MultiInputActorCriticPolicy(\n  (features_extractor): CombinedExtractor(\n    (extractors): ModuleDict(\n      (attraction_map_input): Flatten(start_dim=1, end_dim=-1)\n      (exploration_map_input): Flatten(start_dim=1, end_dim=-1)\n      (obstacle_map_input): Flatten(start_dim=1, end_dim=-1)\n    )\n  )\n  (pi_features_extractor): CombinedExtractor(\n    (extractors): ModuleDict(\n      (attraction_map_input): Flatten(start_dim=1, end_dim=-1)\n      (exploration_map_input): Flatten(start_dim=1, end_dim=-1)\n      (obstacle_map_input): Flatten(start_dim=1, end_dim=-1)\n    )\n  )\n  (vf_features_extractor): CombinedExtractor(\n    (extractors): ModuleDict(\n      (attraction_map_input): Flatten(start_dim=1, end_dim=-1)\n      (exploration_map_input): Flatten(start_dim=1, end_dim=-1)\n      (obstacle_map_input): Flatten(start_dim=1, end_dim=-1)\n    )\n  )\n  (mlp_extractor): MlpExtractor(\n    (policy_net): Sequential(\n      (0): Linear(in_features=8256, out_features=64, bias=True)\n      (1): Tanh()\n      (2): Linear(in_features=64, out_features=64, bias=True)\n      (3): Tanh()\n    )\n    (value_net): Sequential(\n      (0): Linear(in_features=8256, out_features=64, bias=True)\n      (1): Tanh()\n      (2): Linear(in_features=64, out_features=64, bias=True)\n      (3): Tanh()\n    )\n  )\n  (action_net): Linear(in_features=64, out_features=6, bias=True)\n  (value_net): Linear(in_features=64, out_features=1, bias=True)\n)",
+  "parameter_shapes": {
+    "mlp_extractor.policy_net.0.weight": [
+      64,
+      8256
+    ],
+    "mlp_extractor.policy_net.0.bias": [
+      64
+    ],
+    "mlp_extractor.policy_net.2.weight": [
+      64,
+      64
+    ],
+    "mlp_extractor.policy_net.2.bias": [
+      64
+    ],
+    "mlp_extractor.value_net.0.weight": [
+      64,
+      8256
+    ],
+    "mlp_extractor.value_net.0.bias": [
+      64
+    ],
+    "mlp_extractor.value_net.2.weight": [
+      64,
+      64
+    ],
+    "mlp_extractor.value_net.2.bias": [
+      64
+    ],
+    "action_net.weight": [
+      6,
+      64
+    ],
+    "action_net.bias": [
+      6
+    ],
+    "value_net.weight": [
+      1,
+      64
+    ],
+    "value_net.bias": [
+      1
+    ]
+  },
+  "parameter_count": 1065671,
+  "convolution_modules": [],
+  "normalizer": {
+    "norm_obs": true,
+    "clip_obs": 10.0,
+    "clip_reward": 10.0,
+    "gamma": 0.99,
+    "epsilon": 1e-08,
+    "obs_counts": {
+      "attraction_map_input": 1001424.0001000001,
+      "exploration_map_input": 1001424.0001000001,
+      "obstacle_map_input": 1001424.0001000001
+    }
+  },
+  "recorded_observation_inference": {
+    "count": 4,
+    "deterministic_actions": [
+      5,
+      0,
+      0,
+      5
+    ],
+    "probabilities": [
+      [
+        0.025644367560744286,
+        0.022063080221414566,
+        0.4023168981075287,
+        0.06357800960540771,
+        0.002390175359323621,
+        0.4840075671672821
+      ],
+      [
+        0.8085551261901855,
+        0.11297767609357834,
+        0.006466250866651535,
+        0.013752201572060585,
+        0.058047764003276825,
+        0.00020100201072636992
+      ],
+      [
+        0.5581952929496765,
+        0.07896079868078232,
+        0.04504738375544548,
+        0.30378487706184387,
+        0.009687881916761398,
+        0.004323787521570921
+      ],
+      [
+        0.4546602666378021,
+        0.05090866610407829,
+        0.009998424910008907,
+        0.00022103094670455903,
+        0.0006988400709815323,
+        0.4835127592086792
+      ]
+    ],
+    "normalization_max_abs_error": {
+      "attraction_map_input": 9.320176124572754,
+      "exploration_map_input": 7.2487101554870605,
+      "obstacle_map_input": 3.8485512733459473
+    },
+    "finite": true
+  },
+  "supplied_normalizer_comparison": {
+    "deterministic_actions": [
+      3,
+      3,
+      3,
+      3
+    ],
+    "probabilities": [
+      [
+        0.060715071856975555,
+        0.28185710310935974,
+        0.00025906923110596836,
+        0.39831477403640747,
+        0.25878089666366577,
+        7.31303371139802e-05
+      ],
+      [
+        0.07559675723314285,
+        0.30255377292633057,
+        0.0006345476722344756,
+        0.3422192931175232,
+        0.2789343297481537,
+        6.13659867667593e-05
+      ],
+      [
+        0.07559673488140106,
+        0.30255377292633057,
+        0.0006345476722344756,
+        0.3422192931175232,
+        0.2789343297481537,
+        6.136592128314078e-05
+      ],
+      [
+        0.07559936493635178,
+        0.30253568291664124,
+        0.000634342955891043,
+        0.342242032289505,
+        0.2789272665977478,
+        6.136977026471868e-05
+      ]
+    ],
+    "actions_changed": 4,
+    "note": "The released statistics do not recreate the checkpoint saved normalized observations. Cause unconfirmed; this alone does not establish that the supplied pair is invalid."
+  },
+  "tasks": {
+    "rl_tasks.json": {
+      "sha256": "9ed1b1b54d56a6834854f76683fc23decdb98a8f054aedd3299d24c708a59771",
+      "count": 36,
+      "scenes": {
+        "BrushifyUrban": 4,
+        "CabinLake": 4,
+        "DownTown": 4,
+        "Neighborhood": 4,
+        "Slum": 4,
+        "UrbanJapan": 4,
+        "Venice": 4,
+        "WesternTown": 4,
+        "WinterTown": 4
+      }
+    },
+    "val_tasks.json": {
+      "sha256": "1879c5dff227292df476d2bebbc0f1725869e5c6b03ed2132c5e35110615aeaf",
+      "count": 120,
+      "scenes": {
+        "BrushifyUrban": 10,
+        "CabinLake": 10,
+        "DownTown": 10,
+        "Neighborhood": 10,
+        "Slum": 10,
+        "UrbanJapan": 10,
+        "Venice": 10,
+        "WesternTown": 10,
+        "WinterTown": 10,
+        "Barnyard": 10,
+        "CityStreet": 10,
+        "NYC": 10
+      }
+    },
+    "val_tasks_1.json": {
+      "sha256": "383c86c090e000f64183f15643580aa985cb6dd2c4e66cca5b9f9a6837d92679",
+      "count": 13,
+      "scenes": {
+        "CityStreet": 3,
+        "NYC": 10
+      }
+    }
+  },
+  "attraction_maps": [
+    {
+      "file": "task_0.txt",
+      "sha256": "6192efb8c6cb5fecf38f2060b6a9b45885c1f5a716820404dcca9e95ffb67bee",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_1.txt",
+      "sha256": "ec002fc6aafb40f8b5dfc6d0dc208fd66ce8256dafe52755cdc9a9a89650a609",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 0.8999999761581421
+    },
+    {
+      "file": "task_10.txt",
+      "sha256": "d051b2c3614bd5f03367dd9c0e1c02629f5438daecb79e6c619af40fe73996ab",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_11.txt",
+      "sha256": "0a9821d7b657b144e4c8757e606e2cca77b05717ccc6415dbcffc486ea19b450",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_12.txt",
+      "sha256": "96024f2135f16cda6490cde2429031fa6762cc2d7c140861c571685cdd20a29e",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_13.txt",
+      "sha256": "dd1ac759a69ef108ee29d86c7cc30bf7f8d17a507320d1f794daa043db7a8333",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_14.txt",
+      "sha256": "6376ac8536e071bba60ff50e98d2405693d89fec6184657f4bd050309702dc30",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_15.txt",
+      "sha256": "00a40aa80b3024eed008a7aa1b97bd99c7ee9f8be20c5be9322e9b120d580ca0",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 0.6000000238418579
+    },
+    {
+      "file": "task_16.txt",
+      "sha256": "6f2f7393c7d3ee0cde303a5c4c0ce582d3142c4b3f355cabe5eac93eba1c51f3",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_17.txt",
+      "sha256": "3131c80d4330c04ee659d62764c0fa28dce0daa239c6f4116cbb4282d0caed34",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_18.txt",
+      "sha256": "ce11c3d3cbf173ffd7404142c5f110d8b4b582278879f4fa5d6d343f60cae2a2",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_19.txt",
+      "sha256": "c8571c3084318a651695f602e919249ebdbdfd6137b8b5269e96ca05dbcc965b",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_2.txt",
+      "sha256": "6764b975da528c256b220c33fd2e5ba77ccd9d37cebc9253b748a2a861ddb51c",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_20.txt",
+      "sha256": "8a97e3a3159a4fc328c68888c2f716a0df5a8127f45783db87d6acfcd5e008d8",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_21.txt",
+      "sha256": "d09809506f5912915a7705d5d36b697f3517c9baaeafc692258958502dd460da",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 0.6000000238418579
+    },
+    {
+      "file": "task_22.txt",
+      "sha256": "e8c17c3816d6cf60b30fba857dc325ab12be417d1d5b2fb08254744061a6e423",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_23.txt",
+      "sha256": "4d3c0b30cf426ca1f3a0d6928d086f46ee9630020aad257caa74a076b46772bb",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 0.949999988079071
+    },
+    {
+      "file": "task_24.txt",
+      "sha256": "3b04f7be1c5270a2926f202e8a7f5c2959eebcf2493c1cd2eda6dcaf2f884ff8",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_25.txt",
+      "sha256": "0fdd2006838196ffc81359fe4fc950b54021bd248b570b3cdfa2a4aaac6e828f",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_26.txt",
+      "sha256": "1ebac77eed055e784f8e002333218cbd9c4a7691dc754c4958205ea8819563a7",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_27.txt",
+      "sha256": "a8349888a2322451bcb9cb72806f0c554018c6b73e4ffd2462756792f32eb464",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_28.txt",
+      "sha256": "8f85b156c3998423e404dd33781b1097a711b12104ae216fabb0f2205025463d",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_29.txt",
+      "sha256": "31aaea97e859497b7f17af6093a668a0da8974126c8d51e7a16730248521f194",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_3.txt",
+      "sha256": "4f882d628a57881e230ad048e49d30997a36d5fe32d543592fe7f5bf4ce6591e",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_30.txt",
+      "sha256": "ad146c9b0144c1a3e861165b6e16c26a39d8deb718da59b7f849642ad4224967",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 0.8999999761581421
+    },
+    {
+      "file": "task_31.txt",
+      "sha256": "7bc69615215b14054f13273fe08c534b4d8162a323811c847f517a4c3f654b92",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_32.txt",
+      "sha256": "d88ba449e2c9eff62282613cb03a70d003315c95090564dd1656d921a7c95330",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_33.txt",
+      "sha256": "08f58132ddc1701f0323deee930909486a8b3b408aaaf9e21c1294ec0169a9a6",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_34.txt",
+      "sha256": "0983625447ebab907382d2821229bb8188b835da3728b95246ce2dbcbe538282",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_35.txt",
+      "sha256": "6beca180cadf0d1ff707bd8600cda05907f7c63ba83944f18e23149fa348f43e",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_4.txt",
+      "sha256": "ee9423da2cc1f886cc106b20d025d2febbc1f2a187648f7fdc6470d9fd002302",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_5.txt",
+      "sha256": "afe0f6a1df07fbb7651d23d5b509663192f5a58724208967f6ad95b69c88dcaa",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_6.txt",
+      "sha256": "be8457ed3eb8ae687363ad5963ddd9d8354e9f1ba9895b3938079a483bcd85e9",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_7.txt",
+      "sha256": "a0577490c2365ec74bd53597be8603a3ebc98d6e5644595ca4644b3b117ba770",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_8.txt",
+      "sha256": "73e613f0f838896eb3fb2601bd24d9663f93d84185a603855a11a725dbdac826",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    {
+      "file": "task_9.txt",
+      "sha256": "9eb7310a01071b0d83f2d962435110ca3cdaa14887d16db95d638052d4823f1f",
+      "cells": 16000,
+      "minimum": 0.0,
+      "maximum": 1.0
+    }
+  ],
+  "source_sha256": {
+    "uav_search/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "uav_search/action_model_inputs_test.py": "a7292a84a77b9e440c3f17b6b35cccc844fdd4ad40ff29cf9bc1fb93ca3da9db",
+    "uav_search/airsim_utils.py": "2fa454f61520216ff5f21fe9bf6924b237c5eda04dc7052357f113d26a8c075a",
+    "uav_search/api_test.py": "a3ebcacf038c4a35260fa56c92ee04f74ede2261a6baba652e576ff5487786ce",
+    "uav_search/detection_test.py": "cc1c83ed4950d14939ce6c3ad6a4d76f1e27ed4a971884ed1ba52093ec1f730c",
+    "uav_search/grounded_sam_test.py": "edf242874398b6739f988fc9a6e4ebdb0a315036c2ea3383870b78fc67a2d96e",
+    "uav_search/map_updating_numpy.py": "b88e5dc4d68bb5038a070ee74292eb09b365181b3ca6eac8af1b5863d2db7191",
+    "uav_search/multiprocess_s.py": "20105fb7974ebf44236de5258c03f8c4b1546773aba19d19c5f7decb8dc25a0e",
+    "uav_search/to_map_numpy.py": "cb27b181447568afda8d9b654023d70c199b01884eeb64050f7bc35e62d01f4e",
+    "uav_search/to_map_test.py": "4ff7614aab7ce78e05303d6b27052ec6566d251c5bee665a130d36a9ca00b1c2",
+    "uav_search/train_code/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "uav_search/train_code/map_updating_train.py": "88534decdf5bcf4d2d353aa8ca53b35b5e36b888ea0aced895c028b162bae51e",
+    "uav_search/train_code/uav_env_multi.py": "49a2443f933a2e0446f9cb57c0e228f75f2f33c74f4711587aaf40bdbbe6dedf"
+  },
+  "claims": {
+    "checkpoint_loaded": true,
+    "recorded_observations_executed": true,
+    "training_reproduced": false,
+    "simulator_launched": false,
+    "full_evaluation_reproduced": false,
+    "paper_architecture_matches_checkpoint": false
+  }
+}
