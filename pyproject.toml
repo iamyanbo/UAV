@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=65"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "photo-goal-uav"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "Pillow>=9", "torch>=2.5", "torchvision>=0.20", "scipy>=1.10", "psutil>=5"]
+
+[project.optional-dependencies]
+video = ["imageio-ffmpeg==0.6.0"]
+
+[project.scripts]
+photo-goal = "photo_goal.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["photo_goal*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+photo_goal = ["*.json", "native/*"]

@@ -1,0 +1,6 @@
+{
+  "local_deleted_bytes": 1992110080,
+  "spark_deleted_bytes": 103508803264,
+  "archive_verification": "Local recording content SHA-256, source blobs in Git, all Spark scene file sizes and ZIP CRCs",
+  "unique_assets_and_checkpoints_preserved": true
+}

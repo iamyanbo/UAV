@@ -1,9 +1,0 @@
-{
-  "status": "blocked",
-  "reason": "Physical integration infrastructure failed",
-  "stages": [
-    "updated-policy-flight",
-    "final-reload-flight",
-    "development-flights"
-  ]
-}

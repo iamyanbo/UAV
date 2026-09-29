@@ -1,0 +1,180 @@
+{
+  "scene": {
+    "scene_id": "cityenviron-windows-v1.8.1",
+    "simulator_root": "D:\\uav-research\\photo-goal\\scenes\\CityEnviron\\WindowsNoEditor",
+    "simulator_binary": "D:\\uav-research\\photo-goal\\scenes\\CityEnviron\\WindowsNoEditor\\CityEnviron\\Binaries\\Win64\\CityEnviron.exe",
+    "settings": "D:\\uav-research\\photo-goal\\settings.json",
+    "launch_argv": [
+      "D:\\uav-research\\photo-goal\\scenes\\CityEnviron\\WindowsNoEditor\\CityEnviron\\Binaries\\Win64\\CityEnviron.exe",
+      "-windowed",
+      "-ResX=640",
+      "-ResY=480",
+      "-nosound"
+    ],
+    "binary_sha256": "5d2a32ddf46c0f2622452fa8f7ca520091cec54b26ea1ee0aabbf3ec41e10c2e",
+    "geography_id": "airsim-cityenviron"
+  },
+  "native_source": {
+    "release": "v1.8.1-windows",
+    "parts": [
+      {
+        "name": "CityEnviron.zip.001",
+        "bytes": 2000000000,
+        "sha256": "a05c4a2b50b0eea490ecdf71be1321edbfa43f9432a429c77fa0f2b22fb2b654"
+      },
+      {
+        "name": "CityEnviron.zip.002",
+        "bytes": 966789399,
+        "sha256": "914eb34fb18d8d35006e62ed6dcea0421df50ba785dc1e03b8ccf61bf86e388f"
+      }
+    ],
+    "extraction_verified": "7-Zip: Everything is Ok; 7323 files, 6792911642 bytes"
+  },
+  "qualification": {
+    "schema": "native-scene-qualification/v1",
+    "passed": false,
+    "scene_sha256": "7b0817c15d9b48d5a187fa9df1bcd20fb7bcf7744f7479e15bf87344232a3475",
+    "config_sha256": "cd9157412ae5814204d43a92eecb4b6160858739bfdc8abf382b636cafb41221",
+    "task_manifest_sha256": "50b6ae632d12cb7e1593a4941af65a7165e0b92540ff1e4822520ab1bbf5179f",
+    "color_order": "BGR",
+    "motion": [
+      {
+        "command": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "body_delta": [
+          0.8632792197858596,
+          -2.012857249117007e-07,
+          0.026498794555664062
+        ],
+        "yaw_delta": -1.4274644399847602e-07,
+        "passed": true
+      },
+      {
+        "command": [
+          0,
+          1,
+          0,
+          0
+        ],
+        "body_delta": [
+          0.07027427290687352,
+          1.1124262573480739,
+          0.03336524963378906
+        ],
+        "yaw_delta": -0.008747946818090213,
+        "passed": true
+      },
+      {
+        "command": [
+          0,
+          0,
+          -0.5,
+          0
+        ],
+        "body_delta": [
+          0.00035853464143164964,
+          0.06929022166808466,
+          -0.8194351196289062
+        ],
+        "yaw_delta": 5.155475179208224e-06,
+        "passed": true
+      },
+      {
+        "command": [
+          0,
+          0,
+          0,
+          15
+        ],
+        "body_delta": [
+          -3.4115218862944874e-06,
+          -0.0006705363047963721,
+          0.08446311950683594
+        ],
+        "yaw_delta": 25.41182142394439,
+        "passed": true
+      }
+    ],
+    "stale_brake": true,
+    "collision_reporting": true,
+    "actor_checkpoint_sha256": "d58568c85270d92451be775e2e10aa4049081f9d64cd551ddb749bc8470ab94d",
+    "timing": {
+      "step_s": {
+        "50": 0.06311600003391504,
+        "95": 0.08394457997055724,
+        "99": 0.09839202401926743,
+        "100": 0.19332970003597438
+      },
+      "image_rpc_s": {
+        "50": 0.036217200045939535,
+        "95": 0.05713060001144185,
+        "99": 0.07024839201942087,
+        "100": 0.16467610001564026
+      },
+      "source_age_s": {
+        "50": 0.0624884000280872,
+        "95": 0.08267526000272482,
+        "99": 0.09466480799485001,
+        "100": 0.19713079999201
+      },
+      "decision_s": {
+        "50": 0.022737300023436546,
+        "95": 0.026504060009028763,
+        "99": 0.029389127984177324,
+        "100": 0.03246469999430701
+      },
+      "encode_s": {
+        "50": 0.011897000018507242,
+        "95": 0.014460159989539534,
+        "99": 0.015805275992024692,
+        "100": 0.017345700005535036
+      },
+      "context_s": {
+        "50": 0.000978299998678267,
+        "95": 0.0013075999915599821,
+        "99": 0.0016516000032424927,
+        "100": 0.001836199953686446
+      },
+      "policy_s": {
+        "50": 0.009512100019492209,
+        "95": 0.012080060003791004,
+        "99": 0.013338200023863466,
+        "100": 0.015543599962256849
+      }
+    },
+    "failure": {
+      "type": "RuntimeError",
+      "message": "Dispatcher failed: Active control watchdog exceeded source freshness"
+    },
+    "reset_summary": {
+      "cycles": 20,
+      "passed": 20,
+      "mean_s": 1.8078131599992049
+    },
+    "raw_records": "D:/uav-research/photo-goal/qualification.json"
+  },
+  "last_attempt": {
+    "worker": "D:\\uav-research\\photo-goal\\qualification-workers\\29f5b163ccd4",
+    "observations": 398,
+    "simulated_s": 25.878552064,
+    "max_dispatch_source_age_s": 0.27646859997184947,
+    "stale_dispatches": 1
+  },
+  "refactor_inference": {
+    "input": "Actual CityEnviron A/B images, initial masked history",
+    "mean_max_abs_error": 0.0,
+    "stop_max_abs_error": 0.0,
+    "value_max_abs_error": 0.0,
+    "backbone_tensors_verified": 308
+  },
+  "reclaimed_bytes": {
+    "spark": 103508803264,
+    "pc": 1992110080
+  },
+  "new_optimizer_updates": 0,
+  "training_admitted": false
+}
