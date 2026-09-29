@@ -1,5 +1,20 @@
 # CURI-UAV research invariants
 
+## Active Spark preparation — September 29, 2026
+
+The user's overnight launch request uncovered missing live admission and an
+undersized released-route validation footprint (env_13: 116.6 m bounding-box
+diagonal). A bounded preparation service is running, **not PPO optimization**:
+`uav-ppo-preparation-20260929t051605z.service`, source `ac4f908`, under
+`/home/iamyanbo/uav-photo-map/ppo-overnight-preparation-20260929T051605Z`.
+Read `/home/iamyanbo/uav-photo-map/overnight-active.json` and that run's
+`status.json` / `morning-report.json` before starting another simulator.
+It surveys candidate train env_5/env_2 and validation env_9, then fuses observed
+geometry and generates task candidates; scene selection uses extent, not policy
+performance. Eight-hour systemd cgroup deadline includes native children.
+Independent review, physical task qualification and Qwen/workload gates still
+precede training. Do not report this preparation job as a training run.
+
 ## Proposal-conditioned overnight PPO — September 29, 2026
 
 The user approved implementing the revised overnight plan. The entry point is
