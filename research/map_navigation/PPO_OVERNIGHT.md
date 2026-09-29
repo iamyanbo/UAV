@@ -21,6 +21,21 @@ Run it in a dedicated systemd cgroup with an eight-hour runtime limit so native
 simulator descendants are also stopped. **This command does not train**: independent
 review, physical qualification and Qwen/workload admission still precede PPO.
 
+The first survey produced 2,282 RGB/depth pairs and three valid observed-volume
+files. Its task generator failed: 5.6–7.4 million clearance nodes exceeded a fixed
+two-million-node limit, and it retried the scene-wide failure as an endpoint
+rejection. No PPO updates were performed. The repaired generator uses compact
+coordinate/cost arrays, vectorized exact six-neighbour CSR construction, measured
+memory admission, and one reusable graph per scene. Up to three missions share
+a goal-bound cost field. Unknown voxels and the .5 m grid / one-metre clearance
+rule are unchanged. Infrastructure failures propagate immediately with a failure
+receipt; exhausted coverage is reported as incomplete, not readiness.
+
+Use `ppo_prepare_overnight --workspace WORK --reuse-run SAVED_RUN --output NEW_RUN
+--processing-workers 2 --hours 8` to regenerate from the saved field hashes without
+recapturing or launching a simulator. The evaluator reads the same `keys`/`seconds`
+cost-file contract through compact arrays; costs remain privileged reward inputs.
+
 ## Fixed choices
 
 * Exactly **8,192 valid, fresh transitions per update**, collected under one frozen

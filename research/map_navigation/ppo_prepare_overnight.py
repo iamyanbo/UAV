@@ -156,7 +156,32 @@ def run(args):
                   '--per-cell', '20' if split == 'train' else '5', '--max-candidates', '4000',
                   '--output', str(root/f'env_{scene_id}-candidates')], 2700)
 
+    def reuse_field(scene_id, split):
+        source = Path(args.reuse_run).resolve()
+        field = source/f'env_{scene_id}-field.npz'
+        receipt = read(str(field)+'.json')
+        if digest(field) != receipt['sha256']:
+            raise ValueError('Saved geometry digest mismatch')
+        return stage(f'candidates-{scene_id}', [sys.executable, '-u', '-m', 'research.map_navigation.ppo_tasks',
+                     'generate', '--field', str(field), '--scene-id', f'env_{scene_id}', '--split', split,
+                     '--per-cell', '20' if split == 'train' else '5', '--max-candidates', '20000',
+                     '--hours', str(min(3., args.hours)), '--output', str(root/f'env_{scene_id}-candidates')],
+                     min(3., args.hours)*3600+30)
+
     try:
+        if args.reuse_run:
+            status['reused_geometry_root'] = str(Path(args.reuse_run).resolve())
+            status['processing_workers'] = args.processing_workers
+            with guard:
+                publish()
+            with ThreadPoolExecutor(max_workers=args.processing_workers) as cpu:
+                futures = [cpu.submit(reuse_field, sid, split) for sid, split in
+                           [(5, 'train'), (2, 'train'), (9, 'validation')]]
+                for future in futures:
+                    future.result()
+            return
+        if not args.annotations:
+            raise ValueError('Annotations are required for a fresh survey')
         with zipfile.ZipFile(args.annotations) as archive:
             for sid, split in [(5, 'train'), (2, 'train'), (9, 'validation')]:
                 plan = survey_plan(archive, sid, split)
@@ -181,12 +206,18 @@ def run(args):
                     break
             for future in futures:
                 future.result()
-        status['status'] = 'preparation_finished_review_required'
     except BaseException as error:
         status.update(status='preparation_failed', error=f'{type(error).__name__}: {error}')
         raise
     finally:
         stop.set()
+        if status['status'] != 'preparation_failed':
+            failed = any(s['status'] != 'complete' for s in stages.values())
+            outputs = list(root.glob('env_*-candidates/candidates.json'))
+            coverage = len(outputs) == 3 and all(read(p).get('status') == 'coverage_complete' for p in outputs)
+            status['status'] = ('preparation_incomplete_stage_failure' if failed else
+                                'preparation_incomplete_coverage' if not coverage else
+                                'preparation_finished_review_required')
         status['ended_utc'] = utc()
         status['surveys'] = {}
         for path in root.glob('env_*-survey/receipts.json'):
@@ -199,7 +230,10 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    for key in ('workspace', 'annotations', 'output'):
+    for key in ('workspace', 'output'):
         parser.add_argument('--'+key, required=True)
+    parser.add_argument('--annotations')
+    parser.add_argument('--reuse-run', help='Reuse immutable saved fields; do not launch a simulator')
+    parser.add_argument('--processing-workers', type=int, choices=(1, 2), default=1)
     parser.add_argument('--hours', type=float, default=8)
     run(parser.parse_args())

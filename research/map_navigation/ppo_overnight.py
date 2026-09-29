@@ -30,6 +30,7 @@ from .ppo_guidance import RegionProposer,Guidance
 from .ppo_pilot import Worker
 from .ppo_scheduler import FeatureBank,Inference,batch_for
 from .ppo_tasks import ObservedVolume,validate_tasks
+from .ppo_geometry import CostField
 
 
 def identity_for(args):
@@ -129,8 +130,7 @@ class Collector:
         if path not in self.fields:self.fields[path]=ObservedVolume.load(path)
         # Load evaluator assets before releasing reset control, never while a
         # freshly captured command source is aging.
-        with np.load(self.task['cost_field'],allow_pickle=False) as data:
-            self.costs={tuple(k):float(v) for k,v in zip(data['keys'],data['seconds'])}
+        self.costs=CostField.load(self.task['cost_field'])
         with Image.open(self.task['goal_image']) as im:image=im.convert('RGB').copy()
         self.scheduler.call('initialize',worker=self.index,image=image,path=self.task['goal_image'],
             exercise=self.task.get('exercise'),task_kind=self.task.get('kind','mission'))

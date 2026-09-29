@@ -15,6 +15,7 @@ from .ppo_env import PilotEnvironment
 from .ppo_bootstrap import capture_depth
 from .ppo_actions import command_from_latent
 from .ppo_tasks import ObservedVolume,nominal_time
+from .ppo_geometry import save_costs
 from .ppo_budget import Budget
 
 
@@ -61,7 +62,7 @@ def route_flight(env,task,root,budget):
 
 
 def auxiliary_candidates(volume,missions,seed,count=40):
-    rng=np.random.default_rng(seed);result=[];centres=sorted(volume.centres)
+    rng=np.random.default_rng(seed);result=[];centres=volume.centres.keys
     for i in range(count*30):
         if len(result)>=count*2:break
         start=np.asarray(volume.position(centres[int(rng.integers(len(centres)))]));yaw=float(rng.uniform(-180,180))
@@ -129,7 +130,7 @@ def capture(args):
                             start_sha256=digest(start_image),endpoint_evidence=str(endpoint_path.resolve()),endpoint_sha256=digest(endpoint_path))
                         if 'cost_field' not in t:
                             costs,_=volume.costs(t['goal']);path=directory/'costs.npz'
-                            np.savez_compressed(path,keys=np.asarray(list(costs)),seconds=np.asarray(list(costs.values())))
+                            save_costs(path,costs)
                             t.update(cost_field=str(path.resolve()),cost_sha256=digest(path))
                         if t['kind']=='mission':
                             cell=(t['distance_bin'],t['difficulty'])

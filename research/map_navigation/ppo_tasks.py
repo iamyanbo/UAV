@@ -8,9 +8,12 @@ import argparse
 from collections import Counter
 import itertools
 import math
+import time
+import shutil
 from pathlib import Path
 import numpy as np
 from .common import read,write,digest
+from .ppo_geometry import VoxelIndex,CostField,ParentField,GeometryCapacityError,admit_bytes,build_graph,save_costs
 
 DIFFICULTIES=('direct','detour','multiple_decisions','altitude_alternatives')
 DISTANCES=('40-100','100-200','200-300')
@@ -28,23 +31,27 @@ def nominal_time(path):
 
 class ObservedVolume:
     def __init__(self,free,occupied,resolution=.5):
+        from scipy.ndimage import binary_erosion
         if resolution!=.5:raise ValueError('This certificate requires half-metre voxels')
         self.resolution=resolution
-        self.occupied={tuple(map(int,r)) for r in occupied}
-        self.free={tuple(map(int,r)) for r in free}-self.occupied
-        if not self.free:raise ValueError('No observed free volume')
-        # A centred one-metre cube intersects +/-2 neighbours on each axis.
-        points=np.asarray(list(self.free),dtype=np.int32);lo=points.min(0)-2;hi=points.max(0)+3
-        if int(np.prod(hi-lo,dtype=np.int64))<=256_000_000:
-            from scipy.ndimage import binary_erosion
-            grid=np.zeros(tuple(hi-lo),dtype=bool);grid[tuple((points-lo).T)]=True
-            eroded=binary_erosion(grid,structure=np.ones((5,5,5),bool))
-            self.centres=set(map(tuple,np.argwhere(eroded)+lo))
-        else:
-            offsets=tuple(itertools.product(range(-2,3),repeat=3))
-            self.centres={p for p in self.free if all(tuple(p[j]+v[j] for j in range(3)) in self.free for v in offsets)}
-        if not self.centres:raise ValueError('No body-and-camera clearance after erosion')
-        self._graph=None
+        points=np.asarray(list(free) if isinstance(free,set) else free,dtype=np.int32).reshape(-1,3)
+        self.occupied=np.asarray(list(occupied) if isinstance(occupied,set) else occupied,dtype=np.int32).reshape(-1,3)
+        if not len(points):raise ValueError('No observed free volume')
+        lo=points.min(0).astype(np.int64)-2;hi=points.max(0).astype(np.int64)+3
+        shape=hi-lo;cells=int(np.prod(shape,dtype=np.int64))
+        # Account for dense erosion buffers and coordinate/index construction.
+        # Admission is memory-based, not an arbitrary two-million-node ceiling.
+        admit_bytes(cells*3+len(points)*80+len(self.occupied)*24)
+        grid=np.zeros(tuple(shape),dtype=bool);grid[tuple((points-lo).T)]=True
+        occupied_local=self.occupied.astype(np.int64)-lo
+        inside=((occupied_local>=0)&(occupied_local<shape)).all(1)
+        grid[tuple(occupied_local[inside].T)]=False
+        self.free=(np.argwhere(grid)+lo).astype(np.int32)
+        eroded=binary_erosion(grid,structure=np.ones((5,5,5),bool))
+        keys=(np.argwhere(eroded)+lo).astype(np.int32)
+        if not len(keys):raise ValueError('No body-and-camera clearance after erosion')
+        self.centres=VoxelIndex(keys)
+        self._graph=None;self._components=None;self._component_order=None;self._component_offsets=None
 
     @classmethod
     def load(cls,path):
@@ -54,54 +61,70 @@ class ObservedVolume:
     def key(self,position):return tuple(np.rint(np.asarray(position)/self.resolution).astype(int))
 
     def edge(self,a,b):
-        # Diagonals require every vertex of the swept grid box: no corner cuts.
-        return all(p in self.centres for p in itertools.product(*(range(min(x,y),max(x,y)+1) for x,y in zip(a,b))))
+        keys=list(itertools.product(*(range(min(x,y),max(x,y)+1) for x,y in zip(a,b))))
+        return bool((self.centres.find_many(keys)>=0).all())
 
     def clear(self,a,b):
         pts=np.linspace(a,b,max(2,math.ceil(math.dist(a,b)/(.5/4))+1))
-        keys=[self.key(p) for p in pts]
-        return all(k in self.centres for k in keys) and all(self.edge(x,y) for x,y in zip(keys,keys[1:]))
+        keys=np.rint(pts/.5).astype(np.int32)
+        if (self.centres.find_many(keys)<0).any():return False
+        # Consecutive samples differ by at most one cell on each axis. Every
+        # mixed vertex of their swept grid box must retain eroded support.
+        lo=np.minimum(keys[:-1],keys[1:]);hi=np.maximum(keys[:-1],keys[1:])
+        for corner in itertools.product((0,1),repeat=3):
+            if (self.centres.find_many(np.where(corner,hi,lo))<0).any():return False
+        return True
 
-    def costs(self,goal,zrange=None,max_nodes=2000000):
-        from scipy.sparse import csr_matrix
+    def prepare_graph(self):
+        if self._graph is None:self._graph=build_graph(self.centres)
+        return self._graph
+
+    def component_nodes(self,goal):
+        from scipy.sparse.csgraph import connected_components
+        if self._components is None:
+            _,self._components=connected_components(self.prepare_graph(),directed=False)
+            self._component_order=np.argsort(self._components,kind='stable')
+            self._component_offsets=np.r_[0,np.cumsum(np.bincount(self._components))]
+        i=self.centres.find(self.key(goal))
+        if i<0:raise ValueError('Goal lacks observed clearance')
+        label=self._components[i]
+        return self._component_order[self._component_offsets[label]:self._component_offsets[label+1]]
+
+    def costs(self,goal,zrange=None):
         from scipy.sparse.csgraph import dijkstra
-        end=self.key(goal)
-        if end not in self.centres:raise ValueError('Goal lacks observed clearance')
-        if self._graph is None:
-            keys=sorted(self.centres)
-            if len(keys)>max_nodes:raise ValueError('Survey graph exceeds bounded cost-field budget')
-            index={k:i for i,k in enumerate(keys)};source=[];target=[];weights=[]
-            # Six-connected swept edges cannot cut voxel corners. Construct once;
-            # repeated goal fields use compiled sparse shortest paths.
-            for i,key in enumerate(keys):
-                for axis in range(3):
-                    for sign in (-1,1):
-                        neighbour=list(key);neighbour[axis]+=sign;j=index.get(tuple(neighbour))
-                        if j is not None:source.append(i);target.append(j);weights.append(1. if axis==2 else 1/3)
-            graph=csr_matrix((weights,(source,target)),shape=(len(keys),len(keys)))
-            self._graph=(keys,index,graph)
-        keys,index,graph=self._graph
-        if zrange:
-            selected=np.asarray([i for i,k in enumerate(keys) if zrange[0]<=k[2]*.5<=zrange[1]])
-            subset=graph[selected][:,selected];local_keys=[keys[i] for i in selected];local_index={k:i for i,k in enumerate(local_keys)}
-            if end not in local_index:raise ValueError('Goal outside altitude band')
-            graph=subset;keys=local_keys;index=local_index
-        distances,predecessors=dijkstra(graph,directed=False,indices=index[end],return_predecessors=True)
-        valid=np.flatnonzero(np.isfinite(distances))
-        return ({keys[i]:float(distances[i]) for i in valid},
-            {keys[i]:keys[int(predecessors[i])] for i in valid if predecessors[i]>=0})
+        index=self.centres;graph=self.prepare_graph()
+        if zrange is not None:
+            selected=np.flatnonzero((index.keys[:,2]*.5>=zrange[0])&(index.keys[:,2]*.5<=zrange[1]))
+            if not len(selected):raise ValueError('Empty altitude band')
+            graph=graph[selected][:,selected];index=VoxelIndex(index.keys[selected])
+        end=index.find(self.key(goal))
+        if end<0:raise ValueError('Goal lacks observed clearance in requested altitude band')
+        distances,parents=dijkstra(graph,directed=True,indices=end,return_predecessors=True)
+        return CostField(index,distances),ParentField(index,parents)
 
     def route(self,start,goal,parents):
         key=self.key(start);end=self.key(goal);path=[self.position(key)]
         while key!=end:
-            if key not in parents:raise ValueError('Disconnected observed endpoints')
-            key=parents[key];path.append(self.position(key))
-        # Preserve the shortest graph route; simplify only through certified free edges.
+            try:key=parents[key]
+            except KeyError:raise CandidateRejected('Disconnected observed endpoints') from None
+            path.append(self.position(key))
+        # Probe long shortcuts exponentially, then bisect. Each accepted segment
+        # is checked against the unchanged full-resolution swept-volume rule.
         simplified=[path[0]];i=0
         while i<len(path)-1:
-            j=i+1
-            while j+1<len(path) and self.clear(path[i],path[j+1]):j+=1
-            simplified.append(path[j]);i=j
+            good=i+1;step=2;bad=len(path)
+            while i+step<len(path):
+                probe=i+step
+                if not self.clear(path[i],path[probe]):bad=probe;break
+                good=probe;step*=2
+            if bad==len(path):
+                if self.clear(path[i],path[-1]):good=len(path)-1
+                else:bad=len(path)-1
+            while bad-good>1:
+                probe=(good+bad)//2
+                if self.clear(path[i],path[probe]):good=probe
+                else:bad=probe
+            simplified.append(path[good]);i=good
         return simplified
 
     def potential(self,position,costs,reference_s):
@@ -149,7 +172,7 @@ def fuse(receipts,output):
         write(str(output)+'.progress.json',dict(stage='fusion',processed=len(sources),total=len(receipts),
             free_voxels=len(free),occupied_voxels=len(occupied),complete=False))
     volume=ObservedVolume(free,occupied)
-    np.savez_compressed(output,free=np.asarray(sorted(volume.free)),occupied=np.asarray(sorted(occupied)),resolution=.5)
+    np.savez_compressed(output,free=volume.free,occupied=volume.occupied,resolution=.5)
     write(str(output)+'.json',dict(schema='ppo-observed-volume/v1',sources=sources,sha256=digest(output),
         radius_m=1,unknown_is_free=False,free_voxels=len(volume.free),clear_centres=len(volume.centres)))
     write(str(output)+'.progress.json',dict(stage='fusion',processed=len(sources),total=len(receipts),complete=True,
@@ -166,59 +189,105 @@ def decisions(path):
     return turns,max(p[2] for p in path)-min(p[2] for p in path)
 
 
-def generate(field,output,scene_id,split,seed=0,per_cell=20,max_candidates=20000):
-    volume=ObservedVolume.load(field);rng=np.random.default_rng(seed)
+class CandidateRejected(ValueError):
+    """An expected endpoint/route rejection; infrastructure exceptions propagate."""
+
+
+def generate(field,output,scene_id,split,seed=0,per_cell=20,max_candidates=20000,hours=2):
+    if not 0<hours<=8 or per_cell<1 or max_candidates<1:raise ValueError('Invalid generation bounds')
     root=Path(output);root.mkdir(parents=True,exist_ok=False)
-    keys=sorted(volume.centres);counts=Counter();tasks=[];rejected=Counter();seen=set()
+    started=time.monotonic();deadline=started+hours*3600;rng=np.random.default_rng(seed)
+    counts=Counter();tasks=[];rejected=Counter();seen=set();attempted=0;goals_solved=0
+    stage='loading_geometry';status='running';graph_info={};goal=None;costs=parents=None;accepted_goal=0
     def save_candidates(complete=False):
         write(root/'candidates.json',dict(schema='ppo-task-candidates/v2',tasks=tasks,seed=seed,
             coverage={f'{d}/{c}':counts[(d,c)] for d in DISTANCES for c in DIFFICULTIES},rejected=dict(rejected),
-            generation_complete=complete,training_qualified=False,
-            missing='endpoint images, physical route checks, reviewed geography and scene qualification'))
-    save_candidates()
-    for index in range(max_candidates):
-        if all(counts[(d,c)]>=per_cell for d in DISTANCES for c in DIFFICULTIES):break
-        start,goal=[volume.position(keys[i]) for i in rng.choice(len(keys),2,replace=False)]
-        d=distance_bin(start,goal)
-        if d is None:continue
-        pair=tuple(sorted((volume.key(start),volume.key(goal))))
-        if pair in seen:continue
-        seen.add(pair)
-        try:
-            costs,parents=volume.costs(goal);route=volume.route(start,goal,parents)
-            length=sum(math.dist(a,b) for a,b in zip(route,route[1:]));turns,height=decisions(route)
-            if length>600:raise ValueError('reference_over_600m')
-            reference=nominal_time(route);timeout=max(120.,2*reference+30)
-            if timeout>900:raise ValueError('timeout_over_900s')
-            direct=volume.clear(start,goal);alternative=None
-            category='direct' if direct else 'multiple_decisions' if turns>=2 else 'detour' if turns>=1 else None
-            if height>=4 and abs(start[2]-goal[2])<=2:
-                lo=min(start[2],goal[2])-1;hi=max(start[2],goal[2])+1
-                _,low_parents=volume.costs(goal,(lo,hi))
-                try:alternative=volume.route(start,goal,low_parents)
-                except ValueError:pass
-                if alternative and abs(nominal_time(alternative)-reference)>1:category='altitude_alternatives'
-            if category is None:raise ValueError('no_measured_decision_class')
-            if counts[(d,category)]>=per_cell:continue
-            ident=f'{scene_id}-{seed}-{index:06d}';costpath=root/(ident+'-costs.npz')
-            np.savez_compressed(costpath,keys=np.asarray(list(costs)),seconds=np.asarray(list(costs.values())))
-            # Reversals and altitude variants share an undirected endpoint-region ID.
-            regions=sorted(tuple(np.floor(np.asarray(p)[:2]/10).astype(int)) for p in (start,goal))
-            group=':'.join(','.join(map(str,r)) for r in regions)
-            tasks.append(dict(id=ident,scene_id=scene_id,split=split,kind='mission',start=start,goal=goal,
-                start_yaw_deg=float(rng.uniform(-180,180)),goal_yaw_deg=float(rng.uniform(-180,180)),
-                distance_bin=d,difficulty=category,turns=turns,vertical_range_m=height,reference_length_m=length,
-                reference_path=route,alternative_path=alternative,reference_s=reference,timeout_s=timeout,
-                start_region=list(regions[0] if tuple(np.floor(np.asarray(start)[:2]/10).astype(int))==regions[0] else regions[1]),
-                group_id=group,field=str(Path(field).resolve()),field_sha256=digest(field),
-                cost_field=str(costpath.resolve()),cost_sha256=digest(costpath),
-                bounds=[(np.min(np.asarray(keys),axis=0)*.5).tolist(),(np.max(np.asarray(keys),axis=0)*.5).tolist()],
-                start_yaw_sampling='uniform_360_independent',goal_yaw_sampling='uniform_360_independent'))
-            counts[(d,category)]+=1
-            save_candidates()
-        except ValueError as error:rejected[str(error)]+=1
-        if index%100==0:save_candidates()
-    save_candidates(complete=True)
+            generation_complete=complete,status=status,stage=stage,attempted_pairs=attempted,
+            goal_fields_solved=goals_solved,elapsed_s=time.monotonic()-started,graph=graph_info,
+            sampling='uniform component-conditioned endpoints; up to 32 pairs and 3 tasks per goal',
+            training_qualified=False,missing='endpoint images, physical route checks, reviewed geography and scene qualification'))
+    def check_deadline():
+        if time.monotonic()>=deadline:raise TimeoutError('Task generation window expired; partial candidates preserved')
+    try:
+        save_candidates()
+        volume=ObservedVolume.load(field);keys=volume.centres.keys
+        bounds=[(keys.min(0)*.5).tolist(),(keys.max(0)*.5).tolist()];field_sha=digest(field)
+        stage='building_graph';save_candidates();check_deadline()
+        graph=volume.prepare_graph()
+        graph_info.update(nodes=len(keys),directed_edges=graph.nnz,
+            csr_bytes=graph.data.nbytes+graph.indices.nbytes+graph.indptr.nbytes,
+            voxel_resolution_m=.5,clearance_half_extent_m=1,construction_s=time.monotonic()-started)
+        stage='sampling_routes';save_candidates()
+        for index in range(max_candidates):
+            check_deadline();attempted=index+1
+            if all(counts[(d,c)]>=per_cell for d in DISTANCES for c in DIFFICULTIES):break
+            if index%32==0 or goal is None or accepted_goal>=3:
+                goal=volume.position(keys[int(rng.integers(len(keys)))])
+                connected=volume.component_nodes(goal);costs=parents=None;cost_receipt=None;accepted_goal=0
+                # Skip components whose extent cannot contain even a 40 m pair.
+                pts=keys[connected]
+                if np.linalg.norm((pts.max(0)-pts.min(0))*.5)<40:
+                    rejected['component_extent_under_40m']+=1;goal=None;continue
+            start=volume.position(keys[int(connected[int(rng.integers(len(connected)))])])
+            d=distance_bin(start,goal)
+            if d is None:rejected['outside_distance_bins']+=1;continue
+            pair=tuple(sorted((volume.key(start),volume.key(goal))))
+            if pair in seen:rejected['duplicate_endpoint_pair']+=1;continue
+            seen.add(pair)
+            try:
+                direct=volume.clear(start,goal)
+                if direct and counts[(d,'direct')]>=per_cell:
+                    raise CandidateRejected('direct_cell_full')
+                if costs is None:
+                    stage='solving_goal_field';save_candidates()
+                    costs,parents=volume.costs(goal);goals_solved+=1
+                    check_deadline();stage='sampling_routes';save_candidates()
+                route=[start,goal] if direct else volume.route(start,goal,parents)
+                length=sum(math.dist(a,b) for a,b in zip(route,route[1:]));turns,height=decisions(route)
+                if length>600:raise CandidateRejected('reference_over_600m')
+                reference=nominal_time(route);timeout=max(120.,2*reference+30)
+                if timeout>900:raise CandidateRejected('timeout_over_900s')
+                alternative=None
+                category='direct' if direct else 'multiple_decisions' if turns>=2 else 'detour' if turns>=1 else None
+                if not direct and height>=4 and abs(start[2]-goal[2])<=2:
+                    lo=min(start[2],goal[2])-1;hi=max(start[2],goal[2])+1
+                    _,low_parents=volume.costs(goal,(lo,hi))
+                    try:alternative=volume.route(start,goal,low_parents)
+                    except CandidateRejected:pass
+                    if alternative and abs(nominal_time(alternative)-reference)>1:category='altitude_alternatives'
+                if category is None:raise CandidateRejected('no_measured_decision_class')
+                if counts[(d,category)]>=per_cell:raise CandidateRejected('difficulty_cell_full')
+                check_deadline()
+                ident=f'{scene_id}-{seed}-{index:06d}'
+                if cost_receipt is None:
+                    stage='saving_goal_field';save_candidates()
+                    costpath=root/(ident+'-costs.npz')
+                    # Uncompressed payload plus temporary archive must fit before writing.
+                    if shutil.disk_usage(root).free<len(costs)*32:
+                        raise GeometryCapacityError('Insufficient disk for goal cost field')
+                    save_costs(costpath,costs)
+                    cost_receipt=dict(cost_field=str(costpath.resolve()),cost_sha256=digest(costpath))
+                    stage='sampling_routes'
+                regions=sorted(tuple(np.floor(np.asarray(p)[:2]/10).astype(int)) for p in (start,goal))
+                group=':'.join(','.join(map(str,r)) for r in regions)
+                tasks.append(dict(id=ident,scene_id=scene_id,split=split,kind='mission',start=start,goal=goal,
+                    start_yaw_deg=float(rng.uniform(-180,180)),goal_yaw_deg=float(rng.uniform(-180,180)),
+                    distance_bin=d,difficulty=category,turns=turns,vertical_range_m=height,reference_length_m=length,
+                    reference_path=route,alternative_path=alternative,reference_s=reference,timeout_s=timeout,
+                    start_region=np.floor(np.asarray(start)[:2]/10).astype(int).tolist(),group_id=group,
+                    field=str(Path(field).resolve()),field_sha256=field_sha,bounds=bounds,**cost_receipt,
+                    start_yaw_sampling='uniform_360_independent',goal_yaw_sampling='uniform_360_independent'))
+                counts[(d,category)]+=1;accepted_goal+=1;save_candidates()
+            except CandidateRejected as error:rejected[str(error)]+=1
+            if index%32==0:save_candidates()
+        coverage_complete=all(counts[(d,c)]>=per_cell for d in DISTANCES for c in DIFFICULTIES)
+        status='coverage_complete' if coverage_complete else 'candidate_budget_exhausted'
+        stage='finished';save_candidates(complete=True)
+    except BaseException as error:
+        status='deadline' if isinstance(error,(TimeoutError,KeyboardInterrupt)) else 'failed'
+        write(root/'failure.json',dict(type=type(error).__name__,reason=str(error),stage=stage,
+            scope='scene generation; never retried as an endpoint rejection',attempted_pairs=attempted))
+        save_candidates();raise
 
 
 def validate_tasks(manifest,cfg):
@@ -310,7 +379,8 @@ if __name__=='__main__':
     a=sub.add_parser('fuse');a.add_argument('--receipts',required=True);a.add_argument('--output',required=True)
     a=sub.add_parser('generate');a.add_argument('--field',required=True);a.add_argument('--output',required=True)
     a.add_argument('--scene-id',required=True);a.add_argument('--split',choices=['train','validation'],required=True)
+    a.add_argument('--hours',type=float,default=2)
     a.add_argument('--seed',type=int,default=0);a.add_argument('--per-cell',type=int,default=20);a.add_argument('--max-candidates',type=int,default=20000)
     args=p.parse_args()
     if args.stage=='fuse':fuse(read(args.receipts)['receipts'],args.output)
-    else:generate(args.field,args.output,args.scene_id,args.split,args.seed,args.per_cell,args.max_candidates)
+    else:generate(args.field,args.output,args.scene_id,args.split,args.seed,args.per_cell,args.max_candidates,args.hours)
