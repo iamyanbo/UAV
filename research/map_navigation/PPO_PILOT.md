@@ -161,3 +161,37 @@ The renderer uses recorded transition durations; reset/optimizer gaps are omitte
 and explicitly labeled. The first actual learning rollout and optimizer receipt
 are available in Spark `ppo-first-update`; preserve `update-000001.pt` when
 resuming so the video remains tied to its original checkpoint.
+# Measured utilization and next parallelism step — September 28
+
+After two bounded PPO updates (4,096 transitions), gradients are stopped while
+the larger task pool is prepared. Six GPU samples over 25 seconds during task
+preparation measured 4–20% utilization (10.8% mean), 44 C throughout, and about
+115 GiB available unified memory. A separate process snapshot showed the active
+Unreal process consuming 382% CPU (about four cores). These are preparation
+measurements, not PPO training utilization or a concurrent-flight benchmark.
+
+Environment 5 preparation finished with 29 accepted task candidates (10 level,
+10 climb, 9 descent) and 138 rejections. Environment 14 had eight accepted at the
+snapshot; environment 13 remained queued. Candidates still require manifest
+review before training. The current trainer and preparation queue remain serial.
+
+The next measured scale-up should use two isolated simulator workers and one
+learner. It requires these implementation changes before activation:
+
+- Keep one campaign owner; reserve attempts with an atomic, locked ledger and
+  retain per-worker reservation receipts. The existing whole-job lock deliberately
+  prevents independent trainers/preparation jobs from racing the ledger.
+- Give each worker a distinct port, settings directory, recorder and process
+  group. Warm both simulators before releasing flight control; simulator startup
+  previously caused an unacceptable source-age delay in another active flight.
+- Freeze one policy version for both collectors, tag every transition with that
+  version, then brake both workers before a combined PPO update. Keep the initial
+  aggregate rollout size at 2,048 so worker count does not silently change the
+  optimization batch. Do not mix old-policy transitions into the next update.
+- Compare one versus two workers using accepted transitions per wall second,
+  reset failures, command-source age tails, decision latency and peak shared
+  memory. Retain two only if throughput improves and the existing 250 ms command
+  freshness constraint holds. Evaluation remains separate from gradient work.
+
+No parallel PPO run has been launched or qualified. Low GPU utilization and spare
+memory alone do not establish that extra simulator workers will improve throughput.
