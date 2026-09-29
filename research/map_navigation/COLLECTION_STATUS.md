@@ -37,8 +37,14 @@ offset below the vehicle. Depth is absent from the revised flight recordings;
 asynchronous depth and complete shared training contracts remain outstanding.
 The camera currently includes parts of the airframe in view. These recordings
 demonstrate physical reference execution and diagnose collection, not full data
-readiness or latency acceptance. Further bounded checks were queued for env_10
-and env_14; consult Spark `collection-reference-20260928/job-more.log` for results.
+readiness or latency acceptance. Subsequent env_10 and env_14 checks stopped on
+collision after 5.21 seconds/9.96 metres and 34.56 seconds/36.86 metres respectively.
+The four completed engineering attempts therefore contain one reference completion
+and three collision stops, plus the earlier interrupted env_5 attempt. The bounded
+job is finished; bulk collection is not running. Investigate scene-specific initial
+placement and reference execution before further automated expansion. This tiny
+diagnostic sample is not a navigation benchmark. Full receipts remain in Spark
+`collection-reference-20260928/job-more.log` and each attempt's `result.json`.
 
 Raw recordings live under Spark `collection-reference-20260928`. The local video
 renderer `reference_video.py` preserves wall-clock timing and overlays measured
