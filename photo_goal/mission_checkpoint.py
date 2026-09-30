@@ -117,7 +117,7 @@ def save_bundle(path, actor, optimizer, world, world_optimizer, metadata, cfg):
                  actor=cpu_copy(actor.state_dict()), actor_optimizer=cpu_copy(optimizer.state_dict()),
                  world=cpu_copy(world.state_dict()), world_optimizer=cpu_copy(world_optimizer.state_dict()),
                  rng=dict(python=random.getstate(), numpy=np.random.get_state(),
-                          torch=torch.get_rng_state(), cuda=torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None))
+                          torch=torch.get_rng_state(), cuda=torch.cuda.get_rng_state_all() if torch.cuda.is_available() else metadata.get('rng',{}).get('cuda')))
     pending = path.with_suffix('.pending')
     from .mission_space import reserve_write
     import os
