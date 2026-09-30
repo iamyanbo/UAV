@@ -96,12 +96,13 @@ class CityFeatureBank(FeatureBank):
         self.mission_id = mission_id
         if self.persistent:self.persistent.begin(mission_id)
         else:self.persistent = FlightMemory(self.root/'memory.sqlite', mission_id)
-        self.goal_descriptor = raw.float().mean((-1, -2)).cpu().numpy()
+        self.goal_descriptor = raw.detach().cpu().float().mean((-1, -2)).numpy()
 
     def context(self, raw, obs, guidance, worker, execution, replace=False):
         if obs.get('mission_id') != self.mission_id:
             raise ValueError('Runtime observation from another mission')
-        ident = self.add(raw, obs['rgb_path'])
+        raw_cpu=raw.detach().cpu()
+        ident = self.add(raw_cpu, obs['rgb_path'])
         if replace:
             if not self.history or abs(obs['sim_s']-self.history[-1][1]) > 1e-6:
                 raise ValueError('Boundary refresh changed simulator time')
@@ -109,7 +110,7 @@ class CityFeatureBank(FeatureBank):
         elif self.history and obs['sim_s'] <= self.history[-1][1]:
             raise ValueError('Non-increasing city frame window')
         self.history.append((ident, obs['sim_s'], obs['preceding_command']))
-        descriptor = raw.float().mean((-1, -2)).cpu().numpy()
+        descriptor = raw_cpu.float().mean((-1, -2)).numpy()
         self.persistent.observe(ident, obs['sim_s'], descriptor, obs['rgb_path'])
         record = dict(subgoal=None, reference=None, vector=Subgoal().vector(obs['sim_s'], SpatialSnapshot()))
         context = dict(observation_schema='photo-goal-city-context/v1',
@@ -140,6 +141,7 @@ class CityFeatureBank(FeatureBank):
         # Canonical RGB and checkpoint context are retained; older cache tensors
         # are reconstructed with the immutable pretrained backbone on demand.
         # Resume likelihood parity still rejects any numerical reconstruction drift.
+        self.frames.flush()
         keep={self.goal}|{r[0] for r in self.history}
         keep|={r['frame_id'] for r in self.references.values() if r.get('source')=='map'}
         keep|=set(range(max(0,self.next_id-640),self.next_id))
@@ -148,6 +150,8 @@ class CityFeatureBank(FeatureBank):
         self.frames.cache.clear()
 
     def close(self):
-        if self.persistent:
-            self.persistent.close()
-            self.persistent = None
+        try:self.frames.close()
+        finally:
+            if self.persistent:
+                self.persistent.close()
+                self.persistent = None

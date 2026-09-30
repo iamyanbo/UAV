@@ -396,6 +396,7 @@ def run(args):
         time.sleep(cooldown_s)
     def optimize_boundary():
         nonlocal rows, batch_id, policy_sha,batch_freshness_cuts
+        bank.frames.flush() # Derived writes drain only after complete-flight pause.
         checkpoint() # Persist the complete behavior batch before any optimizer mutation.
         bank.persistent.flush() # Durable derived memory while physics is paused.
         # Serving weights stay frozen. Park the same tensors in host memory

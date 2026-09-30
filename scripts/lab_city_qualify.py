@@ -172,34 +172,54 @@ try:
                 support=copy.deepcopy(task);start=support['support_starts'][0]
                 support.update(start=start['position'],start_yaw_deg=start['yaw_deg'],timeout_s=60)
                 selected=[support]+selected
-            for flight,task in enumerate(selected):
-                task=dict(task)
+            flight=0;receipt['infrastructure_cuts']=[]
+            while flight<len(selected):
+                if not window.admits(30):raise RuntimeError('Qualification window ended without complete flights')
+                task=dict(selected[flight])
                 if not task.get('timeout_s'):
                     from photo_goal.mission_contracts import task_band
                     task['timeout_s']=cfg['mission_deadlines_s'][task_band(task['distance_m'],cfg)]
-                mission='actual-learner-'+str(flight)
-                budget.attempt(mission+'-'+uuid.uuid4().hex[:8],0,smoke=False)
+                mission='actual-learner-'+str(flight)+'-'+uuid.uuid4().hex[:8]
+                budget.attempt(mission,0,smoke=False)
                 from PIL import Image
                 with Image.open(task['goal_image']) as image:
                     scheduler.call('initialize',worker=0,image=image.convert('RGB'),path=task['goal_image'],mission_id=mission)
                 obs=env.reset(task,mission);steps=0
                 decision=scheduler.call('decision',worker=0,obs=runtime(obs,task,mission,survey,cfg),execution=False)
                 while True:
-                    resources.check()
-                    timing.append(dict(decision_s=decision['decision_s'],source_age_s=time.perf_counter()-obs['source_wall'],
-                        encode_s=decision['encode_s'],context_s=decision['context_s'],policy_s=decision['policy_s']))
-                    command=motor_command(decision,obs,cfg)
-                    reservation_started=time.perf_counter();reserve_qualification_step()
-                    timing[-1]['reservation_s']=time.perf_counter()-reservation_started
-                    timing[-1]['source_age_s']=time.perf_counter()-obs['source_wall']
-                    result=env.step(command,bool(decision['stop']),obs['frame'],policy_sha256=receipt['actor_checkpoint_sha256'])
-                    budget.confirm(batch,0)
+                    issued=False
+                    measured=dict(decision_s=decision['decision_s'],source_age_s=time.perf_counter()-obs['source_wall'],
+                        encode_s=decision['encode_s'],context_s=decision['context_s'],policy_s=decision['policy_s'])
+                    try:
+                        resources.check()
+                        command=motor_command(decision,obs,cfg)
+                        reservation_started=time.perf_counter();reserve_qualification_step();issued=True
+                        measured['reservation_s']=time.perf_counter()-reservation_started
+                        measured['source_age_s']=time.perf_counter()-obs['source_wall']
+                        result=env.step(command,bool(decision['stop']),obs['frame'],policy_sha256=receipt['actor_checkpoint_sha256'])
+                        budget.confirm(batch,0);issued=False
+                    except RuntimeError as error:
+                        if str(error) not in ('Stale policy decision; watchdog brakes',
+                            'Dispatcher failed: Active control watchdog exceeded source freshness'):raise
+                        with env.lock:env.active=False;env.command=[0.]*4;env.done=True
+                        env.client.cancelLastTask(env.vehicle)
+                        env.client.moveByVelocityAsync(0.,0.,0.,.2,vehicle_name=env.vehicle)
+                        if issued:budget.discard_unobserved(batch,0)
+                        env.stop_camera();env.recorder.flush()
+                        cut=dict(attempt=mission,error=str(error),timing=measured,infrastructure_cut=True,
+                            complete_flight=False,used_as_terminal_reward=False,discarded_dispatch=issued,
+                            recording=str(env.recorder.root))
+                        receipt['infrastructure_cuts'].append(cut);write(out/(mission+'-cut.json'),cut)
+                        print(json.dumps(dict(event='qualification_freshness_cut',**cut)),flush=True)
+                        guidance.invalidate(receipt['actor_checkpoint_sha256']);bank.trim()
+                        time.sleep(.2)
+                        break # Reset and retry this same required full-flight slot.
+                    timing.append(measured)
                     following=result['observation'];clock.append([obs['sim_s'],following['sim_s']])
                     intervals.append(dict(dt=result['dt'],segments=result['command_intervals']))
-                    steps+=1
-                    obs=following
+                    steps+=1;obs=following
                     if result['terminated']:
-                        env.recorder.flush();path=out/(mission+'.json')
+                        env.stop_camera();env.recorder.flush();path=out/(mission+'.json')
                         write(path,dict(controller='city-actor-from-qualified-checkpoint',event=result['event'],terminated=True,
                                        steps=steps,recording=str(env.recorder.root),navigation_success=result['event']=='success'))
                         receipt['complete_flight_receipts'].append(dict(path=str(path),sha256=digest(path)))
@@ -209,7 +229,9 @@ try:
                         torch.cuda.empty_cache()
                         guidance.residency('cuda');env.release_terminal();time.sleep(.1)
                         check(env.state()['sim_ns']>before['sim_ns'],'Physics did not resume after the terminal boundary')
-                        boundary=True
+                        boundary=True;flight+=1
+                        bank.trim()
+                        print(json.dumps(dict(event='qualification_complete_flight',slot=flight,receipt=str(path))),flush=True)
                         break
                     decision=scheduler.call('decision',worker=0,obs=runtime(obs,task,mission,survey,cfg),execution=False)
             receipt['continuous_physics']=all(b>a for a,b in clock)

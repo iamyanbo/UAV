@@ -4,6 +4,8 @@ from collections.abc import MutableMapping
 from pathlib import Path
 import io
 import json
+import queue
+import threading
 import numpy as np
 import torch
 from PIL import Image
@@ -25,6 +27,34 @@ class FeatureStore(MutableMapping):
         self.root.mkdir(parents=True, exist_ok=True)
         self.cache_size, self.cache = cache_size, OrderedDict()
         self.restore=restore
+        self.pending={};self.lock=threading.RLock();self.error=None
+        self.queue=queue.Queue(maxsize=64)
+        self.writer=threading.Thread(target=self._write,daemon=True,name='derived-feature-writer')
+        self.writer.start()
+
+    def _write(self):
+        while True:
+            item=self.queue.get()
+            try:
+                if item is None:return
+                key,value=item;path=self._path(key);pending=path.with_suffix('.pending')
+                from .mission_space import reserve_write
+                reserve_write(path,value.numel()*value.element_size()+65536)
+                torch.save(value,pending);pending.replace(path)
+            except BaseException as error:self.error=error
+            finally:
+                if item is not None:
+                    with self.lock:self.pending.pop(item[0],None)
+                self.queue.task_done()
+
+    def flush(self):
+        self.queue.join()
+        if self.error:raise RuntimeError('Derived feature writer failed: '+str(self.error)) from self.error
+
+    def close(self):
+        self.queue.put(None);self.writer.join(timeout=30)
+        if self.writer.is_alive():raise RuntimeError('Derived feature writer did not quiesce')
+        if self.error:raise RuntimeError('Derived feature writer failed: '+str(self.error)) from self.error
 
     def _path(self, key):
         if not isinstance(key, int) or key < 0:
@@ -32,12 +62,16 @@ class FeatureStore(MutableMapping):
         return self.root/f'{key:09d}.pt'
 
     def __getitem__(self, key):
+        if self.error:raise RuntimeError('Derived feature writer failed: '+str(self.error)) from self.error
         if key in self.cache:
             self.cache.move_to_end(key)
             return self.cache[key]
+        with self.lock:
+            if key in self.pending:return self.pending[key]
         path=self._path(key)
         if not path.exists() and self.restore is not None:
             self[key]=self.restore(key)
+            return self[key]
         value = torch.load(path, map_location='cpu', weights_only=True)
         self.cache[key] = value
         while len(self.cache) > self.cache_size:
@@ -46,26 +80,35 @@ class FeatureStore(MutableMapping):
 
     def __setitem__(self, key, value):
         path = self._path(key)
-        if path.exists():
+        if self.error:raise RuntimeError('Derived feature writer failed: '+str(self.error)) from self.error
+        if path.exists() or key in self.pending or key in self.cache:
             raise ValueError('Feature identity is immutable')
-        pending = path.with_suffix('.pending')
-        from .mission_space import reserve_write
-        reserve_write(path,value.numel()*value.element_size()+65536)
-        torch.save(value.detach().cpu().half(), pending)
-        pending.replace(path)
+        value=value.detach().cpu().half().contiguous()
+        self.cache[key]=value;self.cache.move_to_end(key)
+        while len(self.cache)>self.cache_size:self.cache.popitem(last=False)
+        with self.lock:
+            self.pending[key]=value
+            try:self.queue.put_nowait((key,value))
+            except queue.Full:
+                # This is a reconstructible cache. Canonical RGB remains in the
+                # recorder; current history is retained in RAM, never block flight.
+                self.pending.pop(key,None)
 
     def __delitem__(self, key):
-        self._path(key).unlink()
+        if key in self.pending:raise RuntimeError('Flush derived features before eviction')
+        self._path(key).unlink(missing_ok=True)
         self.cache.pop(key, None)
 
     def __iter__(self):
-        return (int(p.stem) for p in sorted(self.root.glob('*.pt')))
+        with self.lock:ids=set(self.pending)|set(self.cache)
+        ids|={int(p.stem) for p in self.root.glob('*.pt')}
+        return iter(sorted(ids))
 
     def __len__(self):
-        return sum(1 for _ in self.root.glob('*.pt'))
+        return sum(1 for _ in self)
 
     def __contains__(self, key):
-        return self._path(key).is_file()
+        return key in self.cache or key in self.pending or self._path(key).is_file()
 
 
 class ShardWriter:
