@@ -79,7 +79,7 @@ class CityActorCritic(ActorCritic):
 
     def forward_tokens(self, features, goals, times, commands, valid,
                        subgoal_vector=None, reference_tokens=None, reference_roi=None,
-                       mission_context=None, execution=None):
+                       mission_context=None, execution=None, planned_interval_s=None):
         h = self.representation_tokens(features, goals.detach(), times, commands, valid,
                                        subgoal_vector, reference_tokens, reference_roi, mission_context)
         raw = self.actor.action(h)
@@ -87,20 +87,25 @@ class CityActorCritic(ActorCritic):
         if execution is not None:
             value = torch.where(execution, self.execution_value(h).squeeze(-1), value)
         # No gate, threshold, forced stop or arrival-dependent action masking.
-        return Normal(raw[:, :4], self.log_std.clamp(-3, .5).exp()), Bernoulli(logits=raw[:, 4]), value
+        interval = raw.new_full((len(raw),), .05) if planned_interval_s is None else planned_interval_s
+        if not torch.isfinite(interval).all() or (interval <= 0).any():
+            raise ValueError('Invalid causal policy interval')
+        survival = F.logsigmoid(-raw[:, 4]) * (interval / .05)
+        probability = (-torch.expm1(survival)).clamp(torch.finfo(raw.dtype).eps, 1-torch.finfo(raw.dtype).eps)
+        return Normal(raw[:, :4], self.log_std.clamp(-3, .5).exp()), Bernoulli(probs=probability), value
 
     def forward(self, history, goal, times, commands, valid, subgoal_vector=None,
-                reference=None, reference_roi=None, execution=None, mission_context=None):
+                reference=None, reference_roi=None, execution=None, mission_context=None, planned_interval_s=None):
         with torch.no_grad():
             features = pool(self.project(history.flatten(0, 1))).reshape(len(history), 4, 64, 256)
             goals = self.project(goal)
             references = self.project(reference) if reference is not None else None
         return self.forward_tokens(features, goals, times, commands, valid, subgoal_vector,
-                                   references, reference_roi, mission_context, execution)
+                                   references, reference_roi, mission_context, execution, planned_interval_s)
 
     def policy_inputs(self, batch):
         return {k: batch[k] for k in ('history', 'goal', 'times', 'commands', 'valid',
-                'subgoal_vector', 'reference', 'reference_roi', 'execution', 'mission_context') if k in batch}
+                'subgoal_vector', 'reference', 'reference_roi', 'execution', 'mission_context', 'planned_interval_s') if k in batch}
 
     def evaluate(self, batch):
         normal, stop, value = self(**self.policy_inputs(batch))
@@ -112,7 +117,13 @@ class CityActorCritic(ActorCritic):
         if labels is None or mask is None or not mask.any():
             return next(self.parameters()).new_zeros(())
         _, stop, _ = self(**self.policy_inputs(batch))
-        return F.binary_cross_entropy_with_logits(stop.logits[mask], labels[mask].float())
+        loss = F.binary_cross_entropy_with_logits(stop.logits, labels.float(), reduction='none')
+        balance = batch.get('stop_balance')
+        if balance is None:
+            return loss[mask].mean()
+        positive, negative, scale = balance
+        weights = torch.where(labels > .5, loss.new_tensor(positive), loss.new_tensor(negative))
+        return (loss * weights * mask).sum() * scale / len(loss)
 
 
 def owned_optimizer(model, learning_rate):

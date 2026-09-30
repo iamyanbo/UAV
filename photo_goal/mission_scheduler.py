@@ -54,7 +54,8 @@ class CityFeatureBank(FeatureBank):
     def _restore_raw(self,ident):
         from PIL import Image
         if ident not in self.paths:raise FileNotFoundError('Missing canonical RGB provenance for feature '+str(ident))
-        with Image.open(self.paths[ident]) as source:
+        from .mission_rgb_store import open_rgb
+        with open_rgb(self.paths[ident]) as source:
             if source.mode!='RGB' or source.size!=(640,480):raise ValueError('Invalid feature-recovery RGB')
             pixels=torch.from_numpy(np.asarray(source).copy()).permute(2,0,1)
         with torch.no_grad():
@@ -119,6 +120,7 @@ class CityFeatureBank(FeatureBank):
             execution=execution, worker_id=worker, mission_id=self.mission_id,
             memory_revision=self.persistent.revision, remaining_s=obs['remaining_s'],
             deadline_s=obs['deadline_s'], calibration_id=obs['calibration_id'])
+        context['planned_interval_s'] = obs.get('planned_interval_s', .05)
         context['mission_context'] = self.persistent.vector(obs, descriptor, self.goal_descriptor)
         if guidance and self.kind == 'mission':
             context['guidance'] = guidance.poll(obs, self, context)
@@ -130,6 +132,7 @@ class CityFeatureBank(FeatureBank):
     def tensors(self, row):
         result = super().tensors(row)
         result['mission_context'] = torch.tensor(row['mission_context'], dtype=torch.float32)
+        result['planned_interval_s'] = torch.tensor(row.get('planned_interval_s', .05), dtype=torch.float32)
         return result
 
     def trim(self):

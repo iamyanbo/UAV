@@ -1,5 +1,11 @@
 # Photo-goal UAV navigation
 
+The September 30 environment/data/reward revision is implemented locally. Read
+[the implementation and launch handoff](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).
+It includes staged checkpoint forks, continuous-flight movement changes, varied
+3D tasks up to 300 m, private route rewards, HDD accounting and lossless RGB data.
+Lab deployment and native qualification are pending for this revision.
+
 Current city training: read [PROJECT.md](PROJECT.md) for decisions and evidence.
 The last inspected window stopped on an operator disk-scan/file-rename race,
 saving eight lifetime PPO batches (65,536 rows), 6,552 world updates and 844

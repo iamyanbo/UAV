@@ -8,6 +8,7 @@ import argparse
 from collections import deque
 import json
 import math
+import os
 from multiprocessing.connection import Listener
 from pathlib import Path
 import queue
@@ -60,9 +61,17 @@ class Recorder:
                     item=self.queue.get()
                     if item is None:break
                     name,value=item
-                    if name=='barrier':stream.flush();value.set()
-                    elif name.endswith('.png'):Image.fromarray(value).save(self.root/name,compress_level=1)
-                    else:stream.write(json.dumps(value,allow_nan=False)+'\n')
+                    if name=='barrier':stream.flush();os.fsync(stream.fileno());value.set()
+                    elif name.endswith('.png'):
+                        from .mission_space import reserve_write
+                        reserve_write(self.root/name,value.nbytes+65536)
+                        Image.fromarray(value).save(self.root/name,compress_level=1)
+                    else:
+                        from .mission_space import reserve_write
+                        text=json.dumps(value,allow_nan=False)+'\n'
+                        reserve_write(stream.name,len(text.encode())+4096)
+                        stream.write(text)
+                stream.flush();os.fsync(stream.fileno())
         except Exception as error:self.error=str(error)
 
     def close(self):
@@ -98,6 +107,8 @@ class PilotEnvironment:
         self.lock=threading.Lock();self.shutdown=threading.Event();self.active=False
         self.dispatch_idle=threading.Event();self.dispatch_idle.set()
         self.command=[0.]*4;self.sent=[0.]*4;self.source_wall=0.;self.fault=None
+        self.last_dispatch_wall=None;self.target_id=0
+        self.target_policy_sha256=None;self.target_source_sim_ns=None
         self.dispatches=deque(maxlen=256);self.sequence=0;self.command_frame=0
         self.phase='engineering';self.paused=False;self.pause_wall_s=0.;self.settling=False
 
@@ -127,6 +138,12 @@ class PilotEnvironment:
                 with self.lock:
                     active=self.active;age=start-self.source_wall;stale=age>self.cfg['freshness_s']
                     command=[0.]*4 if stale else list(self.command);frame=self.command_frame
+                    target_id=self.target_id
+                    target_policy=self.target_policy_sha256;target_stamp=self.target_source_sim_ns
+                    if self.cfg.get('motor_control') == 'dispatcher_target' and not stale and not self.settling and not getattr(self,'done',True):
+                        from .ppo_actions import slew_target
+                        dt = .05 if self.last_dispatch_wall is None else min(max(start-self.last_dispatch_wall,0.),.05)
+                        command=slew_target(command,self.sent,dt,self.cfg['acceleration'])
                     if active:self.dispatch_idle.clear()
                 if active:
                     future=client.moveByVelocityBodyFrameAsync(*command[:3],.2,
@@ -144,8 +161,11 @@ class PilotEnvironment:
                     if len(pending)>16:raise RuntimeError('Command acknowledgements stalled')
                     with self.lock:
                         self.sent=command;self.sequence+=1
+                        self.last_dispatch_wall=start
                         row=dict(kind='dispatch',id=self.sequence,wall=start,
                             source_frame=frame,age_s=age,command=command,stale=stale,
+                            target_id=target_id,
+                            policy_sha256=target_policy,target_source_sim_ns=target_stamp,
                             active_policy=not getattr(self,'done',True) and not self.settling,
                             rpc_wall_s=time.perf_counter()-start)
                         if dispatch_sim_ns is not None:row['dispatch_sim_ns']=int(dispatch_sim_ns)
@@ -155,7 +175,7 @@ class PilotEnvironment:
                             self.fault='Active control watchdog exceeded source freshness'
             except Exception as error:self.fault=str(error)
             finally:self.dispatch_idle.set()
-            self.shutdown.wait(max(0,self.cfg['step_s']-(time.perf_counter()-start)))
+            self.shutdown.wait(max(0,self.cfg.get('control_step_s',self.cfg['step_s'])-(time.perf_counter()-start)))
 
     def state(self,client=None):
         client=client or self.client
@@ -286,6 +306,8 @@ class PilotEnvironment:
         self.done=False;self.settling=False
         with self.lock:
             self.command=self.sent=[0.]*4;self.source_wall=time.perf_counter();self.active=True;self.dispatches.clear()
+            self.last_dispatch_wall=None;self.target_id=0
+            self.command_frame=0;self.target_policy_sha256=None;self.target_source_sim_ns=initial['sim_ns']
         return self.observe()
 
     def observe(self,frozen=False):
@@ -302,6 +324,7 @@ class PilotEnvironment:
                 preceding=list(causal[-1]['command']) if causal else [0.]*4
         self.frame+=1
         self.last_source=source;self.previous_state=s
+        self.last_source_sim_ns=stamp
         self.recorder.put(f'{self.frame:06d}.png',rgb)
         self.recorder.put('observation',dict(kind='observation',frame=self.frame,capture_sim_ns=stamp,
             source_wall=source,preceding_command=preceding,state=s,camera_pose=self.capture_pose,timing=timing))
@@ -322,7 +345,7 @@ class PilotEnvironment:
             heading_error(s['attitude_deg'][2],self.task['goal_yaw_deg'])<=c['heading_deg'] and
             (not speed or s['speed']<=c['speed_mps']))
 
-    def step(self,command,stop,frame,freeze_after=False):
+    def step(self,command,stop,frame,freeze_after=False,policy_sha256=None):
         if self.paused:raise RuntimeError('Resume with a fresh decision before stepping')
         if freeze_after and (self.phase!='training' or not self.cfg.get('training_pause')):
             raise RuntimeError('Physics pause forbidden outside admitted training')
@@ -334,9 +357,11 @@ class PilotEnvironment:
             raise ValueError('Command exceeds envelope')
         started=time.perf_counter();before=self.previous_state
         if started-self.last_source>self.cfg['freshness_s']:raise RuntimeError('Stale policy decision; watchdog brakes')
-        self.settling=bool(stop)
         with self.lock:
+            self.settling=bool(stop)
             self.command=[0.]*4 if stop else list(command);self.source_wall=self.last_source;self.command_frame=frame
+            self.target_id+=1
+            self.target_policy_sha256=policy_sha256;self.target_source_sim_ns=self.last_source_sim_ns
         event=self.event(before)
         if not event and stop:
             stable=None

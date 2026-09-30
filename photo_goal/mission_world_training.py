@@ -4,7 +4,7 @@ import random
 from .common import FlightLock
 from .mission_contracts import city_config
 from .mission_checkpoint import load_components, save_bundle, restore_rng
-from .mission_data import load_shard
+from .mission_data import load_shard, reward_identity
 from .mission_world_data import from_shard
 from .mission_world import world_update
 from .mission_policy import require_disjoint
@@ -17,7 +17,7 @@ def run(args):
     resources = Resources(root, cfg, args.device)
     resources.check()
     actor, optimizer, world, world_optimizer, meta = load_components(args.checkpoint, args.backbone, cfg, args.device)
-    if meta.get('pending'):
+    if meta.get('pending') or meta.get('world_pending'):
         raise ValueError('Finish or explicitly archive the pending on-policy batch before fitting a serving world')
     require_disjoint(optimizer, world_optimizer)
     restore_rng(meta)
@@ -37,6 +37,11 @@ def run(args):
                 # One shard in RAM; validate bytes once per shard switch.
                 if cached is None or completed % 100 == 0:
                     data, labels, source = load_shard(random.choice(paths))
+                    contract=data.get('reward_contract_sha256')
+                    if contract and contract!=reward_identity(cfg):
+                        raise ValueError('Replay reward contract differs from the world reward head')
+                    if not contract and cfg.get('potential_normalization')=='route_metres':
+                        raise ValueError('Legacy reward targets cannot train the route-reward world head')
                     cached = (data['transitions'], labels, source)
                 records, labels, source = cached
                 if not records:

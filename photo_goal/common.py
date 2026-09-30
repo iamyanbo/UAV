@@ -25,7 +25,10 @@ def write(path, value):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     pending = path.with_suffix(path.suffix + '.pending')
-    pending.write_text(json.dumps(value, indent=2, allow_nan=False) + '\n', encoding='utf-8-sig')
+    payload=json.dumps(value, indent=2, allow_nan=False)+'\n'
+    from .mission_space import reserve_write
+    reserve_write(path,len(payload.encode('utf-8-sig'))+4096,os.environ.get('UAV_SHUTDOWN_WRITES')=='1')
+    pending.write_text(payload, encoding='utf-8-sig')
     pending.replace(path)
 
 

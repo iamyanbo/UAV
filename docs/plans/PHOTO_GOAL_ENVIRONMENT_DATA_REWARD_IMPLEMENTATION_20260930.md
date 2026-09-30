@@ -1,6 +1,9 @@
 # Photo-goal navigation: environment, data and training implementation
 
-Date: September 30, 2026. **Implementation specification; not deployed.**
+Date: September 30, 2026. **Implemented locally; native qualification and deployment pending.**
+
+See [the implementation progress and execution handoff](PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md)
+for source changes, lightweight checks and the remaining native execution steps.
 
 This document turns the agreed environment/data/reward plan into work packages.
 Writing it does not restart training. Complete the local implementation and native

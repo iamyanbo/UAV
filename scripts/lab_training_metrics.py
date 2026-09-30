@@ -17,6 +17,7 @@ import torch
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--root', type=Path, default=Path('/mnt/hdd2/yanbocheng/photo-goal-native'))
+parser.add_argument('--run-dir',type=Path);parser.add_argument('--taskset',type=Path);parser.add_argument('--scene',type=Path)
 parser.add_argument('--watch', action='store_true')
 parser.add_argument('--hours', type=float, default=8)
 parser.add_argument('--interval', type=float, default=30)
@@ -24,7 +25,8 @@ args = parser.parse_args()
 if not 0 < args.hours <= 8 or args.interval < 15:
     raise ValueError('Metrics windows must be <=8 hours; interval must be >=15 seconds')
 root = args.root.resolve()
-out = root/'runs/training-metrics'
+run_root=(args.run_dir or root/'city-training').resolve()
+out = run_root/'metrics'
 out.mkdir(parents=True, exist_ok=True)
 torch.set_num_threads(1)
 
@@ -33,7 +35,10 @@ def read(path):
 
 def atomic(path, value):
     temporary = path.with_suffix(path.suffix+'.pending')
-    temporary.write_text(json.dumps(value, allow_nan=False, indent=2)+'\n')
+    from photo_goal.mission_space import reserve_write
+    text=json.dumps(value, allow_nan=False, indent=2)+'\n'
+    reserve_write(path,len(text.encode())+4096)
+    temporary.write_text(text,encoding='utf-8')
     temporary.replace(path)
 
 def clean(value):
@@ -49,7 +54,15 @@ def distance(a, b):
     return math.dist(a, b)
 
 cache = read(out/'episodes.json') if (out/'episodes.json').exists() else {}
-tasks = {row['id']: row for row in read(root/'city-tasks.json')['tasks']}
+taskset=args.taskset or root/'city-tasks.json'
+task_data=read(taskset)
+if task_data.get('schema')=='photo-goal-taskset/v2':
+    os.environ['UAV_PROJECT_ROOT']=str(root)
+    from photo_goal.mission_task_catalog import load_catalog
+    from photo_goal.common import digest
+    task_rows,_=load_catalog(taskset,digest(args.scene or root/'scene.json'))
+else:task_rows=task_data['tasks']
+tasks = {row['id']: row for row in task_rows}
 last_checkpoint_stamp = None
 
 HTML = r'''<!doctype html><html><head><meta charset="utf-8"><title>UAV training progress</title>
@@ -89,7 +102,7 @@ $('report').textContent=JSON.stringify(d.latest_optimizer,null,2);
 
 def snapshot():
     global last_checkpoint_stamp
-    for path in (root/'city-training').glob('city-*.json'):
+    for path in run_root.glob('city-*.json'):
         if path.stem in cache:
             continue
         flight = read(path)
@@ -109,15 +122,16 @@ def snapshot():
         final = distance(observations[-1], goal)
         cache[path.stem] = dict(attempt=flight['attempt'],task_id=flight['task_id'],
             support=flight['support'],event=flight['event'],reward=flight['reward'],
+            task_class=flight.get('task_class','support' if flight['support'] else 'regular'),
             elapsed_s=flight['elapsed_s'],ended_timestamp=path.stat().st_mtime,
             distance_m=distance(flight['start'],goal),initial_distance_m=initial,final_distance_m=final,
             goal_progress_m=initial-final,net_movement_m=distance(observations[0],observations[-1]),
             path_length_m=sum(distance(a,b) for a,b in zip(observations,observations[1:])),
             policy_bundles=flight['policy_bundles'],telemetry=str(telemetry))
     atomic(out/'episodes.json', cache)
-    pointer = root/'city-training/latest.json'
+    pointer = run_root/'latest.json'
     current = read(pointer)
-    checkpoint = root/'city-training/latest.pt'
+    checkpoint = run_root/'latest.pt'
     stamp = (checkpoint.stat().st_mtime_ns, checkpoint.stat().st_size)
     if stamp != last_checkpoint_stamp and psutil.virtual_memory().available >= 14*2**30:
         with checkpoint.open('rb') as stream:
@@ -136,16 +150,24 @@ def snapshot():
     groups = collections.defaultdict(list)
     for row in episodes:
         band = 'Near-goal practice' if row['support'] else ('50–100 m' if row['distance_m']<=100 else '100–200 m' if row['distance_m']<=200 else '200–300 m')
+        if row['task_class']=='intermediate':band='10-50 m'
         groups[band].append(row)
     grouped = [dict(group=name,flights=len(rows),success=sum(r['event']=='success' for r in rows),
                     false_stop=sum(r['event']=='false_stop' for r in rows),
                     mean_reward=sum(r['reward'] for r in rows)/len(rows),
                     mean_goal_progress_m=sum(r['goal_progress_m'] for r in rows)/len(rows),
                     mean_net_movement_m=sum(r['net_movement_m'] for r in rows)/len(rows)) for name,rows in groups.items()]
-    bootstrap = [json.loads(line) for line in (root/'data/visual-bootstrap/loss.jsonl').read_text().splitlines()]
-    guidance = [json.loads(line) for line in (root/'city-training/guidance.jsonl').read_text().splitlines()]
+    def lines(path):
+        if not path.exists():return []
+        result=[]
+        for line in path.read_text().splitlines():
+            try:result.append(json.loads(line))
+            except json.JSONDecodeError:continue # A concurrently appended final line may be incomplete.
+        return result
+    bootstrap = lines(root/'data/visual-bootstrap/loss.jsonl')
+    guidance = lines(run_root/'guidance.jsonl')
     plan = read(Path(read(root/'runs/active-city-window.json')['job'])/'launch.json')
-    status_path = root/'city-training/status.json'
+    status_path = run_root/'status.json'
     status = read(status_path) if status_path.exists() else {}
     result = clean(dict(checked_utc=datetime.now(timezone.utc).isoformat(),window=plan,
         failure=status.get('error') if plan['status']=='failed' else None,counts=current['counts'],
@@ -160,7 +182,10 @@ def snapshot():
     payload=json.dumps(result,allow_nan=False).replace('<','\\u003c')
     html=out/'dashboard.html'
     pending=out/'dashboard.html.pending'
-    pending.write_text(HTML.replace('__DATA__',payload),encoding='utf-8')
+    text=HTML.replace('__DATA__',payload)
+    from photo_goal.mission_space import reserve_write
+    reserve_write(html,len(text.encode())+4096)
+    pending.write_text(text,encoding='utf-8')
     pending.replace(html)
     print(json.dumps(dict(counts=current['counts'],groups=grouped,latest_optimizer=result['latest_optimizer'],
                          failure=result['failure'],dashboard=str(html))),flush=True)

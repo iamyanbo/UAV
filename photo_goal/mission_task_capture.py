@@ -14,6 +14,10 @@ from .mission_resources import Resources, RunWindow
 
 
 def run(args):
+    if getattr(args,'geometry',None):
+        if not getattr(args,'output',None):raise ValueError('Route-qualified capture requires explicit --output')
+        from .mission_task_catalog import capture
+        return capture(args)
     root, cfg = Path(args.root).resolve(), city_config(args.config)
     original = read(root/'tasks.json')
     if original['schema'] != 'photo-goal-native-tasks/v1':

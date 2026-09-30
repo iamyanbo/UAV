@@ -21,6 +21,7 @@ def main():
         p.add_argument('--qwen-port',type=int,default=48005)
         p.add_argument('--qwen-adapter',help='Explicit accepted adapter publication between full rollouts')
         p.add_argument('--config');p.add_argument('--device',default='cuda')
+        p.add_argument('--scene');p.add_argument('--taskset');p.add_argument('--qualification');p.add_argument('--run-dir')
         p.add_argument('--hours',type=float,default=8);p.add_argument('--batches',type=int,default=244)
     p=sub.add_parser('serve-city-qwen')
     p.add_argument('--qwen-model',required=True);p.add_argument('--adapter');p.add_argument('--authfile',required=True)
@@ -33,6 +34,13 @@ def main():
     p=sub.add_parser('city-teacher-targets')
     p.add_argument('--manifest',required=True);p.add_argument('--upstream',required=True)
     p.add_argument('--checkpoint',required=True);p.add_argument('--output',required=True);p.add_argument('--device',default='cuda')
+    p.add_argument('--config')
+    p=sub.add_parser('prepare-city-clips')
+    p.add_argument('--run-dir',required=True);p.add_argument('--output',required=True)
+    p.add_argument('--hours',type=float,default=8)
+    p=sub.add_parser('link-city-teacher')
+    for name in ('manifest','receipts','output'):p.add_argument('--'+name,required=True)
+    p.add_argument('--hours',type=float,default=8)
     p=sub.add_parser('train-city-qwen')
     p.add_argument('--stage',choices=('grounding','preference'),required=True)
     p.add_argument('--checkpoint',required=True);p.add_argument('--corpus',required=True)
@@ -41,11 +49,25 @@ def main():
     p.add_argument('--device',default='cuda');p.add_argument('--config')
     p=sub.add_parser('capture-city-tasks')
     p.add_argument('--config');p.add_argument('--device',default='cuda');p.add_argument('--hours',type=float,default=8)
+    p.add_argument('--scene');p.add_argument('--geometry');p.add_argument('--output');p.add_argument('--taskset')
+    p=sub.add_parser('fork-city')
+    for name in ('checkpoint','backbone','parent-config','config','run-dir'):
+        p.add_argument('--'+name,required=True)
+    p.add_argument('--phase',choices=('stop','motion','tasks','reward'),required=True)
+    p.add_argument('--device',default='cpu')
+    p=sub.add_parser('capture-city-geometry')
+    p.add_argument('--scene',required=True);p.add_argument('--output',required=True)
+    p.add_argument('--config');p.add_argument('--hours',type=float,default=8)
+    p.add_argument('--qualification',required=True,help='Measured geometry axis/surface/contact receipt')
+    p=sub.add_parser('archive-city-rgb')
+    p.add_argument('--catalog',required=True);p.add_argument('--ffmpeg',required=True)
+    p=sub.add_parser('acquire-openfly')
+    p.add_argument('--city-evidence',required=True);p.add_argument('--hours',type=float,default=8)
     p=sub.add_parser('bootstrap-city')
     p.add_argument('--flights',type=int,default=128);p.add_argument('--updates',type=int,default=20000)
     p.add_argument('--hours',type=float,default=8);p.add_argument('--seed',type=int,default=0)
     args=parser.parse_args()
-    if args.command in ('train-city','train-city-world','train-city-qwen','city-teacher-targets','serve-city-qwen','capture-city-tasks','bootstrap-city'):
+    if args.command in ('train-city','train-city-world','train-city-qwen','city-teacher-targets','prepare-city-clips','link-city-teacher','serve-city-qwen','capture-city-tasks','capture-city-geometry','archive-city-rgb','acquire-openfly','fork-city','bootstrap-city'):
         from .mission_storage import configure
         configure(args.root,[getattr(args,'output',None)])
     if args.command=='capture':
@@ -69,12 +91,30 @@ def main():
         run(args)
     elif args.command=='city-teacher-targets':
         from .mission_teacher import compute_targets
-        compute_targets(args.manifest,args.upstream,args.checkpoint,args.output,args.device)
+        compute_targets(args.manifest,args.upstream,args.checkpoint,args.output,args.device,args.config)
+    elif args.command=='prepare-city-clips':
+        from .mission_teacher import prepare_clips
+        prepare_clips(args)
+    elif args.command=='link-city-teacher':
+        from .mission_teacher import link_targets
+        link_targets(args)
     elif args.command=='train-city-qwen':
         from .mission_vlm_learning import run
         run(args)
     elif args.command=='capture-city-tasks':
         from .mission_task_capture import run
+        run(args)
+    elif args.command=='fork-city':
+        from .mission_migration import run
+        print(run(args))
+    elif args.command=='capture-city-geometry':
+        from .mission_geometry import acquire
+        acquire(args)
+    elif args.command=='archive-city-rgb':
+        from .mission_rgb_store import archive
+        archive(args.catalog,args.ffmpeg)
+    elif args.command=='acquire-openfly':
+        from .mission_openfly import run
         run(args)
     elif args.command=='bootstrap-city':
         if args.flights<16 or args.updates<=0:parser.error('Bootstrap requires at least 16 flights and positive updates')

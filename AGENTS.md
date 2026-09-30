@@ -1,5 +1,15 @@
 # Photo-goal UAV navigation
 
+## Latest instruction: implement locally
+
+The user authorized implementing the September 30 environment/data/reward plan
+with minimal verification. The implementation is local; use
+`docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md` for execution order.
+Preserve reference checkpoints and raw evidence. New source/config/task assets
+require matching native qualification before another training window. Do not
+launch agents or write tests/harnesses. Historical task scopes below do not
+supersede this implementation authorization.
+
 ## September 30 implementation specification
 
 The latest task is to write the detailed environment/data/reward implementation

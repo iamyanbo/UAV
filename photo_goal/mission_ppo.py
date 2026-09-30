@@ -21,6 +21,16 @@ def optimize(actor, optimizer, rows, batch_for, cfg, resources=None):
     original, original_optimizer = cpu_copy(actor.state_dict()), cpu_copy(optimizer.state_dict())
     basis = encoder_identity(actor)
     report = dict(optimizer_steps=0, pre_update_logprob_max_error=0.)
+    valid = [r for r in rows if r.get('stop_label_valid', False)]
+    positive = sum(r.get('stop_label', 0.) > .5 for r in valid)
+    negative = len(valid)-positive
+    balance = None
+    if cfg.get('stop_class_balance') == 'rollout' and valid:
+        raw = min(cfg['stop_class_weight_cap'], negative/positive) if positive and negative else 1.
+        normalizer = (raw*positive+negative)/len(valid)
+        balance = (raw/normalizer, 1./normalizer, len(rows)/len(valid))
+    report.update(stop_positive_labels=positive, stop_negative_labels=negative,
+                  stop_balance=balance, stop_missing_class=not positive or not negative)
     metrics = []
     actor.eval()
     try:
@@ -48,6 +58,7 @@ def optimize(actor, optimizer, rows, batch_for, cfg, resources=None):
                 for begin in range(0, len(group), micro):
                     ids = group[begin:begin+micro]
                     batch = batch_for(ids)
+                    batch['stop_balance'] = balance
                     logp, value, motor_entropy, stop_entropy = actor.evaluate(batch)
                     old = logp.new_tensor([rows[i]['logprob'] for i in ids])
                     logratio = logp-old
@@ -99,6 +110,7 @@ def optimize(actor, optimizer, rows, batch_for, cfg, resources=None):
                       physical_rows=len(rows), microbatch=micro, optimizer_minibatch=cfg['minibatch'])
         if metrics:
             report.update({key: float(np.mean([row[key] for row in metrics])) for key in metrics[0]})
+        report['step_metrics']=metrics
         if not report['optimizer_steps'] or report['final_rollout_kl'] > cfg['safeguards']['maximum_final_kl']:
             raise RuntimeError('City PPO update rejected; restoring accepted actor')
         if any(not math.isfinite(v) for v in report.values() if isinstance(v, float)):

@@ -119,10 +119,26 @@ def save_bundle(path, actor, optimizer, world, world_optimizer, metadata, cfg):
                  rng=dict(python=random.getstate(), numpy=np.random.get_state(),
                           torch=torch.get_rng_state(), cuda=torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None))
     pending = path.with_suffix('.pending')
+    from .mission_space import reserve_write
+    import os
+    def tensor_bytes(value):
+        if torch.is_tensor(value): return value.numel()*value.element_size()
+        if isinstance(value,dict): return sum(tensor_bytes(v) for v in value.values())
+        if isinstance(value,(list,tuple)): return sum(tensor_bytes(v) for v in value)
+        return 0
+    reserve_write(path,int(tensor_bytes(saved)*1.1)+32*2**20,os.environ.get('UAV_SHUTDOWN_WRITES')=='1')
     torch.save(saved, pending)
+    with pending.open('rb') as stream:os.fsync(stream.fileno())
     pending.replace(path)
+    if os.name!='nt':
+        descriptor=os.open(path.parent,os.O_RDONLY)
+        try:os.fsync(descriptor)
+        finally:os.close(descriptor)
     write(path.with_suffix('.json'), dict(schema=BUNDLE_SCHEMA, checkpoint_sha256=digest(path),
           counts=saved['counts'], encoder_basis_sha256=saved['encoder_basis_sha256'],
+          phase_id=saved.get('phase_id'),phase_accepted_batches=saved.get('phase_accepted_batches'),
+          world_work_remaining=(saved.get('world_pending') or {}).get('remaining',0),
+          asset_identity=saved.get('asset_identity'),
           pending=(dict(batch_id=saved['pending']['batch_id'], rows=len(saved['pending']['rows']),
                         policy_sha256=saved['pending']['policy_sha256']) if saved['pending'] else None),
           world_ranking_qualified=saved['world_ranking_qualified'],

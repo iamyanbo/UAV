@@ -1,6 +1,14 @@
 # Handoff — September 29, 2026
 
-## September 30: current implementation specification and final window outcome
+## September 30: local implementation handoff
+
+The environment/data/reward revision is implemented locally. Follow
+[the execution handoff](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).
+No lab connection, deployment, qualification or training launch occurred during
+implementation. Preserve the old run; fork explicit phase checkpoints and qualify
+the actual new source/config/assets before launch. Earlier entries below are history.
+
+## September 30: historical specification and final window outcome
 
 Use [the environment/data/reward implementation MD](docs/plans/PHOTO_GOAL_ENVIRONMENT_DATA_REWARD_IMPLEMENTATION_20260930.md).
 It specifies operator recovery, private native geometry, varied 3D reset pairs,

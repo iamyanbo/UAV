@@ -88,6 +88,11 @@ def transition_reward(phi,next_phi,dt,event,cfg):
     time_cost=(-cfg['time_cost_per_mission']*dt/cfg['mission_deadline_s']
                if 'time_cost_per_mission' in cfg else -.01*dt)
     parts=dict(terminal=sparse,time=time_cost,shaping=shaping)
+    if cfg.get('failure_remaining_time_charge'):
+        if 'charged_elapsed_s' not in cfg:
+            raise ValueError('Failure time reward requires the charged physical clock')
+        parts['failure_time'] = (-cfg['time_cost_per_mission']*max(0.,1-cfg['charged_elapsed_s']/cfg['mission_deadline_s'])
+                                 if terminal and event != 'success' else 0.)
     return sum(parts.values())*cfg['reward_scale'],parts,gamma
 
 

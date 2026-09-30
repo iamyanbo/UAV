@@ -10,6 +10,7 @@ import logging
 import math
 import os
 import queue
+import random
 from pathlib import Path
 import signal
 import socket
@@ -81,7 +82,9 @@ class ProjectCity:
             # The steppable clock runs autonomously at real time; no per-action stepping.
             config['clock']=dict(type='steppable',**{'step-ns':3000000,'real-time-update-rate':3000000,'pause-on-start':False})
             (self.output/'scene-config.json').write_text(json.dumps(config,indent=2),encoding='utf-8')
-            self.world=World(self.client,'scene-config.json',sim_config_path=str(self.output),delay_after_load_sec=2)
+            python_rng=random.getstate()
+            try:self.world=World(self.client,'scene-config.json',sim_config_path=str(self.output),delay_after_load_sec=2)
+            finally:random.setstate(python_rng)
             self.drone=Drone(self.client,self.world,'drone_1')
             self.client.subscribe(self.drone.robot_info['collision_info'],self._collision)
             self.client.subscribe(self.drone.sensors['front_custom']['scene_camera'],self._image)

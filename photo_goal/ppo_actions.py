@@ -2,6 +2,19 @@
 import numpy as np
 
 
+def target_from_latent(latent, limits):
+    target = np.tanh(np.asarray(latent, dtype=float))*np.asarray(limits)
+    target[:2] /= max(1., np.linalg.norm(target[:2])/limits[0])
+    return target.tolist()
+
+
+def slew_target(target, previous, dt, acceleration):
+    delta = np.asarray(target, dtype=float)-np.asarray(previous, dtype=float)
+    delta[:2] /= max(1., np.linalg.norm(delta[:2])/max(acceleration[0]*dt, 1e-12))
+    delta[2:] = np.clip(delta[2:], -np.asarray(acceleration[2:])*dt, np.asarray(acceleration[2:])*dt)
+    return (np.asarray(previous)+delta).tolist()
+
+
 def command_from_latent(latent,previous,dt,limits,acceleration):
     target=np.tanh(np.asarray(latent,dtype=float))*np.asarray(limits)
     target[:2]/=max(1.,np.linalg.norm(target[:2])/limits[0])

@@ -1,5 +1,14 @@
 # City photo-goal training implementation
 
+## September 30: implementation completed locally
+
+The A/B/C/D repair code is implemented. Read
+[implementation progress and launch handoff](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md)
+for changed files, commands and verification scope. The new operator, migrations,
+3D task catalog, private route rewards, RGB archive and teacher replay tools are
+local changes; no lab deployment, native qualification or new training was run.
+The sections below preserve earlier planning and run evidence.
+
 ## September 30: current environment/data/reward implementation specification
 
 Read [the detailed implementation MD](docs/plans/PHOTO_GOAL_ENVIRONMENT_DATA_REWARD_IMPLEMENTATION_20260930.md)

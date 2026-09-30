@@ -2,6 +2,7 @@
 from pathlib import Path
 import json
 import math
+import os
 import time
 import uuid
 import numpy as np
@@ -15,6 +16,24 @@ def configure(root):
     scene_file = root / 'scene.json'
     if scene_file.exists():
         return read(scene_file), read(root / 'config.json')
+    if os.name != 'nt':
+        binary=root/'assets/cityenviron-linux-1.0.1/extracted/CityEnviron/Binaries/Linux/CityEnviron-Linux-Shipping'
+        if not binary.is_file():raise RuntimeError('Download the official Linux CityEnviron first')
+        cfg=read(Path(__file__).with_name('ppo_endpoint.json'))
+        cfg.update(experiment='project-city-native-qualification',minimum_train_scenes=1,
+                   minimum_validation_scenes=0,mode2_enabled=False,training_pause=False)
+        settings=dict(SettingsVersion=1.2,SimMode='Multirotor',ClockSpeed=1,ViewMode='NoDisplay',ApiServerPort=43551,
+            Vehicles={'drone_1':dict(VehicleType='SimpleFlight',AutoCreate=True,
+                Cameras={'front_custom':dict(CaptureSettings=[
+                    dict(ImageType=0,Width=640,Height=480,FOV_Degrees=90),
+                    dict(ImageType=2,Width=160,Height=120,FOV_Degrees=90)])})})
+        write(root/'settings.json',settings)
+        scene=dict(scene_id='cityenviron-projectairsim-linux-1.0.1',backend='projectairsim',project_root=str(root),
+            simulator_root=str(binary.parents[3]),simulator_binary=str(binary),settings=str(root/'settings.json'),
+            launch_argv=[str(binary),'-RenderOffscreen','-graphicsadapter=0'],binary_sha256=digest(binary),
+            geography_id='cityenviron-projectairsim-1.0.1',historical_windows_equivalence=False)
+        write(scene_file,scene);write(root/'config.json',cfg)
+        return scene,cfg
     binaries = [p for p in (root/'scenes').rglob('*.exe') if p.parent.name=='Win64' and p.parent.parent.name=='Binaries']
     if len(binaries) != 1:
         raise RuntimeError('Extract the pinned CityEnviron Windows package first; expected one Win64 executable')
@@ -64,6 +83,15 @@ def capture(root, count=12):
     manifest=dict(schema='photo-goal-native-tasks/v1', scene=scene,
         config_sha256=digest(root/'config.json'), tasks=[], rejected=[],
         purpose='engineering qualification; not a frozen research split')
+    if (root/'tasks.json').exists():
+        previous=read(root/'tasks.json')
+        if previous['scene']!=scene or previous['config_sha256']!=manifest['config_sha256']:
+            raise RuntimeError('Existing endpoint evidence belongs to another scene/configuration')
+        for task in previous['tasks']:
+            if digest(task['goal_image'])!=task['goal_sha256']:
+                raise RuntimeError('Existing endpoint photograph changed')
+        manifest=previous
+    if len(manifest['tasks'])>=count:return manifest
     with PilotEnvironment(scene,root/'capture-worker',cfg) as env:
         env.calibrate()
         # Multiple candidate headings/heights; acceptance is based on actual hover,
@@ -73,7 +101,10 @@ def capture(root, count=12):
             accepted=len(manifest['tasks']); band=accepted//4
             distance=[60,140,240][min(band,2)]
             offset=(index//4)*15.; azimuth=math.radians((index%4)*90)
-            a=[offset,0.,-20.-10*(index%3)]
+            # Higher candidate poses avoid repeatedly resetting inside the
+            # native city buildings. Actual hover and RGB/depth still decide
+            # acceptance; this does not qualify routes or obstacle clearance.
+            a=[offset,0.,-50.-10*(index%3)]
             b=[a[0]+distance*math.cos(azimuth),a[1]+distance*math.sin(azimuth),
                a[2]+[0,-10,10,0][index%4]]
             yaw=(index%4)*90

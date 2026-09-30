@@ -2,6 +2,7 @@
 import queue
 import threading
 import time
+import os
 from .ppo_env import PilotEnvironment
 
 
@@ -12,6 +13,7 @@ class CityEnvironment(PilotEnvironment):
         self.camera_stop = threading.Event()
         self.camera_queue = queue.Queue(maxsize=2)
         self.camera_error = None
+        self.extra_recorder=None
 
     def _camera_loop(self):
         # RPC connections are never shared between camera and dispatch threads.
@@ -19,6 +21,7 @@ class CityEnvironment(PilotEnvironment):
         try:
             while not self.camera_stop.is_set():
                 packet = self.capture_image(client)
+                if self.extra_recorder:self.extra_recorder.submit(packet)
                 while True:
                     try:
                         self.camera_queue.put_nowait(packet)
@@ -40,6 +43,16 @@ class CityEnvironment(PilotEnvironment):
         self.camera_thread = None
         while not self.camera_queue.empty():
             self.camera_queue.get_nowait()
+        if self.extra_recorder:
+            self.extra_recorder.close();self.extra_recorder=None
+
+    def reset(self,*args,**kwargs):
+        result=super().reset(*args,**kwargs)
+        if self.cfg.get('extra_frame_queue_capacity') and os.environ.get('UAV_RGB_CATALOG'):
+            from .mission_recording import ExtraFrameRecorder
+            self.extra_recorder=ExtraFrameRecorder(self.recorder.root/'world-extra',os.environ['UAV_RGB_CATALOG'],
+                                                    self.cfg['extra_frame_queue_capacity'])
+        return result
 
     def reset_pose(self, *args, **kwargs):
         self.stop_camera()

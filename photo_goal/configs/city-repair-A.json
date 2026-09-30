@@ -1,0 +1,215 @@
+{
+  "schema": "photo-goal-city-run/v1",
+  "capability": "simulation-only",
+  "seed": 0,
+  "step_s": 0.05,
+  "freshness_s": 0.25,
+  "qualification_depth_size": [
+    160,
+    120
+  ],
+  "episode_s": 600,
+  "stop_grace_s": 3,
+  "gamma": 0.9999,
+  "gae_lambda": 0.95,
+  "learning_rate": 0.0003,
+  "clip": 0.2,
+  "epochs": 4,
+  "minibatch": 512,
+  "rollout_steps": 8192,
+  "value_coefficient": 0.5,
+  "entropy_coefficient": 0.01,
+  "gradient_clip": 0.5,
+  "target_kl": 0.02,
+  "reward_scale": 0.1,
+  "limits": [
+    3,
+    3,
+    1,
+    45
+  ],
+  "acceleration": [
+    2,
+    2,
+    1,
+    90
+  ],
+  "camera": {
+    "profile": "fixed-forward-monocular/ppo-v1",
+    "x": 0.5,
+    "y": 0,
+    "z": -0.1,
+    "pitch": 0,
+    "roll": 0,
+    "yaw": 0,
+    "width": 640,
+    "height": 480,
+    "fov": 90
+  },
+  "reset": {
+    "attempts": 3,
+    "position_m": 0.25,
+    "heading_deg": 5,
+    "speed_mps": 0.1,
+    "dwell_s": 1,
+    "timeout_s": 15,
+    "qualification_repetitions": 20
+  },
+  "arrival": {
+    "horizontal_m": 3,
+    "vertical_m": 2,
+    "heading_deg": 30,
+    "speed_mps": 0.5,
+    "dwell_s": 1
+  },
+  "smoke_transitions": 200000,
+  "smoke_attempts": 250,
+  "first_run_transitions": 1000000,
+  "extension_transitions": 2000000,
+  "learner_attempts": 10000,
+  "campaign_transitions": 10000000,
+  "campaign_attempts": 10000,
+  "eval_every": 0,
+  "eval_episodes": 5,
+  "candidate_train_scenes": [
+    2,
+    5,
+    10,
+    14
+  ],
+  "candidate_validation_scenes": [
+    6,
+    13
+  ],
+  "minimum_train_scenes": 2,
+  "minimum_validation_scenes": 1,
+  "stop_prior": 0.00025,
+  "fixed_batch": true,
+  "eval_at": [],
+  "max_workers": 1,
+  "auxiliary_bootstrap_transitions": 0,
+  "mixture": {
+    "mission": 0.8,
+    "arrival": 0.2
+  },
+  "training_pause": true,
+  "world_selector": false,
+  "photo_slam_required": false,
+  "minimum_train_scenes_extension": 4,
+  "minimum_validation_scenes_extension": 2,
+  "qwen": {
+    "model_path": null,
+    "adapter": null,
+    "max_new_tokens": 384,
+    "max_proposals": 4,
+    "minimum_interval_s": 3,
+    "strategic_expiry_s": 30
+  },
+  "qualification": {
+    "train_tasks_per_cell": 20,
+    "validation_tasks_per_cell": 5,
+    "minimum_start_regions": 60,
+    "minimum_goal_poses": 60,
+    "physical_routes_per_scene": 12,
+    "reset_starts": 20,
+    "reset_mean_s": 30,
+    "two_worker_gain": 1.1,
+    "max_batch_wait_s": 0.002
+  },
+  "safeguards": {
+    "maximum_final_kl": 0.1,
+    "saturation_fraction": 0.95,
+    "consecutive_updates": 3,
+    "critic_ev": -1,
+    "critic_mse_ratio": 10
+  },
+  "endpoint_pilot": false,
+  "experiment": "city-photo-goal-separate-gradients",
+  "mode2_enabled": true,
+  "reward_potential": "negative_normalized_euclidean_distance",
+  "evaluation_scope": "training diagnostics only; held-out acceptance pending",
+  "max_recoverable_freshness_faults_per_batch": 2,
+  "max_recoverable_freshness_faults_total": 5,
+  "profile": "full",
+  "max_start_goal_distance_m": 300,
+  "distance_bands_m": [
+    [
+      50,
+      100
+    ],
+    [
+      100,
+      200
+    ],
+    [
+      200,
+      300
+    ]
+  ],
+  "distance_band_weights": [
+    0.3,
+    0.35,
+    0.35
+  ],
+  "mission_deadlines_s": [
+    180,
+    300,
+    600
+  ],
+  "support_fraction": 0.2,
+  "support_radius_m": [
+    2,
+    15
+  ],
+  "milestone_batches": 244,
+  "initial_frozen_qwen_batches": 4,
+  "gamma_time_constant_s": 3600,
+  "gae_time_constant_s": 10,
+  "stop_label_coefficient": 0.1,
+  "terminal_rewards": {
+    "success": 10,
+    "false_stop": -10,
+    "collision": -10,
+    "envelope": -10,
+    "deadline": -10
+  },
+  "time_cost_per_mission": 2,
+  "world": {
+    "updates": 300000,
+    "learning_rate": 0.0001,
+    "batch_size": 32,
+    "horizon_s": 4,
+    "max_candidates": 4,
+    "auxiliary_weight": 0.1
+  },
+  "resources": {
+    "gpu_fraction_ceiling": 1.0,
+    "host_available_reserve_gib": 12,
+    "disk_reserve_gib": 100,
+    "maximum_window_hours": 8,
+    "checkpoint_reserve_s": 300
+  },
+  "gradient_routing": {
+    "ppo": "actor-critic",
+    "world": "world-only",
+    "qwen": "lora-only",
+    "cross_module_backpropagation": false
+  },
+  "evaluation": {
+    "final_tasks": 10,
+    "variants": [
+      "mode1",
+      "mode1-vlm",
+      "full"
+    ]
+  },
+  "phase_id": "city-repair-A",
+  "stop_class_balance": "rollout",
+  "stop_class_weight_cap": 20,
+  "stop_reference_step_s": 0.05,
+  "control_step_s": 0.05,
+  "motor_control": "collector_limited",
+  "task_sampling": "legacy",
+  "world_updates_per_batch": 819,
+  "potential_normalization": "initial_distance"
+}

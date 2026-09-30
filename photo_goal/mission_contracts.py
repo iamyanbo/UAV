@@ -21,6 +21,14 @@ def city_config(path=None):
     """Leave the historical endpoint/campaign configurations unchanged."""
     base = read(Path(__file__).with_name('ppo_endpoint.json'))
     new = read(path or Path(__file__).with_name('city_campaign.json'))
+    known=set(base)|set(read(Path(__file__).with_name('city_campaign.json')))|{
+        'experiment','mode2_enabled','endpoint_pilot','phase_id','stop_class_balance','stop_class_weight_cap',
+        'stop_reference_step_s','control_step_s','motor_control','task_sampling','world_updates_per_batch',
+        'task_start_weights','max_route_length_m','task_height_headroom_m','task_roi_padding_m',
+        'geometry_tile_size_m','geometry_resolution_m','route_cache_max_bytes','route_cache_max_entries',
+        'extra_frame_queue_capacity','intermediate_deadline_s','support_deadline_s',
+        'potential_normalization','potential_distance_scale_m','failure_remaining_time_charge'}
+    if set(new)-known:raise ValueError('Unknown city config fields: '+str(sorted(set(new)-known)))
     if new.get('schema') != RUN_SCHEMA:
         raise ValueError('Expected the city full-run configuration')
     base.update(new)
@@ -46,6 +54,28 @@ def city_config(path=None):
     base['experiment'] = 'city-photo-goal-separate-gradients'
     base['mode2_enabled'] = True
     base['endpoint_pilot'] = False
+    if 'phase_id' in base:
+        if base['phase_id'] not in ('city-repair-A','city-repair-B','city-repair-C','city-repair-D'):
+            raise ValueError('Unknown repair phase')
+        if base.get('stop_reference_step_s') != .05 or base.get('control_step_s') != .05:
+            raise ValueError('The reference hazard/control clock must remain 50 ms')
+        if base.get('stop_class_balance') != 'rollout' or base.get('stop_class_weight_cap') != 20:
+            raise ValueError('Invalid repair stop supervision')
+        if base.get('task_sampling') == 'quota_v2' and base.get('task_start_weights') != dict(regular=.5,intermediate=.3,support=.2):
+            raise ValueError('Invalid v2 mission-start mixture')
+        if base.get('potential_normalization') == 'route_metres' and base.get('task_sampling') != 'quota_v2':
+            raise ValueError('Route reward requires a route-validated v2 catalog')
+        letter=base['phase_id'][-1]
+        expected=dict(step_s=.05 if letter=='A' else .15,
+                      motor_control='collector_limited' if letter=='A' else 'dispatcher_target',
+                      task_sampling='legacy' if letter in ('A','B') else 'quota_v2',
+                      potential_normalization='route_metres' if letter=='D' else 'initial_distance',
+                      time_cost_per_mission=.2 if letter=='D' else 2)
+        if any(base.get(k)!=v for k,v in expected.items()) or base['stop_prior']!=.00025:
+            raise ValueError('Repair configuration combines changes from different phases')
+        if bool(base.get('failure_remaining_time_charge',False))!=(letter=='D'):
+            raise ValueError('Failure-time charge is exclusive to reward phase D')
+        if base.get('world_updates_per_batch')!=819:raise ValueError('Repair requires 819 independent world updates per batch')
     return base
 
 

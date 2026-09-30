@@ -4,7 +4,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 from .temporal import shift
-from .ppo_actions import command_from_latent
+from .ppo_actions import command_from_latent, target_from_latent, slew_target
 from .mission_contracts import WORLD_SCHEMA
 
 
@@ -96,28 +96,41 @@ def rank_candidates(world, actor, batch, cfg, stop_outcomes_qualified=False):
     goals, subgoal = batch['goals'], batch['subgoal_vector']
     refs, roi = batch.get('reference_tokens'), batch.get('reference_roi')
     dt = cfg['step_s']
-    horizon = round(cfg['world']['horizon_s']/dt)
-    discount = math.exp(-dt/cfg['gamma_time_constant_s'])
+    horizon_s = cfg['world']['horizon_s']
     returns, continuation = features.new_zeros(len(features)), features.new_ones(len(features))
     alive = torch.ones(len(features), dtype=torch.bool, device=features.device)
     unqualified_stops = 0
     collision_peak = features.new_zeros(len(features))
     world.eval()
     actor.eval()
-    for _ in range(horizon):
+    elapsed=0.
+    while elapsed<horizon_s-1e-9:
+        dt=min(cfg['step_s'],horizon_s-elapsed)
+        elapsed+=dt;discount=math.exp(-dt/cfg['gamma_time_constant_s'])
         normal, stop, value = actor.forward_tokens(features, goals, times, commands, valid,
-                                                   subgoal, refs, roi, mission)
+                                                   subgoal, refs, roi, mission,
+                                                   planned_interval_s=features.new_full((len(features),),dt))
         # Stop outcomes are expected values, not an unrelated threshold policy.
         # With unqualified stop predictions, preserve critic continuation for its
         # probability mass and imagine only the non-stop mass explicitly.
         probability = stop.probs
         unqualified_stops += int((probability > .01).sum()) if not stop_outcomes_qualified else 0
-        command = features.new_tensor([command_from_latent(z, previous, dt, cfg['limits'], cfg['acceleration'])
-                                       for z, previous in zip(normal.mean.cpu().tolist(), commands[:, -1].cpu().tolist())])
-        segments = torch.cat((command, command.new_full((len(command), 1), dt)), -1)[:, None]
+        if cfg.get('motor_control')=='dispatcher_target':
+            sequences=[]
+            for latent,previous in zip(normal.mean.cpu().tolist(),commands[:,-1].cpu().tolist()):
+                target=target_from_latent(latent,cfg['limits']);sequence=[];remaining=dt
+                while remaining>1e-9:
+                    tick=min(.05,remaining);previous=slew_target(target,previous,tick,cfg['acceleration'])
+                    sequence.append([*previous,tick]);remaining-=tick
+                sequences.append(sequence)
+            segments=features.new_tensor(sequences);command=segments[:,-1,:4]
+        else:
+            command = features.new_tensor([command_from_latent(z, previous, dt, cfg['limits'], cfg['acceleration'])
+                                           for z, previous in zip(normal.mean.cpu().tolist(), commands[:, -1].cpu().tolist())])
+            segments = torch.cat((command, command.new_full((len(command), 1), dt)), -1)[:, None]
         goal_context = goals.mean(1)
         prediction = world(features, times, commands, valid, segments,
-                           torch.ones((len(command), 1), dtype=torch.bool, device=features.device), goal_context, mission)
+                           torch.ones(segments.shape[:2], dtype=torch.bool, device=features.device), goal_context, mission)
         terminal_stop = (2*prediction['stop_success'].sigmoid()-1) if stop_outcomes_qualified else value
         returns += continuation*probability*terminal_stop*alive
         continuation *= (1-probability)
@@ -131,7 +144,8 @@ def rank_candidates(world, actor, batch, cfg, stop_outcomes_qualified=False):
         returns[deadline] += continuation[deadline]*cfg['terminal_rewards']['deadline']*cfg['reward_scale']
         continuation[deadline] = 0
         alive &= ~deadline
-    _, _, final_value = actor.forward_tokens(features, goals, times, commands, valid, subgoal, refs, roi, mission)
+    _, _, final_value = actor.forward_tokens(features, goals, times, commands, valid, subgoal, refs, roi, mission,
+                                            planned_interval_s=features.new_full((len(features),),cfg['step_s']))
     returns += continuation*final_value*alive
     if not torch.isfinite(returns).all():
         raise ValueError('Nonfinite world ranking')

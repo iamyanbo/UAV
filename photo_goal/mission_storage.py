@@ -44,6 +44,9 @@ $uavPhysical = @(Get-PhysicalDisk | Where-Object { $_.DeviceId -eq [string]$uavD
 def configure(root, outputs=()):
     receipt = inspect_hdd(root)
     root = Path(root).resolve()
+    os.environ['UAV_PROJECT_ROOT']=str(root)
+    os.environ.setdefault('UAV_PROJECT_LIMIT_BYTES',str(256*2**30))
+    os.environ.setdefault('UAV_CHECKPOINT_RESERVE_BYTES',str(2*2**30))
     if any(not Path(path).resolve().is_relative_to(root) for path in outputs if path):
         raise ValueError('Writable training/teacher outputs must reside on the verified HDD root')
     cache = {'TMPDIR':'tmp', 'TMP':'tmp', 'TEMP':'tmp', 'XDG_CACHE_HOME':'cache',
@@ -59,4 +62,6 @@ def configure(root, outputs=()):
     sys.pycache_prefix = str(root/'cache'/'pycache')
     os.environ['PYTHONPYCACHEPREFIX'] = sys.pycache_prefix
     receipt['cache_environment'] = {variable: os.environ[variable] for variable in cache}
+    from .mission_space import guard
+    receipt['project_upper_bound_bytes']=guard().bound()
     return receipt

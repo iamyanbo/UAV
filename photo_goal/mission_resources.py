@@ -26,6 +26,9 @@ class Resources:
         if available < self.cfg['host_available_reserve_gib']*2**30+growth_bytes:
             raise RuntimeError('12 GiB available-host-memory reserve would be breached')
         if disk:
+            from .mission_space import guard
+            space=guard()
+            if space: space.check(growth_bytes+2*checkpoint_bytes)
             free = shutil.disk_usage(self.root).free
             if free < self.cfg['disk_reserve_gib']*2**30+growth_bytes+2*checkpoint_bytes:
                 raise RuntimeError('100 GiB data-drive reserve/checkpoint headroom would be breached')
@@ -59,6 +62,8 @@ class RunWindow:
         if not 0 < hours <= 8:
             raise ValueError('Resumable windows must be in (0,8] hours')
         self.deadline = time.monotonic()+hours*3600
+        if os.environ.get('UAV_WINDOW_DEADLINE_UNIX'):
+            self.deadline=min(self.deadline,time.monotonic()+float(os.environ['UAV_WINDOW_DEADLINE_UNIX'])-time.time())
         self.reserve_s = reserve_s
         self.stop_file=Path(os.environ['UAV_WINDOW_STOP_FILE']) if os.environ.get('UAV_WINDOW_STOP_FILE') else None
 

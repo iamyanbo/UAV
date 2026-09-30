@@ -1,5 +1,13 @@
 # Current city implementation — September 29, 2026
 
+## September 30: local code status
+
+A/B/C/D is implemented locally; native execution is still unverified. See
+[changed files and execution order](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).
+Syntax/config checks and existing recorded telemetry processing passed. No new
+lab status was obtained and no new training was launched. The recorded overnight
+outcome below remains the latest measured training result.
+
 ## Latest recorded outcome: September 30, 01:11 EDT
 
 The overnight operator stopped early on a `du`/atomic feature-rename race; this

@@ -38,14 +38,15 @@ def from_rows(actor, rows, banks, device):
 
 
 def from_shard(actor, records, labels, root, device):
+    providers={}
     def encoded(next_state=False):
         contexts = [row['next_context'] if next_state else row['context'] for row in records]
         history, goals = [], []
         for row, context in zip(records, contexts):
-            images = [rgb_tensor(root, row['images'][i]) for i in context['history_images']]
+            images = [rgb_tensor(root, row['images'][i],providers) for i in context['history_images']]
             images = [torch.zeros_like(images[-1])]*(4-len(images))+images
             history.append(torch.stack(images))
-            goals.append(rgb_tensor(root, row['images'][context['goal_image_index']]))
+            goals.append(rgb_tensor(root, row['images'][context['goal_image_index']],providers))
         history = torch.stack(history).to(device)
         goals = torch.stack(goals).to(device)
         with torch.no_grad():
@@ -58,7 +59,9 @@ def from_shard(actor, records, labels, root, device):
                     commands=torch.tensor([[[0.]*4]*(4-k)+c['preceding'] for c, k in zip(contexts, n)], device=device),
                     valid=torch.tensor([[False]*(4-k)+[True]*k for k in n], device=device),
                     mission_context=torch.tensor([c['mission_context'] for c in contexts], device=device))
-    result = _assemble(actor, encoded(), encoded(True), records, labels, device)
+    try:result = _assemble(actor, encoded(), encoded(True), records, labels, device)
+    finally:
+        for provider in providers.values():provider.close()
     # Optional independently computed official V-JEPA targets. Missing causal
     # clips are masked; corrupt declared targets are errors, never silent masks.
     targets, mask = [], []
@@ -69,7 +72,10 @@ def from_shard(actor, records, labels, root, device):
             targets.append(torch.zeros(64, 1024))
             mask.append(False)
             continue
-        path = contained(root, spec['path'])
+        import os
+        from pathlib import Path
+        target_root=Path(os.environ['UAV_PROJECT_ROOT']) if Path(spec['path']).is_absolute() else root
+        path = contained(target_root, spec['path'])
         if digest(path) != spec['sha256']:
             raise ValueError('Declared video target changed')
         saved = torch.load(path, map_location='cpu', weights_only=True)
