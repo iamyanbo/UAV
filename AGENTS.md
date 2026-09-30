@@ -1,5 +1,19 @@
 # Photo-goal UAV navigation
 
+## September 30 implementation specification
+
+The latest task is to write the detailed environment/data/reward implementation
+MD, not deploy or restart training. Read
+docs/plans/PHOTO_GOAL_ENVIRONMENT_DATA_REWARD_IMPLEMENTATION_20260930.md before
+implementing the next revision. It supersedes the older handoff's fixed-task
+three-stage scope with A stop, B movement, C expanded tasks/data, D route rewards.
+The latest user storage preference is 256 GiB maximum project usage, including
+all existing files; reserve checkpoint/shutdown space before admission. Preserve
+HDD-only single-root writes, full GPU 0 authorization, GPU 1 isolation, RAM/free
+disk reserves, eight-hour windows and all reference evidence. The last inspected
+overnight window ended on an operator disk-scan race; do not interpret the old
+active-window prose as authorization to resume it. No agents or new tests/harnesses.
+
 ## Current implementation authorization
 
 The user authorized removing the training-window exit caused by policy delays.

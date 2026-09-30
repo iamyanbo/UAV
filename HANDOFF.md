@@ -1,6 +1,21 @@
 # Handoff — September 29, 2026
 
-## September 30: next implementation specification
+## September 30: current implementation specification and final window outcome
+
+Use [the environment/data/reward implementation MD](docs/plans/PHOTO_GOAL_ENVIRONMENT_DATA_REWARD_IMPLEMENTATION_20260930.md).
+It specifies operator recovery, private native geometry, varied 3D reset pairs,
+versioned RGB storage, strict checkpoint migrations and A/B/C/D training. The
+maximum separation remains 300 m; project storage is capped at 256 GiB. It is
+documentation only: no new implementation, deployment or training launch.
+
+Last inspected window `city-window-20260930T034237Z` stopped at 01:11:17 EDT,
+before its scheduled deadline. A `du` scan raced an atomic feature-file rename;
+the operator failed and interrupted the trainer. Saved: eight lifetime accepted
+batches / 65,536 rows, 6,552 world updates, 844 pending rows. Preserve that bundle
+and its evidence. Regular success 0/375; support 21/114. The older active-window
+statements below are historical, not current status.
+
+## September 30: earlier implementation specification
 
 The user chose staged changes and asked to leave the existing overnight operator
 running unchanged until its September 30, 07:42:37 EDT deadline. This documentation

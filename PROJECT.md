@@ -1,5 +1,21 @@
 # City photo-goal training implementation
 
+## September 30: current environment/data/reward implementation specification
+
+Read [the detailed implementation MD](docs/plans/PHOTO_GOAL_ENVIRONMENT_DATA_REWARD_IMPLEMENTATION_20260930.md)
+for the next revision. It replaces the earlier three-stage scope with A stop,
+B movement, C expanded 3D tasks/data and D private route rewards: two full PPO
+batches per stage. Keep the 300 m goal, separate gradients, frozen Qwen and shadow
+world ranking. These changes are specified, **not implemented or deployed**.
+The project cap is now 256 GiB with checkpoint reserve, HDD-only writes and GPU 0.
+
+The last inspected overnight window ended early at September 30 01:11:17 EDT:
+the operator treated a temporary feature-file rename during `du` as fatal.
+Saved lifetime usage: eight accepted batches / 65,536 rows, 6,552 world updates
+and 844 pending rows. Regular missions: 0/375 successes; support: 21/114.
+No new trainer was launched for this documentation task. Entries below describing
+that window as active are historical observations, superseded by this outcome.
+
 ## September 30: overnight continuation and staged repair plan
 
 The user asked to leave the current bounded overnight run unchanged and prepare

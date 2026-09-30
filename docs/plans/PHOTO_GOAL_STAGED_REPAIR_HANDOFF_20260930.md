@@ -2,6 +2,15 @@
 
 Date: September 30, 2026. Status: **planned; changes below are not implemented**.
 
+**Scope update:** the newer
+[environment/data/reward implementation specification](PHOTO_GOAL_ENVIRONMENT_DATA_REWARD_IMPLEMENTATION_20260930.md)
+supersedes this document's three-stage/fixed-task scope, reward-stage name and
+storage cap. New work uses A stop, B movement, C expanded tasks, D private route
+rewards and a 256 GiB project maximum. Exact A/B migration/likelihood details
+below remain useful. The overnight window described as active below subsequently
+ended at 01:11:17 EDT on an operator `du`/file-rename race, saving eight lifetime
+batches and 844 pending rows. Preserve the following as the earlier handoff.
+
 ## 1. Operator decision and scope
 
 The user chose staged changes and asked to leave the existing overnight job running.
@@ -214,6 +223,48 @@ The reference prior describes initialization, not the current conditioned stop
 probability. Neither A nor B overwrites learned conditional weights. Every stage
 retains the task manifest, sensors, asset hashes, PPO hyperparameters, deadlines,
 arrival criteria, and resource contract.
+
+### Configuration field contract
+
+Use fully resolved JSON configurations and record their identity after applying
+the existing base-config loader. Do not edit the global `city_campaign.json` to
+switch an already running parent. Add validation for new fields and reject unknown
+phase/config combinations. Use the following explicit names so packets agree:
+
+Legacy defaults below are read-time behavior for absent fields, not permission to
+insert new keys into an old configuration before hashing it. Load the parent with
+its archived resolved configuration and identity unchanged. Child configurations
+include the new fields explicitly. This avoids making every existing strict-resume
+checkpoint incompatible merely by extending the configuration schema.
+
+| Field | Reference/legacy default | A | B | C |
+| --- | --- | --- | --- | --- |
+| `phase_id` | Identified reference run | `city-repair-A` | `city-repair-B` | `city-repair-C` |
+| `stop_prior` | 0.01 | 0.00025 | 0.00025 | 0.00025 |
+| `stop_class_balance` | `none` | `rollout` | `rollout` | `rollout` |
+| `stop_class_weight_cap` | 20, inactive | 20 | 20 | 20 |
+| `step_s` (planned actor cadence) | 0.05 | 0.05 | 0.15 | 0.15 |
+| `control_step_s` | 0.05 | 0.05 | 0.05 | 0.05 |
+| `stop_reference_step_s` | 0.05 | 0.05 | 0.05 | 0.05 |
+| `motor_control` | `collector_limited` | `collector_limited` | `dispatcher_target` | `dispatcher_target` |
+| `potential_normalization` | `initial_distance` | `initial_distance` | `initial_distance` | `metres` |
+| `potential_distance_scale_m` | 50, inactive | 50, inactive | 50, inactive | 50 |
+| `time_cost_per_mission` | 2 | 2 | 2 | 0.2 |
+| `failure_remaining_time_charge` | false | false | false | true |
+
+The row/context `planned_interval_s` comes from the phase's actor `step_s`; the
+dispatcher's tick comes from `control_step_s`. Existing time-constant discounts
+still use real `dt`. Update all former uses of `step_s` according to their role:
+do not accidentally change dispatch, slew or reference hazard to 150 ms by sharing
+one variable. Record schema/default compatibility in P0/P1 and include these fields
+in strict config identity. `phase_id` is metadata; migration operations come from
+the explicit fork receipt, never from inferring a reset on every load of that phase.
+
+Fork whitelists permit only the listed fields which change at their boundary plus
+run/phase identity. A permit does not cover B timing or C rewards. B does not cover
+reward changes. C does not cover further timing changes. Changes to task manifests,
+PPO hyperparameters, assets, encoder basis, Qwen or resource contracts require a
+separate identified revision; do not smuggle them into the stage migration.
 
 ## 6. Work package P0: explicit run identity and durable accounting
 

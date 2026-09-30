@@ -1,6 +1,18 @@
 # Current city implementation — September 29, 2026
 
-## Latest update: September 29, 22:34 EDT
+## Latest recorded outcome: September 30, 01:11 EDT
+
+The overnight operator stopped early on a `du`/atomic feature-rename race; this
+was our bookkeeping failure. Saved lifetime usage: eight accepted batches /
+65,536 PPO rows, 6,552 world updates and 844 pending rows. Regular success: 0/375;
+support success: 21/114. No restart was performed for the latest planning task.
+
+The [new detailed implementation specification](docs/plans/PHOTO_GOAL_ENVIRONMENT_DATA_REWARD_IMPLEMENTATION_20260930.md)
+defines the next operator, geometry, task/data and A/B/C/D changes, including a
+256 GiB project cap. They are not implemented. Older running-status entries below
+describe earlier observations and are superseded by this outcome.
+
+## Historical update: September 29, 22:34 EDT
 
 **Subsequent recovery change:** the user authorized removing the exit on the
 ninth policy delay. Timing spikes now brake, exclude the affected interval,
