@@ -1,6 +1,16 @@
 # Handoff — September 29, 2026
 
-## September 30: local implementation handoff
+## September 30: lab integration handoff
+
+The HDD deployment is `code-releases/1592568`; `runs/city-repair-A/latest.pt` is
+prepared through the actual CPU migration. Preserve the reference and its pending
+rows. Another user's simulation currently uses both GPUs, so no GPU job was
+launched. Recheck graphics/compute ownership on GPU 0, run matching qualification
+when it is available, then start the bounded A window. No automatic launch is
+scheduled. Full paths/evidence are in
+[the integration update](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).
+
+## September 30: historical local implementation handoff
 
 The environment/data/reward revision is implemented locally. Follow
 [the execution handoff](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).

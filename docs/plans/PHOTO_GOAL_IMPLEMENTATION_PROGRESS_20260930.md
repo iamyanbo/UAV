@@ -1,5 +1,42 @@
 # September 30 city training implementation
 
+## Lab integration update: September 30, 17:43 EDT
+
+CPU integration is complete on the verified rotational `/dev/sda` HDD, under
+`/mnt/hdd2/yanbocheng/photo-goal-native`. Source commit `1592568` is deployed at
+`code-releases/1592568`; the HDD Python environment points to this release and
+has the route-search dependencies installed. The existing `code` directory and
+reference training records were preserved. Two staging issues were corrected:
+CPU forks now preserve saved GPU RNG states, and disk accounting accepts the
+existing virtualenv interpreter link while still rejecting escaped study writes.
+
+The actual CPU Stage A fork passed weight/optimizer preservation checks:
+
+- Child: `runs/city-repair-A/latest.pt`, SHA-256
+  `b8b5a31dbc89b8194ee627ece14b3ef148bc10e54e12f94ff89a01f910d50c2f`.
+- Parent remains unchanged, SHA-256
+  `352aa617c1f4e645621a8f98d2949df92b75520f83b84fa3e3c24f8c53a391b7`.
+- Only `actor.action.2.bias` changed; the world weights were preserved. The 844
+  reference pending rows and lifetime usage remain in the parent.
+- Conservative project upper bound: 74.97 GiB, below the 254 GiB admission limit.
+
+**GPU execution is waiting for availability.** Another user's existing simulation
+uses GPU 0 for Gazebo (`1485797`) and GPU 1 for agile_autonomy (`1485691`). The
+inventory included graphics processes as well as compute, despite 0% utilization.
+No process was stopped/replaced; no qualification/training or automatic launch was
+scheduled. Recheck GPU 0 processes/ownership before running native qualification.
+After it is available, qualify this exact release/config and then launch the
+bounded A window on GPU 0. GPU 1 remains outside our job.
+
+The full measured receipt is on the HDD at
+`artifacts/deployments/integration-20260930.json`, with a local copy in the same
+relative artifact directory. The recipe below uses `$SRC`:
+for this deployment set `$SRC="$STUDY/code-releases/1592568"`. The saved exact
+parent config is `artifacts/deployments/city-reference-config.json`; Stage A is
+already forked, so do not migrate its bias a second time.
+
+## Historical local implementation record
+
 Status: implemented locally, targeting `refactor/photo-goal-native`. No SSH
 connection, asset download, deployment, qualification flight or training launch
 was performed during this implementation. The detailed contract remains

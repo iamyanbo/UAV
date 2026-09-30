@@ -1,5 +1,20 @@
 # Photo-goal UAV navigation
 
+## Latest instruction: lab integration with GPU ownership checks
+
+The user authorized deployment, native integration and bounded Stage A training,
+but explicitly requires checking GPU availability and preserving other users' jobs.
+Inventory both graphics and compute processes and identify ownership before GPU
+launch; zero utilization alone does not establish availability. Do not replace or
+stop another user's job. September 30 CPU deployment/checkpoint preparation is
+complete, but GPU 0 Gazebo and GPU 1 agile_autonomy belong to another simulation.
+No GPU qualification/training was launched or automatically scheduled. Recheck
+GPU 0 before qualification, then use only GPU 0 after it is available.
+
+Current source is under the verified HDD root at `code-releases/1592568`; the
+Stage A checkpoint is `runs/city-repair-A/latest.pt`. Read the integration update
+in `docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md` before proceeding.
+
 ## Latest instruction: implement locally
 
 The user authorized implementing the September 30 environment/data/reward plan

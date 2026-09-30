@@ -1,6 +1,15 @@
 # Current city implementation — September 29, 2026
 
-## September 30: local code status
+## September 30, 17:43 EDT: lab CPU preparation complete
+
+Source `1592568` and dependencies are deployed on the HDD. The actual Stage A
+checkpoint fork passed preservation checks and the reference remains unchanged.
+GPU execution is waiting: another simulation has Gazebo on GPU 0 and
+agile_autonomy on GPU 1. Neither process was stopped or replaced. No qualification,
+training or automatic launch was started. See
+[the integration receipt and next steps](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).
+
+## September 30: historical local code status
 
 A/B/C/D is implemented locally; native execution is still unverified. See
 [changed files and execution order](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).

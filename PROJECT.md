@@ -1,6 +1,15 @@
 # City photo-goal training implementation
 
-## September 30: implementation completed locally
+## September 30: lab integration prepared; awaiting GPU availability
+
+Deployed source `1592568` and dependencies to the lab HDD and completed the actual
+CPU Stage A checkpoint fork. The parent checkpoint and raw evidence are preserved.
+Another user's simulation uses GPU 0 Gazebo and GPU 1 agile_autonomy; no process
+was stopped/replaced and no GPU qualification or training was launched. Read
+[the integration update](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md)
+for measured receipts, paths and remaining native execution.
+
+## September 30: historical local implementation
 
 The A/B/C/D repair code is implemented. Read
 [implementation progress and launch handoff](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md)
