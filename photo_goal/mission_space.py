@@ -4,6 +4,8 @@ import os
 from pathlib import Path
 import shutil
 import sqlite3
+import re
+import sys
 import threading
 
 GIB = 2**30
@@ -21,8 +23,13 @@ def scan_bytes(root):
                 for entry in entries:
                     try:
                         if entry.is_symlink():
-                            if not Path(entry.path).resolve().is_relative_to(Path(root).resolve()):
+                            link=Path(entry.path)
+                            interpreter=(link.parent==Path(root).resolve()/'env/bin' and
+                                re.fullmatch(r'python(?:\d+(?:\.\d+)?)?',link.name) and
+                                link.resolve().is_file() and os.path.samefile(link,sys.executable))
+                            if not link.resolve().is_relative_to(Path(root).resolve()) and not interpreter:
                                 raise RuntimeError('Study path escapes HDD root: '+entry.path)
+                            total+=entry.stat(follow_symlinks=False).st_size
                             continue
                         stat = entry.stat(follow_symlinks=False)
                         inode = (stat.st_dev,stat.st_ino)
