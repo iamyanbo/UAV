@@ -302,10 +302,20 @@ def run(args):
         env.recorder.put('infrastructure_cut',dict(kind='infrastructure_cut',**cut));env.recorder.flush()
         write(run_root/(attempt+'-infrastructure-cut.json'),cut)
         status['infrastructure_cuts'].append(cut);batch_freshness_cuts+=1
-        # A few isolated spikes must remain visible. Repeated timing failure
-        # stops this window rather than silently admitting an unusable backend.
-        if batch_freshness_cuts>8:raise RuntimeError('More than eight freshness cuts in one PPO batch')
-        print(json.dumps(dict(event='freshness_cut',attempt=attempt,rows=len(rows),cuts=batch_freshness_cuts)),flush=True)
+        # Delays are recoverable collection interruptions. Keep the same frozen
+        # behavior batch; repeated delays are a data-quality warning, not a
+        # reason to terminate the training window. The physical brake remains.
+        if batch_freshness_cuts % 8 == 0:
+            checkpoint()
+            print(json.dumps(dict(event='frequent_freshness_warning',rows=len(rows),
+                                  cuts=batch_freshness_cuts,action='checkpoint_and_continue')),flush=True)
+        # Give queued work a bounded opportunity to drain before a fresh reset.
+        # Physics is not paused or stepped by this cooldown; the vehicle brakes.
+        cooldown_s=min(2.,.2*max(1,batch_freshness_cuts//8))
+        print(json.dumps(dict(event='freshness_cut',attempt=attempt,rows=len(rows),
+                             cuts=batch_freshness_cuts,cooldown_s=cooldown_s,
+                             action='brake_discard_reset_continue')),flush=True)
+        time.sleep(cooldown_s)
     def optimize_boundary():
         nonlocal rows, batch_id, policy_sha,batch_freshness_cuts
         checkpoint() # Persist the complete behavior batch before any optimizer mutation.

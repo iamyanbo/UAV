@@ -2,6 +2,14 @@
 
 ## Current implementation authorization
 
+The user authorized removing the training-window exit caused by policy delays.
+Keep the 250 ms physical stale-source brake and causal accounting. Interruptions
+discard the affected interval, bootstrap the preceding valid row, reset and
+continue the same frozen 8192-row PPO batch. Repeated delays produce quality
+warnings/checkpoints and bounded cooldown; they do not terminate the job solely
+because a count reached nine. Backend/reset failures and actual resource,
+budget or eight-hour limits still stop execution. Preserve prior raw evidence.
+
 The user authorized the whole of lab GPU 0 after the inherited 60% admission
 limit stopped collection. The lab window applies an explicit 100% operational
 allowance and records aggregate/process GPU memory. Preserve GPU 1, HDD-only

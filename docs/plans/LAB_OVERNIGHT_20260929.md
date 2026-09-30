@@ -2,6 +2,14 @@
 
 ## Current authorization and purpose
 
+**Subsequent authorized recovery:** the ninth-timing-interruption exit is now
+removed. Known delays brake/discard/reset/continue, with warnings and checkpoints;
+the 250 ms physical brake remains. Existing qualification passed with the updated
+source and a new bounded window was launched from the retained checkpoint/partial
+batch. Current log: `runs/overnight-city-recover-delays.log`. See
+[delay recovery](COLLECTION_DELAY_RECOVERY.md); older failed-window notes below
+are historical.
+
 **Latest outcome:** the full-GPU window stopped during fourth-batch collection
 on repeated freshness interruptions. Saved: 24,576 PPO transitions, 2,457 world
 updates and 1,293 pending rows. It is currently stopped. Read the

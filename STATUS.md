@@ -2,6 +2,19 @@
 
 ## Latest update: September 29, 22:34 EDT
 
+**Subsequent recovery change:** the user authorized removing the exit on the
+ninth policy delay. Timing spikes now brake, exclude the affected interval,
+reset and continue the same fixed PPO batch; repeated spikes produce checkpoints
+and warnings. The 250 ms brake and causal accounting remain. Existing physical
+qualification passed with the updated source, and a new bounded operator was
+launched from the three-batch checkpoint and 1,293 pending rows. Current log:
+`runs/overnight-city-recover-delays.log`. See
+[recovery receipt and scope](docs/plans/COLLECTION_DELAY_RECOVERY.md).
+Active resumed window: `runs/city-window-20260930T034237Z/`, deadline September
+30 07:42:37 EDT. At 23:44:51 EDT, operator/trainer/Qwen/metrics were alive and
+observed training rows reached 26,937; accepted rows remain 24,576 until a full
+fourth batch completes. GPU 1 remained unchanged.
+
 **September 29, 23:15 EDT outcome:** this window has stopped on more than eight
 freshness cuts during fourth-batch collection. Three PPO batches / 24,576 rows
 and 2,457 world updates are saved, with 1,293 pending rows. Regular missions:

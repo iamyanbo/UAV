@@ -2,6 +2,19 @@
 
 ## Latest operational update
 
+The user subsequently authorized removing the exit on repeated policy delays.
+That exit is removed; known stale-source interruptions brake/discard/reset and
+continue the same frozen behavior batch. The 250 ms physical brake remains.
+Existing qualification passed with updated source; a new bounded operator was
+launched from 24,576 accepted PPO rows, 2,457 world updates and 1,293 pending
+rows, with the CPU metrics observer. Its log is
+`runs/overnight-city-recover-delays.log`. See
+[delay recovery](docs/plans/COLLECTION_DELAY_RECOVERY.md) for exact evidence.
+The earlier failure below is preserved history.
+The active recovery window is `runs/city-window-20260930T034237Z/`, bounded until
+September 30 07:42:37 EDT. Its first check found all four processes alive and
+1,068 new valid transitions collected. No full new PPO batch was awaited.
+
 The resumed full-GPU window subsequently stopped on more than eight freshness
 cuts during fourth-batch collection. Saved: 24,576 accepted PPO transitions,
 2,457 world updates and 1,293 pending rows. The metrics/dashboard operator is

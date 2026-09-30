@@ -2,6 +2,18 @@
 
 ## Current lab window: full GPU 0 allowance
 
+**Current recovery policy:** the user authorized removing the nine-interruption
+exit. Known timing spikes now brake/discard/reset/continue the same behavior
+batch, with warnings/checkpoints and bounded cooldown. The 250 ms brake remains.
+The existing physical qualification passed with this exact source; a new bounded
+operator was launched from the saved 24,576-transition checkpoint and 1,293
+pending rows. See [delay recovery](docs/plans/COLLECTION_DELAY_RECOVERY.md).
+Its log is `runs/overnight-city-recover-delays.log`. The failed window below is
+historical evidence; read the active-window pointer for current running status.
+Resumed window: `runs/city-window-20260930T034237Z/`, ending September 30
+07:42:37 EDT. The first check found all four processes alive and 1,068 new
+training transitions collected; no additional completed PPO batch was awaited.
+
 **Latest outcome:** the resumed window stopped during fourth-batch collection
 after more than eight freshness interruptions in one batch. Saved: 24,576
 accepted PPO transitions, 2,457 world updates and 1,293 pending rows. Completed
