@@ -191,7 +191,12 @@ try:
                     measured=dict(decision_s=decision['decision_s'],source_age_s=time.perf_counter()-obs['source_wall'],
                         encode_s=decision['encode_s'],context_s=decision['context_s'],policy_s=decision['policy_s'])
                     try:
-                        resources.check()
+                        # Every writer already holds a conservative HDD lease;
+                        # the wrapper checks actual disk usage independently.
+                        # SQLite/disk admission must not delay a live command.
+                        resource_started=time.perf_counter()
+                        resources.check(disk=False)
+                        measured['resource_check_s']=time.perf_counter()-resource_started
                         command=motor_command(decision,obs,cfg)
                         reservation_started=time.perf_counter();reserve_qualification_step();issued=True
                         measured['reservation_s']=time.perf_counter()-reservation_started

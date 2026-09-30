@@ -521,14 +521,18 @@ def run(args):
                         _, attempt, obs, decision = continuing
                         continuing = None
                     while len(rows) < 8192 and window.admits(10):
-                        resources.check()
+                        # HDD leases protect each write; full disk checks run at
+                        # mission boundaries and in the independent operator.
+                        resource_started=time.perf_counter()
+                        resources.check(disk=False)
+                        resource_check_s=time.perf_counter()-resource_started
                         command = motor_command(decision,obs,cfg)
                         reservation_started=time.perf_counter()
                         budget.transition(batch_id, 0)
                         reservation_s=time.perf_counter()-reservation_started
                         env.recorder.put('collection_timing',dict(kind='collection_timing',frame=obs['frame'],
                             reservation_s=reservation_s,source_age_s=time.perf_counter()-obs['source_wall'],
-                            decision_s=decision['decision_s']))
+                            decision_s=decision['decision_s'],resource_check_s=resource_check_s))
                         try:
                             if env.paused:
                                 result = env.resume_boundary(command, bool(decision['stop']), obs['frame'])
@@ -581,7 +585,7 @@ def run(args):
                         # under the unchanged behavior policy, record/charge the
                         # extra physical steps, then pause at the terminal state.
                         while not env.done and window.admits(10):
-                            resources.check();budget.reserve_physical(1)
+                            resources.check(disk=False);budget.reserve_physical(1)
                             command=motor_command(decision,obs,cfg)
                             try:result=env.step(command,bool(decision['stop']),obs['frame'],policy_sha256=policy_sha)
                             except RuntimeError as error:
