@@ -23,6 +23,7 @@ if guidance.exists():
 print(json.dumps(dict(job=str(job),status=plan['status'],
     operator_alive=alive(plan['pid']),trainer_alive=alive(plan.get('trainer_pid',0)),
     qwen_alive=alive(plan.get('qwen_pid',0)),observed_training_rows=rows[0],
+    metrics_alive=alive(plan.get('metrics_pid',0)),metrics_dashboard=plan.get('metrics_dashboard'),
     accepted_guidance_responses=selected,
     accepted_ppo_rows=rows[1],qualification_rows_excluded=qualification,
     checkpoint_counts=checkpoint['counts'] if checkpoint else None,

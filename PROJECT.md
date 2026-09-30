@@ -2,6 +2,14 @@
 
 ## Current lab window: full GPU 0 allowance
 
+**Latest outcome:** the resumed window stopped during fourth-batch collection
+after more than eight freshness interruptions in one batch. Saved: 24,576
+accepted PPO transitions, 2,457 world updates and 1,293 pending rows. Completed
+regular missions have 0/157 successes; near-goal practice has 7/51. A CPU metrics
+observer/dashboard is implemented and deployed for subsequent launches; no
+restart or new flights were performed for this reporting task. See
+[actual metrics and limitations](docs/plans/TRAINING_METRICS_20260929.md).
+
 The September 29 21:35 EDT window stopped during its third collection batch at
 the inherited 60% total-device VRAM limit. Two PPO batches (16,384 transitions),
 1,638 world updates and 309 pending rows were saved. The user then authorized

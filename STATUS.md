@@ -2,6 +2,13 @@
 
 ## Latest update: September 29, 22:34 EDT
 
+**September 29, 23:15 EDT outcome:** this window has stopped on more than eight
+freshness cuts during fourth-batch collection. Three PPO batches / 24,576 rows
+and 2,457 world updates are saved, with 1,293 pending rows. Regular missions:
+0/157 successes; near-goal starts: 7/51. Metrics dashboard and future CPU
+observer are deployed, with overwritten loss-history gaps explicitly labeled.
+Training has not been restarted. See [metrics report](docs/plans/TRAINING_METRICS_20260929.md).
+
 The previous window stopped at the inherited 60% memory limit during third-batch
 collection. Saved: 16,384 accepted PPO transitions, 1,638 world updates and 309
 pending rows. The user authorized all of GPU 0; a new eight-hour window resumed

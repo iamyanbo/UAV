@@ -30,6 +30,7 @@ stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
 job=root/'runs'/('city-window-'+stamp);job.mkdir()
 snapshot=job/'source';shutil.copytree(root/'code/photo_goal',snapshot/'photo_goal',ignore=shutil.ignore_patterns('__pycache__'))
 shutil.copyfile(root/'code/sitecustomize.py',snapshot/'sitecustomize.py')
+shutil.copyfile(root/'code/lab_training_metrics.py',snapshot/'lab_training_metrics.py')
 env=dict(os.environ,PYTHONPATH=str(snapshot),UAV_WINDOW_STOP_FILE=str(job/'stop-requested'),
          UAV_GPU_FRACTION_CEILING='1.0',UAV_RESOURCE_LOG='1')
 python=str(root/'env/bin/python');checkpoint=root/'city-training/latest.pt'
@@ -42,8 +43,9 @@ plan['environment_startup_sha256']=digest(snapshot/'sitecustomize.py')
 plan['resource_policy']=dict(gpu_fraction_ceiling=1.0,configured_default=cfg['resources']['gpu_fraction_ceiling'],
     authorization='User authorized the whole of GPU 0; GPU 1 remains untouched',
     resource_module_sha256=digest(snapshot/'photo_goal/mission_resources.py'),memory_logging=True)
+plan['metrics_script_sha256']=digest(snapshot/'lab_training_metrics.py')
 write(job/'launch.json',plan);write(root/'runs/active-city-window.json',dict(job=str(job),pid=os.getpid()))
-qwen=None;trainer=None
+qwen=None;trainer=None;metrics=None
 def interrupted(signum,frame):raise KeyboardInterrupt('Window shutdown requested')
 signal.signal(signal.SIGTERM,interrupted);signal.signal(signal.SIGINT,interrupted)
 try:
@@ -72,6 +74,12 @@ try:
         '--survey',str(survey),'--qwen-auth',str(root/'campaign/qwen-auth.bin'),
         '--hours','7.9','--batches','244'],cwd=root,env=env,stdout=train_log,stderr=subprocess.STDOUT,start_new_session=True)
     plan.update(status='running',trainer_pid=trainer.pid,qwen_pid=qwen.pid);write(job/'launch.json',plan)
+    metrics_env=dict(env,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1')
+    metrics_log=(job/'metrics.log').open('w')
+    metrics=subprocess.Popen([python,'-u',str(snapshot/'lab_training_metrics.py'),'--watch','--hours','8'],
+        cwd=root,env=metrics_env,stdout=metrics_log,stderr=subprocess.STDOUT,start_new_session=True)
+    plan.update(metrics_pid=metrics.pid,metrics_dashboard=str(root/'runs/training-metrics/dashboard.html'))
+    write(job/'launch.json',plan)
     print(json.dumps(plan),flush=True)
     next_size=0;last_counts=None
     while trainer.poll() is None:
@@ -104,3 +112,14 @@ finally:
     if qwen and qwen.poll() is None:
         os.killpg(qwen.pid,signal.SIGTERM);qwen.wait(timeout=30)
     write(job/'launch.json',plan)
+    if metrics and metrics.poll() is None:
+        metrics.terminate()
+        try:metrics.wait(timeout=15)
+        except subprocess.TimeoutExpired:metrics.kill();metrics.wait(timeout=5)
+    # Capture the terminal checkpoint even if the observer missed the last update.
+    if metrics:
+        try:
+            subprocess.run([python,'-u',str(snapshot/'lab_training_metrics.py')],cwd=root,env=metrics_env,
+                stdout=metrics_log,stderr=subprocess.STDOUT,timeout=30,check=True)
+        except (subprocess.TimeoutExpired,subprocess.CalledProcessError) as error:
+            plan['metrics_final_error']=str(error);write(job/'launch.json',plan)

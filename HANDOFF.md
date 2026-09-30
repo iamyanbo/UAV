@@ -2,6 +2,13 @@
 
 ## Latest operational update
 
+The resumed full-GPU window subsequently stopped on more than eight freshness
+cuts during fourth-batch collection. Saved: 24,576 accepted PPO transitions,
+2,457 world updates and 1,293 pending rows. The metrics/dashboard operator is
+deployed for future launches. No restart or new qualification flights occurred
+for this metrics task. Read [current metrics](docs/plans/TRAINING_METRICS_20260929.md)
+before the older startup receipt below; regular missions remain unsuccessful.
+
 The 21:35 EDT window stopped at the inherited 60% GPU-memory admission ceiling
 after saving two PPO batches (16,384 transitions), 1,638 world updates and 309
 pending rows. The user authorized the whole of GPU 0. The resumed window is

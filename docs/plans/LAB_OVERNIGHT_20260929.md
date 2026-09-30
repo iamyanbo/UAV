@@ -2,6 +2,11 @@
 
 ## Current authorization and purpose
 
+**Latest outcome:** the full-GPU window stopped during fourth-batch collection
+on repeated freshness interruptions. Saved: 24,576 PPO transitions, 2,457 world
+updates and 1,293 pending rows. It is currently stopped. Read the
+[training metrics report](TRAINING_METRICS_20260929.md) and dashboard limitations.
+
 **Current window:** `runs/city-window-20260930T023401Z/`, started September 29
 22:34:01 EDT, deadline September 30 06:34:01 EDT, with user-authorized use of
 the whole of GPU 0. It resumed 16,384 accepted PPO transitions, 1,638 world
