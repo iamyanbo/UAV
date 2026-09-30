@@ -1,5 +1,19 @@
 # Handoff — September 29, 2026
 
+## September 30: next implementation specification
+
+The user chose staged changes and asked to leave the existing overnight operator
+running unchanged until its September 30, 07:42:37 EDT deadline. This documentation
+task does not restart or extend that window.
+
+Use [the detailed staged repair handoff](docs/plans/PHOTO_GOAL_STAGED_REPAIR_HANDOFF_20260930.md)
+for future implementation: two full PPO batches each for stop calibration,
+persistent movement and reward revision, with explicit one-time checkpoint
+migrations, strict resume, causal action likelihoods and actual native verification.
+These changes are not implemented or deployed. Preserve the reference run, 300 m
+task scope, separate gradient ownership, frozen Qwen and shadow world ranking.
+No agents were launched for this handoff.
+
 ## September 30 recorded-data audit
 
 See [rewards, exploration and research comparison](docs/plans/REWARD_EXPLORATION_SOTA_AUDIT_20260930.md).

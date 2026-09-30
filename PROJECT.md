@@ -1,5 +1,19 @@
 # City photo-goal training implementation
 
+## September 30: overnight continuation and staged repair plan
+
+The user asked to leave the current bounded overnight run unchanged and prepare
+a detailed implementation handoff. Its existing deadline remains September 30,
+07:42:37 EDT. No new training configuration or control changes were deployed for
+this planning task.
+
+Read [the staged repair handoff](docs/plans/PHOTO_GOAL_STAGED_REPAIR_HANDOFF_20260930.md)
+before implementing the next revision. It specifies separate stop, movement and
+reward stages, explicit checkpoint forks, exact PPO probabilities/control timing,
+durable records, native qualification, resource limits and concrete flight evidence.
+It retains the 300 m scope, frozen Qwen guidance and independent world training.
+The changes are planned, not implemented; the world remains in shadow.
+
 ## September 30 reward and exploration audit
 
 The recorded-data audit found 0/235 regular-mission successes and 8/65 near-goal
