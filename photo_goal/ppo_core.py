@@ -81,20 +81,29 @@ def potential(position,goal,initial_distance):
 
 
 def transition_reward(phi,next_phi,dt,event,cfg):
-    gamma=cfg['gamma']**(dt/cfg['step_s'])
-    terminal=event in ('success','false_stop','collision','envelope')
-    sparse={'success':10.,'false_stop':-2.,'collision':-10.,'envelope':-10.}.get(event,0.)
+    gamma=duration_discount(dt,cfg)
+    terminal=event in ('success','false_stop','collision','envelope','deadline')
+    sparse=cfg.get('terminal_rewards',{'success':10.,'false_stop':-2.,'collision':-10.,'envelope':-10.}).get(event,0.)
     shaping=gamma*(0. if terminal else next_phi)-phi
-    parts=dict(terminal=sparse,time=-.01*dt,shaping=shaping)
+    time_cost=(-cfg['time_cost_per_mission']*dt/cfg['mission_deadline_s']
+               if 'time_cost_per_mission' in cfg else -.01*dt)
+    parts=dict(terminal=sparse,time=time_cost,shaping=shaping)
     return sum(parts.values())*cfg['reward_scale'],parts,gamma
+
+
+def duration_discount(dt,cfg,trace=False):
+    if not math.isfinite(dt) or dt<=0:raise ValueError('Positive physical duration required')
+    key='gae_time_constant_s' if trace else 'gamma_time_constant_s'
+    if key in cfg:return math.exp(-dt/cfg[key])
+    return cfg['gae_lambda' if trace else 'gamma']**(dt/cfg['step_s'])
 
 
 def advantages(rows,cfg):
     """Rows may span episodes; truncations bootstrap but never cross a reset."""
     result=np.zeros(len(rows),dtype=np.float32);last=0.
     for i in range(len(rows)-1,-1,-1):
-        r=rows[i];gamma=cfg['gamma']**(r['dt']/cfg['step_s'])
-        lam=cfg['gae_lambda']**(r['dt']/cfg['step_s'])
+        r=rows[i];gamma=duration_discount(r['dt'],cfg)
+        lam=duration_discount(r['dt'],cfg,trace=True)
         delta=r['reward']+gamma*(0. if r['terminated'] else r['next_value'])-r['value']
         boundary=(i==len(rows)-1 or r.get('rollout_boundary',False) or
                   (i+1<len(rows) and (r.get('worker_id'),r.get('attempt_id')) !=
@@ -126,13 +135,17 @@ def update(model,optimizer,rows,batch_for,cfg):
             policy=-torch.minimum(ratio*a,ratio.clamp(1-cfg['clip'],1+cfg['clip'])*a).mean()
             value=F.mse_loss(values,target)
             loss=policy+cfg['value_coefficient']*value-cfg['entropy_coefficient']*(gaussian_entropy+stop_entropy).mean()
+            stop_loss=(model.supervised_stop_loss(batch) if cfg.get('stop_label_coefficient',0)
+                       and hasattr(model,'supervised_stop_loss') else loss.new_zeros(()))
+            loss=loss+cfg.get('stop_label_coefficient',0)*stop_loss
             if not torch.isfinite(loss):raise ValueError('Nonfinite PPO loss')
             optimizer.zero_grad(set_to_none=True);loss.backward()
             norm=nn.utils.clip_grad_norm_(model.parameters(),cfg['gradient_clip'],error_if_nonfinite=True)
             optimizer.step()
             metrics.append(dict(policy_loss=policy.item(),value_loss=value.item(),kl=kl.item(),
                 clip_fraction=((ratio-1).abs()>cfg['clip']).float().mean().item(),
-                gaussian_entropy=gaussian_entropy.mean().item(),stop_entropy=stop_entropy.mean().item(),gradient_norm=float(norm)))
+                gaussian_entropy=gaussian_entropy.mean().item(),stop_entropy=stop_entropy.mean().item(),
+                stop_supervised_loss=float(stop_loss.detach()),gradient_norm=float(norm)))
         if early:break
     # Evaluate current critic, rather than reporting stale rollout values.
     predictions=[];final_kl=[]

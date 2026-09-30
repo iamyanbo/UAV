@@ -10,6 +10,7 @@ dependencies = ["numpy>=1.24", "Pillow>=9", "torch>=2.5", "torchvision>=0.20", "
 
 [project.optional-dependencies]
 video = ["imageio-ffmpeg==0.6.0"]
+qwen = ["transformers>=4.51,<5", "accelerate>=1.0", "lm-format-enforcer==0.11.3"]
 
 [project.scripts]
 photo-goal = "photo_goal.__main__:main"

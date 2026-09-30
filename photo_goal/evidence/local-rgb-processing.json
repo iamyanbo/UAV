@@ -1,0 +1,62 @@
+﻿{
+  "schema": "city-local-rgb-processing/v1",
+  "backbone_sha256": "f8d324322441b9e81a104024b78002e99fe43e87b697c61c2172ce362334aa13",
+  "device": "cpu",
+  "actor_checkpoint": "not available; native architecture initialization only",
+  "actual_recorded_rgb": true,
+  "images_are_independent_observations": true,
+  "training_transitions_fabricated": 0,
+  "optimizer_updates": 0,
+  "migration_preserves_native_outputs": true,
+  "frozen_encoder_optimizer_excluded": true,
+  "optimizers_disjoint": true,
+  "world_instantiated": true,
+  "world_trained": false,
+  "qwen_executed": false,
+  "complete_flights_executed": false,
+  "encoder_basis_sha256": "38b7517c77157f717558a73bbd1f4065e0baf39b008360730dda175f0da784df",
+  "frames": [
+    {
+      "source": "C:\\Users\\yanbo\\Downloads\\UAV-review\\research\\rgb_flight\\evidence\\learning-repair-20260924\\recorded-moving-frame.png",
+      "sha256": "342d3d6332bb1c2ab56925921157521f3ac1393ac69067fcd25c159398d5f821",
+      "raw_shape": [
+        1,
+        960,
+        15,
+        20
+      ],
+      "motor_mean_max_error": 2.3283064365386963e-10,
+      "stop_probability_max_error": 0.0,
+      "value_max_error": 0.0,
+      "initialized_stop_probability": 0.009994312189519405
+    },
+    {
+      "source": "C:\\Users\\yanbo\\Downloads\\UAV-review\\research\\rgb_flight\\evidence\\learning-repair-20260924\\train-00001-initial-rgb.png",
+      "sha256": "f6ec8ea26b8d5113ebf8ae89d6b20c36d74a49a0207accdb152eeae9e4178941",
+      "raw_shape": [
+        1,
+        960,
+        15,
+        20
+      ],
+      "motor_mean_max_error": 4.0745362639427185e-10,
+      "stop_probability_max_error": 0.0,
+      "value_max_error": 1.4901161193847656e-08,
+      "initialized_stop_probability": 0.009998266585171223
+    },
+    {
+      "source": "C:\\Users\\yanbo\\Downloads\\UAV-review\\research\\rgb_flight\\evidence\\learning-repair-20260924\\train-00002-initial-rgb.png",
+      "sha256": "a20475af3313f4e6e899a5688dcc255e1bf231ddb3d432676babff41c0085954",
+      "raw_shape": [
+        1,
+        960,
+        15,
+        20
+      ],
+      "motor_mean_max_error": 4.656612873077393e-10,
+      "stop_probability_max_error": 0.0,
+      "value_max_error": 0.0,
+      "initialized_stop_probability": 0.01000021118670702
+    }
+  ]
+}

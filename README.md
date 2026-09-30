@@ -1,5 +1,12 @@
 # Photo-goal UAV navigation
 
+Current city training implementation: read [PROJECT.md](PROJECT.md) for decisions,
+commands, schemas, actual lab training evidence and remaining work. One PPO
+batch (8,192 transitions) and 819 independent world updates are checkpointed;
+the latest overnight window is recorded in
+[the operator handoff](docs/plans/LAB_OVERNIGHT_20260929.md). New commands use
+`*-city*`; the native milestone below is retained as historical context.
+
 Moving to another computer: read [HANDOFF.md](HANDOFF.md) for asset transfer,
 setup, current blockers and the next acceptance steps.
 

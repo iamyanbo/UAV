@@ -22,7 +22,7 @@ class FeatureBank:
         ident=self.next_id;self.next_id+=1;self.frames[ident]=raw.detach().cpu().half();self.paths[ident]=path
         return ident
 
-    def initialize(self,raw,image,path,exercise=None,kind='mission'):
+    def initialize(self,raw,image,path,exercise=None,kind='mission',mission_id=None):
         self.history.clear();self.memory=RGBMemory();self.goal=self.add(raw,path);self.goal_image=image
         self.exercise=exercise;self.exercise_record=None;self.kind=kind
 
@@ -78,6 +78,9 @@ def batch_for(rows,banks,device):
     if 'latent' in rows[0]:
         result.update(latent=torch.tensor([r['latent'] for r in rows],device=device),
             stop=torch.tensor([r['stop'] for r in rows],device=device,dtype=torch.float32))
+        if any('stop_label' in r for r in rows):
+            result.update(stop_label=torch.tensor([r.get('stop_label',0.) for r in rows],device=device),
+                stop_label_valid=torch.tensor([r.get('stop_label_valid',False) for r in rows],device=device,dtype=torch.bool))
     return result
 
 
@@ -109,11 +112,12 @@ class Inference:
                         pixels=np.asarray(args['image']) if kind=='initialize' else np.frombuffer(args['obs']['rgb'],np.uint8).reshape(480,640,3)
                         rgb.append(torch.from_numpy(pixels.copy()).permute(2,0,1))
                     raw=self.model.encode_backbone(torch.stack(rgb).to(device))
-                    torch.cuda.synchronize();encoded=time.perf_counter()
+                    if device.type=='cuda':torch.cuda.synchronize(device)
+                    encoded=time.perf_counter()
                     ready=[]
                     for i,(kind,args,f,queued) in enumerate(group):
                         bank=self.banks[args['worker']]
-                        if kind=='initialize':bank.initialize(raw[i],args['image'],args['path'],args.get('exercise'),args.get('task_kind','mission'));f.set_result(None)
+                        if kind=='initialize':bank.initialize(raw[i],args['image'],args['path'],args.get('exercise'),args.get('task_kind','mission'),args.get('mission_id'));f.set_result(None)
                         else:
                             context=bank.context(raw[i],args['obs'],self.guidance,args['worker'],args['execution'],args.get('replace',False))
                             context['worker_id']=args['worker'];ready.append((args,f,queued,context))

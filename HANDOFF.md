@@ -1,5 +1,30 @@
 # Handoff — September 29, 2026
 
+Current implementation instructions are in [PROJECT.md](PROJECT.md), on local
+development branch `implement/photo-goal-city-training`, based on native commit
+`b8cf18b`, published to `refactor/photo-goal-native`. The lab rebuild is deployed on GPU 0 under
+`/mnt/hdd2/yanbocheng/photo-goal-native`, with password-free SSH key access.
+Visual bootstrap completed 20,000 updates; actual Qwen structured generation and
+fresh physical task capture passed. Full-loop qualification passed; the first
+PPO startup hit the freshness watchdog before any recorded row. City bookkeeping
+now avoids per-action blocking HDD journal flushes, with whole-batch reservations
+still durable; requalification with these actual writes passed. The eight-hour
+latest window launched September 29 at 21:35:11 EDT, ending by 05:35:11 EDT:
+`runs/city-window-20260930T013511Z/`. One full 8,192-transition PPO batch and 819
+separate world-model updates are accepted/checkpointed. Bounded cuts brake/reset and remain excluded
+from complete-flight evidence; more than eight per batch stops. Qwen advertises
+only 30 s strategic references for this single-GPU window; current/goal RGB
+remain inputs, and expired 5 s ROI evidence is never redated. Matching full-loop
+qualification passed again with the trained checkpoint. The last live check
+observed 9,131 training transitions and operator/trainer/Qwen alive. Frozen Qwen
+guidance was used in 6.98% of the first accepted batch. Unused CUDA optimizer
+workspaces are cleared before restoring Qwen; memory keeps one database
+connection across missions. These results do not establish 300 m navigation
+success. Read live
+counts through `code/lab_city_status.py`. See PROJECT.md and
+[`LAB_OVERNIGHT_20260929.md`](docs/plans/LAB_OVERNIGHT_20260929.md).
+The remainder preserves the earlier native milestone and unavailable asset locations.
+
 ## Start here
 
 The user is moving to another computer. All active source is on branch
@@ -186,3 +211,16 @@ Use actual simulator/checkpoint evidence for verification. No new testing
 frameworks, delegation, paid services, physical flights, history rewrites or
 unverified archive deletions. Keep progress reports concise and distinguish
 implemented source, measured operation and pending acceptance.
+# Latest lab rebuild authorization and execution
+
+The user authorized one-GPU overnight setup/training and confirmed the old
+PC/Spark assets are unavailable. A fresh native Linux CityEnviron rebuild is
+running under `/mnt/hdd2/yanbocheng/photo-goal-native`, verified SATA HDD backing.
+SSH key authentication is configured. Official selected model weights and the
+Python GPU environment are present. Real rendered motion flights and the first
+V-JEPA/MobileNet recorded-clip processing succeeded. The overnight window performs
+visual bootstrap; old PPO optimizer state was not recovered and new flight PPO
+qualification is not yet complete. Exact receipts, commands and the next
+milestone: `../docs/plans/LAB_OVERNIGHT_20260929.md` and PROJECT.md.
+
+The remainder is preserved historical native handoff evidence.

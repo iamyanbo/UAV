@@ -1,4 +1,51 @@
-# Native environment milestone — September 29, 2026
+# Current city implementation — September 29, 2026
+
+The lab rebuild is now active on GPU 0 under the verified HDD root
+`/mnt/hdd2/yanbocheng/photo-goal-native`. Automatic SSH key login works. Official
+Linux CityEnviron, Qwen, V-JEPA 2 and MobileNet assets are present; actual rendered
+continuous-motion recordings and first released-model clip processing succeeded.
+Visual bootstrap completed 20,000 updates from 512 clips / 128 recordings. The
+collision audit found 60 recordings with contact messages: these are visual
+training data, not collision-free flight or navigation evidence. PPO has one
+accepted 8,192-transition batch. Fresh endpoint capture now uses the actual native
+collision event contract and recreates the vehicle between flights. Twelve
+50–300 m task pairs, explicit splits, near-goal starts, a training-only photographic
+atlas and conservative campaign ledger are present. Frozen Qwen's actual
+structured generation and combined full-loop flight qualification passed. The
+first PPO startup was stopped by the freshness watchdog before recording rows;
+per-action blocking HDD journal flushes were removed. Requalification with
+actual training-budget bookkeeping passed (375 steps; maximum source age
+145.8 ms). The longer attempt stopped at 1,474 rows on a freshness spike.
+Bounded recovery now brakes, records infrastructure truncations, charges
+missing intervals, resets, and stops above eight such cuts per PPO batch.
+Qwen now advertises only 30 s strategic references on this single-GPU track,
+because actual 14.47 s generation exceeded the unchanged 5 s ROI lifetime.
+Visual memory now reuses its SQLite connection across missions. The first PPO
+batch passed its safeguards (64 optimizer steps, KL 0.00553, likelihood error
+below 1e-6); 819 separate world-model updates are checkpointed. Frozen Qwen
+guidance was live in 6.98% of that batch. Unused CUDA workspaces are released
+before Qwen returns to the GPU. Native shutdown drains pending SDK tasks.
+Latest exact-source qualification with the trained checkpoint passed:
+`runs/city-qualification-38d6853f48e2/`.
+The latest eight-hour window launched September 29 at 21:35:11 EDT:
+`runs/city-window-20260930T013511Z/`. The last live check observed 9,131 training
+transitions, 8,192 accepted PPO transitions and 819 checkpointed world updates;
+operator, trainer and Qwen were alive. These are not navigation success metrics.
+PPO updates require a full 8,192-row batch. The outer deadline is 05:35:11 EDT;
+partial rows/checkpoints support another bounded window. Use `lab_city_status.py`
+to exclude qualification rows from the progress counter.
+See PROJECT.md and the lab overnight operator ledger.
+
+### Earlier local implementation snapshot
+
+The separate-gradient city source implementation and operators' plan are in
+[PROJECT.md](PROJECT.md). Local processing of three recorded RGB frames passed
+native architecture migration parity and optimizer ownership checks. No accepted
+checkpoint, actual Qwen/world training, or complete new flight was available here.
+The lab has not been contacted. Physical qualification and follow-on live world
+selection/perception/pair collection remain outstanding.
+
+# Historical native environment milestone — September 29, 2026
 
 The project is again photo-goal navigation. The APEX reproduction branch is kept
 as reference, not substituted into this architecture.

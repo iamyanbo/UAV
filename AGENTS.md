@@ -1,5 +1,29 @@
 # Photo-goal UAV navigation
 
+## Current implementation authorization
+
+The latest user instruction authorizes lab setup, asset transfers and an eight-hour
+resumable training window on one GPU. All study writes, environments, model caches,
+temporary files and recordings must stay under the verified HDD project root.
+SSH key enrollment and the local connection script are also authorized. Preserve
+other users' jobs. Start genuine training only with valid data and the required
+stage checks; do not substitute synthetic evidence or claim unexecuted flights.
+This supersedes the inventory-only restrictions below.
+
+The user subsequently authorized trying the lab SSH connection and planning a
+single-folder deployment on a verified physical HDD. Read-only discovery is now
+allowed. Keep all study writes on that HDD under one project root; do not start
+training or perform large uploads during this inventory/planning task. The earlier
+no-connection instruction below describes the implementation turn's historical scope.
+
+The user authorized implementing 300 m city training with unrestricted learned
+stop, separate PPO/world/Qwen gradients, initial frozen Qwen guidance, and delayed
+LoRA adaptation. Read PROJECT.md first. This supersedes the historical two-update,
+Mode-2-inactive scope below for new `*-city*` work. Keep the old diagnostic and raw
+evidence. Do not connect to the lab yet. Do not spawn research agents or write tests
+or testing harnesses. Verify through actual recorded processing/training/flights
+when the real assets are available; report missing execution evidence explicitly.
+
 The user returned to the photo-goal project and approved the native Windows
 refactor plan on September 29, 2026. Read README.md and STATUS.md.
 Current work: native CityEnviron, actual A/B photographs, measured qualification,

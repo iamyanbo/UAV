@@ -38,7 +38,8 @@ class ComputeLane:
         try:
             yield
         finally:
-            try:torch.cuda.synchronize()
+            try:
+                if torch.cuda.is_available():torch.cuda.synchronize()
             finally:
                 elapsed=time.monotonic()-started
                 with self.condition:

@@ -79,14 +79,22 @@ class Recorder:
 
 class PilotEnvironment:
     def __init__(self,scene,output,cfg,port=43551):
-        import airsim
+        if scene.get('backend')=='projectairsim':
+            from .project_bridge import AirSimFacade
+            airsim=AirSimFacade()
+        else:
+            import airsim
         self.airsim=airsim;self.cfg=cfg;self.vehicle='drone_1';self.port=port
         self.root=Path(output);self.root.mkdir(parents=True,exist_ok=True)
         self.scene=dict(scene)
         settings=camera_settings(read(scene['settings']),cfg,port)
         write(self.root/'settings.json',settings)
         self.scene.update(settings=str((self.root/'settings.json').resolve()),worker_root=str(self.root.resolve()))
-        self.owned=SceneProcess(self.scene);self.thread=None;self.recorder=None
+        if scene.get('backend')=='projectairsim':
+            from .project_bridge import ProjectSceneProcess
+            self.owned=ProjectSceneProcess(self.scene,airsim)
+        else:self.owned=SceneProcess(self.scene)
+        self.thread=None;self.recorder=None
         self.lock=threading.Lock();self.shutdown=threading.Event();self.active=False
         self.dispatch_idle=threading.Event();self.dispatch_idle.set()
         self.command=[0.]*4;self.sent=[0.]*4;self.source_wall=0.;self.fault=None
@@ -130,6 +138,8 @@ class PilotEnvironment:
                     # the 200 ms motion duration. Another thread's client cannot
                     # service this connection. Check completed futures for errors.
                     if not client.ping():raise RuntimeError('Command RPC ping failed')
+                    dispatch_sim_ns=(client.getMultirotorState(self.vehicle).timestamp
+                                     if self.cfg.get('schema')=='photo-goal-city-run/v1' else None)
                     while pending and pending[0]._set_flag:pending.popleft().get()
                     if len(pending)>16:raise RuntimeError('Command acknowledgements stalled')
                     with self.lock:
@@ -138,18 +148,20 @@ class PilotEnvironment:
                             source_frame=frame,age_s=age,command=command,stale=stale,
                             active_policy=not getattr(self,'done',True) and not self.settling,
                             rpc_wall_s=time.perf_counter()-start)
+                        if dispatch_sim_ns is not None:row['dispatch_sim_ns']=int(dispatch_sim_ns)
                         self.dispatches.append(row)
                         if self.recorder:self.recorder.put('dispatch',row)
-                        if stale and row['active_policy'] and self.cfg.get('schema')=='photo-map-ppo/v2':
+                        if stale and row['active_policy'] and self.cfg.get('schema') in ('photo-map-ppo/v2','photo-goal-city-run/v1'):
                             self.fault='Active control watchdog exceeded source freshness'
             except Exception as error:self.fault=str(error)
             finally:self.dispatch_idle.set()
             self.shutdown.wait(max(0,self.cfg['step_s']-(time.perf_counter()-start)))
 
-    def state(self):
-        a=self.airsim;s=self.client.getMultirotorState(self.vehicle);k=s.kinematics_estimated
+    def state(self,client=None):
+        client=client or self.client
+        a=self.airsim;s=client.getMultirotorState(self.vehicle);k=s.kinematics_estimated
         pitch,roll,yaw=a.to_eularian_angles(k.orientation)
-        collision=self.client.simGetCollisionInfo(self.vehicle)
+        collision=client.simGetCollisionInfo(self.vehicle)
         return dict(sim_ns=s.timestamp,position=xyz(k.position),velocity=xyz(k.linear_velocity),
             attitude_deg=[math.degrees(roll),math.degrees(pitch),math.degrees(yaw)],
             speed=float(np.linalg.norm(xyz(k.linear_velocity))),
@@ -162,18 +174,29 @@ class PilotEnvironment:
             started=time.perf_counter()
             with self.lock:self.active=False
             if not self.dispatch_idle.wait(3):raise RuntimeError('Command thread did not quiesce before reset')
+            if self.scene.get('backend')=='projectairsim':self.client.prepare_reset(position,yaw)
             # Arming after placement can reset SimpleFlight state in some forks.
             # Arm first, then place while paused and issue hover before release.
             self.client.enableApiControl(True,self.vehicle);self.client.armDisarm(True,self.vehicle)
+            self.client.cancelLastTask(self.vehicle)
             self.client.simPause(True)
             try:
-                self.client.simSetVehiclePose(a.Pose(a.Vector3r(*position),a.to_quaternion(0,0,math.radians(yaw))),True,self.vehicle)
+                if self.scene.get('backend')!='projectairsim':
+                    self.client.simSetVehiclePose(a.Pose(a.Vector3r(*position),a.to_quaternion(0,0,math.radians(yaw))),True,self.vehicle)
                 self.client.moveByVelocityAsync(0.,0.,0.,.2,yaw_mode=a.YawMode(False,yaw),vehicle_name=self.vehicle)
             finally:self.client.simPause(False)
+            if self.scene.get('backend')=='projectairsim':
+                # The native engine applies pose changes on its render tick.
+                # Let that update settle before checking old contact callbacks.
+                # This is reset time, never a policy-controlled flight interval.
+                time.sleep(.1)
             baseline=self.state()['collision_ns'];stable=None;passed=False
             while time.perf_counter()-started<cfg['timeout_s']:
-                self.client.moveToPositionAsync(*position,1.,timeout_sec=1.,
-                    drivetrain=a.DrivetrainType.MaxDegreeOfFreedom,yaw_mode=a.YawMode(False,yaw),vehicle_name=self.vehicle)
+                if self.scene.get('backend')=='projectairsim':
+                    self.client.moveByVelocityAsync(0.,0.,0.,.2,yaw_mode=a.YawMode(False,yaw),vehicle_name=self.vehicle)
+                else:
+                    self.client.moveToPositionAsync(*position,1.,timeout_sec=1.,
+                        drivetrain=a.DrivetrainType.MaxDegreeOfFreedom,yaw_mode=a.YawMode(False,yaw),vehicle_name=self.vehicle)
                 s=self.state();now=time.perf_counter()
                 # A newly reported contact is evidence against this endpoint;
                 # do not spend the full hover timeout pushing into its surface.
@@ -192,13 +215,14 @@ class PilotEnvironment:
                 return reports
         raise RuntimeError('Reset qualification failed: '+json.dumps(reports))
 
-    def image(self):
+    def capture_image(self,client=None):
+        client=client or self.client
         a=self.airsim;started=time.perf_counter()
         try:
             requests=[a.ImageRequest('front_custom',a.ImageType.Scene,False,False)]
             if getattr(self,'reference_capture',False):
                 requests.append(a.ImageRequest('front_custom',a.ImageType.DepthPerspective,True,False))
-            responses=self.client.simGetImages(requests,self.vehicle);rgb=responses[0]
+            responses=client.simGetImages(requests,self.vehicle);rgb=responses[0]
             if getattr(self,'reference_capture',False):
                 depth=responses[1]
                 self.reference_depth=np.asarray(depth.image_data_float).reshape(depth.height,depth.width)
@@ -206,17 +230,31 @@ class PilotEnvironment:
             if self.recorder:self.recorder.put('image_error',dict(kind='image_error',request_wall=started,
                 failed_wall=time.perf_counter(),traceback=traceback.format_exc()))
             raise
-        self.capture_timing=dict(request_wall=started,response_wall=time.perf_counter())
+        timing=dict(request_wall=started,response_wall=time.perf_counter())
+        if self.scene.get('backend')=='projectairsim':
+            started=rgb.source_wall
+            timing['transport']='native-pubsub'
+            timing['request_wall']=started
         if (rgb.width,rgb.height)!=(640,480) or len(rgb.image_data_uint8)!=640*480*3:
             raise ValueError('Invalid camera payload')
         raw=np.frombuffer(rgb.image_data_uint8,np.uint8).reshape(480,640,3)
         pitch,roll,yaw=a.to_eularian_angles(rgb.camera_orientation)
-        self.capture_pose=dict(position=xyz(rgb.camera_position),
+        pose=dict(position=xyz(rgb.camera_position),
             attitude_deg=[math.degrees(roll),math.degrees(pitch),math.degrees(yaw)],sim_ns=rgb.time_stamp)
         if self.color=='BGR':raw=raw[:,:,::-1]
-        return raw.copy(),rgb.time_stamp,started
+        return raw.copy(),rgb.time_stamp,started,timing,pose
+
+    def image(self):
+        rgb,stamp,source,self.capture_timing,self.capture_pose=self.capture_image()
+        return rgb,stamp,source
 
     def calibrate(self):
+        if self.scene.get('backend')=='projectairsim':
+            self.color='RGB'
+            rgb,stamp,source,timing,pose=self.capture_image()
+            if rgb.std()<8:raise RuntimeError('Native RGB camera lacks texture')
+            self.color='RGB'
+            return
         # Existing actual-binary comparison, imported only on the AirSim host.
         from .vision.calibration import measure_color_order
         for attempt in range(5):
@@ -259,6 +297,9 @@ class PilotEnvironment:
             raise RuntimeError('Nonadvancing simulator clock')
         with self.lock:
             preceding=list(self.sent)
+            if self.cfg.get('schema')=='photo-goal-city-run/v1':
+                causal=[r for r in self.dispatches if r.get('dispatch_sim_ns',stamp+1)<=stamp]
+                preceding=list(causal[-1]['command']) if causal else [0.]*4
         self.frame+=1
         self.last_source=source;self.previous_state=s
         self.recorder.put(f'{self.frame:06d}.png',rgb)
@@ -298,16 +339,14 @@ class PilotEnvironment:
             self.command=[0.]*4 if stop else list(command);self.source_wall=self.last_source;self.command_frame=frame
         event=self.event(before)
         if not event and stop:
-            if not self.in_goal(before,speed=False):event='false_stop'
-            else:
-                stable=None
-                while time.perf_counter()-started<self.cfg['stop_grace_s']:
-                    s=self.state();event=self.event(s)
-                    if event:break
-                    now=time.perf_counter();stable=(stable or now) if self.in_goal(s) else None
-                    if stable and now-stable>=self.cfg['arrival']['dwell_s']:event='success';break
-                    time.sleep(self.cfg['step_s'])
-                event=event or 'false_stop'
+            stable=None
+            while time.perf_counter()-started<self.cfg['stop_grace_s']:
+                s=self.state();event=self.event(s)
+                if event:break
+                now=time.perf_counter();stable=(stable or now) if self.in_goal(s) else None
+                if stable and now-stable>=self.cfg['arrival']['dwell_s']:event='success';break
+                time.sleep(self.cfg['step_s'])
+            event=event or 'false_stop'
         if not stop and not event:time.sleep(max(0,self.cfg['step_s']-(time.perf_counter()-self.last_source)))
         if freeze_after:
             # Freeze before the boundary capture, so there is no unrecorded
@@ -324,7 +363,9 @@ class PilotEnvironment:
         if not event and self.task.get('kind')=='execution':
             delta=np.asarray(observation['state']['position'])-self.task['goal']
             if np.linalg.norm(delta[:2])<=1.5 and abs(delta[2])<=1.:event='subgoal_success'
-        truncated=not event and observation['elapsed_s']>=self.episode_limit
+        expired=not event and observation['elapsed_s']>=self.episode_limit
+        if expired and self.cfg.get('schema')=='photo-goal-city-run/v1':event='deadline'
+        truncated=expired and event is None
         self.done=bool(event or truncated)
         if self.done:
             with self.lock:self.command=[0.]*4

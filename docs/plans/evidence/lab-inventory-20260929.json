@@ -1,0 +1,55 @@
+﻿{
+    "schema":  "photo-goal-lab-admission-inventory/v1",
+    "utc":  "2026-09-29T22:40:21Z",
+    "host":  "viplab-MS-7E07",
+    "account":  "yanbocheng",
+    "kernel":  "Linux 6.8.0-136-generic x86_64 GNU/Linux",
+    "python":  "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+    "authenticated":  true,
+    "study_files_written":  false,
+    "project_root":  "/mnt/hdd2/yanbocheng/photo-goal-native",
+    "project_root_exists":  false,
+    "storage":  {
+                    "mount":  "/mnt/hdd2",
+                    "physical_device":  "/dev/sda",
+                    "physical_type":  "disk",
+                    "rotational":  true,
+                    "transport":  "sata",
+                    "filesystem":  "ext4",
+                    "free_bytes":  17931440283648,
+                    "separate_ssd":  "/dev/nvme0n1",
+                    "parent_access_check_writable":  true,
+                    "actual_write_check_performed":  false
+                },
+    "gpus":  [
+                 {
+                     "index":  0,
+                     "name":  "NVIDIA GeForce RTX 4090",
+                     "memory_total_mib":  24564,
+                     "memory_used_mib":  953,
+                     "utilization":  "0 %",
+                     "driver":  "580.95.05",
+                     "maximum_own_and_other_usage_mib":  14738.4
+                 },
+                 {
+                     "index":  1,
+                     "name":  "NVIDIA GeForce RTX 4090",
+                     "memory_total_mib":  24564,
+                     "memory_used_mib":  853,
+                     "utilization":  "0 %",
+                     "driver":  "580.95.05",
+                     "maximum_own_and_other_usage_mib":  14738.4
+                 }
+             ],
+    "memory":  {
+                   "total_bytes":  134831808512,
+                   "available_bytes":  115839348736
+               },
+    "existing_gpu_workload":  "1485691, /workspace/validation_code/high_speed_flight/devel/lib/agile_autonomy/agile_autonomy, 810 MiB",
+    "existing_checkout":  "/mnt/hdd2/yanbocheng/UAV",
+    "constraints":  [
+                        "VRAM is separate per GPU; no 48 GB pooled allocation",
+                        "Existing GPU workload must remain untouched",
+                        "No study installs, model transfers, or training jobs started"
+                    ]
+}
