@@ -233,3 +233,51 @@ Route search follows the documented
 [scikit-image MCP API](https://scikit-image.org/docs/0.22.x/api/skimage.graph.html).
 Native voxel/surface capture uses the pinned ProjectAirSim SDK and requires
 measured layout/sign/contact evidence before accepting its labels.
+
+
+## September 30 integration recovery: actual timing evidence
+
+SSH key authentication is available. GPU 0 admission measured approximately
+23 GiB free before our model/render launch; existing graphics on GPU 0 and the
+foreign compute job on GPU 1 were preserved. This is authorized shared use.
+All releases, temporary files, dependencies, model caches and recordings stay
+under `/mnt/hdd2/yanbocheng/photo-goal-native` on the verified rotational HDD.
+
+Preserved attempts:
+
+- `city-stage-window-20260930T232951Z`: reset/stop/brake/control-axis diagnostics
+  passed, but a cold actual learner decision exceeded the 250 ms source limit
+  by 0.86 ms. Qualification failed; training did not start.
+- `city-stage-window-20260930T233444Z`: qualification now records/retries
+  infrastructure cuts, matching the production collector, without fabricating
+  terminal rewards or complete-flight receipts. Context preparation exposed
+  0.7?1 second stalls; training did not start.
+- `city-stage-window-20260930T234353Z`, source `154520c`: asynchronous derived
+  feature persistence, CPU descriptor calculation and boundary flushes brought
+  sampled context preparation down to roughly 1?13 ms. One actual support
+  flight completed. Camera/state telemetry showed millisecond acquisition
+  and state reads, while 0.3?0.95 second source ages appeared before dispatch.
+  This isolates additional work outside the reported inference duration;
+  it is not evidence of slow camera RPCs. The operator was deliberately
+  stopped through its verified owned PID before the next release.
+
+Current release `94e80c6` removes synchronous disk admission reads from the live
+qualification/PPO action path and records resource-check duration separately.
+RAM and aggregate GPU checks remain. Full disk checks remain at mission/update
+boundaries and in the independent wrapper; every recording/feature write still
+reserves conservative cross-process HDD space. The 250 ms physical stale-source
+brake, continuous physics, discarded unsafe intervals and immutable evidence
+remain unchanged. This timing repair is not a reward or policy change.
+
+Current wrapper: `runs/city-stage-window-20260930T235423Z`, PID 1039465. It uses
+one absolute October 1 03:19:53 EDT deadline across qualification and training.
+The deadline was shortened after recovery, not reset to another eight hours.
+It automatically launches the existing operator for two Stage A 8192-row
+updates only after matching native qualification passes. Until `launch.json`
+reports `training` and actual trainer telemetry is present, do not claim PPO
+has restarted. The Stage A fork is reused; its stop migration is not reapplied.
+
+No tests, new testing harnesses or agents were used. Actual native flight
+telemetry and owned-process integration are the verification evidence. The
+latest measured learning counts remain the preserved eight batches / 65,536
+accepted rows / 6,552 world updates until a new accepted checkpoint exists.

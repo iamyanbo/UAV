@@ -13,9 +13,12 @@ The bounded stage wrapper `scripts/lab_city_stage_window.py` runs the existing
 native qualification, then the Stage A operator only after it passes. There is
 one absolute eight-hour deadline across Qwen startup, qualification and training,
 no automatic restart and no phase promotion. It terminates only its own child
-process groups. September 30 integration started at 19:29 EDT, under the HDD root
-at `runs/city-stage-window-20260930T232951Z`; check its current receipt/logs before
-launching anything else. Preserve the Stage A fork and original reference.
+process groups. September 30 integration was recovered at 19:54 EDT using source `94e80c6`,
+under the HDD root at `runs/city-stage-window-20260930T235423Z`, with an October 1
+03:19:53 EDT deadline. Check `runs/active-city-integration.json` and the current
+receipt/logs before launching anything else. Preserve the Stage A fork and
+original reference. Earlier attempts and their freshness-cut evidence remain
+archived; do not count infrastructure cuts as complete flights.
 
 ## Latest instruction: lab integration with GPU ownership checks
 

@@ -1,5 +1,23 @@
 # Handoff — September 29, 2026
 
+## September 30, 19:54 EDT: integration recovery
+
+Automatic SSH key login works. Shared GPU 0 use is authorized; unrelated jobs
+and GPU 1 are preserved. The current wrapper is
+`runs/city-stage-window-20260930T235423Z`, using source `94e80c6`, with an
+October 1 03:19:53 EDT absolute deadline. Check
+`runs/active-city-integration.json` and its `launch.json` before another launch.
+
+Earlier qualification attempts exposed synchronous feature-cache writes and
+resource checks delaying dispatch. Derived features now persist asynchronously;
+full disk checks run outside live command dispatch while per-write HDD leases
+remain enforced. Interrupted intervals are recorded as infrastructure cuts,
+never successful complete flights or terminal rewards. Native qualification
+must pass before the wrapper automatically starts two Stage A PPO batches.
+No new PPO update is claimed by this entry. See
+[execution evidence](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).
+
+
 ## September 30: active bounded integration
 
 The user clarified shared GPU 0 use; preserve unrelated graphics/compute jobs.
