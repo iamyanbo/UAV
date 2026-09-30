@@ -1,6 +1,15 @@
 # Current city implementation — September 29, 2026
 
-## September 30, 17:43 EDT: lab CPU preparation complete
+## September 30, 19:29 EDT: bounded integration started
+
+Shared GPU 0 use is authorized with measured headroom; existing jobs stay intact.
+The native qualification/Stage A wrapper is running at
+`runs/city-stage-window-20260930T232951Z`, deadline October 1 03:29 EDT. It will
+start PPO only after the matching native receipt passes. Read the live launch
+receipt for current status; no claim of accepted new PPO updates is made here.
+See [execution evidence](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).
+
+## September 30, 17:43 EDT: historical CPU preparation
 
 Source `1592568` and dependencies are deployed on the HDD. The actual Stage A
 checkpoint fork passed preservation checks and the reference remains unchanged.

@@ -1,6 +1,15 @@
 # Handoff — September 29, 2026
 
-## September 30: lab integration handoff
+## September 30: active bounded integration
+
+The user clarified shared GPU 0 use; preserve unrelated graphics/compute jobs.
+`runs/active-city-integration.json` points to the qualification-then-training
+wrapper, started September 30 19:29 EDT with an October 1 03:29 EDT deadline.
+Check its live status before another launch. Stage A training starts only if
+native qualification passes. See
+[the execution update](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).
+
+## September 30: historical lab integration handoff
 
 The HDD deployment is `code-releases/1592568`; `runs/city-repair-A/latest.pt` is
 prepared through the actual CPU migration. Preserve the reference and its pending

@@ -1,5 +1,22 @@
 # Photo-goal UAV navigation
 
+## September 30: shared GPU 0 integration is authorized
+
+The user clarified that existing long-running graphics/simulation processes were
+also present during yesterday's training. Their presence alone is not a GPU
+exclusivity requirement. Use measured GPU 0 headroom, preserve every unrelated
+process, keep GPU 1 outside this job and monitor resource limits. An existing
+foreign compute workload on GPU 0 requires a fresh contention assessment; never
+kill or replace it. Earlier GPU-wait prose below is historical.
+
+The bounded stage wrapper `scripts/lab_city_stage_window.py` runs the existing
+native qualification, then the Stage A operator only after it passes. There is
+one absolute eight-hour deadline across Qwen startup, qualification and training,
+no automatic restart and no phase promotion. It terminates only its own child
+process groups. September 30 integration started at 19:29 EDT, under the HDD root
+at `runs/city-stage-window-20260930T232951Z`; check its current receipt/logs before
+launching anything else. Preserve the Stage A fork and original reference.
+
 ## Latest instruction: lab integration with GPU ownership checks
 
 The user authorized deployment, native integration and bounded Stage A training,

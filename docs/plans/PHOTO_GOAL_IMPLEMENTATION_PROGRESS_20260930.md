@@ -1,5 +1,26 @@
 # September 30 city training implementation
 
+## Integration resumed: September 30, 19:29 EDT
+
+SSH access was restored. The user clarified that the existing simulation/desktop
+processes were already present during our previous training; process presence is
+not an exclusivity requirement. The fresh inventory found GPU 0 at 953 MiB used
+of 24,564 MiB, no foreign compute process on GPU 0 and about 114 GiB host RAM
+available. GPU 1's existing compute process and GPU 0's graphics were preserved.
+
+The production `lab_city_stage_window.py` wrapper started under the HDD root at
+`runs/city-stage-window-20260930T232951Z`. It uses the prepared Stage A fork and
+deployed package `code-releases/1592568`, starts frozen Qwen, runs the existing
+native qualification and launches the A operator only on a passing receipt. One
+absolute deadline covers all three stages: **October 1, 03:29 EDT**. There is no
+restart loop or phase promotion. Cleanup targets only child processes created by
+the wrapper. It does not connect probes to another service's authenticated socket.
+
+Monitor `launch.json`, `qwen.log`, `qualification.log`, then `operator.log` in the
+stage window. `runs/active-city-integration.json` points to that window. The wrapper
+records the initial GPU/compute inventory and follows HDD admission. Earlier
+GPU-wait entries below are historical; do not launch a duplicate job.
+
 ## Lab integration update: September 30, 17:43 EDT
 
 CPU integration is complete on the verified rotational `/dev/sda` HDD, under
