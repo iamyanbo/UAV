@@ -1,5 +1,16 @@
 # Handoff — September 29, 2026
 
+## September 30 recorded-data audit
+
+See [rewards, exploration and research comparison](docs/plans/REWARD_EXPLORATION_SOTA_AUDIT_20260930.md).
+The frozen 00:09 EDT flight snapshot has 0/235 regular successes and 8/65 near-goal
+successes. Five accepted batches and 4,095 world updates were available for CPU
+recorded-data processing. The overnight operator was still running afterward;
+no training settings or flight batches were changed for this audit. Priorities
+are stop hazard, sustained exploration and reward incentives, followed by useful
+world-model data and a qualified Mode 2 comparison. Recommendations are not
+implemented changes. Keep the 300 m goal and separate gradient ownership.
+
 ## Latest operational update
 
 The user subsequently authorized removing the exit on repeated policy delays.

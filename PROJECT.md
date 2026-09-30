@@ -1,5 +1,18 @@
 # City photo-goal training implementation
 
+## September 30 reward and exploration audit
+
+The recorded-data audit found 0/235 regular-mission successes and 8/65 near-goal
+successes in the frozen 00:09 EDT snapshot. Premature stops and weak movement are
+the immediate issues; current evidence does not establish an algorithm failure.
+The later checkpoint has five accepted batches, 40,960 PPO rows and 4,095 world
+updates. The post-audit status check found the overnight job running. No training
+configuration was changed for this evaluation. See the
+[reward, exploration and research comparison](docs/plans/REWARD_EXPLORATION_SOTA_AUDIT_20260930.md)
+for measured command/reward statistics, recorded world predictions, limitations
+and ordered recommendations. The next implementation milestone is a separately
+identified stop/exploration revision, preserving 300 m coverage and the original run.
+
 ## Current lab window: full GPU 0 allowance
 
 **Current recovery policy:** the user authorized removing the nine-interruption
@@ -14,7 +27,7 @@ Resumed window: `runs/city-window-20260930T034237Z/`, ending September 30
 07:42:37 EDT. The first check found all four processes alive and 1,068 new
 training transitions collected; no additional completed PPO batch was awaited.
 
-**Latest outcome:** the resumed window stopped during fourth-batch collection
+**Earlier window outcome:** the resumed window stopped during fourth-batch collection
 after more than eight freshness interruptions in one batch. Saved: 24,576
 accepted PPO transitions, 2,457 world updates and 1,293 pending rows. Completed
 regular missions have 0/157 successes; near-goal practice has 7/51. A CPU metrics
