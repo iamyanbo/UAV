@@ -1,6 +1,23 @@
 # City photo-goal training implementation
 
-## Active lab rebuild and overnight window
+## Current lab window: full GPU 0 allowance
+
+The September 29 21:35 EDT window stopped during its third collection batch at
+the inherited 60% total-device VRAM limit. Two PPO batches (16,384 transitions),
+1,638 world updates and 309 pending rows were saved. The user then authorized
+the whole of GPU 0. A new eight-hour window started September 29 at 22:34:01 EDT,
+ending by September 30 06:34:01 EDT:
+`runs/city-window-20260930T023401Z/`. The startup check found operator, trainer
+and frozen Qwen alive; it did not wait for another batch.
+
+The lab operator records an explicit `UAV_GPU_FRACTION_CEILING=1.0` override,
+resource-code hash and periodic aggregate/process memory readings. Learning
+configuration, checkpoint identity and qualified flight/control code are unchanged.
+GPU 1, HDD-only storage, host/disk reserves and eight-hour bounds are preserved.
+The campaign JSON retains its historical default; the launch receipt records
+the effective allowance. This authorization is scoped to the lab GPU 0 run.
+
+## Historical lab rebuild and earlier window
 
 The user authorized setup/training on one lab GPU and confirmed the old PC/Spark
 assets must be downloaded again. The single verified HDD root is
@@ -217,7 +234,8 @@ HDD as well, and launch Python with its bytecode cache already there. Container
 mounts and SSD-backed overlay storage must be checked on the host before launch.
 
 `mission_resources.py` checks at least 12 GiB available host memory, 100 GiB free
-disk plus checkpoint headroom and 60% total-device GPU usage, including other jobs.
+disk plus checkpoint headroom. The inherited default is 60% total-device GPU
+usage; the current lab operator uses the user-authorized 100% GPU 0 allowance.
 Reported 48 GB VRAM is not an inventory result. On a reserve breach collection
 stops, owned flight control is stopped, pending state/checkpoint is exported, and
 the error is recorded. No shorter PPO update is permitted to consume leftovers.

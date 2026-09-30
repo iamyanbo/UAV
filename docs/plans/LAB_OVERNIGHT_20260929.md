@@ -2,7 +2,13 @@
 
 ## Current authorization and purpose
 
-**Latest window:** `runs/city-window-20260930T013511Z/`, started September 29
+**Current window:** `runs/city-window-20260930T023401Z/`, started September 29
+22:34:01 EDT, deadline September 30 06:34:01 EDT, with user-authorized use of
+the whole of GPU 0. It resumed 16,384 accepted PPO transitions, 1,638 world
+updates and 309 pending rows. Startup check found operator/trainer/Qwen alive.
+See [full-GPU restart](#full-gpu-0-restart-september-29-2234-edt) for provenance.
+
+**Previous window (stopped at its 60% memory limit):** `runs/city-window-20260930T013511Z/`, started September 29
 at **21:35:11 EDT**, outer deadline September 30 at **05:35:11 EDT**. Outer PID
 4093528; operator 4093529; trainer 4093734; frozen Qwen 4093571. It resumes the
 trained policy/world checkpoint. The last live check observed 9,131 training
@@ -134,7 +140,7 @@ describe this initialization as a continuation of those optimizer states.
 | Study folder | `/mnt/hdd2/yanbocheng/photo-goal-native` |
 | Backing | `/dev/sda`, SATA, rotational flag true, ext4; actual write/fsync check passed |
 | GPU | Physical GPU 0, RTX 4090, 24,564 MiB; GPU 1's existing job remains untouched |
-| Resource limits | 60% total GPU usage, 12 GiB available host RAM, 100 GiB free HDD plus checkpoint headroom |
+| Resource limits | Current lab window: 100% GPU 0 allowance; inherited default 60%. 12 GiB available host RAM, 100 GiB free HDD plus checkpoint headroom |
 | First flight memory | Approximately 5.3 GiB total GPU usage with the actual renderer |
 | Early folder size | Approximately 32 GiB, including environment, scene, models and recordings |
 | Window | Eight-hour outer timeout; trainer uses 7.9 hours with a five-minute reserve |
@@ -263,6 +269,26 @@ frozen Qwen on real recorded RGB and records its output and memory peak. That
 checks the component; live Qwen/renderer/policy concurrency still needs flight
 evidence. It performs no LoRA training.
 
+## Full GPU 0 restart: September 29, 22:34 EDT
+
+The 21:35 EDT window stopped during third-batch collection at the inherited 60%
+GPU-memory ceiling. Two batches (16,384 PPO transitions), 1,638 world updates and
+309 pending rows survived in checkpoint
+`fe91af15eb8ec2602f55343c9adb45d9133192ab86b6364ba604277245ec8111`.
+The user authorized all of GPU 0. The launcher now sets an explicit operational
+override `UAV_GPU_FRACTION_CEILING=1.0` and `UAV_RESOURCE_LOG=1`. It records the
+effective allowance and resource-code hash in `launch.json`. The campaign JSON,
+checkpoint configuration and qualified flight/control implementation are unchanged;
+the override changes only resource admission and telemetry. It does not fabricate
+new qualification evidence. Preserve GPU 1, HDD-only writes, host/disk reserves.
+
+Resumed window: `runs/city-window-20260930T023401Z/`. Operator PID 4137936,
+trainer 4138173, Qwen 4138020. Start: September 29 22:34:01 EDT; outer eight-hour
+deadline: September 30 06:34:01 EDT. Startup check found all three alive, GPU 0
+at 9,892 MiB and GPU 1 unchanged at 853 MiB. No further completed batch was
+awaited. Current log: `runs/overnight-city-full-gpu.log`. Resource module SHA:
+`e83e44a841b422a7903e1c8085b7eee966d8598bd1593e3976b2bd49650ca98d`.
+
 ## Operator commands
 
 On this PC, connect without entering a password:
@@ -280,7 +306,7 @@ Read the running PPO window's progress:
 Resume another bounded window after the current one ends:
 
 ```powershell
-./scripts/connect-viplab.ps1 -Command 'source /mnt/hdd2/yanbocheng/photo-goal-native/environment.sh; cd /mnt/hdd2/yanbocheng/photo-goal-native; nohup timeout --signal=TERM --kill-after=180s 8h env/bin/python -u code/lab_city_overnight.py > runs/overnight-city.log 2>&1 < /dev/null &'
+./scripts/connect-viplab.ps1 -Command 'source /mnt/hdd2/yanbocheng/photo-goal-native/environment.sh; cd /mnt/hdd2/yanbocheng/photo-goal-native; nohup timeout --signal=TERM --kill-after=180s 8h env/bin/python -u code/lab_city_overnight.py > runs/overnight-city-full-gpu.log 2>&1 < /dev/null &'
 ```
 
 The launcher refuses an already-running window. Each launch snapshots the
@@ -306,7 +332,7 @@ All paths below are relative to the single HDD root:
 - `checkpoints/city-initialized.pt`: full initialized bundle, after bootstrap finishes.
 - `runs/qwen-admission.json`: actual frozen Qwen component receipt, when complete.
 - `runs/active-city-window.json`: current PPO run directory and operator PID.
-- `runs/overnight-city.log`: observed physical PPO rows versus accepted rows.
+- `runs/overnight-city-full-gpu.log`: current operator progress; `overnight-city.log` preserves the earlier failed window.
 - `runs/city-window-*/training.log` and `qwen.log`: pinned-source process logs.
 - `city-training/latest.pt`: resumable policy/world/optimizer/pending-row bundle.
 - `city-training/status.json`: published training outcome on exit.

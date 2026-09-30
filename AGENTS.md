@@ -2,6 +2,12 @@
 
 ## Current implementation authorization
 
+The user authorized the whole of lab GPU 0 after the inherited 60% admission
+limit stopped collection. The lab window applies an explicit 100% operational
+allowance and records aggregate/process GPU memory. Preserve GPU 1, HDD-only
+study writes, host/disk reserves and eight-hour windows. Other campaign defaults
+remain scoped to those campaigns.
+
 The latest user instruction authorizes lab setup, asset transfers and an eight-hour
 resumable training window on one GPU. All study writes, environments, model caches,
 temporary files and recordings must stay under the verified HDD project root.

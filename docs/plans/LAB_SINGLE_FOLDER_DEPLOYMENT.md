@@ -2,6 +2,12 @@
 
 ## Latest authorization and execution
 
+The latest user instruction authorizes the whole of GPU 0, superseding the
+inherited 60% lab allowance below. The September 29 22:34 EDT window records
+the effective 100% allowance and memory telemetry, and resumes two accepted
+PPO batches plus 309 pending rows. GPU 1, HDD-only writes, host/disk reserves
+and eight-hour windows remain unchanged.
+
 The user subsequently authorized setup and an eight-hour training window on one
 GPU, then confirmed the original assets must be downloaded again. The HDD folder
 now exists and passed an actual write check. Automatic SSH key login works. The

@@ -30,7 +30,8 @@ stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
 job=root/'runs'/('city-window-'+stamp);job.mkdir()
 snapshot=job/'source';shutil.copytree(root/'code/photo_goal',snapshot/'photo_goal',ignore=shutil.ignore_patterns('__pycache__'))
 shutil.copyfile(root/'code/sitecustomize.py',snapshot/'sitecustomize.py')
-env=dict(os.environ,PYTHONPATH=str(snapshot),UAV_WINDOW_STOP_FILE=str(job/'stop-requested'))
+env=dict(os.environ,PYTHONPATH=str(snapshot),UAV_WINDOW_STOP_FILE=str(job/'stop-requested'),
+         UAV_GPU_FRACTION_CEILING='1.0',UAV_RESOURCE_LOG='1')
 python=str(root/'env/bin/python');checkpoint=root/'city-training/latest.pt'
 if not checkpoint.exists():checkpoint=root/'checkpoints/city-initialized.pt'
 plan=dict(schema='photo-goal-lab-window/v1',status='starting',pid=os.getpid(),started_utc=stamp,
@@ -38,6 +39,9 @@ plan=dict(schema='photo-goal-lab-window/v1',status='starting',pid=os.getpid(),st
     qualification_sha256=digest(root/'city-qualification.json'),implementation_sha256=implementation_identity(),
     checkpoint=str(checkpoint),checkpoint_sha256=digest(checkpoint),source=str(snapshot))
 plan['environment_startup_sha256']=digest(snapshot/'sitecustomize.py')
+plan['resource_policy']=dict(gpu_fraction_ceiling=1.0,configured_default=cfg['resources']['gpu_fraction_ceiling'],
+    authorization='User authorized the whole of GPU 0; GPU 1 remains untouched',
+    resource_module_sha256=digest(snapshot/'photo_goal/mission_resources.py'),memory_logging=True)
 write(job/'launch.json',plan);write(root/'runs/active-city-window.json',dict(job=str(job),pid=os.getpid()))
 qwen=None;trainer=None
 def interrupted(signum,frame):raise KeyboardInterrupt('Window shutdown requested')

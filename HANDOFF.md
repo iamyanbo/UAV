@@ -1,5 +1,21 @@
 # Handoff — September 29, 2026
 
+## Latest operational update
+
+The 21:35 EDT window stopped at the inherited 60% GPU-memory admission ceiling
+after saving two PPO batches (16,384 transitions), 1,638 world updates and 309
+pending rows. The user authorized the whole of GPU 0. The resumed window is
+`runs/city-window-20260930T023401Z/`, started September 29 22:34:01 EDT and bounded
+until September 30 06:34:01 EDT. One startup check found operator, trainer and
+Qwen alive. The launcher records the effective 100% operational allowance and
+resource-module hash; process/aggregate memory telemetry appears in its child
+logs. Learning/checkpoint configuration and qualified flight code are unchanged.
+GPU 1 is untouched; all study files remain in the same HDD folder. Current log:
+`runs/overnight-city-full-gpu.log`. No later batch or completed overnight run has
+been claimed. Use `code/lab_city_status.py` for current progress.
+
+## Earlier implementation handoff
+
 Current implementation instructions are in [PROJECT.md](PROJECT.md), on local
 development branch `implement/photo-goal-city-training`, based on native commit
 `b8cf18b`, published to `refactor/photo-goal-native`. The lab rebuild is deployed on GPU 0 under

@@ -1,5 +1,19 @@
 # Current city implementation — September 29, 2026
 
+## Latest update: September 29, 22:34 EDT
+
+The previous window stopped at the inherited 60% memory limit during third-batch
+collection. Saved: 16,384 accepted PPO transitions, 1,638 world updates and 309
+pending rows. The user authorized all of GPU 0; a new eight-hour window resumed
+that checkpoint under `runs/city-window-20260930T023401Z/`. Its startup status
+reported operator, trainer and Qwen alive. Deadline: September 30 06:34:01 EDT.
+The operator now records a 100% operational GPU allowance and aggregate/process
+memory telemetry. GPU 1 and the learning configuration are unchanged. These
+are startup/training counts, not navigation success or an overnight completion.
+The current operator log is `runs/overnight-city-full-gpu.log`.
+
+## Earlier rebuild and window evidence
+
 The lab rebuild is now active on GPU 0 under the verified HDD root
 `/mnt/hdd2/yanbocheng/photo-goal-native`. Automatic SSH key login works. Official
 Linux CityEnviron, Qwen, V-JEPA 2 and MobileNet assets are present; actual rendered
