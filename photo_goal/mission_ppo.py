@@ -8,7 +8,70 @@ from .ppo_core import advantages
 from .mission_checkpoint import cpu_copy, encoder_identity
 
 
-def optimize(actor, optimizer, rows, batch_for, cfg, resources=None):
+class PPOUpdateRejected(RuntimeError):
+    """A finite optimization proposal failed acceptance; state was restored."""
+
+    def __init__(self, report):
+        self.report = report
+        super().__init__('City PPO update rejected: '+report['rejection_reason']+
+                         '; actor and optimizer restored')
+
+
+def optimize(actor, optimizer, rows, batch_for, cfg, resources=None,
+             on_rejection=None, can_retry=None):
+    """At most three proposals on the same on-policy data and minibatch order.
+
+    Only acceptance rejections permit backoff. Integrity, nonfinite, resource
+    and I/O errors propagate. No rows/counts are committed by this function.
+    """
+    rates = [group['lr'] for group in optimizer.param_groups]
+    numpy_rng = np.random.get_state()
+    torch_rng = torch.get_rng_state()
+    cuda_rng = torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None
+    rejected = []
+    try:
+        for proposal, factor in enumerate((1., .5, .25), 1):
+            if proposal > 1:
+                if can_retry is not None and not can_retry():
+                    rejected[-1]['recovery_deferred'] = True
+                    raise PPOUpdateRejected(rejected[-1])
+                np.random.set_state(numpy_rng)
+                torch.set_rng_state(torch_rng)
+                if cuda_rng is not None:torch.cuda.set_rng_state_all(cuda_rng)
+            for group, rate in zip(optimizer.param_groups, rates):
+                group['lr'] = rate*factor
+            try:
+                report = _optimize_once(actor, optimizer, rows, batch_for, cfg, resources)
+            except PPOUpdateRejected as error:
+                error.report.update(proposal=proposal, learning_rate_factor=factor,
+                                    effective_learning_rates=[rate*factor for rate in rates],
+                                    maximum_proposals=3, actor_and_optimizer_restored=True)
+                rejected.append(error.report)
+                # A rejection checkpoint must keep the configured rates and
+                # original proposal RNG, so interruption resumes the same order.
+                for group, rate in zip(optimizer.param_groups, rates):group['lr'] = rate
+                np.random.set_state(numpy_rng)
+                torch.set_rng_state(torch_rng)
+                if cuda_rng is not None:torch.cuda.set_rng_state_all(cuda_rng)
+                if on_rejection is not None:on_rejection(error.report)
+                if proposal == 3:raise
+            else:
+                report.update(proposal=proposal, learning_rate_factor=factor,
+                              effective_learning_rates=[rate*factor for rate in rates],
+                              rejected_proposals=rejected, configured_learning_rates=rates)
+                return report
+    except BaseException:
+        np.random.set_state(numpy_rng)
+        torch.set_rng_state(torch_rng)
+        if cuda_rng is not None:torch.cuda.set_rng_state_all(cuda_rng)
+        raise
+    finally:
+        # Backoff is scoped to this batch. Published optimizer groups retain the
+        # configuration's rates; accepted Adam moments are preserved.
+        for group, rate in zip(optimizer.param_groups, rates):group['lr'] = rate
+
+
+def _optimize_once(actor, optimizer, rows, batch_for, cfg, resources=None):
     if len(rows) != cfg['rollout_steps'] or len(rows) != 8192:
         raise ValueError('A shorter final PPO update is forbidden')
     if len({r['policy_sha256'] for r in rows}) != 1 or len({r['policy_iteration'] for r in rows}) != 1:
@@ -111,12 +174,15 @@ def optimize(actor, optimizer, rows, batch_for, cfg, resources=None):
         if metrics:
             report.update({key: float(np.mean([row[key] for row in metrics])) for key in metrics[0]})
         report['step_metrics']=metrics
-        if not report['optimizer_steps'] or report['final_rollout_kl'] > cfg['safeguards']['maximum_final_kl']:
-            raise RuntimeError('City PPO update rejected; restoring accepted actor')
         if any(not math.isfinite(v) for v in report.values() if isinstance(v, float)):
             raise ValueError('Invalid PPO diagnostic')
         if encoder_identity(actor) != basis:
             raise RuntimeError('Frozen encoder changed during PPO')
+        if not report['optimizer_steps'] or report['final_rollout_kl'] > cfg['safeguards']['maximum_final_kl']:
+            report['rejection_reason'] = ('no_optimizer_steps' if not report['optimizer_steps']
+                                          else 'final_rollout_kl_exceeded')
+            report['maximum_final_kl'] = cfg['safeguards']['maximum_final_kl']
+            raise PPOUpdateRejected(report)
         return report
     except BaseException:
         actor.load_state_dict(original, strict=True)

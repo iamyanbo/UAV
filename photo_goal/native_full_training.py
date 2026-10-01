@@ -415,8 +415,25 @@ def run(args):
             raise RuntimeError('No valid live Qwen guidance was used; readiness alone is not Mode 2 evidence')
         physical_rows = rows
         shard = seal_rows(writer, batch_id, physical_rows)
+        def rejected_proposal(report):
+            # Persist the report after rollback, before retrying. Failures to
+            # record evidence remain fatal, rather than silently accepting work.
+            attempt = meta.get('ppo_rejection_count', 0)+1
+            path = run_root/'optimizer-rejections'/f'{attempt:06d}.json'
+            write(path, dict(batch_id=batch_id, policy_sha256=policy_sha,
+                             physical_rows=len(rows), report=report))
+            meta['ppo_rejection_count'] = attempt
+            meta['last_ppo_rejection'] = dict(path=str(path), report=report)
+            metrics_event('ppo_rejected', dict(batch_id=batch_id, report=report,
+                                               diagnostic_path=str(path)))
+            checkpoint()
+            print(json.dumps(dict(event='ppo_rejected',batch_id=batch_id,
+                                  proposal=report['proposal'],reason=report['rejection_reason'],
+                                  final_rollout_kl=report['final_rollout_kl'],
+                                  action='restored_bounded_backoff',diagnostic_path=str(path))),flush=True)
         report = optimize(actor, optimizer, rows,
-                          lambda ids: batch_for([rows[int(i)] for i in ids], {0: bank}, args.device), cfg, resources)
+                          lambda ids: batch_for([rows[int(i)] for i in ids], {0: bank}, args.device), cfg, resources,
+                          on_rejection=rejected_proposal,can_retry=lambda:window.admits(120))
         report['live_guidance_fraction'] = sum(bool(row['guidance'].get('qwen_snapshot')) for row in rows)/len(rows)
         # Commit accepted PPO before independent world work. An interruption in
         # world fitting must never replay stale rows against the changed actor.

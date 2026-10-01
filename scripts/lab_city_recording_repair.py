@@ -1,4 +1,4 @@
-"""Explicit source repair preserving a frozen PPO batch and its recorded RGB."""
+"""Explicit recording/optimizer source repair preserving a frozen physical batch."""
 import argparse
 import hashlib
 import json
@@ -27,8 +27,10 @@ def main():
     parser.add_argument('--root',type=Path,required=True)
     parser.add_argument('--run-dir',type=Path,required=True)
     parser.add_argument('--expected-checkpoint-sha256',required=True)
+    parser.add_argument('--kind',choices=('recording','optimizer'),default='recording')
+    parser.add_argument('--diagnosis',type=Path)
     args=parser.parse_args();root=args.root.resolve();run=args.run_dir.resolve()
-    configure(root,[run]);checkpoint=run/'latest.pt';receipt_path=run/'recording-repair.json'
+    configure(root,[run]);checkpoint=run/'latest.pt';receipt_path=run/(args.kind+'-repair.json')
     if receipt_path.exists():
         receipt=read(receipt_path)
         if receipt['parent_checkpoint_sha256']!=args.expected_checkpoint_sha256 or digest(checkpoint)!=receipt['checkpoint_sha256']:
@@ -39,7 +41,16 @@ def main():
         cfg=city_config(run/'config.json');saved=torch.load(checkpoint,map_location='cpu',weights_only=False)
         if saved['config_sha256']!=identity(cfg) or saved.get('world_pending'):raise ValueError('Config mismatch or pending world work')
         rows=(saved.get('pending') or {}).get('rows',[]);pixels={};observations={};duplicate_gaps=[]
-        for row in rows:
+        diagnosis=None
+        if args.kind=='optimizer':
+            if args.diagnosis is None or not args.diagnosis.resolve().is_relative_to(root):
+                raise ValueError('Optimizer repair requires the actual HDD diagnostic receipt')
+            diagnosis=read(args.diagnosis)
+            if (diagnosis.get('checkpoint_sha256')!=args.expected_checkpoint_sha256 or
+                    not diagnosis.get('reproduced_rejection') or len(rows)!=8192 or
+                    diagnosis.get('report',{}).get('pre_update_logprob_max_error',1)>.01):
+                raise ValueError('Diagnostic does not bind this complete physical batch')
+        for row in rows if args.kind=='recording' else []:
             for context in (row,row['next_context']):
                 path=context['history_rgb'][-1]
                 if path not in pixels:
@@ -62,10 +73,10 @@ def main():
             log=Path(row['history_rgb'][-1]).parent/'telemetry.jsonl';frame=int(Path(row['history_rgb'][-1]).stem)
             if not any(r.get('kind')=='transition' and r.get('frame')==frame for r in observations[log]):
                 duplicate_gaps.append(dict(frame=frame,attempt=row['attempt_id'],authority='durable checkpoint row'))
-        parent=run/'preserved-before-recording-repair.pt'
+        parent=run/('preserved-before-'+args.kind+'-repair.pt')
         if parent.exists():raise ValueError('Existing preservation artifact needs reconciliation')
         os.link(checkpoint,parent)
-        os.link(run/'latest.json',run/'preserved-before-recording-repair.json')
+        os.link(run/'latest.json',parent.with_suffix('.json'))
         actor,optimizer,world,world_optimizer,meta=load_components(parent,
             root/'assets/models/mobilenet-v3-large-imagenet1k-v2.pt',cfg,'cpu')
         meta['asset_identity']=identity(dict(scene=digest(root/'scene.json'),tasks=digest(root/'city-tasks.json'),
@@ -73,14 +84,16 @@ def main():
         audit=dict(pending_rows=len(rows),verified_physical_rgb=len(pixels),duplicate_metadata_gaps=duplicate_gaps,
             original_asset_identity=saved.get('asset_identity'),implementation_sha256=implementation_identity(),
             parent_checkpoint_sha256=args.expected_checkpoint_sha256,original_checkpoint=str(parent))
-        meta['recording_repair']=audit
+        if diagnosis is not None:audit.update(diagnosis_path=str(args.diagnosis),diagnosis_sha256=digest(args.diagnosis),
+            behavior_parity_verified_by_actual_optimizer=True,full_rgb_reaudit_performed=False)
+        meta[args.kind+'_repair']=audit
         restore_rng(meta)
         save_bundle(checkpoint,actor,optimizer,world,world_optimizer,meta,cfg)
         repaired=torch.load(checkpoint,map_location='cpu',weights_only=False)
         for key in ('actor','actor_optimizer','world','world_optimizer','rng','pending','counts','config_sha256',
                     'phase_id','phase_accepted_batches','qwen_snapshot','qwen_adapter'):
             if not equal(saved.get(key),repaired.get(key)):raise RuntimeError('Repair changed '+key)
-        receipt=dict(schema='photo-goal-recording-repair/v1',**audit,checkpoint_sha256=digest(checkpoint),
+        receipt=dict(schema='photo-goal-'+args.kind+'-repair/v1',**audit,checkpoint_sha256=digest(checkpoint),
             parameters_optimizers_rng_and_pending_preserved=True,stop_migration_reapplied=False)
         write(receipt_path,receipt);print(json.dumps(receipt,indent=2))
 
