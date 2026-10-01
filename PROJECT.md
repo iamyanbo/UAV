@@ -1,5 +1,21 @@
 # City photo-goal training implementation
 
+## September 30, 22:02 EDT: recording repair qualified; PPO resumed
+
+The matching native receipt passed for source `1a15415`. All three actual learner
+flights recorded at collector telemetry volume without backpressure; their
+queues peaked at 174, 89 and 74 items, exceeding the old 64-item limit.
+
+Training resumed at 22:01:06 EDT in `runs/city-window-20261001T020106Z`.
+The startup check confirmed the preserved 604 rows plus 403 new rows (1007
+confirmed rows in the same pending batch). Trainer, frozen Qwen and metrics
+are alive. No new accepted PPO update is claimed yet. The run remains
+`runs/city-repair-A`, requesting two full updates or stopping by October 1
+03:19 EDT. Other jobs remain alive, GPU 1 is outside the study, and all study
+writes stay on the HDD. See
+[repair execution evidence](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).
+
+
 ## September 30, 21:44 EDT: recording recovery deployed
 
 The 20:09 training window failed at 20:10:50 on a recording queue overflow.

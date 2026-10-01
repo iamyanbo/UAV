@@ -398,3 +398,41 @@ source, then automatically requests the remaining two full Stage A updates.
 No automatic phase promotion or unbounded restart loop was added. All study
 writes remain under the single verified HDD root. At this entry qualification
 is running; do not claim PPO resumed until real collection is observed.
+
+
+### Recording-repair qualification passed; real collection resumed
+
+Receipt `runs/city-stage-window-20261001T014448Z/qualification/receipt.json`
+passed, SHA-256
+`07025c2efa3cf3eec592db2d6d7c5142237f8ac77d091f90fa0b9be48c49301f`.
+All reset/stop/brake/control-axis, collision, continuous-physics, causal-command
+and terminal pause/resume checks passed. Maximum source age across confirmed
+intervals was 201.07 ms. Twelve freshness infrastructure cuts were recorded
+separately and discarded; this fix does not remove compute/camera timing spikes.
+
+| Actual complete flight | Outcome | Steps / frames | Written telemetry records | Peak queued items | Peak buffered MiB | Backpressure events |
+| --- | --- | --- | --- | --- | --- | --- |
+| Support | Deadline | 1143 / 1144 | 5761 | 174 | 26.40 | 0 |
+| Nearer regular | False stop | 1239 / 1240 | 6316 | 89 | 13.65 | 0 |
+| Farther regular | False stop | 2193 / 2194 | 11111 | 74 | 11.81 | 0 |
+
+These actual flights exercised the collector's record volume. Each peak exceeds
+the old recorder's 64-item limit; the new bounded buffer retained/drained the
+records. None of these three flights was a navigation success. The new
+128 MiB backpressure handler was implemented but its cap was not reached in
+these flights; do not claim an observed recovery at that new threshold.
+
+The wrapper automatically started the operator at September 30 22:01:06 EDT:
+`runs/city-window-20261001T020106Z`. The startup check confirmed trainer PID
+1146818, frozen Qwen PID 1146625 and metrics PID 1146821 alive. The original
+pending batch `15c670c6ec6046f39dc61432c1ff7cd4` has 1007 confirmed rows:
+604 preserved rows plus 403 newly collected rows, with no unconfirmed dispatch
+at that sampled moment. No new accepted update is claimed yet. Original other
+job PIDs 1485797 and 1485691 remained alive; GPU 1 was still outside this study.
+
+The active run/checkpoint/dashboard remain under `runs/city-repair-A`. The
+request is two full 8192-row Stage A updates, with the earlier October 1
+03:19 EDT deadline and no phase promotion. Startup GPU 0 used 14411/24564 MiB;
+GPU 1 showed 853/24564 MiB. The prior failed job, checkpoint and telemetry are
+preserved. Source and handoff are pushed to `refactor/photo-goal-native`.
+The startup check ends this repair turn; no additional batch/evaluation wait.
