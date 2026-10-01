@@ -1,5 +1,19 @@
 # Current city implementation — September 29, 2026
 
+## September 30, 22:53 EDT: latest repair verified
+
+Source `600480a` fixes PPO rejection recovery and durable diagnostics. The original
+failed minibatch order now passes with bounded backoff after exact actor/Adam
+rollback. Matching native qualification passed. Active operator:
+`runs/city-window-20261001T024727Z`, run `runs/city-repair-A`.
+
+One Stage A update is accepted, 819 world updates completed, and new physical
+collection resumed. Lifetime counts: 9 PPO batches / 73,728 rows / 7,371 world
+updates. Six subsequent regular flights all false-stopped. The second batch is
+running, with the same two-batch cap and October 1 03:19 EDT deadline. Read
+[postmortems and evidence](docs/postmortems/README.md); earlier launch-only entries
+below are historical, not current process status.
+
 ## September 30, 22:02 EDT: recording repair qualified; PPO resumed
 
 The matching native receipt passed for source `1a15415`. All three actual learner

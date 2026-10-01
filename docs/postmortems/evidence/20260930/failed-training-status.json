@@ -1,0 +1,251 @@
+﻿{
+  "status": "failed",
+  "accepted_batches": 0,
+  "connections": "explicit local Qwen only",
+  "full_flights": [
+    {
+      "attempt": "city-d6ce12a096d64a63",
+      "task_id": "city-001",
+      "support": true,
+      "split": "train",
+      "controller": "learner",
+      "start": [
+        -63.0,
+        5.196152422706639,
+        -60.0
+      ],
+      "start_yaw_deg": 180,
+      "scene_sha256": "7d75de829b1341d9b7afe84b384d485ce7af8192e8706767aa1df95ac5a3b60e",
+      "config_sha256": "df2b0c19dd0d28b35687ae21f3a7d82e594dcb3c76e71ff7fa0a6c9be6ee09e9",
+      "goal_image_sha256": "cae2d41afed209db2de4d23dcbdf0008b5effbe53295ead87bda184c09c81286",
+      "policy_bundles": [
+        "b8b5a31dbc89b8194ee627ece14b3ef148bc10e54e12f94ff89a01f910d50c2f"
+      ],
+      "reward": -0.9263113628473743,
+      "infrastructure_cut": false,
+      "event": "false_stop",
+      "elapsed_s": 24.306,
+      "task_class": "support",
+      "goal": [
+        -60.0,
+        7.34788079488412e-15,
+        -60.0
+      ],
+      "initial_distance_m": 6.0,
+      "height_difference_m": 0.0,
+      "final_distance_m": 6.966134574073795,
+      "net_displacement_m": 1.411929129608775,
+      "charged_elapsed_s": 24.278999999999897,
+      "reference_formula_return": -0.9263113628473743,
+      "route": null,
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-56728bcb4ac9/city-d6ce12a096d64a63/telemetry.jsonl",
+      "telemetry_sha256": "aac22467b63a40e6ddaf374867a97af83a29cc9f82740dc9494aaa5505e4927d",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 2853399,
+        "peak_items": 16,
+        "backpressure_events": 0,
+        "written_frames": 404,
+        "written_records": 2498
+      }
+    },
+    {
+      "attempt": "city-4ad30a4cf13b47ab",
+      "task_id": "city-004",
+      "support": false,
+      "split": "train",
+      "controller": "learner",
+      "start": [
+        15.0,
+        0.0,
+        -70.0
+      ],
+      "start_yaw_deg": 90,
+      "scene_sha256": "7d75de829b1341d9b7afe84b384d485ce7af8192e8706767aa1df95ac5a3b60e",
+      "config_sha256": "df2b0c19dd0d28b35687ae21f3a7d82e594dcb3c76e71ff7fa0a6c9be6ee09e9",
+      "goal_image_sha256": "ca02a964356aac8a72b320f121161def00ef85c5ce16b0e9a33595c96b7fdd13",
+      "policy_bundles": [
+        "b8b5a31dbc89b8194ee627ece14b3ef148bc10e54e12f94ff89a01f910d50c2f"
+      ],
+      "reward": -0.9278922349941644,
+      "infrastructure_cut": false,
+      "event": "false_stop",
+      "elapsed_s": 43.536,
+      "task_class": "regular",
+      "goal": [
+        15.000000000000009,
+        140.0,
+        -80.0
+      ],
+      "initial_distance_m": 140.356688476182,
+      "height_difference_m": 10.0,
+      "final_distance_m": 144.3334538599702,
+      "net_displacement_m": 4.294013444736394,
+      "charged_elapsed_s": 43.54199999999989,
+      "reference_formula_return": -0.9278922349941644,
+      "route": null,
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-56728bcb4ac9/city-4ad30a4cf13b47ab/telemetry.jsonl",
+      "telemetry_sha256": "ed5e21f0a107e2376f37ee811b7c11d634fb2296138899a465b6dd68b55070ad",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 10553629,
+        "peak_items": 77,
+        "backpressure_events": 0,
+        "written_frames": 767,
+        "written_records": 4696
+      }
+    }
+  ],
+  "infrastructure_cuts": [
+    {
+      "attempt": "city-358d3a942e5f44e7",
+      "error": "Stale policy decision; watchdog brakes",
+      "infrastructure_cut": true,
+      "complete_flight": false,
+      "used_as_terminal_reward": false,
+      "discarded_dispatch": true,
+      "policy_sha256": "b8b5a31dbc89b8194ee627ece14b3ef148bc10e54e12f94ff89a01f910d50c2f",
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-56728bcb4ac9/city-358d3a942e5f44e7/telemetry.jsonl",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 31656349,
+        "peak_items": 232,
+        "backpressure_events": 0,
+        "written_frames": 264,
+        "written_records": 1591
+      }
+    },
+    {
+      "attempt": "city-c9c1dc083cb64300",
+      "error": "Stale policy decision; watchdog brakes",
+      "infrastructure_cut": true,
+      "complete_flight": false,
+      "used_as_terminal_reward": false,
+      "discarded_dispatch": true,
+      "policy_sha256": "b8b5a31dbc89b8194ee627ece14b3ef148bc10e54e12f94ff89a01f910d50c2f",
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-56728bcb4ac9/city-c9c1dc083cb64300/telemetry.jsonl",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 5734815,
+        "peak_items": 38,
+        "backpressure_events": 0,
+        "written_frames": 453,
+        "written_records": 2733
+      }
+    },
+    {
+      "attempt": "city-d0959d230bf441c3",
+      "error": "Dispatcher failed: Active control watchdog exceeded source freshness",
+      "infrastructure_cut": true,
+      "complete_flight": false,
+      "used_as_terminal_reward": false,
+      "discarded_dispatch": true,
+      "policy_sha256": "b8b5a31dbc89b8194ee627ece14b3ef148bc10e54e12f94ff89a01f910d50c2f",
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-56728bcb4ac9/city-d0959d230bf441c3/telemetry.jsonl",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 12472612,
+        "peak_items": 91,
+        "backpressure_events": 0,
+        "written_frames": 1364,
+        "written_records": 8241
+      }
+    },
+    {
+      "attempt": "city-bdf57af0c4ca4da3",
+      "error": "Stale policy decision; watchdog brakes",
+      "infrastructure_cut": true,
+      "complete_flight": false,
+      "used_as_terminal_reward": false,
+      "discarded_dispatch": true,
+      "policy_sha256": "b8b5a31dbc89b8194ee627ece14b3ef148bc10e54e12f94ff89a01f910d50c2f",
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-56728bcb4ac9/city-bdf57af0c4ca4da3/telemetry.jsonl",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 14386337,
+        "peak_items": 104,
+        "backpressure_events": 0,
+        "written_frames": 3163,
+        "written_records": 19112
+      }
+    },
+    {
+      "attempt": "city-98303cf028da4103",
+      "error": "Dispatcher failed: Active control watchdog exceeded source freshness",
+      "infrastructure_cut": true,
+      "complete_flight": false,
+      "used_as_terminal_reward": false,
+      "discarded_dispatch": true,
+      "policy_sha256": "b8b5a31dbc89b8194ee627ece14b3ef148bc10e54e12f94ff89a01f910d50c2f",
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-56728bcb4ac9/city-98303cf028da4103/telemetry.jsonl",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 11508552,
+        "peak_items": 83,
+        "backpressure_events": 0,
+        "written_frames": 712,
+        "written_records": 4297
+      }
+    },
+    {
+      "attempt": "city-491f54f360b34b36",
+      "error": "Stale policy decision; watchdog brakes",
+      "infrastructure_cut": true,
+      "complete_flight": false,
+      "used_as_terminal_reward": false,
+      "discarded_dispatch": false,
+      "policy_sha256": "b8b5a31dbc89b8194ee627ece14b3ef148bc10e54e12f94ff89a01f910d50c2f",
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-56728bcb4ac9/city-491f54f360b34b36/telemetry.jsonl",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 6681816,
+        "peak_items": 44,
+        "backpressure_events": 0,
+        "written_frames": 712,
+        "written_records": 3577
+      }
+    }
+  ],
+  "error": "RuntimeError: City PPO update rejected; restoring accepted actor",
+  "budget": {
+    "campaign": {
+      "ppo_transitions": 241768,
+      "physical_transitions": 263275,
+      "training_attempts": 912,
+      "learner_attempts": 784,
+      "world_updates": 6552,
+      "grounding_updates": 0,
+      "preference_updates": 0,
+      "historical_accepted_ppo_transitions": 16384,
+      "visual_bootstrap_updates": 20000,
+      "import_provenance": {
+        "historical": "Preserved native handoff: 45059 reserved rows, 156 attempts, 16384 accepted rows; original checkpoint unavailable.",
+        "bootstrap": "Recorded camera intervals conservatively charged; no PPO row or expert action. Resets excluded."
+      },
+      "bootstrap_recorded_intervals": 19762
+    },
+    "overnight_ledger": {
+      "reserved": 196709,
+      "dispatch_reserved": 119241,
+      "observed": 119136,
+      "optimized": 65536,
+      "unobserved_discarded": 102
+    }
+  },
+  "lifetime_counts": {
+    "city_batches": 8,
+    "accepted_transitions": 65536,
+    "world_updates": 6552
+  },
+  "phase_accepted_batches": 0,
+  "pending_rows": 8192,
+  "world_work_remaining": 0
+}

@@ -1,5 +1,11 @@
 # Photo-goal UAV navigation
 
+Latest verified status (September 30, 22:53 EDT): the PPO rejection repair is
+deployed, one Stage A batch and 819 world updates completed, and actual flight
+collection resumed. Six subsequent regular flights still false-stopped. Read
+[the postmortems](docs/postmortems/README.md) and [current status](STATUS.md).
+The older launch/planning descriptions below are historical.
+
 The September 30 environment/data/reward revision is implemented locally. Read
 [the implementation and launch handoff](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).
 It includes staged checkpoint forks, continuous-flight movement changes, varied

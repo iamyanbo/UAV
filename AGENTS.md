@@ -1,5 +1,22 @@
 # Photo-goal UAV navigation
 
+## September 30, 22:53 EDT: PPO rejection repaired and resumed cycle verified
+
+The user authorized consolidated postmortems and the next repair. Read
+`docs/postmortems/README.md`. Source `600480a` adds durable typed PPO rejection
+reports and at most three same-batch proposals (rates 1, 0.5, 0.25), preserving
+actor/Adam/RNG on rejection. Integrity/resource errors remain fatal; no endless
+trainer restart, batch-size change, reward change or automatic phase promotion.
+
+Native qualification passed. Active operator:
+`runs/city-window-20261001T024727Z`, using `runs/city-repair-A`. One Stage A
+batch is accepted; its 819 world updates completed and actual collection resumed.
+Lifetime counts: 9 / 73,728 / 7,371. Six subsequent regular flights false-stopped;
+this establishes execution, not navigation competence. The second batch remains
+running under the existing two-batch cap / October 1 03:19 EDT deadline. Preserve
+GPU 1, unrelated jobs, all original evidence and HDD-only single-root writes.
+No further validation/batch wait is needed merely to finish this repair handoff.
+
 ## September 30, 22:02 EDT: recording repair qualified; PPO resumed
 
 The matching native receipt passed for source `1a15415`. All three actual learner

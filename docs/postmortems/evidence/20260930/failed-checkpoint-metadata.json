@@ -1,0 +1,22 @@
+﻿{
+  "schema": "photo-goal-full-bundle/v1",
+  "checkpoint_sha256": "23385a5201a8ceb6cde9ad775797d2bf8f90f31faf23bd34070c2bbfc52158b7",
+  "counts": {
+    "city_batches": 8,
+    "accepted_transitions": 65536,
+    "world_updates": 6552
+  },
+  "encoder_basis_sha256": "0ecedadbc28427c8a8dd7e883e54990ec16654f4a8c24c806bc72a0686b687f1",
+  "phase_id": "city-repair-A",
+  "phase_accepted_batches": 0,
+  "world_work_remaining": 0,
+  "asset_identity": "7f89c3e5fdf94281d791ca09453eca3838e0ee6e47e2545e6b9263b70c4ab432",
+  "pending": {
+    "batch_id": "15c670c6ec6046f39dc61432c1ff7cd4",
+    "rows": 8192,
+    "policy_sha256": "b8b5a31dbc89b8194ee627ece14b3ef148bc10e54e12f94ff89a01f910d50c2f"
+  },
+  "world_ranking_qualified": false,
+  "qwen_adapter": null,
+  "no_cross_module_gradients": true
+}

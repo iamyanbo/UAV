@@ -1,0 +1,538 @@
+﻿{
+  "schema": "photo-goal-production-recovery/v1",
+  "checked_utc": "2026-10-01T02:53:37.176161+00:00",
+  "job": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-window-20261001T024727Z",
+  "source_commit": "600480a",
+  "implementation_sha256": "b2d5f443ba6c2f7c3559282c48c943ea1256d21b1f6945b2d4d907f41f8ea259",
+  "operator_status": "running",
+  "operator_alive": true,
+  "trainer_alive": true,
+  "qwen_alive": true,
+  "metrics_alive": true,
+  "checkpoint": {
+    "schema": "photo-goal-full-bundle/v1",
+    "checkpoint_sha256": "7b7b8076db37ed0df2734b4b2e2bc4733390620e47b1f799ecda44f2e17b9bef",
+    "counts": {
+      "city_batches": 9,
+      "accepted_transitions": 73728,
+      "world_updates": 7371
+    },
+    "encoder_basis_sha256": "0ecedadbc28427c8a8dd7e883e54990ec16654f4a8c24c806bc72a0686b687f1",
+    "phase_id": "city-repair-A",
+    "phase_accepted_batches": 1,
+    "world_work_remaining": 0,
+    "asset_identity": "04b9216f9996a790c25a7a69f0455fd71e408598e9f8463df5e3e2443fd452c5",
+    "pending": null,
+    "world_ranking_qualified": false,
+    "qwen_adapter": null,
+    "no_cross_module_gradients": true
+  },
+  "accepted_ppo": {
+    "counts": {
+      "city_batches": 9,
+      "accepted_transitions": 73728,
+      "world_updates": 6552
+    },
+    "report": {
+      "optimizer_steps": 9,
+      "pre_update_logprob_max_error": 9.5367431640625e-07,
+      "stop_positive_labels": 228,
+      "stop_negative_labels": 7964,
+      "stop_balance": [
+        13.082082401788567,
+        0.6541041200894283,
+        1.0
+      ],
+      "stop_missing_class": false,
+      "early_kl_stop": true,
+      "final_rollout_kl": 0.015398532592371339,
+      "explained_variance": 0.15809272935515595,
+      "return_variance": 0.00953510869294405,
+      "normalized_value_mse": 0.8425837402276103,
+      "advantage_mean": 2.2351741790771484e-08,
+      "advantage_std": 0.9999999403953552,
+      "physical_rows": 8192,
+      "microbatch": 16,
+      "optimizer_minibatch": 512,
+      "kl": 0.004679557356414282,
+      "policy_loss": -0.0010537048672429388,
+      "value_loss": 0.00976470520223908,
+      "stop_loss": 2.686565608557354,
+      "gaussian_entropy": 1.7122193309995863,
+      "stop_entropy": 0.006236096430155966,
+      "gradient_norm": 1.1988239751921759,
+      "step_metrics": [
+        {
+          "kl": 2.444721758365631e-09,
+          "policy_loss": -0.01385334983933717,
+          "value_loss": 0.010480875007033319,
+          "stop_loss": 3.2060817962376404,
+          "gaussian_entropy": 1.7120847702026367,
+          "stop_entropy": 0.0020575271919369698,
+          "gradient_norm": 0.5204171538352966
+        },
+        {
+          "kl": 6.040360312908888e-05,
+          "policy_loss": -0.06692011980339885,
+          "value_loss": 0.006488476590220671,
+          "stop_loss": 3.14394374916219,
+          "gaussian_entropy": 1.712010145187378,
+          "stop_entropy": 0.002150803804397583,
+          "gradient_norm": 0.4551922082901001
+        },
+        {
+          "kl": 0.0003538812161423266,
+          "policy_loss": -0.017463869182392955,
+          "value_loss": 0.006743878800079983,
+          "stop_loss": 3.046063244094057,
+          "gaussian_entropy": 1.7120418548583984,
+          "stop_entropy": 0.002484106458723545,
+          "gradient_norm": 0.5698412656784058
+        },
+        {
+          "kl": 0.0009945526253432035,
+          "policy_loss": -0.023328863782808185,
+          "value_loss": 0.006905884450134181,
+          "stop_loss": 3.494768548670436,
+          "gaussian_entropy": 1.7121331691741943,
+          "stop_entropy": 0.0030153263360261917,
+          "gradient_norm": 0.6274312138557434
+        },
+        {
+          "kl": 0.003206132911145687,
+          "policy_loss": -0.019498596899211407,
+          "value_loss": 0.00557931047569582,
+          "stop_loss": 1.8225949867719464,
+          "gaussian_entropy": 1.7121860980987549,
+          "stop_entropy": 0.0038408711552619934,
+          "gradient_norm": 0.8162021040916443
+        },
+        {
+          "kl": 0.006154016533400863,
+          "policy_loss": 0.029739450430497527,
+          "value_loss": 0.013985423332997016,
+          "stop_loss": 2.681407086762192,
+          "gaussian_entropy": 1.712246060371399,
+          "stop_entropy": 0.00522803608328104,
+          "gradient_norm": 1.0718103647232056
+        },
+        {
+          "kl": 0.008824906311929226,
+          "policy_loss": 0.06634138815570623,
+          "value_loss": 0.01437261569299153,
+          "stop_loss": 2.9190122826912557,
+          "gaussian_entropy": 1.7123432159423828,
+          "stop_entropy": 0.007367147132754326,
+          "gradient_norm": 1.8147586584091187
+        },
+        {
+          "kl": 0.01119558501522988,
+          "policy_loss": 0.07590924599207938,
+          "value_loss": 0.013677583333446819,
+          "stop_loss": 2.2799691647160216,
+          "gaussian_entropy": 1.7124242782592773,
+          "stop_entropy": 0.011290007270872593,
+          "gradient_norm": 2.548598527908325
+        },
+        {
+          "kl": 0.0113265355466865,
+          "policy_loss": -0.04040862887632102,
+          "value_loss": 0.009648299137552385,
+          "stop_loss": 1.5852496179104492,
+          "gaussian_entropy": 1.7125043869018555,
+          "stop_entropy": 0.018691042438149452,
+          "gradient_norm": 2.365164279937744
+        }
+      ],
+      "proposal": 1,
+      "learning_rate_factor": 1.0,
+      "effective_learning_rates": [
+        0.0003
+      ],
+      "rejected_proposals": [],
+      "configured_learning_rates": [
+        0.0003
+      ],
+      "live_guidance_fraction": 0.741943359375
+    },
+    "shard": {
+      "path": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/replay/records/15c670c6ec6046f39dc61432c1ff7cd4.json",
+      "sha256": "82dbe5cf32debd4ca7d618513420c97495ba3ad17b3c8fc8cd98809c146c8077",
+      "transition_count": 8192,
+      "labels_sha256": "df7ad39c62f962fdf9f9602d74adcdcc0eaa36ca0cb90a4e3e686daf628827c9"
+    }
+  },
+  "world_completed": {
+    "counts": {
+      "city_batches": 9,
+      "accepted_transitions": 73728,
+      "world_updates": 7371
+    },
+    "remaining": 0,
+    "mean_loss": 0.008405295546338308,
+    "last": {
+      "loss": 0.007860291749238968,
+      "gradient_norm": 0.07373175024986267,
+      "losses": {
+        "visual": 0.007842419669032097,
+        "collision": 1.9371509552001953e-06,
+        "reward": 2.7224764380662236e-06,
+        "terminated": 5.960464477539062e-07,
+        "goal": 0.00017346441745758057
+      }
+    }
+  },
+  "new_complete_flights": [
+    {
+      "attempt": "city-56de7ac345ee43db",
+      "task_id": "city-004",
+      "support": false,
+      "split": "train",
+      "controller": "learner",
+      "start": [
+        15.0,
+        0.0,
+        -70.0
+      ],
+      "start_yaw_deg": 90,
+      "scene_sha256": "7d75de829b1341d9b7afe84b384d485ce7af8192e8706767aa1df95ac5a3b60e",
+      "config_sha256": "df2b0c19dd0d28b35687ae21f3a7d82e594dcb3c76e71ff7fa0a6c9be6ee09e9",
+      "goal_image_sha256": "ca02a964356aac8a72b320f121161def00ef85c5ce16b0e9a33595c96b7fdd13",
+      "policy_bundles": [
+        "7b7b8076db37ed0df2734b4b2e2bc4733390620e47b1f799ecda44f2e17b9bef"
+      ],
+      "reward": -0.9086803764869503,
+      "infrastructure_cut": false,
+      "event": "false_stop",
+      "elapsed_s": 13.479,
+      "task_class": "regular",
+      "goal": [
+        15.000000000000009,
+        140.0,
+        -80.0
+      ],
+      "initial_distance_m": 140.356688476182,
+      "height_difference_m": 10.0,
+      "final_distance_m": 142.02473512498716,
+      "net_displacement_m": 2.079339047044743,
+      "charged_elapsed_s": 13.461000000000023,
+      "reference_formula_return": -0.9086803764869503,
+      "route": null,
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-eb12d8ad2736/city-56de7ac345ee43db/telemetry.jsonl",
+      "telemetry_sha256": "f4d7dbe6a9de46c72834499c83e264ccbef21fe4a2191cd37074e27eab8d76eb",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 2873207,
+        "peak_items": 20,
+        "backpressure_events": 0,
+        "written_frames": 201,
+        "written_records": 1271
+      }
+    },
+    {
+      "attempt": "city-184243f780be498d",
+      "task_id": "city-004",
+      "support": false,
+      "split": "train",
+      "controller": "learner",
+      "start": [
+        15.0,
+        0.0,
+        -70.0
+      ],
+      "start_yaw_deg": 90,
+      "scene_sha256": "7d75de829b1341d9b7afe84b384d485ce7af8192e8706767aa1df95ac5a3b60e",
+      "config_sha256": "df2b0c19dd0d28b35687ae21f3a7d82e594dcb3c76e71ff7fa0a6c9be6ee09e9",
+      "goal_image_sha256": "ca02a964356aac8a72b320f121161def00ef85c5ce16b0e9a33595c96b7fdd13",
+      "policy_bundles": [
+        "7b7b8076db37ed0df2734b4b2e2bc4733390620e47b1f799ecda44f2e17b9bef"
+      ],
+      "reward": -0.9165379747723952,
+      "infrastructure_cut": false,
+      "event": "false_stop",
+      "elapsed_s": 25.779,
+      "task_class": "regular",
+      "goal": [
+        15.000000000000009,
+        140.0,
+        -80.0
+      ],
+      "initial_distance_m": 140.356688476182,
+      "height_difference_m": 10.0,
+      "final_distance_m": 143.64502649267706,
+      "net_displacement_m": 4.29391137012373,
+      "charged_elapsed_s": 25.769999999999847,
+      "reference_formula_return": -0.9165379747723952,
+      "route": null,
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-eb12d8ad2736/city-184243f780be498d/telemetry.jsonl",
+      "telemetry_sha256": "6f8310960280799bf99bdffde9591db4a70c37db84ddcdfa1a3d8f9a85064ec2",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 4761845,
+        "peak_items": 29,
+        "backpressure_events": 0,
+        "written_frames": 436,
+        "written_records": 2699
+      }
+    },
+    {
+      "attempt": "city-7f50cac10fab4967",
+      "task_id": "city-000",
+      "support": false,
+      "split": "train",
+      "controller": "learner",
+      "start": [
+        0.0,
+        0.0,
+        -50.0
+      ],
+      "start_yaw_deg": 0,
+      "scene_sha256": "7d75de829b1341d9b7afe84b384d485ce7af8192e8706767aa1df95ac5a3b60e",
+      "config_sha256": "df2b0c19dd0d28b35687ae21f3a7d82e594dcb3c76e71ff7fa0a6c9be6ee09e9",
+      "goal_image_sha256": "5573c9c89f30b880715f3907a34f74ce50a0ed5e87ed3eb24dd251fab008764b",
+      "policy_bundles": [
+        "7b7b8076db37ed0df2734b4b2e2bc4733390620e47b1f799ecda44f2e17b9bef"
+      ],
+      "reward": -0.9085783763562938,
+      "infrastructure_cut": false,
+      "event": "false_stop",
+      "elapsed_s": 7.884,
+      "task_class": "regular",
+      "goal": [
+        60.0,
+        0.0,
+        -50.0
+      ],
+      "initial_distance_m": 60.0,
+      "height_difference_m": 0.0,
+      "final_distance_m": 60.99530927139208,
+      "net_displacement_m": 1.0343574858848261,
+      "charged_elapsed_s": 7.842000000000006,
+      "reference_formula_return": -0.9085783763562938,
+      "route": null,
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-eb12d8ad2736/city-7f50cac10fab4967/telemetry.jsonl",
+      "telemetry_sha256": "41174a613956f0954902b1a840e1fab81982dad292b60eba625e0d2924d84ed0",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 2850926,
+        "peak_items": 16,
+        "backpressure_events": 0,
+        "written_frames": 95,
+        "written_records": 631
+      }
+    },
+    {
+      "attempt": "city-de09f43333c54654",
+      "task_id": "city-008",
+      "support": false,
+      "split": "train",
+      "controller": "learner",
+      "start": [
+        30.0,
+        0.0,
+        -60.0
+      ],
+      "start_yaw_deg": 180,
+      "scene_sha256": "7d75de829b1341d9b7afe84b384d485ce7af8192e8706767aa1df95ac5a3b60e",
+      "config_sha256": "df2b0c19dd0d28b35687ae21f3a7d82e594dcb3c76e71ff7fa0a6c9be6ee09e9",
+      "goal_image_sha256": "719b4276b2853d2bcefd96e35fe7daf89ff2805cd8cf4d58c24caf16eb7487e3",
+      "policy_bundles": [
+        "7b7b8076db37ed0df2734b4b2e2bc4733390620e47b1f799ecda44f2e17b9bef"
+      ],
+      "reward": -0.9044628936189545,
+      "infrastructure_cut": false,
+      "event": "false_stop",
+      "elapsed_s": 14.334,
+      "task_class": "regular",
+      "goal": [
+        -210.0,
+        2.939152317953648e-14,
+        -50.0
+      ],
+      "initial_distance_m": 240.20824298928628,
+      "height_difference_m": -10.0,
+      "final_distance_m": 240.086873787009,
+      "net_displacement_m": 1.2206180994785476,
+      "charged_elapsed_s": 14.328000000000031,
+      "reference_formula_return": -0.9044628936189545,
+      "route": null,
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-eb12d8ad2736/city-de09f43333c54654/telemetry.jsonl",
+      "telemetry_sha256": "f07b2d59d5087e612dff6e524f9e19c971c977af62b38c6025cc36cfd0f10f31",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 2872406,
+        "peak_items": 19,
+        "backpressure_events": 0,
+        "written_frames": 216,
+        "written_records": 1362
+      }
+    },
+    {
+      "attempt": "city-fd00725a07484a08",
+      "task_id": "city-005",
+      "support": false,
+      "split": "train",
+      "controller": "learner",
+      "start": [
+        15.0,
+        0.0,
+        -60.0
+      ],
+      "start_yaw_deg": 360,
+      "scene_sha256": "7d75de829b1341d9b7afe84b384d485ce7af8192e8706767aa1df95ac5a3b60e",
+      "config_sha256": "df2b0c19dd0d28b35687ae21f3a7d82e594dcb3c76e71ff7fa0a6c9be6ee09e9",
+      "goal_image_sha256": "cddf389b8a7277d44c48c3c7a3977d10002b161fe3f8ae1049d71fbf26b8f9f4",
+      "policy_bundles": [
+        "7b7b8076db37ed0df2734b4b2e2bc4733390620e47b1f799ecda44f2e17b9bef"
+      ],
+      "reward": -0.9061873736366111,
+      "infrastructure_cut": false,
+      "event": "false_stop",
+      "elapsed_s": 9.513,
+      "task_class": "regular",
+      "goal": [
+        14.999999999999975,
+        -140.0,
+        -60.0
+      ],
+      "initial_distance_m": 140.0,
+      "height_difference_m": 0.0,
+      "final_distance_m": 139.63858920470162,
+      "net_displacement_m": 0.8162329361433357,
+      "charged_elapsed_s": 9.55200000000001,
+      "reference_formula_return": -0.9061873736366111,
+      "route": null,
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-eb12d8ad2736/city-fd00725a07484a08/telemetry.jsonl",
+      "telemetry_sha256": "57b943887e2e8db53274a8d9314e6d69e41e76d935dd4c60d4a31005b2b1c241",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 1893157,
+        "peak_items": 9,
+        "backpressure_events": 0,
+        "written_frames": 126,
+        "written_records": 817
+      }
+    },
+    {
+      "attempt": "city-accf2722c5a84854",
+      "task_id": "city-009",
+      "support": false,
+      "split": "train",
+      "controller": "learner",
+      "start": [
+        45.0,
+        0.0,
+        -50.0
+      ],
+      "start_yaw_deg": 90,
+      "scene_sha256": "7d75de829b1341d9b7afe84b384d485ce7af8192e8706767aa1df95ac5a3b60e",
+      "config_sha256": "df2b0c19dd0d28b35687ae21f3a7d82e594dcb3c76e71ff7fa0a6c9be6ee09e9",
+      "goal_image_sha256": "b9f85fc0ccd2324fe6fd30d76ec023fe52de0e90160b1d85e118526caf11eb36",
+      "policy_bundles": [
+        "7b7b8076db37ed0df2734b4b2e2bc4733390620e47b1f799ecda44f2e17b9bef"
+      ],
+      "reward": -0.9102869778332483,
+      "infrastructure_cut": false,
+      "event": "false_stop",
+      "elapsed_s": 33.372,
+      "task_class": "regular",
+      "goal": [
+        285.0,
+        0.0,
+        -50.0
+      ],
+      "initial_distance_m": 240.0,
+      "height_difference_m": 0.0,
+      "final_distance_m": 234.81082710932782,
+      "net_displacement_m": 5.709405055429004,
+      "charged_elapsed_s": 33.35999999999962,
+      "reference_formula_return": -0.9102869778332483,
+      "route": null,
+      "telemetry": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-repair-A/worker-eb12d8ad2736/city-accf2722c5a84854/telemetry.jsonl",
+      "telemetry_sha256": "ab8ed3acf59bc2ae6c3b891906402751897c5938f72ba97c99f0100d02604999",
+      "recording": {
+        "maximum_bytes": 134217728,
+        "buffered_bytes": 0,
+        "peak_bytes": 9566923,
+        "peak_items": 65,
+        "backpressure_events": 0,
+        "written_frames": 577,
+        "written_records": 3543
+      }
+    }
+  ],
+  "new_batch": {
+    "id": "38b75e5aed6241eca3c7dc9ffc004555",
+    "requested": 8193,
+    "issued": 2229,
+    "actual": 2227,
+    "optimized": 0,
+    "status": "collecting"
+  },
+  "qualification": {
+    "path": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-stage-window-20261001T023705Z/qualification/receipt.json",
+    "sha256": "e2160627b3fb00f4cd31842a40364929cbc6f4822ead88931c8aa7bc0de7403d",
+    "passed": true,
+    "infrastructure_cuts": 13,
+    "complete_learner_flights": [
+      {
+        "controller": "city-actor-from-qualified-checkpoint",
+        "event": "success",
+        "terminated": true,
+        "steps": 6,
+        "recording": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-stage-window-20261001T023705Z/qualification/worker/actual-learner-0-2d9e473a",
+        "recorder": {
+          "maximum_bytes": 134217728,
+          "buffered_bytes": 4480,
+          "peak_bytes": 952536,
+          "peak_items": 5,
+          "backpressure_events": 0,
+          "written_frames": 7,
+          "written_records": 55
+        },
+        "navigation_success": true
+      },
+      {
+        "controller": "city-actor-from-qualified-checkpoint",
+        "event": "false_stop",
+        "terminated": true,
+        "steps": 213,
+        "recording": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-stage-window-20261001T023705Z/qualification/worker/actual-learner-1-ac2c8b13",
+        "recorder": {
+          "maximum_bytes": 134217728,
+          "buffered_bytes": 4486,
+          "peak_bytes": 6647981,
+          "peak_items": 37,
+          "backpressure_events": 0,
+          "written_frames": 214,
+          "written_records": 1135
+        },
+        "navigation_success": false
+      },
+      {
+        "controller": "city-actor-from-qualified-checkpoint",
+        "event": "false_stop",
+        "terminated": true,
+        "steps": 54,
+        "recording": "/mnt/hdd2/yanbocheng/photo-goal-native/runs/city-stage-window-20261001T023705Z/qualification/worker/actual-learner-2-78fb8cae",
+        "recorder": {
+          "maximum_bytes": 134217728,
+          "buffered_bytes": 4483,
+          "peak_bytes": 2853900,
+          "peak_items": 16,
+          "backpressure_events": 0,
+          "written_frames": 55,
+          "written_records": 333
+        },
+        "navigation_success": false
+      }
+    ]
+  },
+  "original_deadline_utc": "2026-10-01T07:19:48.582443+00:00",
+  "scope": "Resumed saved-batch PPO/world/checkpoint and actual complete subsequent flights; not navigation competence"
+}

@@ -1,0 +1,136 @@
+﻿{
+  "schema": "photo-goal-ppo-rejection-diagnosis/v1",
+  "checkpoint_sha256": "23385a5201a8ceb6cde9ad775797d2bf8f90f31faf23bd34070c2bbfc52158b7",
+  "rows": 8192,
+  "counts": {
+    "city_batches": 8,
+    "accepted_transitions": 65536,
+    "world_updates": 6552
+  },
+  "same_physical_batch": true,
+  "canonical_checkpoint_mutated": false,
+  "original_failure_rng_not_saved_separately": true,
+  "initial_train_mode_minibatch": {
+    "kl": 2.444721758365631e-09,
+    "policy_loss": -0.01385334983933717,
+    "value_loss": 0.010480875007033319,
+    "stop_loss": 3.2060817962376404,
+    "gaussian_entropy": 1.7120847702026367,
+    "stop_entropy": 0.0020575271919369698
+  },
+  "report": {
+    "optimizer_steps": 9,
+    "pre_update_logprob_max_error": 9.5367431640625e-07,
+    "stop_positive_labels": 228,
+    "stop_negative_labels": 7964,
+    "stop_balance": [
+      13.082082401788567,
+      0.6541041200894283,
+      1.0
+    ],
+    "stop_missing_class": false,
+    "early_kl_stop": true,
+    "final_rollout_kl": 0.015398532381368568,
+    "explained_variance": 0.15809325890485904,
+    "return_variance": 0.00953510869294405,
+    "normalized_value_mse": 0.8425832101599793,
+    "advantage_mean": 2.2351741790771484e-08,
+    "advantage_std": 0.9999999403953552,
+    "physical_rows": 8192,
+    "microbatch": 16,
+    "optimizer_minibatch": 512,
+    "kl": 0.004679555920625312,
+    "policy_loss": -0.001053701659354071,
+    "value_loss": 0.00976470367853229,
+    "stop_loss": 2.686565598623247,
+    "gaussian_entropy": 1.7122193309995863,
+    "stop_entropy": 0.006236096223195394,
+    "gradient_norm": 1.1988240149286058,
+    "step_metrics": [
+      {
+        "kl": 2.444721758365631e-09,
+        "policy_loss": -0.01385334983933717,
+        "value_loss": 0.010480875007033319,
+        "stop_loss": 3.2060817962376404,
+        "gaussian_entropy": 1.7120847702026367,
+        "stop_entropy": 0.0020575271919369698,
+        "gradient_norm": 0.5204171538352966
+      },
+      {
+        "kl": 6.04032538831234e-05,
+        "policy_loss": -0.06692011514678597,
+        "value_loss": 0.006488476857612113,
+        "stop_loss": 3.143943719359868,
+        "gaussian_entropy": 1.712010145187378,
+        "stop_entropy": 0.002150803804397583,
+        "gradient_norm": 0.4551921486854553
+      },
+      {
+        "kl": 0.0003538820310495794,
+        "policy_loss": -0.01746386883314699,
+        "value_loss": 0.006743879376699624,
+        "stop_loss": 3.046063244094057,
+        "gaussian_entropy": 1.7120418548583984,
+        "stop_entropy": 0.002484106458723545,
+        "gradient_norm": 0.5698412656784058
+      },
+      {
+        "kl": 0.0009945527417585254,
+        "policy_loss": -0.02332885842770338,
+        "value_loss": 0.006905883830768289,
+        "stop_loss": 3.4947685039669523,
+        "gaussian_entropy": 1.7121331691741943,
+        "stop_entropy": 0.0030153263360261917,
+        "gradient_norm": 0.6274312734603882
+      },
+      {
+        "kl": 0.0032061313977465034,
+        "policy_loss": -0.019498587120324373,
+        "value_loss": 0.0055793110414015246,
+        "stop_loss": 1.822594956969624,
+        "gaussian_entropy": 1.7121860980987549,
+        "stop_entropy": 0.0038408711552619934,
+        "gradient_norm": 0.8162023425102234
+      },
+      {
+        "kl": 0.00615401502000168,
+        "policy_loss": 0.02973945182748139,
+        "value_loss": 0.013985423160193022,
+        "stop_loss": 2.681407086762192,
+        "gaussian_entropy": 1.712246060371399,
+        "stop_entropy": 0.00522803608328104,
+        "gradient_norm": 1.0718103647232056
+      },
+      {
+        "kl": 0.008824903052300215,
+        "policy_loss": 0.06634138582739979,
+        "value_loss": 0.014372611765793408,
+        "stop_loss": 2.919012312493578,
+        "gaussian_entropy": 1.7123432159423828,
+        "stop_entropy": 0.007367146201431751,
+        "gradient_norm": 1.8147587776184082
+      },
+      {
+        "kl": 0.011195582337677479,
+        "policy_loss": 0.07590925740078092,
+        "value_loss": 0.013677576951522497,
+        "stop_loss": 2.2799691349136992,
+        "gaussian_entropy": 1.7124242782592773,
+        "stop_entropy": 0.011290007270872593,
+        "gradient_norm": 2.5485987663269043
+      },
+      {
+        "kl": 0.011326531006488949,
+        "policy_loss": -0.040408630622550845,
+        "value_loss": 0.009648295115766814,
+        "stop_loss": 1.5852496328116104,
+        "gaussian_entropy": 1.7125043869018555,
+        "stop_entropy": 0.018691041506826878,
+        "gradient_norm": 2.365164041519165
+      }
+    ]
+  },
+  "reproduced_rejection": false,
+  "elapsed_s": 36.13316226005554,
+  "canonical_checkpoint_unchanged": true
+}

@@ -10,20 +10,37 @@ under `/mnt/hdd2/yanbocheng/photo-goal-native`; recordings are not copied into G
 | Dispatch freshness interruptions | Timing and recovery integration | [02](02-dispatch-freshness.md) |
 | Recording queue overflow | Recording admission / capacity | [03](03-recording-backpressure.md) |
 | PPO update rejected | Optimization and rejection handling | [04](04-ppo-rejection.md) |
+| Qwen readiness probe / early startup dispatch | Startup integration | [05](05-startup-integration.md) |
+| GPU cap / inactive cache / OS crash report | Resource and shutdown integration | [06](06-memory-and-crash-storage.md) |
+| Poor movement and false stops | Learning outcome, separate from crashes | [07](07-learning-status.md) |
+
+## Latest verified recovery — September 30, 22:53 EDT
+
+Source `600480a` accepted the saved physical batch, completed its 819 independent
+world updates, published a checkpoint and resumed actual collection. Six complete
+subsequent regular flights and 2,227 new valid rows were observed. Lifetime counts
+are nine accepted PPO batches / 73,728 rows / 7,371 world updates; Stage A has one
+accepted batch. The operator remains running for its second batch or the existing
+03:19 EDT deadline. [Production evidence](evidence/20260930/production-recovery.json).
+
+All six regular flights false-stopped. Recovery establishes execution, not a
+useful navigator or a reliable whole-night campaign. Timing cuts still occur.
 
 ## What these failures establish
 
-The pipeline is not yet reliable for unattended training. Flight qualification
-did not verify a complete collection, accepted optimization, independent world
-update, checkpoint publication and subsequent-flight cycle. Recoverable events
+The pipeline is not yet reliable for unattended training. The September 29
+version did execute an accepted PPO/world cycle and later accumulated eight
+accepted batches. The September 30 stop-repair revision was launched after
+flight qualification without verifying its changed optimizer behavior through
+an accepted update and subsequent-flight cycle. Recoverable events
 were too often escalated into whole-job failures. Rejection diagnostics were
 missing. Earlier status entries saying "running" are timestamped observations,
 not evidence of later completion.
 
 They do not establish that PPO or RGB photo-goal navigation cannot work. The
 separate learning evidence is poor: the preserved reference had 0/375 regular
-mission successes and mostly metre-scale movement. The latest repair has not
-accepted a new PPO update. Neither a decreasing loss nor fixing the operator
+mission successes and mostly metre-scale movement. The latest repair has
+accepted one new PPO update, followed by six false stops. Neither a decreasing loss nor fixing the operator
 establishes useful 300 m navigation.
 
 ## Repair scope

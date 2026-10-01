@@ -1,5 +1,21 @@
 # City photo-goal training implementation
 
+## September 30, 22:53 EDT: PPO repair cycle verified
+
+Read [the consolidated postmortems](docs/postmortems/README.md). The 22:01 window
+reached 8,192 rows, then rejected its first PPO update. Source `600480a` now saves
+rejection diagnostics and permits three bounded same-batch optimization proposals.
+Original-order recorded processing verified exact rollback and smaller-step
+acceptance; native qualification then passed.
+
+Active operator `runs/city-window-20261001T024727Z` accepted one Stage A batch,
+completed 819 independent world updates, published a checkpoint and resumed
+collection. Counts: 9 lifetime PPO batches / 73,728 rows / 7,371 world updates.
+Six subsequent regular flights all false-stopped. This is execution evidence,
+not navigation improvement. The second batch is running under the existing
+two-batch cap / October 1 03:19 EDT deadline. The original checkpoints, GPU 1
+and unrelated jobs remain preserved; all study writes stay under the lab HDD root.
+
 ## September 30, 22:02 EDT: recording repair qualified; PPO resumed
 
 The matching native receipt passed for source `1a15415`. All three actual learner

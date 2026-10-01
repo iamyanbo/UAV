@@ -1,0 +1,11 @@
+﻿{
+  "schema": "photo-goal-ppo-repair-relaunch/v1",
+  "pid": 1175480,
+  "source": "/mnt/hdd2/yanbocheng/photo-goal-native/code-releases/600480a",
+  "gpu_inventory": "0, GPU-cb732142-d673-a946-f71e-cae4853d0e27, 953, 24564, 0\n1, GPU-a18cb5b1-3b14-e02d-631d-07d01e0e82cb, 853, 24564, 0\n",
+  "compute_inventory": "GPU-a18cb5b1-3b14-e02d-631d-07d01e0e82cb, 1485691, /workspace/validation_code/high_speed_flight/devel/lib/agile_autonomy/agile_autonomy, 810\n",
+  "prior_deadline_utc": "2026-10-01T07:19:56.223396+00:00",
+  "hours_remaining": 4.71184172504478,
+  "log": "/mnt/hdd2/yanbocheng/photo-goal-native/postmortems/20260930/repaired-stage-window.log",
+  "no_unrelated_process_terminated": true
+}

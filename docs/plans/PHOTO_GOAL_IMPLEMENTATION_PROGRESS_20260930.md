@@ -1,5 +1,39 @@
 # September 30 city training implementation
 
+## PPO postmortem and verified recovery — September 30, 22:53 EDT
+
+[Consolidated incidents and raw evidence](../postmortems/README.md) cover startup,
+GPU memory/cap, OS crash-report placement, disk accounting, dispatch freshness,
+recording backpressure and optimizer rejection. Learning failures are tracked
+separately. Earlier accepted cycles are preserved; the September 30 stop repair
+had not verified its changed optimizer boundary before overnight launch.
+
+The failed original batch order was reconstructed from preserved NumPy RNG:
+13 steps produced final KL 0.2637886, above 0.1. Source `600480a` adds typed
+rejection reports and up to three same-batch proposals at rates 1 / 0.5 / 0.25.
+Actual original-order processing verified exact actor/Adam rollback and accepted
+19 steps at half rate, KL 0.0867718; canonical weights/counts stayed unchanged.
+
+Source-only checkpoint fork preserved every model/optimizer/RNG/row/counter;
+matching native qualification passed. Active operator:
+`runs/city-window-20261001T024727Z` (PID 1184334), trainer 1184476. It accepted
+the saved batch at its preserved post-failure order: nine steps, KL 0.0153985,
+behavior error 9.54e-7. All 819 world updates finished, checkpoint published and
+actual collection resumed. Counts: 9 / 73,728 / 7,371; Stage A accepted count 1.
+
+At 22:53 EDT, the second batch had 2,227 valid rows and six complete regular
+flights under the new policy. All false-stopped, net movement 0.82–5.71 m.
+Execution is repaired; navigation is not established. Qwen is frozen/active,
+world scoring remains shadow-only, the encoder is unchanged, and the original
+two-batch cap / October 1 03:19 EDT deadline remains. GPU 1, other jobs and
+all original evidence are preserved; all writes remain on the lab HDD.
+
+Verification used actual recorded processing and native flights/training, with
+no agents, tests or new harnesses. The resumed-cycle proof ends verification for
+this repair; do not wait for another batch merely to wrap up. Next inspect the
+scheduled Stage A outcome before the documented movement fork, rather than
+equating another accepted batch with useful navigation.
+
 ## Integration resumed: September 30, 19:29 EDT
 
 SSH access was restored. The user clarified that the existing simulation/desktop

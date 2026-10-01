@@ -1,5 +1,21 @@
 # Handoff — September 29, 2026
 
+## September 30, 22:53 EDT: optimizer repair and continuation
+
+Read [postmortems](docs/postmortems/README.md) before another change. Lab source
+is `code-releases/600480a`; operator `runs/city-window-20261001T024727Z` and run
+`runs/city-repair-A`. Native qualification and the resumed PPO/world/checkpoint/
+subsequent-flight cycle passed. One Stage A batch is accepted; lifetime counts
+are 9 / 73,728 / 7,371. The second batch remains active under the unchanged cap
+and October 1 03:19 EDT deadline; no new window or phase was opened.
+
+Rejections now save full reports after exact rollback and permit at most three
+same-batch step-size proposals. This is not a trainer restart loop. Six regular
+post-update flights still false-stopped; do not equate repaired execution with
+navigation ability. Original checkpoints/recordings, other jobs and GPU 1 are
+preserved. All lab study writes remain in the verified HDD root. Actual proof:
+`postmortems/20260930/production-recovery.json` (also copied into this repository).
+
 ## September 30, 22:02 EDT: recording repair qualified; PPO resumed
 
 The matching native receipt passed for source `1a15415`. All three actual learner
