@@ -42,47 +42,103 @@ def camera_settings(settings,cfg,port):
     return settings
 
 
+class RecordingBackpressure(RuntimeError):
+    """No record was admitted; brake and drain before another mission."""
+
+
+def collection_interruption(error):
+    return isinstance(error,RecordingBackpressure) or str(error) in (
+        'Stale policy decision; watchdog brakes',
+        'Dispatcher failed: Active control watchdog exceeded source freshness',
+        'Recording backpressure; drain required',
+        'Dispatcher failed: Recording backpressure; drain required')
+
+
 class Recorder:
     def __init__(self,root):
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=False)
-        self.queue=queue.Queue(maxsize=64);self.error=None
+        self.queue=queue.Queue(maxsize=4096);self.error=None
+        self.admission=threading.Lock();self.maximum_bytes=128*2**20
+        self.buffered_bytes=0;self.peak_bytes=0;self.peak_items=0
+        self.backpressure_events=0;self.written_frames=0;self.written_records=0
         self.thread=threading.Thread(target=self.run,daemon=True);self.thread.start()
 
     def put(self,name,value):
-        if self.error:raise RuntimeError('Recorder failed: '+self.error)
-        try:self.queue.put_nowait((name,value))
-        except queue.Full:raise RuntimeError('Recording queue overflow; episode invalid')
+        self.put_many([(name,value)])
+
+    def put_many(self,records):
+        # Freeze JSON once, outside the writer. Admit a whole transition's
+        # metadata together; never silently drop RGB or partly admit a row.
+        prepared=[]
+        for name,value in records:
+            if name.endswith('.png'):
+                size=value.nbytes+4096
+            else:
+                value=(json.dumps(value,allow_nan=False)+'\n').encode('utf-8')
+                size=len(value)+4096
+            prepared.append((name,value,size))
+        size=sum(item[2] for item in prepared)
+        with self.admission:
+            if self.error:raise RuntimeError('Recorder failed: '+self.error)
+            if self.buffered_bytes+size>self.maximum_bytes or self.queue.qsize()+len(prepared)>self.queue.maxsize:
+                self.backpressure_events+=1
+                raise RecordingBackpressure('Recording backpressure; drain required')
+            self.buffered_bytes+=size
+            for item in prepared:self.queue.put_nowait(item)
+            self.peak_bytes=max(self.peak_bytes,self.buffered_bytes)
+            self.peak_items=max(self.peak_items,self.queue.qsize())
+
+    def stats(self):
+        with self.admission:
+            return dict(maximum_bytes=self.maximum_bytes,buffered_bytes=self.buffered_bytes,
+                peak_bytes=self.peak_bytes,peak_items=self.peak_items,
+                backpressure_events=self.backpressure_events,written_frames=self.written_frames,
+                written_records=self.written_records)
+
+    def control(self,item):
+        # Used only at an interrupted/completed flight boundary. A full
+        # buffer must drain before its barrier; it must not make flush fail.
+        deadline=time.monotonic()+30
+        while self.thread.is_alive() and time.monotonic()<deadline:
+            with self.admission:
+                if self.error:raise RuntimeError('Recorder failed: '+self.error)
+                if not self.queue.full():
+                    self.queue.put_nowait(item);return
+            time.sleep(.01)
+        raise RuntimeError('Recorder boundary did not drain')
 
     def run(self):
         from PIL import Image
         try:
-            with (self.root/'telemetry.jsonl').open('w') as stream:
+            with (self.root/'telemetry.jsonl').open('wb') as stream:
                 while True:
                     item=self.queue.get()
                     if item is None:break
-                    name,value=item
-                    if name=='barrier':stream.flush();os.fsync(stream.fileno());value.set()
-                    elif name.endswith('.png'):
-                        from .mission_space import reserve_write
-                        reserve_write(self.root/name,value.nbytes+65536)
-                        Image.fromarray(value).save(self.root/name,compress_level=1)
-                    else:
-                        from .mission_space import reserve_write
-                        text=json.dumps(value,allow_nan=False)+'\n'
-                        reserve_write(stream.name,len(text.encode())+4096)
-                        stream.write(text)
+                    name,value,size=item
+                    try:
+                        if name=='barrier':stream.flush();os.fsync(stream.fileno());value.set()
+                        elif name.endswith('.png'):
+                            from .mission_space import reserve_write
+                            reserve_write(self.root/name,value.nbytes+65536)
+                            Image.fromarray(value).save(self.root/name,compress_level=1)
+                            self.written_frames+=1
+                        else:
+                            from .mission_space import reserve_write
+                            reserve_write(stream.name,len(value)+4096)
+                            stream.write(value);self.written_records+=1
+                    finally:
+                        with self.admission:self.buffered_bytes-=size
+                        self.queue.task_done()
                 stream.flush();os.fsync(stream.fileno())
         except Exception as error:self.error=str(error)
 
     def close(self):
-        while self.thread.is_alive():
-            try:self.queue.put(None,timeout=.2);break
-            except queue.Full:continue
+        if self.thread.is_alive():self.control(None)
         self.thread.join(timeout=30)
         if self.thread.is_alive() or self.error:raise RuntimeError('Recorder did not finish cleanly')
 
     def flush(self):
-        done=threading.Event();self.put('barrier',done)
+        done=threading.Event();self.control(('barrier',done,0))
         if not done.wait(30) or self.error:raise RuntimeError('Recorder flush failed')
 
 
@@ -325,9 +381,9 @@ class PilotEnvironment:
         self.frame+=1
         self.last_source=source;self.previous_state=s
         self.last_source_sim_ns=stamp
-        self.recorder.put(f'{self.frame:06d}.png',rgb)
-        self.recorder.put('observation',dict(kind='observation',frame=self.frame,capture_sim_ns=stamp,
-            source_wall=source,preceding_command=preceding,state=s,camera_pose=self.capture_pose,timing=timing))
+        self.recorder.put_many([(f'{self.frame:06d}.png',rgb),('observation',dict(kind='observation',
+            frame=self.frame,capture_sim_ns=stamp,source_wall=source,preceding_command=preceding,
+            state=s,camera_pose=self.capture_pose,timing=timing))])
         return dict(rgb=rgb.tobytes(),frame=self.frame,sim_s=stamp/1e9,preceding_command=preceding,
             state=s,source_wall=source,timing=timing,elapsed_s=(s['sim_ns']-self.start_sim_ns)/1e9,
             reset_wall_s=self.reset_wall_s,pause_wall_s=self.pause_wall_s,

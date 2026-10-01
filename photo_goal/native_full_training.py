@@ -341,7 +341,8 @@ def run(args):
             net_displacement_m=math.dist(task['start'],obs['state']['position']),
             charged_elapsed_s=attempts[attempt]['charged_elapsed_s'],
             reference_formula_return=attempts[attempt]['reference_reward'],route=task.get('route'),
-            telemetry=str(env.recorder.root/'telemetry.jsonl'),telemetry_sha256=digest(env.recorder.root/'telemetry.jsonl'))
+            telemetry=str(env.recorder.root/'telemetry.jsonl'),telemetry_sha256=digest(env.recorder.root/'telemetry.jsonl'),
+            recording=env.recorder.stats())
         status['full_flights'].append(receipt);write(run_root/(attempt+'.json'),receipt)
         metrics_event('flight',receipt)
     def metrics_event(kind,payload):
@@ -364,19 +365,24 @@ def run(args):
     def recover_freshness(error,env,attempt,issued):
         nonlocal batch_freshness_cuts
         message=str(error)
-        if message not in ('Stale policy decision; watchdog brakes',
-            'Dispatcher failed: Active control watchdog exceeded source freshness'):
+        from .ppo_env import collection_interruption
+        if not collection_interruption(error):
             raise error
         with env.lock:env.active=False;env.command=[0.]*4
         env.client.cancelLastTask(env.vehicle)
         env.client.moveByVelocityAsync(0.,0.,0.,.2,vehicle_name=env.vehicle)
+        if not env.dispatch_idle.wait(3):raise RuntimeError('Dispatch did not quiesce after collection cut')
+        env.stop_camera()
         if issued:budget.discard_unobserved(batch_id,0)
         if rows and rows[-1]['attempt_id']==attempt:
             rows[-1].update(truncated=True,infrastructure_cut=True)
         env.done=True
+        # Boundary barriers wait for admitted data to drain. They never run
+        # inside a live policy decision or drop records to free space.
+        env.recorder.flush()
         cut=dict(attempt=attempt,error=message,infrastructure_cut=True,complete_flight=False,
             used_as_terminal_reward=False,discarded_dispatch=issued,policy_sha256=policy_sha,
-            telemetry=str(env.recorder.root/'telemetry.jsonl'))
+            telemetry=str(env.recorder.root/'telemetry.jsonl'),recording=env.recorder.stats())
         env.recorder.put('infrastructure_cut',dict(kind='infrastructure_cut',**cut));env.recorder.flush()
         write(run_root/(attempt+'-infrastructure-cut.json'),cut)
         status['infrastructure_cuts'].append(cut);batch_freshness_cuts+=1
@@ -530,10 +536,10 @@ def run(args):
                         reservation_started=time.perf_counter()
                         budget.transition(batch_id, 0)
                         reservation_s=time.perf_counter()-reservation_started
-                        env.recorder.put('collection_timing',dict(kind='collection_timing',frame=obs['frame'],
-                            reservation_s=reservation_s,source_age_s=time.perf_counter()-obs['source_wall'],
-                            decision_s=decision['decision_s'],resource_check_s=resource_check_s))
                         try:
+                            env.recorder.put('collection_timing',dict(kind='collection_timing',frame=obs['frame'],
+                                reservation_s=reservation_s,source_age_s=time.perf_counter()-obs['source_wall'],
+                                decision_s=decision['decision_s'],resource_check_s=resource_check_s))
                             if env.paused:
                                 result = env.resume_boundary(command, bool(decision['stop']), obs['frame'])
                             else:
@@ -562,15 +568,20 @@ def run(args):
                                    proposed_command=command, command_intervals=result['command_intervals'],
                                    event=result['event'], stop_label=float(env.in_goal(obs['state'])), stop_label_valid=True,
                                    world_labels=world_labels(env, obs, following, result, reward, cfg))
+                        try:
+                            env.recorder.put_many([
+                                ('transition',dict(kind='transition',reward=reward,dt=result['dt'],
+                                    terminated=result['terminated'],event=result['event'],
+                                    policy_sha256=policy_sha,stop=decision['stop'],frame=obs['frame'])),
+                                ('behavior',dict(kind='behavior',row={k:v for k,v in row.items() if k!='world_labels'})),
+                                ('private_labels',dict(kind='private_labels',frame=obs['frame'],labels=row['world_labels']))])
+                        except RuntimeError as error:
+                            recover_freshness(error,env,attempt,True)
+                            break
                         budget.confirm(batch_id, 0)
                         rows.append(row)
                         attempts[attempt]['reward'] += reward
                         attempts[attempt]['policy_bundles'].add(policy_sha)
-                        env.recorder.put('transition', dict(kind='transition', reward=reward, dt=result['dt'],
-                                         terminated=result['terminated'], event=result['event'],
-                                         policy_sha256=policy_sha, stop=decision['stop'], frame=obs['frame']))
-                        env.recorder.put('behavior',dict(kind='behavior',row={k:v for k,v in row.items() if k!='world_labels'}))
-                        env.recorder.put('private_labels',dict(kind='private_labels',frame=obs['frame'],labels=row['world_labels']))
                         obs, decision = following, next_decision
                         if result['terminated']:
                             complete_flight(env,task,attempt,obs,result['event'])
@@ -593,9 +604,12 @@ def run(args):
                             following=result['observation']
                             reward,parts,_=flight_reward(task,attempt,obs,following,result)
                             attempts[attempt]['reward']+=reward
-                            env.recorder.put('batch_tail',dict(kind='batch_tail',used_for_ppo=False,physical_charge=1,
-                                reward=reward,dt=result['dt'],event=result['event'],stop=decision['stop'],
-                                command=command,command_intervals=result['command_intervals'],policy_sha256=policy_sha))
+                            try:
+                                env.recorder.put('batch_tail',dict(kind='batch_tail',used_for_ppo=False,physical_charge=1,
+                                    reward=reward,dt=result['dt'],event=result['event'],stop=decision['stop'],
+                                    command=command,command_intervals=result['command_intervals'],policy_sha256=policy_sha))
+                            except RuntimeError as error:
+                                recover_freshness(error,env,attempt,False);break
                             obs=following
                             if result['terminated']:complete_flight(env,task,attempt,obs,result['event']);break
                             decision=scheduler.call('decision',worker=0,obs=runtime(obs,task,attempt,survey,cfg),execution=False)

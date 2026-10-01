@@ -28,6 +28,7 @@ from photo_goal.ppo_core import command_from_latent
 from photo_goal.compute import ComputeLane
 from photo_goal.rgb_survey import RGBSurvey
 from photo_goal.ppo_budget import Budget
+from photo_goal.ppo_env import collection_interruption
 
 parser=argparse.ArgumentParser()
 parser.add_argument('--root',type=Path,default=Path('/mnt/hdd2/yanbocheng/photo-goal-native'))
@@ -202,18 +203,32 @@ try:
                         measured['reservation_s']=time.perf_counter()-reservation_started
                         measured['source_age_s']=time.perf_counter()-obs['source_wall']
                         result=env.step(command,bool(decision['stop']),obs['frame'],policy_sha256=receipt['actor_checkpoint_sha256'])
+                        following=result['observation']
+                        next_decision=scheduler.call('decision',worker=0,
+                            obs=runtime(following,task,mission,survey,cfg),execution=False)
+                        # Exercise the real collector's telemetry volume, not
+                        # just camera/dispatch recording. These measured actor
+                        # and private-state records are never training rows.
+                        env.recorder.put_many([
+                            ('qualification_transition',dict(kind='qualification_transition',
+                                frame=obs['frame'],event=result['event'],dt=result['dt'],used_for_ppo=False)),
+                            ('qualification_behavior',dict(kind='qualification_behavior',
+                                decision=decision,next_context=next_decision['context'],used_for_ppo=False)),
+                            ('qualification_private_labels',dict(kind='qualification_private_labels',
+                                source_state=obs['state'],next_state=following['state'],
+                                command_intervals=result['command_intervals'],used_for_ppo=False))])
                         budget.confirm(batch,0);issued=False
                     except RuntimeError as error:
-                        if str(error) not in ('Stale policy decision; watchdog brakes',
-                            'Dispatcher failed: Active control watchdog exceeded source freshness'):raise
+                        if not collection_interruption(error):raise
                         with env.lock:env.active=False;env.command=[0.]*4;env.done=True
                         env.client.cancelLastTask(env.vehicle)
                         env.client.moveByVelocityAsync(0.,0.,0.,.2,vehicle_name=env.vehicle)
+                        check(env.dispatch_idle.wait(3),'Dispatch did not quiesce after collection cut')
                         if issued:budget.discard_unobserved(batch,0)
                         env.stop_camera();env.recorder.flush()
                         cut=dict(attempt=mission,error=str(error),timing=measured,infrastructure_cut=True,
                             complete_flight=False,used_as_terminal_reward=False,discarded_dispatch=issued,
-                            recording=str(env.recorder.root))
+                            recording=str(env.recorder.root),recorder=env.recorder.stats())
                         receipt['infrastructure_cuts'].append(cut);write(out/(mission+'-cut.json'),cut)
                         print(json.dumps(dict(event='qualification_freshness_cut',**cut)),flush=True)
                         guidance.invalidate(receipt['actor_checkpoint_sha256']);bank.trim()
@@ -226,7 +241,8 @@ try:
                     if result['terminated']:
                         env.stop_camera();env.recorder.flush();path=out/(mission+'.json')
                         write(path,dict(controller='city-actor-from-qualified-checkpoint',event=result['event'],terminated=True,
-                                       steps=steps,recording=str(env.recorder.root),navigation_success=result['event']=='success'))
+                                       steps=steps,recording=str(env.recorder.root),recorder=env.recorder.stats(),
+                                       navigation_success=result['event']=='success'))
                         receipt['complete_flight_receipts'].append(dict(path=str(path),sha256=digest(path)))
                         env.pause_terminal_boundary()
                         before=env.state();guidance.residency('cpu');time.sleep(.5)
@@ -238,7 +254,7 @@ try:
                         bank.trim()
                         print(json.dumps(dict(event='qualification_complete_flight',slot=flight,receipt=str(path))),flush=True)
                         break
-                    decision=scheduler.call('decision',worker=0,obs=runtime(obs,task,mission,survey,cfg),execution=False)
+                    decision=next_decision
             receipt['continuous_physics']=all(b>a for a,b in clock)
             receipt['command_intervals_verified']=all(abs(sum(s[4] for s in r['segments'])-r['dt'])<1e-6 for r in intervals)
             receipt['boundary_resume_verified']=boundary
