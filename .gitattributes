@@ -2,3 +2,5 @@
 *.py text eol=lf
 *.json text eol=lf
 *.md text eol=lf
+# Preserve downloaded incident evidence byte-for-byte on Windows checkouts.
+docs/postmortems/evidence/20260930/* -text
