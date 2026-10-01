@@ -281,3 +281,54 @@ No tests, new testing harnesses or agents were used. Actual native flight
 telemetry and owned-process integration are the verification evidence. The
 latest measured learning counts remain the preserved eight batches / 65,536
 accepted rows / 6,552 world updates until a new accepted checkpoint exists.
+
+
+## Native qualification passed; Stage A collection started
+
+The current native receipt passed for package implementation
+`dc55578f87a21eabaefd590c49e89d53c6c3b6158c3e35a4770d4e41d42319f3`,
+resolved Stage A configuration `df2b0c19dd0d28b35687ae21f3a7d82e594dcb3c76e71ff7fa0a6c9be6ee09e9`,
+and the prepared checkpoint. Receipt:
+`runs/city-stage-window-20260930T235423Z/qualification/receipt.json`, SHA-256
+`9f356c1dab4e45c49f498d872ceeadc47c8ce6f213cf7b6d4795e7a483a51be7`.
+
+Measured evidence:
+
+- Native reset/arrival-stop/false-stop/brake and all four control-axis diagnostics
+  passed. Actual physical collision reporting, continuous physics, causal
+  command intervals and terminal pause/resume were verified.
+- Three actual learner flights completed: support timed out after 1115 steps;
+  the nearer regular mission false-stopped after 367; the farther regular
+  mission false-stopped after 2018. None was a navigation success. This is
+  pipeline qualification, not trained 300 m navigation evidence.
+- Across qualification attempts, 13,090 confirmed intervals were measured.
+  Maximum source age among those intervals was 228.94 ms. Twelve infrastructure
+  cuts were separately recorded/discarded and are not complete flights or
+  terminal rewards. Remaining compute spikes are a throughput concern; the
+  disk fix does not establish that all future decisions meet 250 ms.
+- Hot-path resource admission in sampled cuts took about 0.3?0.9 ms after
+  removing disk admission reads. One later durable reservation took 156.8 ms;
+  occasional policy sections reached 0.3?0.43 s. Keep these raw timings for
+  future optimization; do not blame camera acquisition or remove the brake.
+- The host was busy (load about 29 on 32 logical CPUs); CPU contention is a
+  possible contributor, not a confirmed attribution for every spike.
+
+The integration wrapper automatically started the bounded operator at
+September 30 20:09:33 EDT. Active operator:
+`runs/city-window-20261001T000934Z`, PID 1058655. Trainer PID 1059014, frozen
+Qwen PID 1058764 and CPU metrics PID 1059017 were running at the startup check.
+Actual first-flight recording:
+`runs/city-repair-A/worker-8937d6d72067/city-3615ae38ece146e7/telemetry.jsonl`.
+It contained 329 real training transitions; latest sampled step reward was
+-0.0000182775. This single step is not an episode return or improvement claim.
+
+The operator requests two new full 8192-row updates, then stops; otherwise the
+existing absolute deadline stops it by October 1 03:19 EDT. It does not promote
+phases, reapply the checkpoint migration or alter the reference. Checkpoint and
+metrics stay at `runs/city-repair-A/latest.pt` and
+`runs/city-repair-A/metrics/dashboard.html`. No new accepted update was claimed
+at startup. The unrelated jobs inspected earlier remained alive. GPU 1 is
+outside the study; all study writes remain under the single verified HDD root.
+
+The startup status check ends this integration turn. Do not wait for another
+batch or add a new validation campaign merely to wrap up.

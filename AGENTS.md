@@ -1,5 +1,14 @@
 # Photo-goal UAV navigation
 
+## September 30, 20:10 EDT: training is active
+
+Matching native qualification passed for source `94e80c6`. The operator is
+`runs/city-window-20261001T000934Z`, with Stage A at `runs/city-repair-A`;
+329 real startup transitions were observed. Check `runs/active-city-window.json`
+and `runs/active-city-integration.json` before any launch. The request is two
+full 8192-row PPO updates, with an October 1 03:19 EDT absolute deadline and
+no automatic phase promotion. Preserve all other lab jobs and the reference.
+
 ## September 30: shared GPU 0 integration is authorized
 
 The user clarified that existing long-running graphics/simulation processes were

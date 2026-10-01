@@ -1,5 +1,22 @@
 # Handoff — September 29, 2026
 
+## September 30, 20:10 EDT: Stage A PPO is collecting
+
+Native qualification passed for source `94e80c6`, the Stage A fork and the actual
+lab assets. The bounded operator started at 20:09:33 EDT in
+`runs/city-window-20261001T000934Z`; trainer, frozen Qwen and metrics are running.
+The startup check found 329 actual recorded training transitions in the first
+flight. No new accepted PPO update is claimed yet.
+
+Run/checkpoint/metrics: `runs/city-repair-A`. The window requests two full
+8192-row PPO updates and stops by October 1 03:19 EDT, whichever comes first.
+It does not automatically advance to Stage B. Other users' jobs remain alive;
+all study files stay under the verified HDD root. Check
+`runs/active-city-window.json` before another launch. The integration wrapper
+remains at `runs/city-stage-window-20260930T235423Z` with status `training`.
+See [qualified evidence and limitations](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).
+
+
 ## September 30, 19:54 EDT: integration recovery
 
 Automatic SSH key login works. Shared GPU 0 use is authorized; unrelated jobs
