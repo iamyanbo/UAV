@@ -332,3 +332,69 @@ outside the study; all study writes remain under the single verified HDD root.
 
 The startup status check ends this integration turn. Do not wait for another
 batch or add a new validation campaign merely to wrap up.
+
+
+## Recording overflow recovery, September 30 21:44 EDT
+
+The Stage A window launched at 20:09:33 stopped at 20:10:50 EDT with
+`Recording queue overflow; episode invalid`. Its recorder had 64 item slots,
+shared by PNGs, observations, dispatches, collection timing, behavior, private
+labels and transition logs. Its main loop also confirmed/appended a PPO row
+before admitting the corresponding metadata. The operator then cleaned up
+its owned trainer/Qwen/metrics children. This was our pipeline failure, not a
+server outage. There were no new accepted PPO/world updates.
+
+Source `1a15415` makes these changes:
+
+- Recorder admission is bounded by 128 MiB and 4096 items, including the item
+  being written. Peak bytes/items and backpressure counts are measured.
+- JSON is frozen/encoded once on admission. PNG data remains lossless. Actual
+  writes retain conservative HDD leases and the existing storage limits.
+- RGB/observation pairs and each transition's three metadata records are
+  admitted atomically. PPO confirmation/appending happens only after metadata
+  admission succeeds. No data is silently dropped to make the buffer fit.
+- Full buffers raise a specific collection interruption. The collector brakes,
+  stops acquisition, drains admitted records at the boundary, records a cut,
+  excludes the interrupted interval, and resets under the same frozen PPO batch.
+  Flush/close can wait for a full buffer to drain. Active physics is not paused
+  per step; the 250 ms stale-source brake remains.
+- Actual writer/storage errors still stop and checkpoint. A dead writer is not
+  mislabeled as recoverable backpressure. Buffering does not assert unlimited
+  sustained disk throughput.
+- The existing native qualification now records actual actor decisions,
+  next contexts and private physical command/state records at collector volume.
+  Those records are explicitly excluded from PPO. No new testing harness or
+  agent was created.
+
+Actual CPU recorded-data audit: all 604 pending rows have matching physical RGB,
+605 unique current/next images have matching pixel hashes, physical observation
+entries exist, and command durations match their recorded intervals. Frame 604
+lacks the duplicate transition telemetry line because the old queue rejected it;
+its complete behavior/reward/private-label row is durable in the checkpoint.
+The original telemetry is not rewritten, and this gap is recorded in the repair
+receipt. The prior final row remains an infrastructure truncation.
+
+Explicit source fork, without another stop migration:
+
+- Original checkpoint preserved in place by hard link:
+  `runs/city-repair-A/preserved-before-recording-repair.pt`, SHA-256
+  `352628ca4bd057cecf2da142ab3703d45cfbb79fdf89bd78dcb54b1333ef73fc`.
+- Repaired `latest.pt`: SHA-256
+  `497e5b3ae13b46ba66fea4dd34042d5a31d217e3a9d1664b3dfa826e14028884`.
+- Package implementation:
+  `cff0b4c2847887c4eea2b994f7853243d3be36188b52c0614e691f778caf30fa`.
+- `scripts/lab_city_recording_repair.py` checked every actor/world tensor,
+  optimizer state, RNG, pending row and counter for exact preservation after
+  publication. Only source-binding metadata and repair provenance change.
+- Receipt: `runs/city-repair-A/recording-repair.json`. The pending batch ID and
+  its original frozen behavior SHA are retained; no campaign budget is refunded.
+
+GPU check before relaunch: GPU 0 had 953/24564 MiB in use, with no foreign compute
+process. GPU 1 retained its existing foreign compute workload. Shared GPU 0
+launch preserves graphics and all other jobs. The recovery wrapper is
+`runs/city-stage-window-20261001T014448Z`, PID 1133238, using source `1a15415`.
+It retains the earlier October 1 03:19 EDT deadline, qualifies the changed
+source, then automatically requests the remaining two full Stage A updates.
+No automatic phase promotion or unbounded restart loop was added. All study
+writes remain under the single verified HDD root. At this entry qualification
+is running; do not claim PPO resumed until real collection is observed.

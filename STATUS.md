@@ -1,5 +1,22 @@
 # Current city implementation — September 29, 2026
 
+## September 30, 21:44 EDT: recording recovery deployed
+
+The 20:09 training window failed at 20:10:50 on a recording queue overflow.
+The server remained available. Source `1a15415` repairs bounded recording
+backpressure and atomic observation/transition record admission. All 604 pending
+rows passed actual RGB/physical-record checks and were preserved, along with
+weights, optimizer state, RNG, counts and the original checkpoint.
+
+Current recovery wrapper: `runs/city-stage-window-20261001T014448Z`, using
+`runs/city-repair-A`. Matching native qualification now records the actual
+collector's telemetry volume before automatic PPO resume. Check its live
+`launch.json` and `runs/active-city-integration.json`; training has not yet
+restarted at this entry. The original October 1 03:19 EDT deadline remains.
+Preserve unrelated jobs and GPU 1. See
+[repair evidence and scope](docs/plans/PHOTO_GOAL_IMPLEMENTATION_PROGRESS_20260930.md).
+
+
 ## September 30, 20:10 EDT: Stage A PPO is collecting
 
 Native qualification passed for source `94e80c6`, the Stage A fork and the actual
